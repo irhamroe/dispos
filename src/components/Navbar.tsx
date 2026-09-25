@@ -6,6 +6,7 @@ import {
   Menu, 
   ShieldCheck, 
   CalendarDays,
+  Database,
   Bell
 } from 'lucide-react';
 import { AdminUser, SchoolProfile } from '../types';
@@ -16,6 +17,8 @@ interface NavbarProps {
   onLogout: () => void;
   onToggleMobileMenu: () => void;
   todayStr: string;
+  isFirebaseConnected?: boolean;
+  onOpenFirebaseModal?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -24,6 +27,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onLogout,
   onToggleMobileMenu,
   todayStr,
+  isFirebaseConnected = false,
+  onOpenFirebaseModal,
 }) => {
   return (
     <header id="main-header" className="sticky top-0 z-30 bg-white border-b border-slate-200 shadow-xs">
@@ -64,9 +69,28 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Right Header Section: Today Info & User Account */}
-          <div className="flex items-center space-x-3 sm:space-x-4">
+          <div className="flex items-center space-x-2.5 sm:space-x-3">
+            {/* Firebase Database Connection Pill / Trigger */}
+            <button
+              type="button"
+              id="navbar-firebase-btn"
+              onClick={onOpenFirebaseModal}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+                isFirebaseConnected
+                  ? 'bg-emerald-50 border-emerald-300 text-emerald-800 hover:bg-emerald-100 shadow-2xs'
+                  : 'bg-amber-50 border-amber-300 text-amber-800 hover:bg-amber-100'
+              }`}
+              title={isFirebaseConnected ? 'Firebase Cloud Firestore Terhubung' : 'Klik untuk hubungkan database Firebase'}
+            >
+              <div className={`w-2 h-2 rounded-full ${isFirebaseConnected ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
+              <Database className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">
+                {isFirebaseConnected ? 'Firebase Aktif' : 'Hubungkan Firebase'}
+              </span>
+            </button>
+
             {/* Calendar pill */}
-            <div className="hidden md:flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-medium">
+            <div className="hidden lg:flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-medium">
               <CalendarDays className="w-4 h-4 text-emerald-600" />
               <span>{todayStr}</span>
             </div>

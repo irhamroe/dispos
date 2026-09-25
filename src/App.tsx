@@ -28,6 +28,18 @@ import { StudentMasterView } from './components/StudentMasterView';
 import { DataKelasView } from './components/DataKelasView';
 import { DataWaliKelasView } from './components/DataWaliKelasView';
 import { UserManagementView } from './components/UserManagementView';
+import { FirebaseConfigModal } from './components/FirebaseConfigModal';
+import { isFirebaseConfigured } from './services/firebase';
+import {
+  fetchAllDocuments,
+  saveDocument,
+  deleteDocument,
+  saveAttendanceBatch,
+  saveStudent,
+  saveDisciplineRecord,
+  deleteDisciplineRecord as deleteDisciplineFromDb,
+  COLLECTIONS
+} from './services/firestoreService';
 import { getTodayIndonesian, getTodayDateString } from './utils/exportUtils';
 
 export default function App() {
@@ -141,6 +153,43 @@ export default function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [selectedClassForStudentView, setSelectedClassForStudentView] = useState<string | undefined>(undefined);
 
+  // Firebase connection & modal states
+  const [isFirebaseModalOpen, setIsFirebaseModalOpen] = useState(false);
+  const [isFirebaseConnected, setIsFirebaseConnected] = useState(() => isFirebaseConfigured());
+
+  // Automatic initial data pull from Firestore if configured
+  useEffect(() => {
+    const checkAndSyncFirestore = async () => {
+      if (isFirebaseConfigured()) {
+        setIsFirebaseConnected(true);
+        try {
+          const [remoteClasses, remoteWali, remoteStudents, remoteAttendance, remoteDiscipline, remoteRules] =
+            await Promise.all([
+              fetchAllDocuments<RombelClass>(COLLECTIONS.CLASSES),
+              fetchAllDocuments<WaliKelasTeacher>(COLLECTIONS.WALI_KELAS),
+              fetchAllDocuments<Student>(COLLECTIONS.STUDENTS),
+              fetchAllDocuments<AttendanceRecord>(COLLECTIONS.ATTENDANCE),
+              fetchAllDocuments<DisciplineRecord>(COLLECTIONS.DISCIPLINE),
+              fetchAllDocuments<ViolationRule>(COLLECTIONS.VIOLATION_RULES),
+            ]);
+
+          if (remoteClasses.length > 0) setClasses(remoteClasses);
+          if (remoteWali.length > 0) setWaliKelasList(remoteWali);
+          if (remoteStudents.length > 0) setStudents(remoteStudents);
+          if (remoteAttendance.length > 0) setAttendanceRecords(remoteAttendance);
+          if (remoteDiscipline.length > 0) setDisciplineRecords(remoteDiscipline);
+          if (remoteRules.length > 0) setViolationRules(remoteRules);
+        } catch (e) {
+          console.warn('Initial sync from Firestore failed, fallback to local data:', e);
+        }
+      } else {
+        setIsFirebaseConnected(false);
+      }
+    };
+
+    checkAndSyncFirestore();
+  }, []);
+
   // Tab navigation handler with real-time date sync for attendance
   const handleSelectTab = (tab: NavTab) => {
     if (tab === 'attendance') {
@@ -203,10 +252,12 @@ export default function App() {
   // User Management handlers (Multi-Role: Admin, Wali Kelas, Guru, Tendik)
   const handleAddUser = (newUser: AdminUser) => {
     setUsers((prev) => [newUser, ...prev]);
+    saveDocument(COLLECTIONS.USERS, newUser).catch(() => {});
   };
 
   const handleUpdateUser = (updated: AdminUser) => {
     setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)));
+    saveDocument(COLLECTIONS.USERS, updated).catch(() => {});
     if (currentUser?.id === updated.id) {
       setCurrentUser(updated);
     }
@@ -214,6 +265,7 @@ export default function App() {
 
   const handleDeleteUser = (userId: string) => {
     setUsers((prev) => prev.filter((u) => u.id !== userId));
+    deleteDocument(COLLECTIONS.USERS, userId).catch(() => {});
   };
 
   const handleSwitchUser = (targetUser: AdminUser) => {
@@ -223,14 +275,17 @@ export default function App() {
   // Violation Rules management handlers
   const handleAddViolationRule = (newRule: ViolationRule) => {
     setViolationRules((prev) => [newRule, ...prev]);
+    saveDocument(COLLECTIONS.VIOLATION_RULES, newRule).catch(() => {});
   };
 
   const handleEditViolationRule = (updated: ViolationRule) => {
     setViolationRules((prev) => prev.map((r) => (r.id === updated.id ? updated : r)));
+    saveDocument(COLLECTIONS.VIOLATION_RULES, updated).catch(() => {});
   };
 
   const handleDeleteViolationRule = (ruleId: string) => {
     setViolationRules((prev) => prev.filter((r) => r.id !== ruleId));
+    deleteDocument(COLLECTIONS.VIOLATION_RULES, ruleId).catch(() => {});
   };
 
   const handleResetViolationRules = () => {
@@ -240,6 +295,7 @@ export default function App() {
   // Class management handlers
   const handleUpdateClass = (updated: RombelClass) => {
     setClasses((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
+    saveDocument(COLLECTIONS.CLASSES, updated).catch(() => {});
     setWaliKelasList((prev) =>
       prev.map((w) => (w.className === updated.name ? { ...w, name: updated.homeroom } : w))
     );
@@ -247,11 +303,13 @@ export default function App() {
 
   const handleAddClass = (newClass: RombelClass) => {
     setClasses((prev) => [...prev, newClass]);
+    saveDocument(COLLECTIONS.CLASSES, newClass).catch(() => {});
   };
 
   // Wali Kelas management handlers
   const handleUpdateWaliKelas = (updated: WaliKelasTeacher) => {
     setWaliKelasList((prev) => prev.map((w) => (w.id === updated.id ? updated : w)));
+    saveDocument(COLLECTIONS.WALI_KELAS, updated).catch(() => {});
     setClasses((prev) =>
       prev.map((c) => (c.name === updated.className ? { ...c, homeroom: updated.name } : c))
     );
@@ -259,6 +317,7 @@ export default function App() {
 
   const handleAddWaliKelas = (newTeacher: WaliKelasTeacher) => {
     setWaliKelasList((prev) => [...prev, newTeacher]);
+    saveDocument(COLLECTIONS.WALI_KELAS, newTeacher).catch(() => {});
   };
 
   // Navigate to Data Siswa with pre-filtered class
@@ -276,18 +335,26 @@ export default function App() {
       });
       return Array.from(updatedMap.values());
     });
+    // Sync to Firestore in background
+    saveAttendanceBatch(updatedRecords).catch((e) => {
+      console.warn('Background attendance sync to Firestore failed:', e);
+    });
   };
 
   // Add new discipline record
   const handleAddDisciplineRecord = (newRecord: DisciplineRecord) => {
     setDisciplineRecords((prev) => [newRecord, ...prev]);
+    saveDisciplineRecord(newRecord).catch(() => {});
   };
 
   // Update discipline record status
   const handleUpdateDisciplineStatus = (id: string, status: DisciplineStatus) => {
-    setDisciplineRecords((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, status } : r))
-    );
+    setDisciplineRecords((prev) => {
+      const updated = prev.map((r) => (r.id === id ? { ...r, status } : r));
+      const target = updated.find((r) => r.id === id);
+      if (target) saveDisciplineRecord(target).catch(() => {});
+      return updated;
+    });
   };
 
   // Update full discipline record (including coaching)
@@ -295,16 +362,19 @@ export default function App() {
     setDisciplineRecords((prev) =>
       prev.map((r) => (r.id === updatedRecord.id ? updatedRecord : r))
     );
+    saveDisciplineRecord(updatedRecord).catch(() => {});
   };
 
   // Delete discipline record
   const handleDeleteDisciplineRecord = (id: string) => {
     setDisciplineRecords((prev) => prev.filter((r) => r.id !== id));
+    deleteDisciplineFromDb(id).catch(() => {});
   };
 
   // Add new student
   const handleAddStudent = (newStudent: Student) => {
     setStudents((prev) => [...prev, newStudent]);
+    saveStudent(newStudent).catch(() => {});
   };
 
   // Update existing student
@@ -312,6 +382,7 @@ export default function App() {
     setStudents((prev) =>
       prev.map((s) => (s.id === updatedStudent.id ? updatedStudent : s))
     );
+    saveStudent(updatedStudent).catch(() => {});
   };
 
   // Quick jump from attendance to discipline
@@ -356,6 +427,8 @@ export default function App() {
         onLogout={handleLogout}
         onToggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         todayStr={getTodayIndonesian()}
+        isFirebaseConnected={isFirebaseConnected}
+        onOpenFirebaseModal={() => setIsFirebaseModalOpen(true)}
       />
 
       <div className="flex-1 flex">
@@ -527,6 +600,31 @@ export default function App() {
           )}
         </main>
       </div>
+
+      {/* Firebase Cloud Firestore Modal */}
+      <FirebaseConfigModal
+        isOpen={isFirebaseModalOpen}
+        onClose={() => {
+          setIsFirebaseModalOpen(false);
+          setIsFirebaseConnected(isFirebaseConfigured());
+        }}
+        students={students}
+        classes={classes}
+        waliKelasList={waliKelasList}
+        attendanceRecords={attendanceRecords}
+        disciplineRecords={disciplineRecords}
+        violationRules={violationRules}
+        users={users}
+        onDataSynced={(synced) => {
+          if (synced.students) setStudents(synced.students);
+          if (synced.classes) setClasses(synced.classes);
+          if (synced.waliKelasList) setWaliKelasList(synced.waliKelasList);
+          if (synced.attendanceRecords) setAttendanceRecords(synced.attendanceRecords);
+          if (synced.disciplineRecords) setDisciplineRecords(synced.disciplineRecords);
+          if (synced.violationRules) setViolationRules(synced.violationRules);
+          setIsFirebaseConnected(true);
+        }}
+      />
     </div>
   );
 }
