@@ -12,7 +12,17 @@ export interface FirebaseConfig {
   measurementId?: string;
 }
 
-// Get config from Environment Variables or LocalStorage (for UI runtime setup)
+export const DEFAULT_FIREBASE_CONFIG: FirebaseConfig = {
+  apiKey: "AIzaSyBIhWVw1Nqiqgq6ql4HFJGJKD3XwbGfO40",
+  authDomain: "dispos-smaba.firebaseapp.com",
+  projectId: "dispos-smaba",
+  storageBucket: "dispos-smaba.firebasestorage.app",
+  messagingSenderId: "43429773631",
+  appId: "1:43429773631:web:dcea5aaa09f8b85f7ad38a",
+  measurementId: "G-RDYCXBJERT"
+};
+
+// Get config from Environment Variables, LocalStorage or Default Config
 export const getFirebaseConfig = (): FirebaseConfig | null => {
   // Check localStorage override first (enables setup from Web UI directly)
   try {
@@ -27,22 +37,22 @@ export const getFirebaseConfig = (): FirebaseConfig | null => {
     console.warn('Failed to parse custom firebase config from localStorage', e);
   }
 
-  // Fallback to Vite env variables
+  // Vite env variables with fallback to default project dispos-smaba
   const envConfig: FirebaseConfig = {
-    apiKey: import.meta.env.VITE_FIREBASE_API_KEY || '',
-    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || '',
-    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || '',
-    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || '',
-    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '',
-    appId: import.meta.env.VITE_FIREBASE_APP_ID || '',
-    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || '',
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY || DEFAULT_FIREBASE_CONFIG.apiKey,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || DEFAULT_FIREBASE_CONFIG.authDomain,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || DEFAULT_FIREBASE_CONFIG.projectId,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || DEFAULT_FIREBASE_CONFIG.storageBucket,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || DEFAULT_FIREBASE_CONFIG.messagingSenderId,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID || DEFAULT_FIREBASE_CONFIG.appId,
+    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || DEFAULT_FIREBASE_CONFIG.measurementId,
   };
 
   if (envConfig.apiKey && envConfig.projectId && envConfig.apiKey !== 'YOUR_API_KEY') {
     return envConfig;
   }
 
-  return null;
+  return DEFAULT_FIREBASE_CONFIG;
 };
 
 export const isFirebaseConfigured = (): boolean => {
