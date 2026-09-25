@@ -306,6 +306,11 @@ export default function App() {
     saveDocument(COLLECTIONS.CLASSES, newClass).catch(() => {});
   };
 
+  const handleDeleteClass = (classId: string) => {
+    setClasses((prev) => prev.filter((c) => c.id !== classId));
+    deleteDocument(COLLECTIONS.CLASSES, classId).catch(() => {});
+  };
+
   // Wali Kelas management handlers
   const handleUpdateWaliKelas = (updated: WaliKelasTeacher) => {
     setWaliKelasList((prev) => prev.map((w) => (w.id === updated.id ? updated : w)));
@@ -318,6 +323,11 @@ export default function App() {
   const handleAddWaliKelas = (newTeacher: WaliKelasTeacher) => {
     setWaliKelasList((prev) => [...prev, newTeacher]);
     saveDocument(COLLECTIONS.WALI_KELAS, newTeacher).catch(() => {});
+  };
+
+  const handleDeleteWaliKelas = (teacherId: string) => {
+    setWaliKelasList((prev) => prev.filter((w) => w.id !== teacherId));
+    deleteDocument(COLLECTIONS.WALI_KELAS, teacherId).catch(() => {});
   };
 
   // Navigate to Data Siswa with pre-filtered class
@@ -383,6 +393,12 @@ export default function App() {
       prev.map((s) => (s.id === updatedStudent.id ? updatedStudent : s))
     );
     saveStudent(updatedStudent).catch(() => {});
+  };
+
+  // Delete student
+  const handleDeleteStudent = (studentId: string) => {
+    setStudents((prev) => prev.filter((s) => s.id !== studentId));
+    deleteDocument(COLLECTIONS.STUDENTS, studentId).catch(() => {});
   };
 
   // Quick jump from attendance to discipline
@@ -562,6 +578,7 @@ export default function App() {
               attendanceRecords={attendanceRecords}
               onAddStudent={handleAddStudent}
               onUpdateStudent={handleUpdateStudent}
+              onDeleteStudent={handleDeleteStudent}
               initialClassFilter={selectedClassForStudentView}
             />
           )}
@@ -572,6 +589,7 @@ export default function App() {
               students={students}
               onUpdateClass={handleUpdateClass}
               onAddClass={handleAddClass}
+              onDeleteClass={handleDeleteClass}
               onViewClassStudents={handleViewClassStudents}
             />
           )}
@@ -583,6 +601,7 @@ export default function App() {
               students={students}
               onUpdateWaliKelas={handleUpdateWaliKelas}
               onAddWaliKelas={handleAddWaliKelas}
+              onDeleteWaliKelas={handleDeleteWaliKelas}
               onViewClassStudents={handleViewClassStudents}
             />
           )}

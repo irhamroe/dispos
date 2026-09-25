@@ -7,6 +7,7 @@ import {
   UserCheck, 
   GraduationCap, 
   Edit3, 
+  Trash2,
   Plus, 
   Eye, 
   CheckCircle2, 
@@ -22,6 +23,7 @@ interface DataKelasViewProps {
   students: Student[];
   onUpdateClass: (updated: RombelClass) => void;
   onAddClass?: (newClass: RombelClass) => void;
+  onDeleteClass?: (classId: string) => void;
   onViewClassStudents: (className: string) => void;
 }
 
@@ -30,6 +32,7 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
   students,
   onUpdateClass,
   onAddClass,
+  onDeleteClass,
   onViewClassStudents,
 }) => {
   const [selectedGrade, setSelectedGrade] = useState<'ALL' | 'X' | 'XI' | 'XII'>('ALL');
@@ -99,6 +102,20 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
     };
     onUpdateClass(updated);
     setEditingClass(null);
+  };
+
+  const handleDeleteClass = (cls: RombelClass) => {
+    const studentCount = classStats[cls.name]?.total || 0;
+    const msg =
+      studentCount > 0
+        ? `Rombel "${cls.name}" masih memiliki ${studentCount} siswa terdaftar. Apakah Anda yakin ingin menghapus kelas ini?`
+        : `Apakah Anda yakin ingin menghapus Rombel "${cls.name}"? Data yang dihapus tidak dapat dikembalikan.`;
+
+    if (confirm(msg)) {
+      if (onDeleteClass) {
+        onDeleteClass(cls.id);
+      }
+    }
   };
 
   const handleSaveNew = (e: React.FormEvent) => {
@@ -317,6 +334,17 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
                           >
                             <Edit3 className="w-3.5 h-3.5" />
                           </button>
+                          {onDeleteClass && (
+                            <button
+                              type="button"
+                              id={`btn-delete-class-${c.id}`}
+                              onClick={() => handleDeleteClass(c)}
+                              title="Hapus Rombel"
+                              className="p-1 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-700 rounded-md transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

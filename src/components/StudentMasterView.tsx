@@ -33,6 +33,7 @@ interface StudentMasterViewProps {
   attendanceRecords: AttendanceRecord[];
   onAddStudent: (student: Student) => void;
   onUpdateStudent?: (student: Student) => void;
+  onDeleteStudent?: (studentId: string) => void;
   initialClassFilter?: string;
 }
 
@@ -43,6 +44,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
   attendanceRecords,
   onAddStudent,
   onUpdateStudent,
+  onDeleteStudent,
   initialClassFilter,
 }) => {
   const [selectedClass, setSelectedClass] = useState(initialClassFilter || 'ALL');
@@ -211,6 +213,14 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
       onUpdateStudent(updatedStudent);
     }
     setEditingStudent(null);
+  };
+
+  const handleDeleteStudent = (student: Student) => {
+    if (confirm(`Apakah Anda yakin ingin menghapus data siswa "${student.name}" (NISN: ${student.nisn}) dari rombel ${student.className}? Data yang dihapus tidak dapat dikembalikan.`)) {
+      if (onDeleteStudent) {
+        onDeleteStudent(student.id);
+      }
+    }
   };
 
   // Filter students based on grade, class, search, and photo status
@@ -559,6 +569,16 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                           >
                             <Edit3 className="w-3.5 h-3.5" />
                           </button>
+                          {onDeleteStudent && (
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteStudent(s)}
+                              className="p-1.5 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-600 transition-colors cursor-pointer"
+                              title="Hapus Data Siswa"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

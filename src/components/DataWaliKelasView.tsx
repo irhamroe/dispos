@@ -5,6 +5,7 @@ import {
   Phone, 
   Mail, 
   Edit3, 
+  Trash2,
   Plus, 
   Eye, 
   X, 
@@ -23,6 +24,7 @@ interface DataWaliKelasViewProps {
   students: Student[];
   onUpdateWaliKelas: (updated: WaliKelasTeacher) => void;
   onAddWaliKelas?: (newTeacher: WaliKelasTeacher) => void;
+  onDeleteWaliKelas?: (teacherId: string) => void;
   onViewClassStudents: (className: string) => void;
 }
 
@@ -32,6 +34,7 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
   students,
   onUpdateWaliKelas,
   onAddWaliKelas,
+  onDeleteWaliKelas,
   onViewClassStudents,
 }) => {
   const [selectedGrade, setSelectedGrade] = useState<'ALL' | 'X' | 'XI' | 'XII'>('ALL');
@@ -108,6 +111,18 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
     };
     onUpdateWaliKelas(updated);
     setEditingTeacher(null);
+  };
+
+  const handleDeleteWaliKelas = (teacher: WaliKelasTeacher) => {
+    if (
+      confirm(
+        `Apakah Anda yakin ingin menghapus data wali kelas "${teacher.name}" (Wali ${teacher.className})? Data yang dihapus tidak dapat dikembalikan.`
+      )
+    ) {
+      if (onDeleteWaliKelas) {
+        onDeleteWaliKelas(teacher.id);
+      }
+    }
   };
 
   const handleSaveNew = (e: React.FormEvent) => {
@@ -373,6 +388,17 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
                           >
                             <Edit3 className="w-3.5 h-3.5" />
                           </button>
+                          {onDeleteWaliKelas && (
+                            <button
+                              type="button"
+                              id={`btn-delete-wali-${t.id}`}
+                              onClick={() => handleDeleteWaliKelas(t)}
+                              title="Hapus Wali Kelas"
+                              className="p-1 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-700 rounded-md transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>
