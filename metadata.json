@@ -1,0 +1,6 @@
+{
+  "name": "Sistem Absensi & Disiplin Siswa",
+  "description": "Aplikasi presensi kehadiran siswa SMAN 1 Batu untuk 36 rombel (~1.300 siswa) dengan kode H, I, S, A, D, konfirmasi surat izin/sakit, statistik harian, rekapitulasi rentang tanggal, dan ekspor Excel & PDF.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
