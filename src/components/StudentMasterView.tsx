@@ -410,6 +410,9 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
             <thead>
               <tr className="bg-slate-100 border-b border-slate-300 text-[11px] font-bold uppercase tracking-wider text-slate-700 divide-x divide-slate-300">
                 <th className="py-3 px-2 w-10 text-center">No</th>
+                <th className="py-3 px-3 w-28 text-center bg-teal-50 text-teal-900 border-x-2 border-teal-200">
+                  Aksi
+                </th>
                 <th className="py-3 px-2 w-14 text-center">Foto</th>
                 <th className="py-3 px-3 w-28">NISN</th>
                 <th className="py-3 px-3 min-w-[160px]">Nama Lengkap</th>
@@ -419,9 +422,6 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                 <th className="py-3 px-3 min-w-[180px]">Alamat Domisili</th>
                 <th className="py-3 px-3 min-w-[120px]">Kontak Orang Tua</th>
                 <th className="py-3 px-2 text-center w-20">Status</th>
-                <th className="py-3 px-2 text-center w-28 sticky right-0 bg-slate-100 shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.1)] z-10 border-l border-slate-300">
-                  Aksi
-                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-300 text-xs">
@@ -441,6 +441,38 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                       {/* No */}
                       <td className="py-3 px-3 text-center text-slate-400 font-medium">
                         {globalIdx}
+                      </td>
+
+                      {/* Aksi: Edit, Hapus & Detail */}
+                      <td className="py-3 px-2 text-center bg-teal-50/40 border-x-2 border-teal-100">
+                        <div className="flex items-center justify-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => setViewingStudent(s)}
+                            className="p-1.5 rounded-lg bg-white hover:bg-teal-50 hover:text-teal-700 text-slate-600 border border-slate-200 shadow-2xs transition-colors cursor-pointer"
+                            title="Lihat Detail Profil Siswa"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleOpenEdit(s)}
+                            className="p-1.5 rounded-lg bg-white hover:bg-amber-50 hover:text-amber-700 text-slate-600 border border-slate-200 shadow-2xs transition-colors cursor-pointer"
+                            title="Edit Data, Alamat & Foto Siswa"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+                          {onDeleteStudent && (
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteStudent(s)}
+                              className="p-1.5 rounded-lg bg-white hover:bg-rose-50 hover:text-rose-700 text-rose-600 border border-rose-200 shadow-2xs transition-colors cursor-pointer"
+                              title="Hapus Data Siswa"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
                       </td>
 
                       {/* Foto Siswa */}
@@ -550,38 +582,6 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 text-teal-700 border border-teal-200">
                           {s.status}
                         </span>
-                      </td>
-
-                      {/* Aksi: Edit & Detail */}
-                      <td className="py-3 px-2 text-center sticky right-0 bg-white shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.08)] z-10 border-l border-slate-300">
-                        <div className="flex items-center justify-center gap-1.5">
-                          <button
-                            type="button"
-                            onClick={() => setViewingStudent(s)}
-                            className="p-1.5 rounded-lg bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-600 transition-colors"
-                            title="Lihat Detail Profil Siswa"
-                          >
-                            <Eye className="w-3.5 h-3.5" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleOpenEdit(s)}
-                            className="p-1.5 rounded-lg bg-slate-100 hover:bg-amber-50 hover:text-amber-700 text-slate-600 transition-colors"
-                            title="Edit Data, Alamat & Foto Siswa"
-                          >
-                            <Edit3 className="w-3.5 h-3.5" />
-                          </button>
-                          {onDeleteStudent && (
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteStudent(s)}
-                              className="p-1.5 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-600 transition-colors cursor-pointer"
-                              title="Hapus Data Siswa"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          )}
-                        </div>
                       </td>
                     </tr>
                   );
