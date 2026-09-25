@@ -32,6 +32,8 @@ import { FirebaseConfigModal } from './components/FirebaseConfigModal';
 import { isFirebaseConfigured } from './services/firebase';
 import {
   fetchAllDocuments,
+  subscribeToCollection,
+  batchSaveDocuments,
   saveDocument,
   deleteDocument,
   saveAttendanceBatch,
@@ -157,37 +159,106 @@ export default function App() {
   const [isFirebaseModalOpen, setIsFirebaseModalOpen] = useState(false);
   const [isFirebaseConnected, setIsFirebaseConnected] = useState(() => isFirebaseConfigured());
 
-  // Automatic initial data pull from Firestore if configured
+  // Real-time Cloud Firestore Subscriptions & Auto-Sync (Instant cross-device sync between HP & Laptop)
   useEffect(() => {
-    const checkAndSyncFirestore = async () => {
-      if (isFirebaseConfigured()) {
-        setIsFirebaseConnected(true);
-        try {
-          const [remoteClasses, remoteWali, remoteStudents, remoteAttendance, remoteDiscipline, remoteRules] =
-            await Promise.all([
-              fetchAllDocuments<RombelClass>(COLLECTIONS.CLASSES),
-              fetchAllDocuments<WaliKelasTeacher>(COLLECTIONS.WALI_KELAS),
-              fetchAllDocuments<Student>(COLLECTIONS.STUDENTS),
-              fetchAllDocuments<AttendanceRecord>(COLLECTIONS.ATTENDANCE),
-              fetchAllDocuments<DisciplineRecord>(COLLECTIONS.DISCIPLINE),
-              fetchAllDocuments<ViolationRule>(COLLECTIONS.VIOLATION_RULES),
-            ]);
+    if (!isFirebaseConfigured()) {
+      setIsFirebaseConnected(false);
+      return;
+    }
 
-          if (remoteClasses.length > 0) setClasses(remoteClasses);
-          if (remoteWali.length > 0) setWaliKelasList(remoteWali);
-          if (remoteStudents.length > 0) setStudents(remoteStudents);
-          if (remoteAttendance.length > 0) setAttendanceRecords(remoteAttendance);
-          if (remoteDiscipline.length > 0) setDisciplineRecords(remoteDiscipline);
-          if (remoteRules.length > 0) setViolationRules(remoteRules);
-        } catch (e) {
-          console.warn('Initial sync from Firestore failed, fallback to local data:', e);
+    setIsFirebaseConnected(true);
+
+    // Initial check: if Firestore is clean/empty, seed initial master data
+    const checkAndSeedOnline = async () => {
+      try {
+        const [remoteStudents, remoteClasses, remoteWali, remoteRules, remoteUsers] = await Promise.all([
+          fetchAllDocuments<Student>(COLLECTIONS.STUDENTS),
+          fetchAllDocuments<RombelClass>(COLLECTIONS.CLASSES),
+          fetchAllDocuments<WaliKelasTeacher>(COLLECTIONS.WALI_KELAS),
+          fetchAllDocuments<ViolationRule>(COLLECTIONS.VIOLATION_RULES),
+          fetchAllDocuments<AdminUser>(COLLECTIONS.USERS),
+        ]);
+
+        if (remoteStudents.length === 0) {
+          batchSaveDocuments(COLLECTIONS.STUDENTS, initialStudents).catch(() => {});
         }
-      } else {
-        setIsFirebaseConnected(false);
+        if (remoteClasses.length === 0) {
+          batchSaveDocuments(COLLECTIONS.CLASSES, initialClasses).catch(() => {});
+        }
+        if (remoteWali.length === 0) {
+          batchSaveDocuments(COLLECTIONS.WALI_KELAS, initialWaliKelas).catch(() => {});
+        }
+        if (remoteRules.length === 0) {
+          batchSaveDocuments(COLLECTIONS.VIOLATION_RULES, sampleViolationCatalog).catch(() => {});
+        }
+        if (remoteUsers.length === 0) {
+          batchSaveDocuments(COLLECTIONS.USERS, initialUsers).catch(() => {});
+        }
+      } catch (e) {
+        console.warn('Auto-seed check failed:', e);
       }
     };
 
-    checkAndSyncFirestore();
+    checkAndSeedOnline();
+
+    // 1. Realtime Students subscription (HP <-> Laptop sync)
+    const unsubStudents = subscribeToCollection<Student>(COLLECTIONS.STUDENTS, (data) => {
+      if (data && data.length > 0) {
+        setStudents(data);
+      }
+    });
+
+    // 2. Realtime Classes subscription
+    const unsubClasses = subscribeToCollection<RombelClass>(COLLECTIONS.CLASSES, (data) => {
+      if (data && data.length > 0) {
+        setClasses(data);
+      }
+    });
+
+    // 3. Realtime Wali Kelas subscription
+    const unsubWali = subscribeToCollection<WaliKelasTeacher>(COLLECTIONS.WALI_KELAS, (data) => {
+      if (data && data.length > 0) {
+        setWaliKelasList(data);
+      }
+    });
+
+    // 4. Realtime Attendance subscription (Instant live attendance sync)
+    const unsubAttendance = subscribeToCollection<AttendanceRecord>(COLLECTIONS.ATTENDANCE, (data) => {
+      if (data && data.length > 0) {
+        setAttendanceRecords(data);
+      }
+    });
+
+    // 5. Realtime Discipline & Pelanggaran subscription
+    const unsubDiscipline = subscribeToCollection<DisciplineRecord>(COLLECTIONS.DISCIPLINE, (data) => {
+      if (data) {
+        setDisciplineRecords(data);
+      }
+    });
+
+    // 6. Realtime Violation Rules subscription
+    const unsubRules = subscribeToCollection<ViolationRule>(COLLECTIONS.VIOLATION_RULES, (data) => {
+      if (data && data.length > 0) {
+        setViolationRules(data);
+      }
+    });
+
+    // 7. Realtime Users subscription
+    const unsubUsers = subscribeToCollection<AdminUser>(COLLECTIONS.USERS, (data) => {
+      if (data && data.length > 0) {
+        setUsers(data);
+      }
+    });
+
+    return () => {
+      if (unsubStudents) unsubStudents();
+      if (unsubClasses) unsubClasses();
+      if (unsubWali) unsubWali();
+      if (unsubAttendance) unsubAttendance();
+      if (unsubDiscipline) unsubDiscipline();
+      if (unsubRules) unsubRules();
+      if (unsubUsers) unsubUsers();
+    };
   }, []);
 
   // Tab navigation handler with real-time date sync for attendance
