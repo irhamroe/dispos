@@ -75,16 +75,16 @@ export const Navbar: React.FC<NavbarProps> = ({
               type="button"
               id="navbar-firebase-btn"
               onClick={onOpenFirebaseModal}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer shadow-xs ${
                 isFirebaseConnected
-                  ? 'bg-emerald-50 border-emerald-300 text-emerald-800 hover:bg-emerald-100 shadow-2xs'
-                  : 'bg-amber-50 border-amber-300 text-amber-800 hover:bg-amber-100'
+                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-400/30'
+                  : 'bg-amber-500 hover:bg-amber-600 text-white border border-amber-400/30 animate-pulse'
               }`}
               title={isFirebaseConnected ? 'Firebase Cloud Firestore Terhubung' : 'Klik untuk hubungkan database Firebase'}
             >
-              <div className={`w-2 h-2 rounded-full ${isFirebaseConnected ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
+              <span className={`w-2 h-2 rounded-full ${isFirebaseConnected ? 'bg-emerald-200 animate-ping' : 'bg-white'}`} />
               <Database className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">
+              <span>
                 {isFirebaseConnected ? 'Firebase Aktif' : 'Hubungkan Firebase'}
               </span>
             </button>
