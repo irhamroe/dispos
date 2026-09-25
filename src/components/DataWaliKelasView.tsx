@@ -277,7 +277,7 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
                 <th className="py-3 px-4 min-w-[170px]">Kontak WhatsApp</th>
                 <th className="py-3 px-4 min-w-[190px]">Email Dinas</th>
                 <th className="py-3 px-3 text-center w-24">Kepegawaian</th>
-                <th className="py-3 px-3 text-center w-32">Aksi</th>
+                <th className="py-3 px-3 text-center w-32 sticky right-0 bg-slate-100 shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.1)] z-10 border-l border-slate-300">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-300 text-xs">
@@ -367,7 +367,7 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
                           {t.status}
                         </span>
                       </td>
-                      <td className="py-3 px-3 text-center">
+                      <td className="py-3 px-3 text-center sticky right-0 bg-white shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.08)] z-10 border-l border-slate-300">
                         <div className="flex items-center justify-center gap-1.5">
                           <button
                             type="button"

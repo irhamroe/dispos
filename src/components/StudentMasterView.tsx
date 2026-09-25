@@ -409,17 +409,19 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
           <table className="w-full text-left border-collapse border border-slate-300">
             <thead>
               <tr className="bg-slate-100 border-b border-slate-300 text-[11px] font-bold uppercase tracking-wider text-slate-700 divide-x divide-slate-300">
-                <th className="py-3 px-3 w-10 text-center">No</th>
-                <th className="py-3 px-3 w-16 text-center">Foto</th>
-                <th className="py-3 px-4 w-28">NISN</th>
-                <th className="py-3 px-4 min-w-[180px]">Nama Lengkap</th>
-                <th className="py-3 px-3 text-center w-20">Kelas</th>
-                <th className="py-3 px-3 text-center w-14">L/P</th>
-                <th className="py-3 px-3 min-w-[140px]">No. HP Siswa</th>
-                <th className="py-3 px-4 min-w-[220px]">Alamat Domisili</th>
-                <th className="py-3 px-3 min-w-[140px]">Kontak Orang Tua</th>
-                <th className="py-3 px-3 text-center w-20">Status</th>
-                <th className="py-3 px-3 text-center w-24">Aksi</th>
+                <th className="py-3 px-2 w-10 text-center">No</th>
+                <th className="py-3 px-2 w-14 text-center">Foto</th>
+                <th className="py-3 px-3 w-28">NISN</th>
+                <th className="py-3 px-3 min-w-[160px]">Nama Lengkap</th>
+                <th className="py-3 px-2 text-center w-16">Kelas</th>
+                <th className="py-3 px-2 text-center w-12">L/P</th>
+                <th className="py-3 px-3 min-w-[120px]">No. HP Siswa</th>
+                <th className="py-3 px-3 min-w-[180px]">Alamat Domisili</th>
+                <th className="py-3 px-3 min-w-[120px]">Kontak Orang Tua</th>
+                <th className="py-3 px-2 text-center w-20">Status</th>
+                <th className="py-3 px-2 text-center w-28 sticky right-0 bg-slate-100 shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.1)] z-10 border-l border-slate-300">
+                  Aksi
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-300 text-xs">
@@ -551,7 +553,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                       </td>
 
                       {/* Aksi: Edit & Detail */}
-                      <td className="py-3 px-3 text-center">
+                      <td className="py-3 px-2 text-center sticky right-0 bg-white shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.08)] z-10 border-l border-slate-300">
                         <div className="flex items-center justify-center gap-1.5">
                           <button
                             type="button"

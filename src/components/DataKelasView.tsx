@@ -260,7 +260,7 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
                 <th className="py-3 px-3 text-center w-28">Jumlah Siswa</th>
                 <th className="py-3 px-3 text-center w-24">Rasio L/P</th>
                 <th className="py-3 px-3 text-center w-24">Status</th>
-                <th className="py-3 px-3 text-center w-36">Aksi</th>
+                <th className="py-3 px-3 text-center w-36 sticky right-0 bg-slate-100 shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.1)] z-10 border-l border-slate-300">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-300 text-xs">
@@ -313,7 +313,7 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
                           Aktif
                         </span>
                       </td>
-                      <td className="py-3 px-3 text-center">
+                      <td className="py-3 px-3 text-center sticky right-0 bg-white shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.08)] z-10 border-l border-slate-300">
                         <div className="flex items-center justify-center gap-1.5">
                           <button
                             type="button"
