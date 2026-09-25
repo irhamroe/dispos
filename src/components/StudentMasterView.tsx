@@ -409,25 +409,19 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
           <table className="w-full text-left border-collapse border border-slate-300">
             <thead>
               <tr className="bg-slate-100 border-b border-slate-300 text-[11px] font-bold uppercase tracking-wider text-slate-700 divide-x divide-slate-300">
-                <th className="py-3 px-2 w-10 text-center">No</th>
-                <th className="py-3 px-2 w-14 text-center">Foto</th>
-                <th className="py-3 px-3 w-28">NISN</th>
-                <th className="py-3 px-3 min-w-[160px]">Nama Lengkap</th>
-                <th className="py-3 px-2 text-center w-16">Kelas</th>
-                <th className="py-3 px-2 text-center w-12">L/P</th>
-                <th className="py-3 px-3 min-w-[120px]">No. HP Siswa</th>
-                <th className="py-3 px-3 min-w-[180px]">Alamat Domisili</th>
-                <th className="py-3 px-3 min-w-[120px]">Kontak Orang Tua</th>
-                <th className="py-3 px-2 text-center w-20">Status</th>
-                <th className="py-3 px-3 w-28 text-center bg-slate-100">
-                  Aksi
-                </th>
+                <th className="py-2.5 px-2 w-10 text-center">No</th>
+                <th className="py-2.5 px-3 min-w-[200px]">Profil &amp; Identitas Siswa</th>
+                <th className="py-2.5 px-2 text-center w-20">Kelas</th>
+                <th className="py-2.5 px-3 min-w-[150px]">Kontak (Siswa / Ortu)</th>
+                <th className="py-2.5 px-3 min-w-[160px]">Alamat Domisili</th>
+                <th className="py-2.5 px-2 text-center w-16">Status</th>
+                <th className="py-2.5 px-2 w-24 text-center bg-slate-100">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-300 text-xs">
               {paginatedStudents.length === 0 ? (
                 <tr>
-                  <td colSpan={11} className="py-10 text-center text-slate-400">
+                  <td colSpan={7} className="py-10 text-center text-slate-400">
                     <AlertCircle className="w-6 h-6 mx-auto mb-1 text-slate-300" />
                     Tidak ditemukan data siswa sesuai kriteria filter.
                   </td>
@@ -439,122 +433,116 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                   return (
                     <tr key={s.id} className="divide-x divide-slate-300 hover:bg-slate-50 transition-colors">
                       {/* No */}
-                      <td className="py-3 px-3 text-center text-slate-400 font-medium">
+                      <td className="py-2.5 px-2 text-center text-slate-500 font-medium">
                         {globalIdx}
                       </td>
 
-                      {/* Foto Siswa */}
-                      <td className="py-2 px-2 text-center">
-                        <div className="flex justify-center">
-                          {s.photoUrl ? (
-                            <button
-                              type="button"
-                              onClick={() => setZoomedPhoto({ url: s.photoUrl!, name: s.name })}
-                              className="relative group cursor-pointer"
-                              title="Klik untuk memperbesar foto"
-                            >
-                              <img
-                                src={s.photoUrl}
-                                alt={s.name}
-                                className="w-10 h-10 rounded-xl object-cover border border-slate-200 shadow-2xs group-hover:ring-2 group-hover:ring-teal-500 transition-all"
-                              />
-                              <div className="absolute inset-0 bg-slate-900/30 rounded-xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white">
-                                <Eye className="w-3.5 h-3.5" />
+                      {/* Profil & Identitas Siswa (Foto + Nama + NISN + Gender) */}
+                      <td className="py-2 px-3">
+                        <div className="flex items-center gap-2.5">
+                          {/* Foto Avatar */}
+                          <div className="shrink-0">
+                            {s.photoUrl ? (
+                              <button
+                                type="button"
+                                onClick={() => setZoomedPhoto({ url: s.photoUrl!, name: s.name })}
+                                className="relative group cursor-pointer block"
+                                title="Klik untuk memperbesar foto"
+                              >
+                                <img
+                                  src={s.photoUrl}
+                                  alt={s.name}
+                                  className="w-9 h-9 rounded-lg object-cover border border-slate-200 shadow-2xs group-hover:ring-2 group-hover:ring-teal-500 transition-all"
+                                />
+                                <div className="absolute inset-0 bg-slate-900/30 rounded-lg opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white">
+                                  <Eye className="w-3 h-3" />
+                                </div>
+                              </button>
+                            ) : (
+                              <div
+                                className={`w-9 h-9 rounded-lg border border-dashed flex items-center justify-center font-bold text-[11px] ${
+                                  s.gender === 'L'
+                                    ? 'bg-sky-50 text-sky-700 border-sky-200'
+                                    : 'bg-rose-50 text-rose-700 border-rose-200'
+                                }`}
+                                title="Belum ada foto profil"
+                              >
+                                {s.name.slice(0, 2).toUpperCase()}
                               </div>
-                            </button>
+                            )}
+                          </div>
+
+                          {/* Nama & Info Detail */}
+                          <div className="min-w-0 flex-1">
+                            <div className="font-bold text-slate-900 text-xs truncate leading-tight">
+                              {s.name}
+                            </div>
+                            <div className="flex items-center gap-1.5 mt-0.5 text-[10.5px] text-slate-500 font-mono">
+                              <span>NISN: {s.nisn}</span>
+                              <span className="text-slate-300">•</span>
+                              <span
+                                className={`px-1 rounded text-[9.5px] font-bold ${
+                                  s.gender === 'L'
+                                    ? 'bg-blue-100 text-blue-800'
+                                    : 'bg-pink-100 text-pink-800'
+                                }`}
+                              >
+                                {s.gender === 'L' ? 'L' : 'P'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Kelas */}
+                      <td className="py-2.5 px-2 text-center">
+                        <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-teal-50 text-teal-800 border border-teal-200">
+                          {s.className}
+                        </span>
+                      </td>
+
+                      {/* Kontak (HP Siswa & Ortu) */}
+                      <td className="py-2 px-3 text-slate-600">
+                        <div className="space-y-0.5">
+                          {s.phone ? (
+                            <div className="flex items-center gap-1 text-[11px]">
+                              <Phone className="w-3 h-3 text-emerald-600 shrink-0" />
+                              <span className="font-medium text-slate-800">{s.phone}</span>
+                            </div>
                           ) : (
-                            <div
-                              className={`w-10 h-10 rounded-xl border border-dashed flex items-center justify-center font-bold text-xs ${
-                                s.gender === 'L'
-                                  ? 'bg-sky-50 text-sky-700 border-sky-200'
-                                  : 'bg-rose-50 text-rose-700 border-rose-200'
-                              }`}
-                              title="Belum ada foto profil"
-                            >
-                              {s.name.slice(0, 2).toUpperCase()}
+                            <div className="text-[10px] text-slate-300 italic">No HP -</div>
+                          )}
+                          {s.parentPhone && (
+                            <div className="text-[10px] text-slate-500 flex items-center gap-1 font-mono">
+                              <span className="text-slate-400">Ortu:</span>
+                              <span>{s.parentPhone}</span>
                             </div>
                           )}
                         </div>
                       </td>
 
-                      {/* NISN */}
-                      <td className="py-3 px-4 font-mono text-[11px] text-slate-600 font-semibold">
-                        {s.nisn}
-                      </td>
-
-                      {/* Nama Lengkap */}
-                      <td className="py-3 px-4">
-                        <div className="font-bold text-slate-900">{s.name}</div>
-                      </td>
-
-                      {/* Kelas */}
-                      <td className="py-3 px-3 text-center">
-                        <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700">
-                          {s.className}
-                        </span>
-                      </td>
-
-                      {/* Gender */}
-                      <td className="py-3 px-3 text-center">
-                        <span
-                          className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold ${
-                            s.gender === 'L'
-                              ? 'bg-blue-50 text-blue-700'
-                              : 'bg-pink-50 text-pink-700'
-                          }`}
-                        >
-                          {s.gender}
-                        </span>
-                      </td>
-
-                      {/* No. HP Siswa */}
-                      <td className="py-3 px-3 text-slate-600">
-                        {s.phone ? (
-                          <div className="flex items-center gap-1.5 text-[11px]">
-                            <Phone className="w-3 h-3 text-teal-600 shrink-0" />
-                            <span>{s.phone}</span>
-                          </div>
-                        ) : (
-                          <span className="text-slate-300 italic text-[11px]">-</span>
-                        )}
-                      </td>
-
-                      {/* Alamat Siswa */}
-                      <td className="py-3 px-4 text-slate-600">
+                      {/* Alamat Domisili */}
+                      <td className="py-2 px-3 text-slate-600">
                         {s.address ? (
-                          <div className="flex items-start gap-1.5" title={s.address}>
-                            <MapPin className="w-3.5 h-3.5 text-teal-600 shrink-0 mt-0.5" />
-                            <span className="text-[11px] leading-snug line-clamp-2">
-                              {s.address}
-                            </span>
+                          <div className="flex items-start gap-1 text-[11px] leading-tight" title={s.address}>
+                            <MapPin className="w-3 h-3 text-teal-600 shrink-0 mt-0.5" />
+                            <span className="line-clamp-2">{s.address}</span>
                           </div>
                         ) : (
-                          <span className="text-slate-300 italic text-[11px]">Belum diisi</span>
-                        )}
-                      </td>
-
-                      {/* Kontak Orang Tua */}
-                      <td className="py-3 px-3 text-slate-600">
-                        {s.parentPhone ? (
-                          <div className="flex items-center gap-1.5 text-[11px]">
-                            <Phone className="w-3 h-3 text-teal-600 shrink-0" />
-                            <span>{s.parentPhone}</span>
-                          </div>
-                        ) : (
-                          <span className="text-slate-300 italic text-[11px]">-</span>
+                          <span className="text-slate-300 italic text-[10px]">-</span>
                         )}
                       </td>
 
                       {/* Status */}
-                      <td className="py-3 px-3 text-center">
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 text-teal-700 border border-teal-200">
+                      <td className="py-2.5 px-2 text-center">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                           {s.status}
                         </span>
                       </td>
 
                       {/* Aksi: Edit, Hapus & Detail */}
-                      <td className="py-3 px-2 text-center bg-slate-50/60">
-                        <div className="flex items-center justify-center gap-1.5">
+                      <td className="py-2 px-2 text-center bg-slate-50/60">
+                        <div className="flex items-center justify-center gap-1">
                           <button
                             type="button"
                             onClick={() => setViewingStudent(s)}
@@ -567,7 +555,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                             type="button"
                             onClick={() => handleOpenEdit(s)}
                             className="p-1.5 rounded-lg bg-white hover:bg-amber-50 hover:text-amber-700 text-slate-600 border border-slate-200 shadow-2xs transition-colors cursor-pointer"
-                            title="Edit Data, Alamat & Foto Siswa"
+                            title="Edit Data Siswa"
                           >
                             <Edit3 className="w-3.5 h-3.5" />
                           </button>
