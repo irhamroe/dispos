@@ -270,7 +270,6 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
             <thead>
               <tr className="bg-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-700 divide-x divide-slate-300 border-b border-slate-300">
                 <th className="py-3 px-3 w-12 text-center">No</th>
-                <th className="py-3 px-3 w-32 text-center bg-teal-50 text-teal-900 border-x-2 border-teal-200">Aksi</th>
                 <th className="py-3 px-4 min-w-[200px]">Nama Guru & NIP</th>
                 <th className="py-3 px-3 text-center w-24">Rombel</th>
                 <th className="py-3 px-3 text-center w-24">Tingkat</th>
@@ -278,6 +277,7 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
                 <th className="py-3 px-4 min-w-[170px]">Kontak WhatsApp</th>
                 <th className="py-3 px-4 min-w-[190px]">Email Dinas</th>
                 <th className="py-3 px-3 text-center w-24">Kepegawaian</th>
+                <th className="py-3 px-3 w-32 text-center bg-slate-100">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-300 text-xs">
@@ -300,40 +300,6 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
                     >
                       <td className="py-3 px-3 text-center font-semibold text-slate-600">
                         {idx + 1}
-                      </td>
-                      <td className="py-3 px-2 text-center bg-teal-50/40 border-x-2 border-teal-100">
-                        <div className="flex items-center justify-center gap-1.5">
-                          <button
-                            type="button"
-                            id={`btn-view-students-wali-${t.id}`}
-                            onClick={() => onViewClassStudents(t.className)}
-                            title="Lihat Daftar Siswa di Rombel Ini"
-                            className="px-2 py-1 bg-white hover:bg-teal-50 text-slate-700 hover:text-teal-700 rounded-md font-semibold text-[11px] flex items-center gap-1 border border-slate-200 shadow-2xs transition-colors cursor-pointer"
-                          >
-                            <Eye className="w-3 h-3" />
-                            <span>Siswa</span>
-                          </button>
-                          <button
-                            type="button"
-                            id={`btn-edit-wali-${t.id}`}
-                            onClick={() => handleOpenEdit(t)}
-                            title="Edit Data Wali Kelas"
-                            className="p-1 bg-white hover:bg-amber-50 text-slate-600 hover:text-amber-700 rounded-md border border-slate-200 shadow-2xs transition-colors cursor-pointer"
-                          >
-                            <Edit3 className="w-3.5 h-3.5" />
-                          </button>
-                          {onDeleteWaliKelas && (
-                            <button
-                              type="button"
-                              id={`btn-delete-wali-${t.id}`}
-                              onClick={() => handleDeleteWaliKelas(t)}
-                              title="Hapus Wali Kelas"
-                              className="p-1 bg-white hover:bg-rose-50 text-rose-600 hover:text-rose-700 rounded-md border border-rose-200 shadow-2xs transition-colors cursor-pointer"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          )}
-                        </div>
                       </td>
                       <td className="py-3 px-4">
                         <div className="font-bold text-slate-900 text-sm leading-tight">
@@ -400,6 +366,40 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
                         >
                           {t.status}
                         </span>
+                      </td>
+                      <td className="py-3 px-2 text-center bg-slate-50/60">
+                        <div className="flex items-center justify-center gap-1.5">
+                          <button
+                            type="button"
+                            id={`btn-view-students-wali-${t.id}`}
+                            onClick={() => onViewClassStudents(t.className)}
+                            title="Lihat Daftar Siswa di Rombel Ini"
+                            className="px-2 py-1 bg-white hover:bg-teal-50 text-slate-700 hover:text-teal-700 rounded-md font-semibold text-[11px] flex items-center gap-1 border border-slate-200 shadow-2xs transition-colors cursor-pointer"
+                          >
+                            <Eye className="w-3 h-3" />
+                            <span>Siswa</span>
+                          </button>
+                          <button
+                            type="button"
+                            id={`btn-edit-wali-${t.id}`}
+                            onClick={() => handleOpenEdit(t)}
+                            title="Edit Data Wali Kelas"
+                            className="p-1 bg-white hover:bg-amber-50 text-slate-600 hover:text-amber-700 rounded-md border border-slate-200 shadow-2xs transition-colors cursor-pointer"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+                          {onDeleteWaliKelas && (
+                            <button
+                              type="button"
+                              id={`btn-delete-wali-${t.id}`}
+                              onClick={() => handleDeleteWaliKelas(t)}
+                              title="Hapus Wali Kelas"
+                              className="p-1 bg-white hover:bg-rose-50 text-rose-600 hover:text-rose-700 rounded-md border border-rose-200 shadow-2xs transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   );
