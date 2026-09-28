@@ -21,7 +21,8 @@ import {
   ExternalLink,
   Sparkles,
   Home,
-  AlertCircle
+  AlertCircle,
+  RefreshCw
 } from 'lucide-react';
 import { Student, DisciplineRecord, AttendanceRecord } from '../types';
 import { RombelClass } from '../data/initialData';
@@ -34,6 +35,7 @@ interface StudentMasterViewProps {
   onAddStudent: (student: Student) => void;
   onUpdateStudent?: (student: Student) => void;
   onDeleteStudent?: (studentId: string) => void;
+  onResetToDefaultStudents?: () => Promise<void> | void;
   initialClassFilter?: string;
 }
 
@@ -45,8 +47,10 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
   onAddStudent,
   onUpdateStudent,
   onDeleteStudent,
+  onResetToDefaultStudents,
   initialClassFilter,
 }) => {
+  const [isSyncing, setIsSyncing] = useState(false);
   const [selectedClass, setSelectedClass] = useState(initialClassFilter || 'ALL');
   const [selectedGrade, setSelectedGrade] = useState<'ALL' | 'X' | 'XI' | 'XII'>(() => {
     if (initialClassFilter && initialClassFilter !== 'ALL') {
@@ -280,7 +284,33 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
+          {onResetToDefaultStudents && (
+            <button
+              type="button"
+              id="sync-official-students-btn"
+              disabled={isSyncing}
+              onClick={async () => {
+                if (confirm('Sinkronkan seluruh 1.274 data siswa resmi SMAN 1 Batu ke memori aplikasi dan database?')) {
+                  setIsSyncing(true);
+                  try {
+                    await onResetToDefaultStudents();
+                    alert('Berhasil mensinkronkan 1.274 data siswa resmi SMAN 1 Batu!');
+                  } catch (e) {
+                    console.error(e);
+                  } finally {
+                    setIsSyncing(false);
+                  }
+                }
+              }}
+              className="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all border border-slate-300 flex items-center gap-2 cursor-pointer disabled:opacity-50"
+              title="Perbarui & sinkronkan ulang seluruh data 1.274 siswa resmi SMAN 1 Batu"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 text-teal-600 ${isSyncing ? 'animate-spin' : ''}`} />
+              <span>{isSyncing ? 'Mensinkronkan...' : 'Sinkronkan Data Siswa Riil'}</span>
+            </button>
+          )}
+
           <button
             type="button"
             id="add-student-btn"

@@ -118,6 +118,32 @@ export const deleteDocument = async (collectionName: string, id: string): Promis
   }
 };
 
+export const deleteAllDocumentsInCollection = async (collectionName: string): Promise<boolean> => {
+  const db = getDb();
+  if (!db || !isFirebaseConfigured()) return false;
+
+  try {
+    const colRef = collection(db, collectionName);
+    const snap = await getDocs(colRef);
+    if (snap.empty) return true;
+
+    const CHUNK_SIZE = 400;
+    const docs = snap.docs;
+    for (let i = 0; i < docs.length; i += CHUNK_SIZE) {
+      const chunk = docs.slice(i, i + CHUNK_SIZE);
+      const batch = writeBatch(db);
+      for (const d of chunk) {
+        batch.delete(d.ref);
+      }
+      await batch.commit();
+    }
+    return true;
+  } catch (error) {
+    console.error(`Error deleting all docs in ${collectionName}:`, error);
+    return false;
+  }
+};
+
 // =======================
 // Batch Seed / Sync Helpers
 // =======================

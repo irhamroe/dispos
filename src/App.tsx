@@ -34,6 +34,7 @@ import {
   fetchAllDocuments,
   subscribeToCollection,
   batchSaveDocuments,
+  deleteAllDocumentsInCollection,
   saveDocument,
   deleteDocument,
   saveAttendanceBatch,
@@ -86,11 +87,16 @@ export default function App() {
   // Students state (36 Rombel, 1,274 students)
   const [students, setStudents] = useState<Student[]>(() => {
     try {
+      localStorage.removeItem('app_sman1batu_students');
+      localStorage.removeItem('app_sman1batu_discipline');
       const saved = localStorage.getItem('app_sman1batu_students_v2');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 500) return parsed;
+        if (Array.isArray(parsed) && parsed.length === initialStudents.length && parsed[0]?.name === initialStudents[0]?.name) {
+          return parsed;
+        }
       }
+      localStorage.setItem('app_sman1batu_students_v2', JSON.stringify(initialStudents));
       return initialStudents;
     } catch {
       return initialStudents;
@@ -168,7 +174,7 @@ export default function App() {
 
     setIsFirebaseConnected(true);
 
-    // Initial check: if Firestore is clean/empty, seed initial master data
+    // Initial check: if Firestore is clean/empty or has stale demo data, seed real 1,274 students
     const checkAndSeedOnline = async () => {
       try {
         const [remoteStudents, remoteClasses, remoteWali, remoteRules, remoteUsers] = await Promise.all([
@@ -179,8 +185,16 @@ export default function App() {
           fetchAllDocuments<AdminUser>(COLLECTIONS.USERS),
         ]);
 
-        if (remoteStudents.length === 0) {
-          batchSaveDocuments(COLLECTIONS.STUDENTS, initialStudents).catch(() => {});
+        const isStaleStudentData = remoteStudents.length > 0 && (
+          remoteStudents.length !== initialStudents.length ||
+          !remoteStudents.some((s) => s.name === 'Ailin Chaya Agatha')
+        );
+
+        if (remoteStudents.length === 0 || isStaleStudentData) {
+          console.log('Syncing real student dataset (1,274 students) to Cloud Firestore...');
+          await deleteAllDocumentsInCollection(COLLECTIONS.STUDENTS);
+          await batchSaveDocuments(COLLECTIONS.STUDENTS, initialStudents);
+          setStudents(initialStudents);
         }
         if (remoteClasses.length === 0) {
           batchSaveDocuments(COLLECTIONS.CLASSES, initialClasses).catch(() => {});
@@ -466,6 +480,16 @@ export default function App() {
     saveStudent(updatedStudent).catch(() => {});
   };
 
+  // Reset / Force sync to official 1,274 students list
+  const handleResetToDefaultStudents = async () => {
+    setStudents(initialStudents);
+    localStorage.setItem('app_sman1batu_students_v2', JSON.stringify(initialStudents));
+    if (isFirebaseConfigured()) {
+      await deleteAllDocumentsInCollection(COLLECTIONS.STUDENTS);
+      await batchSaveDocuments(COLLECTIONS.STUDENTS, initialStudents);
+    }
+  };
+
   // Delete student
   const handleDeleteStudent = (studentId: string) => {
     setStudents((prev) => prev.filter((s) => s.id !== studentId));
@@ -650,6 +674,7 @@ export default function App() {
               onAddStudent={handleAddStudent}
               onUpdateStudent={handleUpdateStudent}
               onDeleteStudent={handleDeleteStudent}
+              onResetToDefaultStudents={handleResetToDefaultStudents}
               initialClassFilter={selectedClassForStudentView}
             />
           )}
