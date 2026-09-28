@@ -872,12 +872,16 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
             {/* Printable Letterhead & Body */}
             <div className="p-6 space-y-4 text-xs text-slate-800 font-serif leading-relaxed">
               {/* Kop Surat */}
-              <div className="text-center border-b-2 border-slate-900 pb-3">
-                <h3 className="font-bold text-sm tracking-wide text-slate-900">{schoolProfile.name.toUpperCase()}</h3>
-                <p className="text-[10px] text-slate-600 font-sans">
-                  {schoolProfile.address}, {schoolProfile.city} | NPSN: {schoolProfile.npsn}
-                </p>
-                <p className="text-[10px] text-slate-500 font-sans">TIM KETERTIBAN & BIMBINGAN KONSELING</p>
+              <div className="flex items-center gap-3 border-b-2 border-slate-900 pb-3">
+                <img src="/logo.png" alt="Logo SMAN 1 Batu" className="w-14 h-14 object-contain shrink-0" />
+                <div className="text-center flex-1">
+                  <h3 className="font-bold text-sm tracking-wide text-slate-900">{schoolProfile.name.toUpperCase()}</h3>
+                  <p className="text-[10px] text-slate-600 font-sans">
+                    {schoolProfile.address}, {schoolProfile.city} | NPSN: {schoolProfile.npsn}
+                  </p>
+                  <p className="text-[10px] text-slate-500 font-sans">TIM KETERTIBAN & BIMBINGAN KONSELING</p>
+                </div>
+                <div className="w-14 shrink-0 hidden sm:block" />
               </div>
 
               <div className="text-right text-[11px] font-sans">

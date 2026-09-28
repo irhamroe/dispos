@@ -783,19 +783,23 @@ Terima kasih atas kerja samanya.`);
             className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 sm:p-10 font-serif text-slate-900 text-xs leading-relaxed space-y-4"
           >
             {/* KOP SURAT RESMI */}
-            <div className="text-center pb-3">
-              <h3 className="font-bold text-xs tracking-wider text-slate-800 uppercase font-sans">
-                Pemerintah Provinsi Jawa Timur
-              </h3>
-              <h3 className="font-bold text-xs tracking-wider text-slate-800 uppercase font-sans">
-                Dinas Pendidikan
-              </h3>
-              <h2 className="font-extrabold text-base tracking-wide text-slate-950 uppercase font-sans mt-0.5">
-                {schoolProfile.name}
-              </h2>
-              <p className="text-[10px] text-slate-600 font-sans mt-0.5">
-                {schoolProfile.address}, {schoolProfile.city}, Jawa Timur {schoolProfile.postalCode || '65314'} | NPSN: {schoolProfile.npsn}
-              </p>
+            <div className="flex items-center gap-4 pb-3">
+              <img src="/logo.png" alt="Logo SMAN 1 Batu" className="w-16 h-16 object-contain shrink-0" />
+              <div className="text-center flex-1">
+                <h3 className="font-bold text-xs tracking-wider text-slate-800 uppercase font-sans">
+                  Pemerintah Provinsi Jawa Timur
+                </h3>
+                <h3 className="font-bold text-xs tracking-wider text-slate-800 uppercase font-sans">
+                  Dinas Pendidikan
+                </h3>
+                <h2 className="font-extrabold text-base tracking-wide text-slate-950 uppercase font-sans mt-0.5">
+                  {schoolProfile.name}
+                </h2>
+                <p className="text-[10px] text-slate-600 font-sans mt-0.5">
+                  {schoolProfile.address}, {schoolProfile.city}, Jawa Timur {schoolProfile.postalCode || '65314'} | NPSN: {schoolProfile.npsn}
+                </p>
+              </div>
+              <div className="w-16 shrink-0 hidden sm:block" />
             </div>
 
             {/* Garis Pembatas Kop Surat */}

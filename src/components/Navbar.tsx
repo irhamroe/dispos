@@ -47,8 +47,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-sm ring-2 ring-emerald-500/20">
-                <School className="w-6 h-6" />
+              <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-xs ring-2 ring-emerald-500/20 shrink-0">
+                <img 
+                  src="/logo.png" 
+                  alt={schoolProfile.name} 
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div>
                 <div className="flex items-center space-x-2">

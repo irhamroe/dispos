@@ -154,8 +154,12 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4">
         {/* School Logo & Title */}
         <div className="flex flex-col items-center text-center">
-          <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white shadow-xl shadow-emerald-950/50 ring-4 ring-emerald-500/20 mb-4">
-            <School className="w-9 h-9" />
+          <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-md p-2 flex items-center justify-center shadow-xl shadow-emerald-950/50 ring-2 ring-white/20 mb-4">
+            <img 
+              src="/logo.png" 
+              alt={schoolProfile.name} 
+              className="w-full h-full object-contain drop-shadow-md"
+            />
           </div>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950/80 text-emerald-400 border border-emerald-800/80 mb-2">
             <ShieldCheck className="w-3.5 h-3.5" /> Portal Autentikasi Tenaga Pendidik
