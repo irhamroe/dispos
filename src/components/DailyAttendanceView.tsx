@@ -461,13 +461,12 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
                 <th className="py-3 px-4 min-w-[190px]">
                   Surat
                 </th>
-                <th className="py-3 px-4 min-w-[200px]">Catatan / Dispensasi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-300 text-xs">
               {filteredStudents.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-8 text-center text-slate-400">
+                  <td colSpan={6} className="py-8 text-center text-slate-400">
                     Tidak ada siswa ditemukan pada kelas ini.
                   </td>
                 </tr>
@@ -631,34 +630,6 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
                           <span className="text-[11px] text-slate-400 italic">
                             {draft.status === 'H' ? 'Hadir' : draft.status === 'D' ? 'Surat Tugas Dispen' : '-'}
                           </span>
-                        )}
-                      </td>
-
-                      {/* Catatan / Dispensasi (HANYA AKTIF KETIKA STATUS D) */}
-                      <td className="py-3 px-4">
-                        {draft.status === 'D' ? (
-                          <div>
-                            <input
-                              type="text"
-                              id={`notes-${student.id}`}
-                              value={draft.notes || ''}
-                              onChange={(e) => handleNotesChange(student.id, e.target.value)}
-                              placeholder="Ketik kegiatan / alasan dispensasi..."
-                              className="w-full px-2.5 py-1.5 rounded-lg bg-white border border-indigo-400 text-xs text-slate-900 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 shadow-2xs font-medium"
-                            />
-                            <span className="text-[9.5px] text-indigo-600 font-semibold mt-0.5 block">
-                              Aktif untuk status dispensasi
-                            </span>
-                          </div>
-                        ) : (
-                          <input
-                            type="text"
-                            id={`notes-${student.id}`}
-                            value=""
-                            disabled
-                            placeholder="Hanya aktif untuk status D"
-                            className="w-full px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-xs text-slate-400 placeholder-slate-400 cursor-not-allowed select-none italic"
-                          />
                         )}
                       </td>
                     </tr>
