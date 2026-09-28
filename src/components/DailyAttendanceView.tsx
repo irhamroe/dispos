@@ -94,7 +94,7 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
       );
       initialDraft[student.id] = {
         status: existing?.status || 'H',
-        hasLetter: existing?.hasLetter || 'Sudah Ada Surat',
+        hasLetter: existing?.hasLetter || (existing?.status === 'S' || existing?.status === 'I' ? 'Belum Ada Surat' : undefined),
         notes: existing?.notes || '',
       };
     });
@@ -120,7 +120,7 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
       );
       newDraft[student.id] = {
         status: existing?.status || 'H',
-        hasLetter: existing?.hasLetter || (existing?.status === 'S' || existing?.status === 'I' ? 'Sudah Ada Surat' : undefined),
+        hasLetter: existing?.hasLetter || (existing?.status === 'S' || existing?.status === 'I' ? 'Belum Ada Surat' : undefined),
         notes: existing?.notes || '',
       };
     });
@@ -159,16 +159,16 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
     setDraftRecords((prev) => {
       const current = prev[studentId] || { status: 'H', notes: '' };
       let updatedLetter = current.hasLetter;
-      // Default to "Sudah Ada Surat" if changed to S or I
+      // Default to "Belum Ada Surat" if changed to S or I
       if ((status === 'S' || status === 'I') && !updatedLetter) {
-        updatedLetter = 'Sudah Ada Surat';
+        updatedLetter = 'Belum Ada Surat';
       }
       return {
         ...prev,
         [studentId]: {
           ...current,
           status,
-          hasLetter: (status === 'S' || status === 'I') ? (updatedLetter || 'Sudah Ada Surat') : undefined,
+          hasLetter: (status === 'S' || status === 'I') ? (updatedLetter || 'Belum Ada Surat') : undefined,
           // Catatan hanya tersimpan jika status D
           notes: status === 'D' ? current.notes : '',
         },
@@ -252,7 +252,7 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
         classId: st.classId,
         className: st.className,
         status: current.status,
-        hasLetter: (current.status === 'S' || current.status === 'I') ? (current.hasLetter || 'Sudah Ada Surat') : undefined,
+        hasLetter: (current.status === 'S' || current.status === 'I') ? (current.hasLetter || 'Belum Ada Surat') : undefined,
         notes: current.status === 'D' ? (current.notes || '') : '',
         timeRecorded: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
         recordedBy: currentUserName,
