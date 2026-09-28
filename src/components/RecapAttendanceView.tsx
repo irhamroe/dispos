@@ -408,8 +408,8 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                   <th rowSpan={2} className="py-2.5 px-3 w-10 text-center border-r border-slate-200/60">No</th>
                   <th rowSpan={2} className="py-2.5 px-3 w-28 border-r border-slate-200/60">NISN</th>
                   <th rowSpan={2} className="py-2.5 px-4 min-w-[180px] border-r border-slate-200/60">Nama Lengkap Siswa</th>
-                  <th rowSpan={2} className="py-2.5 px-2 text-center w-14 border-r border-slate-200/60">Kelas</th>
                   <th rowSpan={2} className="py-2.5 px-2 text-center w-10 border-r border-slate-200/60">L/P</th>
+                  <th rowSpan={2} className="py-2.5 px-2 text-center w-14 border-r border-slate-200/60">Kelas</th>
                   <th colSpan={datesList.length} className="py-1.5 px-2 text-center bg-teal-50 text-teal-900 border-r border-teal-200/80 font-bold">
                     Status Presensi Per Tanggal ({datesList.length} Hari)
                   </th>
@@ -454,8 +454,8 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                   <th className="py-3 px-3 w-10 text-center">No</th>
                   <th className="py-3 px-3 w-28">NISN</th>
                   <th className="py-3 px-4">Nama Lengkap Siswa</th>
-                  <th className="py-3 px-2 text-center w-16">Kelas</th>
                   <th className="py-3 px-2 text-center w-10">L/P</th>
+                  <th className="py-3 px-2 text-center w-16">Kelas</th>
                   <th className="py-3 px-2 text-center w-14 text-emerald-700 bg-emerald-50/50">H</th>
                   <th className="py-3 px-2 text-center w-14 text-amber-700 bg-amber-50/50">S</th>
                   <th className="py-3 px-2 text-center w-14 text-blue-700 bg-blue-50/50">I</th>
@@ -493,17 +493,17 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                           {item.name}
                         </td>
                         <td className="py-2.5 px-2 text-center border-r border-slate-100">
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">
-                            {item.className}
-                          </span>
-                        </td>
-                        <td className="py-2.5 px-2 text-center border-r border-slate-100">
                           <span
                             className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-bold ${
                               item.gender === 'L' ? 'bg-blue-50 text-blue-700' : 'bg-pink-50 text-pink-700'
                             }`}
                           >
                             {item.gender}
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-2 text-center border-r border-slate-100">
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">
+                            {item.className}
                           </span>
                         </td>
 
@@ -621,17 +621,17 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                         {item.name}
                       </td>
                       <td className="py-3 px-2 text-center">
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">
-                          {item.className}
-                        </span>
-                      </td>
-                      <td className="py-3 px-2 text-center">
                         <span
                           className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-bold ${
                             item.gender === 'L' ? 'bg-blue-50 text-blue-700' : 'bg-pink-50 text-pink-700'
                           }`}
                         >
                           {item.gender}
+                        </span>
+                      </td>
+                      <td className="py-3 px-2 text-center">
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">
+                          {item.className}
                         </span>
                       </td>
                       {/* H */}
@@ -654,7 +654,7 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                       <td className="py-3 px-2 text-center font-bold text-indigo-700 bg-indigo-50/20">
                         {item.dispen}
                       </td>
-                      {/* % Kehadiran */}
+                      {/* Persentase */}
                       <td className="py-3 px-3 text-center">
                         <span
                           className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${

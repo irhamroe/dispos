@@ -119,8 +119,8 @@ export const exportAttendanceToExcel = (
     'No',
     'NISN',
     'Nama Siswa',
-    'Kelas',
     'L/P',
+    'Kelas',
   ];
 
   if (isDaily) {
@@ -175,8 +175,8 @@ export const exportAttendanceToExcel = (
       index + 1,
       item.nisn,
       item.name,
-      item.className,
       item.gender,
+      item.className,
     ];
 
     if (isDaily) {
@@ -391,8 +391,8 @@ export const exportAttendanceToPdf = (
         { content: 'No', rowSpan: 2, styles: { halign: 'center', valign: 'middle' } },
         { content: 'NISN', rowSpan: 2, styles: { halign: 'center', valign: 'middle' } },
         { content: 'Nama Lengkap', rowSpan: 2, styles: { halign: 'center', valign: 'middle' } },
-        { content: 'Kelas', rowSpan: 2, styles: { halign: 'center', valign: 'middle' } },
         { content: 'L/P', rowSpan: 2, styles: { halign: 'center', valign: 'middle' } },
+        { content: 'Kelas', rowSpan: 2, styles: { halign: 'center', valign: 'middle' } },
         { content: 'Status Presensi', colSpan: datesList.length, styles: { halign: 'center', valign: 'middle' } },
         { content: 'Rekapitulasi Jumlah', colSpan: 5, styles: { halign: 'center', valign: 'middle' } },
       ],
@@ -419,8 +419,8 @@ export const exportAttendanceToPdf = (
         idx + 1,
         item.nisn,
         item.name,
-        item.className,
         item.gender,
+        item.className,
         ...dailyStatuses,
         item.hadir,
         item.sakit,
@@ -450,8 +450,8 @@ export const exportAttendanceToPdf = (
       0: { halign: 'center', cellWidth: 7 },
       1: { halign: 'center', cellWidth: 19 },
       2: { halign: 'left', cellWidth: datesList.length > 25 ? 40 : 'auto' },
-      3: { halign: 'center', cellWidth: 12 },
-      4: { halign: 'center', cellWidth: 6 },
+      3: { halign: 'center', cellWidth: 6 },
+      4: { halign: 'center', cellWidth: 12 },
     };
 
     datesList.forEach((_, idx) => {
@@ -463,14 +463,14 @@ export const exportAttendanceToPdf = (
     }
   } else {
     // Mode 2: Rentang > 1 Bulan (> 31 Hari)
-    // Kolom: No, NISN, Nama Lengkap, Kelas, L/P, Rekapitulasi Jumlah (H, S, I, A, D, % Hadir)
+    // Kolom: No, NISN, Nama Lengkap, L/P, Kelas, Rekapitulasi Jumlah (H, S, I, A, D, % Hadir)
     headConfig = [
       [
         { content: 'No', rowSpan: 2, styles: { halign: 'center', valign: 'middle' } },
         { content: 'NISN', rowSpan: 2, styles: { halign: 'center', valign: 'middle' } },
         { content: 'Nama Lengkap', rowSpan: 2, styles: { halign: 'center', valign: 'middle' } },
-        { content: 'Kelas', rowSpan: 2, styles: { halign: 'center', valign: 'middle' } },
         { content: 'L/P', rowSpan: 2, styles: { halign: 'center', valign: 'middle' } },
+        { content: 'Kelas', rowSpan: 2, styles: { halign: 'center', valign: 'middle' } },
         { content: 'Rekapitulasi Jumlah', colSpan: 6, styles: { halign: 'center', valign: 'middle' } },
       ],
       [
@@ -487,8 +487,8 @@ export const exportAttendanceToPdf = (
       idx + 1,
       item.nisn,
       item.name,
-      item.className,
       item.gender,
+      item.className,
       item.hadir,
       item.sakit,
       item.izin,
@@ -516,8 +516,8 @@ export const exportAttendanceToPdf = (
       0: { halign: 'center', cellWidth: 10 },
       1: { halign: 'center', cellWidth: 28 },
       2: { halign: 'left', cellWidth: 'auto' },
-      3: { halign: 'center', cellWidth: 20 },
-      4: { halign: 'center', cellWidth: 12 },
+      3: { halign: 'center', cellWidth: 12 },
+      4: { halign: 'center', cellWidth: 20 },
       5: { halign: 'center', cellWidth: 20 },
       6: { halign: 'center', cellWidth: 20 },
       7: { halign: 'center', cellWidth: 20 },
