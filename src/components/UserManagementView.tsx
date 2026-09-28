@@ -33,6 +33,7 @@ import {
 } from 'lucide-react';
 import { AdminUser, UserRole } from '../types';
 import { RombelClass } from '../data/initialData';
+import { sortClasses } from '../utils/sortUtils';
 
 interface UserManagementViewProps {
   users: AdminUser[];
@@ -1104,7 +1105,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     className="w-full px-3 py-2 bg-white border border-teal-300 rounded-xl text-teal-950 font-bold text-xs focus:outline-hidden focus:ring-1 focus:ring-teal-500"
                   >
                     <option value="">-- Pilih Rombel Kelas --</option>
-                    {classes.map((cls) => (
+                    {sortClasses(classes).map((cls) => (
                       <option key={cls.id} value={cls.name}>
                         Kelas {cls.name} ({cls.grade}) - Wali: {cls.homeroom}
                       </option>
@@ -1408,7 +1409,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     className="w-full px-3 py-2 bg-white border border-teal-300 rounded-xl text-teal-950 font-bold text-xs focus:outline-hidden focus:ring-1 focus:ring-teal-500"
                   >
                     <option value="">-- Pilih Rombel Kelas --</option>
-                    {classes.map((cls) => (
+                    {sortClasses(classes).map((cls) => (
                       <option key={cls.id} value={cls.name}>
                         Kelas {cls.name} ({cls.grade}) - Wali: {cls.homeroom}
                       </option>

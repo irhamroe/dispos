@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { Student, DisciplineRecord, AttendanceRecord } from '../types';
 import { RombelClass } from '../data/initialData';
+import { sortClasses, sortStudents } from '../utils/sortUtils';
 
 interface StudentMasterViewProps {
   students: Student[];
@@ -108,8 +109,8 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
   const editFileInputRef = useRef<HTMLInputElement>(null);
 
   const availableClasses = useMemo(() => {
-    if (selectedGrade === 'ALL') return classes;
-    return classes.filter((c) => c.grade === selectedGrade);
+    const list = selectedGrade === 'ALL' ? classes : classes.filter((c) => c.grade === selectedGrade);
+    return sortClasses(list);
   }, [classes, selectedGrade]);
 
   // Handle file upload for new student
@@ -229,7 +230,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
 
   // Filter students based on grade, class, search, and photo status
   const filteredStudents = useMemo(() => {
-    return students.filter((s) => {
+    const list = students.filter((s) => {
       const matchGrade = selectedGrade === 'ALL' || s.grade === selectedGrade;
       const matchClass = selectedClass === 'ALL' || s.className === selectedClass;
       
@@ -248,6 +249,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
 
       return matchGrade && matchClass && matchSearch && matchPhoto;
     });
+    return sortStudents(list);
   }, [students, selectedGrade, selectedClass, searchQuery, photoFilter]);
 
   const totalPages = Math.ceil(filteredStudents.length / pageSize) || 1;
@@ -706,7 +708,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                     onChange={(e) => setNewClassId(e.target.value)}
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-semibold focus:bg-white focus:ring-1 focus:ring-teal-500"
                   >
-                    {classes.map((c) => (
+                    {sortClasses(classes).map((c) => (
                       <option key={c.id} value={c.id}>
                         Kelas {c.name}
                       </option>
@@ -960,7 +962,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                     onChange={(e) => setEditClassId(e.target.value)}
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-semibold focus:bg-white focus:ring-1 focus:ring-teal-500"
                   >
-                    {classes.map((c) => (
+                    {sortClasses(classes).map((c) => (
                       <option key={c.id} value={c.id}>
                         Kelas {c.name}
                       </option>

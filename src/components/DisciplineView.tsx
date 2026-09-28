@@ -23,6 +23,7 @@ import {
 import { DisciplineRecord, SchoolProfile, Student, ViolationCategory, DisciplineStatus, CoachingStatus, ViolationRule } from '../types';
 import { sampleViolationCatalog } from '../data/initialData';
 import { formatDateIndonesian } from '../utils/exportUtils';
+import { sortClasses, sortStudents } from '../utils/sortUtils';
 
 interface DisciplineViewProps {
   students: Student[];
@@ -74,15 +75,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
     students.forEach((s) => {
       if (s.className) classSet.add(s.className);
     });
-    return Array.from(classSet).sort((a, b) => {
-      const partsA = a.split('-');
-      const partsB = b.split('-');
-      if (partsA[0] !== partsB[0]) {
-        const order = { X: 1, XI: 2, XII: 3 };
-        return (order[partsA[0] as keyof typeof order] || 0) - (order[partsB[0] as keyof typeof order] || 0);
-      }
-      return parseInt(partsA[1] || '0', 10) - parseInt(partsB[1] || '0', 10);
-    });
+    return sortClasses(Array.from(classSet));
   }, [students]);
 
   // Form states strictly adhering to user requirements:
@@ -141,7 +134,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
   // Students in currently selected class in modal
   const studentsInSelectedClass = React.useMemo(() => {
-    return students.filter((s) => s.className === selectedClass);
+    return sortStudents(students.filter((s) => s.className === selectedClass));
   }, [students, selectedClass]);
 
   // Whenever selectedClass changes, automatically set first student

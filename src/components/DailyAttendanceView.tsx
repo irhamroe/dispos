@@ -19,6 +19,7 @@ import {
 import { AttendanceRecord, AttendanceStatus, LetterStatus, Student } from '../types';
 import { RombelClass } from '../data/initialData';
 import { formatDateIndonesian, getTodayDateString } from '../utils/exportUtils';
+import { sortClasses, sortStudents } from '../utils/sortUtils';
 
 interface DailyAttendanceViewProps {
   students: Student[];
@@ -49,32 +50,32 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
   const [saveToast, setSaveToast] = useState(false);
 
   // Group classes by grade
-  const classesX = useMemo(() => classes.filter((c) => c.grade === 'X'), [classes]);
-  const classesXI = useMemo(() => classes.filter((c) => c.grade === 'XI'), [classes]);
-  const classesXII = useMemo(() => classes.filter((c) => c.grade === 'XII'), [classes]);
+  const classesX = useMemo(() => sortClasses(classes.filter((c) => c.grade === 'X')), [classes]);
+  const classesXI = useMemo(() => sortClasses(classes.filter((c) => c.grade === 'XI')), [classes]);
+  const classesXII = useMemo(() => sortClasses(classes.filter((c) => c.grade === 'XII')), [classes]);
 
   // Filter available classes according to selectedGrade
   const availableClasses = useMemo(() => {
-    return classes.filter((c) => c.grade === selectedGrade);
+    return sortClasses(classes.filter((c) => c.grade === selectedGrade));
   }, [classes, selectedGrade]);
 
   // Handle grade change and auto-adjust selected class if needed
   const handleGradeChange = (newGrade: 'X' | 'XI' | 'XII') => {
     setSelectedGrade(newGrade);
-    const isCurrentClassInNewGrade = classes.some(
-      (c) => c.grade === newGrade && c.name === selectedClass
+    const sortedGradeClasses = sortClasses(classes.filter((c) => c.grade === newGrade));
+    const isCurrentClassInNewGrade = sortedGradeClasses.some(
+      (c) => c.name === selectedClass
     );
     if (!isCurrentClassInNewGrade) {
-      const firstInGrade = classes.find((c) => c.grade === newGrade);
-      if (firstInGrade) {
-        setSelectedClass(firstInGrade.name);
+      if (sortedGradeClasses.length > 0) {
+        setSelectedClass(sortedGradeClasses[0].name);
       }
     }
   };
 
   // Students in selected rombel (~36 students)
   const classStudents = useMemo(() => {
-    return students.filter((s) => s.className === selectedClass);
+    return sortStudents(students.filter((s) => s.className === selectedClass));
   }, [students, selectedClass]);
 
   const currentClassInfo = useMemo(() => {

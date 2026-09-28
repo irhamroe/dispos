@@ -37,6 +37,7 @@ import {
   exportParentCallLetterToPdf,
   ParentCallLetterData
 } from '../utils/exportUtils';
+import { sortClasses, sortStudents } from '../utils/sortUtils';
 
 interface ParentCallLetterViewProps {
   students: Student[];
@@ -109,7 +110,7 @@ export const ParentCallLetterView: React.FC<ParentCallLetterViewProps> = ({
 
   // Filter students based on class, violation status, and search query
   const filteredStudents = useMemo(() => {
-    return students.filter((s) => {
+    const list = students.filter((s) => {
       if (selectedClass !== 'ALL' && s.className !== selectedClass) return false;
       const violations = studentViolationsMap.get(s.id) || [];
       if (onlyWithViolations && violations.length === 0) return false;
@@ -121,6 +122,7 @@ export const ParentCallLetterView: React.FC<ParentCallLetterViewProps> = ({
       }
       return true;
     });
+    return sortStudents(list);
   }, [students, selectedClass, onlyWithViolations, studentSearchQuery, studentViolationsMap]);
 
   // Set default student if current selection becomes invalid
@@ -363,7 +365,7 @@ Terima kasih atas kerja samanya.`);
                 className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:bg-white focus:ring-2 focus:ring-teal-500 cursor-pointer"
               >
                 <option value="ALL">Semua Kelas (36 Rombel X, XI, XII)</option>
-                {classes.map((cls) => (
+                {sortClasses(classes).map((cls) => (
                   <option key={cls.id || cls.name} value={cls.name}>
                     Kelas {cls.name}
                   </option>

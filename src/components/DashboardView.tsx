@@ -23,6 +23,7 @@ import { AttendanceRecord, DisciplineRecord, Student } from '../types';
 import { RombelClass } from '../data/initialData';
 import { NavTab } from './Sidebar';
 import { formatDateIndonesian } from '../utils/exportUtils';
+import { sortClasses } from '../utils/sortUtils';
 
 interface DashboardViewProps {
   students: Student[];
@@ -48,8 +49,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   // Available classes based on grade filter
   const availableClasses = useMemo(() => {
-    if (selectedGradeFilter === 'ALL') return classes;
-    return classes.filter((c) => c.grade === selectedGradeFilter);
+    const list = selectedGradeFilter === 'ALL' ? classes : classes.filter((c) => c.grade === selectedGradeFilter);
+    return sortClasses(list);
   }, [classes, selectedGradeFilter]);
 
   // Filter students based on grade & class

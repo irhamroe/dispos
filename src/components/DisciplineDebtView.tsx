@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { DisciplineRecord, SchoolProfile, Student } from '../types';
 import { formatDateIndonesian } from '../utils/exportUtils';
+import { sortClasses } from '../utils/sortUtils';
 
 interface DisciplineDebtViewProps {
   disciplineRecords: DisciplineRecord[];
@@ -72,15 +73,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
     students.forEach((s) => {
       if (s.className) set.add(s.className);
     });
-    return Array.from(set).sort((a, b) => {
-      const partsA = a.split('-');
-      const partsB = b.split('-');
-      if (partsA[0] !== partsB[0]) {
-        const order = { X: 1, XI: 2, XII: 3 };
-        return (order[partsA[0] as keyof typeof order] || 0) - (order[partsB[0] as keyof typeof order] || 0);
-      }
-      return parseInt(partsA[1] || '0', 10) - parseInt(partsB[1] || '0', 10);
-    });
+    return sortClasses(Array.from(set));
   }, [students]);
 
   // Filter records that have pending debt

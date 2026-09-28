@@ -28,6 +28,7 @@ import {
   getTodayDateString, 
   getTodayIndonesian 
 } from '../utils/exportUtils';
+import { sortClasses, compareClassNames } from '../utils/sortUtils';
 
 interface PermissionLetterRecapViewProps {
   students: Student[];
@@ -66,8 +67,8 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
   // Filtered classes by grade
   const availableClasses = useMemo(() => {
-    if (selectedGrade === 'ALL') return classes;
-    return classes.filter((c) => c.grade === selectedGrade);
+    const list = selectedGrade === 'ALL' ? classes : classes.filter((c) => c.grade === selectedGrade);
+    return sortClasses(list);
   }, [classes, selectedGrade]);
 
   // Base list of all 'I' (Izin) and 'S' (Sakit) records
@@ -101,15 +102,23 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
   // Search filter
   const filteredRecords = useMemo(() => {
-    if (!searchQuery.trim()) return allAbsenceWithLetterDuty;
-    const q = searchQuery.toLowerCase();
-    return allAbsenceWithLetterDuty.filter((rec) => {
-      return (
-        rec.studentName.toLowerCase().includes(q) ||
-        rec.nisn.includes(q) ||
-        rec.className.toLowerCase().includes(q) ||
-        (rec.notes && rec.notes.toLowerCase().includes(q))
-      );
+    const list = !searchQuery.trim()
+      ? allAbsenceWithLetterDuty
+      : allAbsenceWithLetterDuty.filter((rec) => {
+          const q = searchQuery.toLowerCase();
+          return (
+            rec.studentName.toLowerCase().includes(q) ||
+            rec.nisn.includes(q) ||
+            rec.className.toLowerCase().includes(q) ||
+            (rec.notes && rec.notes.toLowerCase().includes(q))
+          );
+        });
+
+    return [...list].sort((a, b) => {
+      if (a.date !== b.date) return b.date.localeCompare(a.date);
+      const classComp = compareClassNames(a.className, b.className);
+      if (classComp !== 0) return classComp;
+      return a.studentName.localeCompare(b.studentName, 'id', { sensitivity: 'base' });
     });
   }, [allAbsenceWithLetterDuty, searchQuery]);
 

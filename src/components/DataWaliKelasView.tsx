@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Student, WaliKelasTeacher } from '../types';
 import { RombelClass } from '../data/initialData';
+import { sortClasses, sortWaliKelas } from '../utils/sortUtils';
 
 interface DataWaliKelasViewProps {
   waliKelasList: WaliKelasTeacher[];
@@ -70,7 +71,7 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
 
   // Filtered teachers
   const filteredTeachers = useMemo(() => {
-    return waliKelasList.filter((w) => {
+    const list = waliKelasList.filter((w) => {
       const matchGrade = selectedGrade === 'ALL' || w.grade === selectedGrade;
       const matchSearch =
         w.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -79,6 +80,7 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
         w.phone.includes(searchQuery);
       return matchGrade && matchSearch;
     });
+    return sortWaliKelas(list);
   }, [waliKelasList, selectedGrade, searchQuery]);
 
   const pnsCount = waliKelasList.filter((w) => w.status === 'PNS').length;
@@ -467,7 +469,7 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
                     onChange={(e) => setEditClassId(e.target.value)}
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 cursor-pointer"
                   >
-                    {classes.map((c) => (
+                    {sortClasses(classes).map((c) => (
                       <option key={c.id} value={c.id}>
                         {c.name}
                       </option>
@@ -592,7 +594,7 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
                     onChange={(e) => setNewClassId(e.target.value)}
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900"
                   >
-                    {classes.map((c) => (
+                    {sortClasses(classes).map((c) => (
                       <option key={c.id} value={c.id}>
                         {c.name}
                       </option>

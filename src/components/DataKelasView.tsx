@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Student } from '../types';
 import { RombelClass } from '../data/initialData';
+import { sortClasses } from '../utils/sortUtils';
 
 interface DataKelasViewProps {
   classes: RombelClass[];
@@ -70,7 +71,7 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
 
   // Filtered classes
   const filteredClasses = useMemo(() => {
-    return classes.filter((c) => {
+    const list = classes.filter((c) => {
       const matchGrade = selectedGrade === 'ALL' || c.grade === selectedGrade;
       const matchSearch =
         c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -78,6 +79,7 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
         (c.room && c.room.toLowerCase().includes(searchQuery.toLowerCase()));
       return matchGrade && matchSearch;
     });
+    return sortClasses(list);
   }, [classes, selectedGrade, searchQuery]);
 
   const countGradeX = classes.filter((c) => c.grade === 'X').length;

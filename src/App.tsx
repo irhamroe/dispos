@@ -12,6 +12,7 @@ import {
   RombelClass
 } from './data/initialData';
 import { AdminUser, AttendanceRecord, DisciplineRecord, Student, DisciplineStatus, WaliKelasTeacher, ViolationRule } from './types';
+import { sortClasses, sortStudents, sortWaliKelas } from './utils/sortUtils';
 import { Navbar } from './components/Navbar';
 import { Sidebar, NavTab } from './components/Sidebar';
 import { LoginScreen } from './components/LoginScreen';
@@ -62,11 +63,11 @@ export default function App() {
       const saved = localStorage.getItem('app_sman1batu_classes');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length >= 36) return parsed;
+        if (Array.isArray(parsed) && parsed.length >= 36) return sortClasses(parsed);
       }
-      return initialClasses;
+      return sortClasses(initialClasses);
     } catch {
-      return initialClasses;
+      return sortClasses(initialClasses);
     }
   });
 
@@ -76,11 +77,11 @@ export default function App() {
       const saved = localStorage.getItem('app_sman1batu_walikelas');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length >= 36) return parsed;
+        if (Array.isArray(parsed) && parsed.length >= 36) return sortWaliKelas(parsed);
       }
-      return initialWaliKelas;
+      return sortWaliKelas(initialWaliKelas);
     } catch {
-      return initialWaliKelas;
+      return sortWaliKelas(initialWaliKelas);
     }
   });
 
@@ -93,13 +94,14 @@ export default function App() {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length === initialStudents.length && parsed[0]?.name === initialStudents[0]?.name) {
-          return parsed;
+          return sortStudents(parsed);
         }
       }
-      localStorage.setItem('app_sman1batu_students_v2', JSON.stringify(initialStudents));
-      return initialStudents;
+      const sorted = sortStudents(initialStudents);
+      localStorage.setItem('app_sman1batu_students_v2', JSON.stringify(sorted));
+      return sorted;
     } catch {
-      return initialStudents;
+      return sortStudents(initialStudents);
     }
   });
 
@@ -194,7 +196,7 @@ export default function App() {
           console.log('Syncing real student dataset (1,274 students) to Cloud Firestore...');
           await deleteAllDocumentsInCollection(COLLECTIONS.STUDENTS);
           await batchSaveDocuments(COLLECTIONS.STUDENTS, initialStudents);
-          setStudents(initialStudents);
+          setStudents(sortStudents(initialStudents));
         }
         if (remoteClasses.length === 0) {
           batchSaveDocuments(COLLECTIONS.CLASSES, initialClasses).catch(() => {});
@@ -218,21 +220,21 @@ export default function App() {
     // 1. Realtime Students subscription (HP <-> Laptop sync)
     const unsubStudents = subscribeToCollection<Student>(COLLECTIONS.STUDENTS, (data) => {
       if (data && data.length > 0) {
-        setStudents(data);
+        setStudents(sortStudents(data));
       }
     });
 
     // 2. Realtime Classes subscription
     const unsubClasses = subscribeToCollection<RombelClass>(COLLECTIONS.CLASSES, (data) => {
       if (data && data.length > 0) {
-        setClasses(data);
+        setClasses(sortClasses(data));
       }
     });
 
     // 3. Realtime Wali Kelas subscription
     const unsubWali = subscribeToCollection<WaliKelasTeacher>(COLLECTIONS.WALI_KELAS, (data) => {
       if (data && data.length > 0) {
-        setWaliKelasList(data);
+        setWaliKelasList(sortWaliKelas(data));
       }
     });
 

@@ -24,6 +24,7 @@ import {
   isWeekendDay,
   getTodayDateString
 } from '../utils/exportUtils';
+import { sortClasses, sortStudents } from '../utils/sortUtils';
 
 interface RecapAttendanceViewProps {
   students: Student[];
@@ -78,18 +79,20 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
 
   // Filtered classes according to selectedGrade
   const availableClasses = useMemo(() => {
-    if (selectedGrade === 'ALL') return classes;
-    return classes.filter((c) => c.grade === selectedGrade);
+    const list = selectedGrade === 'ALL' ? classes : classes.filter((c) => c.grade === selectedGrade);
+    return sortClasses(list);
   }, [classes, selectedGrade]);
 
   // Compute student attendance summary across date range
   const studentRecapList: StudentRecapItem[] = useMemo(() => {
     // 1. Filter students according to grade and class
-    const targetStudents = students.filter((s) => {
-      const matchGrade = selectedGrade === 'ALL' || s.grade === selectedGrade;
-      const matchClass = selectedClass === 'ALL' || s.className === selectedClass;
-      return matchGrade && matchClass;
-    });
+    const targetStudents = sortStudents(
+      students.filter((s) => {
+        const matchGrade = selectedGrade === 'ALL' || s.grade === selectedGrade;
+        const matchClass = selectedClass === 'ALL' || s.className === selectedClass;
+        return matchGrade && matchClass;
+      })
+    );
 
     // 2. Filter attendance records within the selected date range
     const filteredRecords = attendanceRecords.filter((rec) => {
