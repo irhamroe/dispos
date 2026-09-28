@@ -83,10 +83,10 @@ export default function App() {
     }
   });
 
-  // Students state (36 Rombel, ~1,300 students)
+  // Students state (36 Rombel, 1,274 students)
   const [students, setStudents] = useState<Student[]>(() => {
     try {
-      const saved = localStorage.getItem('app_sman1batu_students');
+      const saved = localStorage.getItem('app_sman1batu_students_v2');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 500) return parsed;
@@ -100,7 +100,7 @@ export default function App() {
   // Attendance Records state (H, I, S, A, D)
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>(() => {
     try {
-      const saved = localStorage.getItem('app_sman1batu_attendance');
+      const saved = localStorage.getItem('app_sman1batu_attendance_v2');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 500) return parsed;
@@ -114,7 +114,7 @@ export default function App() {
   // Discipline Records state
   const [disciplineRecords, setDisciplineRecords] = useState<DisciplineRecord[]>(() => {
     try {
-      const saved = localStorage.getItem('app_sman1batu_discipline');
+      const saved = localStorage.getItem('app_sman1batu_discipline_v2');
       return saved ? JSON.parse(saved) : initialDisciplineRecords;
     } catch {
       return initialDisciplineRecords;
@@ -291,15 +291,15 @@ export default function App() {
   }, [waliKelasList]);
 
   useEffect(() => {
-    localStorage.setItem('app_sman1batu_students', JSON.stringify(students));
+    localStorage.setItem('app_sman1batu_students_v2', JSON.stringify(students));
   }, [students]);
 
   useEffect(() => {
-    localStorage.setItem('app_sman1batu_attendance', JSON.stringify(attendanceRecords));
+    localStorage.setItem('app_sman1batu_attendance_v2', JSON.stringify(attendanceRecords));
   }, [attendanceRecords]);
 
   useEffect(() => {
-    localStorage.setItem('app_sman1batu_discipline', JSON.stringify(disciplineRecords));
+    localStorage.setItem('app_sman1batu_discipline_v2', JSON.stringify(disciplineRecords));
   }, [disciplineRecords]);
 
   useEffect(() => {
