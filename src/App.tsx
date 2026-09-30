@@ -161,19 +161,20 @@ export default function App() {
     }
   });
 
-  // Users state (Multi-Role: Admin + 36 Wali Kelas)
+  // Users state (Multi-Role: Admin + 36 Wali Kelas + Guru Mapel)
   const [users, setUsers] = useState<AdminUser[]>(() => {
     try {
       localStorage.removeItem('app_sman1batu_users');
       localStorage.removeItem('app_sman1batu_users_v2');
-      const saved = localStorage.getItem('app_sman1batu_users_v4');
+      localStorage.removeItem('app_sman1batu_users_v4');
+      const saved = localStorage.getItem('app_sman1batu_users_v5');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length >= 37 && parsed.some((u) => u.username === 'admin' && u.password === 'smabadispos')) {
+        if (Array.isArray(parsed) && parsed.length >= initialUsers.length && parsed.some((u) => u.name === 'Panji Penatas, S.Pd')) {
           return parsed;
         }
       }
-      localStorage.setItem('app_sman1batu_users_v4', JSON.stringify(initialUsers));
+      localStorage.setItem('app_sman1batu_users_v5', JSON.stringify(initialUsers));
       return initialUsers;
     } catch {
       return initialUsers;
@@ -244,7 +245,8 @@ export default function App() {
         }
 
         const isStaleUsers = remoteUsers.length > 0 && (
-          remoteUsers.length < 37 ||
+          remoteUsers.length < initialUsers.length ||
+          !remoteUsers.some((u) => u.name === 'Panji Penatas, S.Pd') ||
           remoteUsers.some((u) => u.username === 'walikelas' || u.username === 'operator')
         );
         if (remoteUsers.length === 0 || isStaleUsers) {
@@ -369,7 +371,7 @@ export default function App() {
   }, [violationRules]);
 
   useEffect(() => {
-    localStorage.setItem('app_sman1batu_users_v4', JSON.stringify(users));
+    localStorage.setItem('app_sman1batu_users_v5', JSON.stringify(users));
   }, [users]);
 
   // Login handler
