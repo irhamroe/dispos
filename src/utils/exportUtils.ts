@@ -113,13 +113,13 @@ export const isSundayDate = (dateStr: string): boolean => {
 };
 
 /**
- * Ekspor Rekapitulasi Presensi SMAN 1 Batu ke format Excel (.xls)
- * Format persis seperti format dinas/sekolah pada lampiran:
- * - Baris 1: Judul TA, Bulan, Tahun, JUMLAH
- * - Baris 2: Inisial Hari (J, Sa, M, Sn, Sl, R, K) & Header S, I, A, D
- * - Baris 3: Kolom No, NIS, NAMA, L/P, KELAS, & Angka Tanggal 1..31
- * - Kolom Hari Minggu (M) berwarna MERAH solid
- * - Nilai S, I, A, D dengan warna latar khusus, H kosong
+ * Ekspor Rekapitulasi Presensi ke format Excel (.xls)
+ * Layout sesuai format:
+ * - Tanpa kop dinas resmi, judul: "Rekapitulasi Absensi Siswa"
+ * - Subheader periode & rombel
+ * - Header tabel bertingkat dengan warna Teal & Merah untuk Sabtu/Minggu (hari libur)
+ * - Warna kotak disesuaikan dengan status absensi (H=Hijau, S=Kuning/Amber, I=Biru, A=Merah, D=Ungu)
+ * - Rekapitulasi jumlah H, S, I, A, D dan baris TOTAL di bawah
  */
 export const exportAttendanceToExcel = (
   schoolProfile: SchoolProfile,
@@ -130,14 +130,8 @@ export const exportAttendanceToExcel = (
   attendanceRecords?: AttendanceRecord[]
 ) => {
   const datesList = getDatesRangeList(startDate, endDate);
-  const startParts = startDate.split('-');
-  const startYear = startParts[0] || '2026';
-  const startMonthIdx = parseInt(startParts[1] || '5', 10) - 1;
-  const monthNames = [
-    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-  ];
-  const monthName = monthNames[startMonthIdx] || 'Bulan';
+  const numDates = datesList.length;
+  const totalCols = 5 + numDates + 5;
   const academicYear = schoolProfile.academicYear || '2025/2026';
 
   // Map student attendance per date
@@ -150,15 +144,13 @@ export const exportAttendanceToExcel = (
     });
   }
 
-  const dayInitials = datesList.map((d) => getIndonesianDayInitial(d));
-  const dayNumbers = datesList.map((d) => parseInt(d.split('-')[2], 10));
-  const isSundays = datesList.map((d) => isSundayDate(d));
+  // Calculate totals
+  const totalH = recapData.reduce((acc, c) => acc + c.hadir, 0);
+  const totalS = recapData.reduce((acc, c) => acc + c.sakit, 0);
+  const totalI = recapData.reduce((acc, c) => acc + c.izin, 0);
+  const totalA = recapData.reduce((acc, c) => acc + c.alpa, 0);
+  const totalD = recapData.reduce((acc, c) => acc + c.dispen, 0);
 
-  const totalDateCols = datesList.length || 1;
-  const midCol1 = Math.floor(totalDateCols / 2);
-  const midCol2 = totalDateCols - midCol1;
-
-  // Generate HTML table for Excel
   let html = `
 <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
 <head>
@@ -168,7 +160,7 @@ export const exportAttendanceToExcel = (
  <x:ExcelWorkbook>
   <x:ExcelWorksheets>
    <x:ExcelWorksheet>
-    <x:Name>Rekap Absensi</x:Name>
+    <x:Name>Rekap Presensi</x:Name>
     <x:WorksheetOptions>
      <x:DisplayGridlines/>
     </x:WorksheetOptions>
@@ -178,91 +170,140 @@ export const exportAttendanceToExcel = (
 </xml>
 <![endif]-->
 <style>
-  table { border-collapse: collapse; font-family: 'Calibri', 'Arial', sans-serif; font-size: 11px; }
-  th, td { border: 1px solid #000000; text-align: center; vertical-align: middle; padding: 4px; }
-  .title-hdr { font-weight: bold; font-size: 11.5px; text-align: left; background-color: #FFFFFF; border: 1px solid #000; }
-  .month-hdr { font-weight: bold; font-size: 11.5px; text-align: center; background-color: #FFFFFF; border: 1px solid #000; }
-  .year-hdr { font-weight: bold; font-size: 11.5px; text-align: center; background-color: #FFFFFF; border: 1px solid #000; }
-  .jumlah-hdr { font-weight: bold; font-size: 11px; text-align: center; background-color: #FFFFFF; border: 1px solid #000; }
-  .main-hdr { font-weight: bold; font-size: 11px; background-color: #FFFFFF; border: 1px solid #000; }
-  .day-name-hdr { background-color: #FFE599; font-weight: bold; font-size: 10px; border: 1px solid #000; }
-  .day-num-hdr { background-color: #9BC2E6; font-weight: bold; font-size: 10px; border: 1px solid #000; }
-  .hdr-s { background-color: #A9D08E; font-weight: bold; border: 1px solid #000; }
-  .hdr-i { background-color: #F8CBAD; font-weight: bold; border: 1px solid #000; }
-  .hdr-a { background-color: #F4B084; font-weight: bold; border: 1px solid #000; }
-  .hdr-d { background-color: #FFF2CC; font-weight: bold; border: 1px solid #000; }
-  .sunday-col { background-color: #FF0000; color: #FFFFFF; border: 1px solid #000; }
-  .cell-s { background-color: #A9D08E; font-weight: bold; color: #000000; border: 1px solid #000; }
-  .cell-i { background-color: #F8CBAD; font-weight: bold; color: #000000; border: 1px solid #000; }
-  .cell-a { background-color: #F4B084; font-weight: bold; color: #000000; border: 1px solid #000; }
-  .cell-d { background-color: #FFF2CC; font-weight: bold; color: #000000; border: 1px solid #000; }
+  body { font-family: 'Calibri', 'Segoe UI', Arial, sans-serif; font-size: 11px; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #cbd5e1; text-align: center; vertical-align: middle; padding: 4px 6px; }
+  .title-main { font-size: 14pt; font-weight: bold; text-align: center; border: none; padding: 8px 0; color: #0f172a; }
+  .meta-left { text-align: left; font-weight: bold; border: none; font-size: 10pt; color: #334155; }
+  .meta-right { text-align: right; font-size: 9.5pt; border: none; color: #475569; }
+  .tbl-header { background-color: #0f766e; color: #ffffff; font-weight: bold; font-size: 10pt; border: 1px solid #0f766e; }
+  .tbl-header-weekend { background-color: #dc2626; color: #ffffff; font-weight: bold; font-size: 10pt; border: 1px solid #dc2626; }
+  .cell-h { background-color: #dcfce7; color: #166534; font-weight: bold; }
+  .cell-s { background-color: #fef3c7; color: #92400e; font-weight: bold; }
+  .cell-i { background-color: #e0f2fe; color: #075985; font-weight: bold; }
+  .cell-a { background-color: #fee2e2; color: #991b1b; font-weight: bold; }
+  .cell-d { background-color: #f3e8ff; color: #6b21a8; font-weight: bold; }
+  .cell-weekend { background-color: #fee2e2; color: #ef4444; font-weight: bold; }
+  .total-row { background-color: #e2e8f0; font-weight: bold; color: #0f172a; }
   .text-left { text-align: left; }
   .text-center { text-align: center; }
-  .font-mono { font-family: 'Consolas', 'Courier New', monospace; }
+  .font-mono { font-family: 'Consolas', monospace; }
 </style>
 </head>
 <body>
 <table>
-  <!-- Row 1: Top Titles -->
+  <!-- Title -->
   <tr>
-    <th colspan="5" class="title-hdr">REKAP ABSENSI SISWA TAHUN PELAJARAN ${academicYear}</th>
-    <th colspan="${midCol1}" class="month-hdr">${monthName}</th>
-    <th colspan="${midCol2}" class="year-hdr">${startYear}</th>
-    <th colspan="4" class="jumlah-hdr">JUMLAH</th>
+    <th colspan="${totalCols}" class="title-main">Rekapitulasi Absensi Siswa</th>
+  </tr>
+  <!-- Meta row 1 -->
+  <tr>
+    <td colspan="5" class="meta-left">Periode: ${formatDateIndonesian(startDate)} s.d. ${formatDateIndonesian(endDate)} (${getDaysDifference(startDate, endDate)} Hari)</td>
+    <td colspan="${numDates + 5}" class="meta-right">T.A.: ${academicYear} | Keterangan: H=Hadir, S=Sakit, I=Izin, A=Alpa, D=Dispen</td>
+  </tr>
+  <!-- Meta row 2 -->
+  <tr>
+    <td colspan="5" class="meta-left">Rombel: ${selectedClass === 'ALL' ? 'Semua Kelas' : selectedClass}</td>
+    <td colspan="${numDates + 5}" class="meta-right">Tanggal Cetak: ${getTodayIndonesian()}</td>
+  </tr>
+  <tr><td colspan="${totalCols}" style="border: none; height: 6px;"></td></tr>
+
+  <!-- Table Header Row 1 -->
+  <tr>
+    <th rowspan="2" class="tbl-header" style="width: 32px;">No</th>
+    <th rowspan="2" class="tbl-header" style="width: 85px;">NISN</th>
+    <th rowspan="2" class="tbl-header" style="width: 220px;">Nama Lengkap</th>
+    <th rowspan="2" class="tbl-header" style="width: 55px;">Kelas</th>
+    <th rowspan="2" class="tbl-header" style="width: 40px;">L/P</th>
+    <th colspan="${numDates}" class="tbl-header">Status Presensi</th>
+    <th colspan="5" class="tbl-header">Rekapitulasi Jumlah</th>
   </tr>
 
-  <!-- Row 2: Day Initials & Summary Headers -->
+  <!-- Table Header Row 2 -->
   <tr>
-    <th rowspan="2" class="main-hdr" style="width: 32px;">No</th>
-    <th rowspan="2" class="main-hdr" style="width: 65px;">NIS</th>
-    <th rowspan="2" class="main-hdr" style="width: 220px;">NAMA</th>
-    <th rowspan="2" class="main-hdr" style="width: 35px;">L/P</th>
-    <th rowspan="2" class="main-hdr" style="width: 55px;">KELAS</th>
-    ${dayInitials.map((init) => `<th class="day-name-hdr" style="width: 26px;">${init}</th>`).join('')}
-    <th class="hdr-s" style="width: 32px;">S</th>
-    <th class="hdr-i" style="width: 32px;">I</th>
-    <th class="hdr-a" style="width: 32px;">A</th>
-    <th class="hdr-d" style="width: 32px;">D</th>
-  </tr>
-
-  <!-- Row 3: Day Numbers -->
-  <tr>
-    ${dayNumbers.map((num) => `<th class="day-num-hdr">${num}</th>`).join('')}
-    <th class="hdr-s" style="border-top: none;"></th>
-    <th class="hdr-i" style="border-top: none;"></th>
-    <th class="hdr-a" style="border-top: none;"></th>
-    <th class="hdr-d" style="border-top: none;"></th>
+    ${datesList.map((d) => {
+      const dayNum = parseInt(d.split('-')[2], 10);
+      const isWeekend = isWeekendDay(d);
+      return `<th class="${isWeekend ? 'tbl-header-weekend' : 'tbl-header'}" style="width: 30px;">${dayNum}</th>`;
+    }).join('')}
+    <th class="tbl-header" style="width: 32px;">H</th>
+    <th class="tbl-header" style="width: 32px;">S</th>
+    <th class="tbl-header" style="width: 32px;">I</th>
+    <th class="tbl-header" style="width: 32px;">A</th>
+    <th class="tbl-header" style="width: 32px;">D</th>
   </tr>
 
   <!-- Data Rows -->
   ${recapData.map((item, idx) => {
-    const dailyCells = datesList.map((d, i) => {
-      const isSun = isSundays[i];
-      if (isSun) {
-        return `<td class="sunday-col"></td>`;
-      }
+    const dailyCells = datesList.map((d) => {
+      const isWeekend = isWeekendDay(d);
       const st = recordMap.get(`${item.studentId}_${d}`);
+      if (st === 'H') return `<td class="cell-h">H</td>`;
       if (st === 'S') return `<td class="cell-s">S</td>`;
       if (st === 'I') return `<td class="cell-i">I</td>`;
       if (st === 'A') return `<td class="cell-a">A</td>`;
       if (st === 'D') return `<td class="cell-d">D</td>`;
-      return `<td></td>`;
+      if (isWeekend) return `<td class="cell-weekend">Libur</td>`;
+      return `<td>-</td>`;
     }).join('');
 
     return `
     <tr>
       <td class="text-center">${idx + 1}</td>
       <td class="font-mono text-center">${item.nisn}</td>
-      <td class="text-left" style="font-weight: 500;">${item.name}</td>
+      <td class="text-left">${item.name}</td>
+      <td class="text-center">${item.className}</td>
       <td class="text-center">${item.gender}</td>
-      <td class="text-center font-bold">${item.className}</td>
       ${dailyCells}
+      <td class="text-center font-bold">${item.hadir}</td>
       <td class="text-center font-bold">${item.sakit}</td>
       <td class="text-center font-bold">${item.izin}</td>
       <td class="text-center font-bold">${item.alpa}</td>
       <td class="text-center font-bold">${item.dispen}</td>
     </tr>`;
   }).join('')}
+
+  <!-- TOTAL Row -->
+  <tr class="total-row">
+    <td colspan="5" class="text-center font-bold">TOTAL (${recapData.length} Siswa)</td>
+    ${datesList.map((d) => {
+      if (isWeekendDay(d)) return `<td>-</td>`;
+      let countDayH = 0;
+      recapData.forEach((s) => {
+        if (recordMap.get(`${s.studentId}_${d}`) === 'H') countDayH++;
+      });
+      return `<td class="text-center font-bold">${countDayH}</td>`;
+    }).join('')}
+    <td class="text-center font-bold">${totalH}</td>
+    <td class="text-center font-bold">${totalS}</td>
+    <td class="text-center font-bold">${totalI}</td>
+    <td class="text-center font-bold">${totalA}</td>
+    <td class="text-center font-bold">${totalD}</td>
+  </tr>
+
+  <!-- Signature section -->
+  <tr><td colspan="${totalCols}" style="border: none; height: 16px;"></td></tr>
+  <tr>
+    <td colspan="4" style="border: none; text-align: left; font-size: 10pt;">Mengetahui,</td>
+    <td colspan="${totalCols - 8}" style="border: none;"></td>
+    <td colspan="4" style="border: none; text-align: left; font-size: 10pt;">Kota Batu, ${getTodayIndonesian()}</td>
+  </tr>
+  <tr>
+    <td colspan="4" style="border: none; text-align: left; font-size: 10pt;">Koordinator Guru Piket / Wali Kelas</td>
+    <td colspan="${totalCols - 8}" style="border: none;"></td>
+    <td colspan="4" style="border: none; text-align: left; font-size: 10pt;">Kepala ${schoolProfile.name}</td>
+  </tr>
+  <tr><td colspan="${totalCols}" style="border: none; height: 40px;"></td></tr>
+  <tr>
+    <td colspan="4" style="border: none; text-align: left; font-size: 10pt;">(..................................................)</td>
+    <td colspan="${totalCols - 8}" style="border: none;"></td>
+    <td colspan="4" style="border: none; text-align: left; font-size: 10pt; font-weight: bold;">${schoolProfile.principalName}</td>
+  </tr>
+  <tr>
+    <td colspan="4" style="border: none; text-align: left; font-size: 10pt;">NIP. ........................................</td>
+    <td colspan="${totalCols - 8}" style="border: none;"></td>
+    <td colspan="4" style="border: none; text-align: left; font-size: 10pt;">NIP. ${schoolProfile.principalNip}</td>
+  </tr>
 </table>
 </body>
 </html>
@@ -273,7 +314,7 @@ export const exportAttendanceToExcel = (
   const link = document.createElement('a');
   link.href = url;
   const sanitizedClassName = selectedClass === 'ALL' ? 'Semua_Kelas' : selectedClass.replace(/\s+/g, '_');
-  link.download = `Rekap_Absensi_Siswa_${sanitizedClassName}_${monthName}_${startYear}.xls`;
+  link.download = `Rekapitulasi_Absensi_Siswa_${sanitizedClassName}_${startDate}_sd_${endDate}.xls`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -281,11 +322,13 @@ export const exportAttendanceToExcel = (
 };
 
 /**
- * Ekspor Rekapitulasi Presensi SMAN 1 Batu ke format PDF
- * Layout Landscape sesuai persis dengan gambar lampiran:
- * - Header 3 baris terstruktur (Judul TA, Inisial Hari, Angka Tanggal, JUMLAH S/I/A/D)
- * - Kolom Hari Minggu berwarna Merah Solid
- * - Label S, I, A, D berwarna khusus
+ * Ekspor Rekapitulasi Presensi ke format PDF
+ * Layout sesuai format:
+ * - Tanpa kop dinas resmi, judul: "Rekapitulasi Absensi Siswa"
+ * - Subheader periode & rombel
+ * - Header tabel bertingkat dengan warna Teal & Merah untuk Sabtu/Minggu (hari libur)
+ * - Warna kotak status disesuaikan (H=Hijau, S=Kuning/Amber, I=Biru, A=Merah, D=Ungu)
+ * - Kolom rekapitulasi jumlah H, S, I, A, D dan baris TOTAL di bawah
  */
 export const exportAttendanceToPdf = (
   schoolProfile: SchoolProfile,
@@ -301,17 +344,14 @@ export const exportAttendanceToPdf = (
     format: 'a4',
   });
 
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
   const datesList = getDatesRangeList(startDate, endDate);
-  const startParts = startDate.split('-');
-  const startYear = startParts[0] || '2026';
-  const startMonthIdx = parseInt(startParts[1] || '5', 10) - 1;
-  const monthNames = [
-    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-  ];
-  const monthName = monthNames[startMonthIdx] || 'Bulan';
+  const numDates = datesList.length;
   const academicYear = schoolProfile.academicYear || '2025/2026';
+  const marginX = numDates > 20 ? 8 : 12;
 
+  // Map student attendance per date
   const recordMap = new Map<string, string>();
   if (attendanceRecords) {
     attendanceRecords.forEach((r) => {
@@ -321,67 +361,72 @@ export const exportAttendanceToPdf = (
     });
   }
 
-  const dayInitials = datesList.map((d) => getIndonesianDayInitial(d));
-  const dayNumbers = datesList.map((d) => parseInt(d.split('-')[2], 10));
-  const isSundays = datesList.map((d) => isSundayDate(d));
+  // Calculate totals
+  const totalH = recapData.reduce((acc, c) => acc + c.hadir, 0);
+  const totalS = recapData.reduce((acc, c) => acc + c.sakit, 0);
+  const totalI = recapData.reduce((acc, c) => acc + c.izin, 0);
+  const totalA = recapData.reduce((acc, c) => acc + c.alpa, 0);
+  const totalD = recapData.reduce((acc, c) => acc + c.dispen, 0);
 
-  const totalDateCols = datesList.length || 1;
-  const midCol1 = Math.floor(totalDateCols / 2);
-  const midCol2 = totalDateCols - midCol1;
+  // 1. Judul di atas tabel: "Rekapitulasi Absensi Siswa"
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(13);
+  doc.setTextColor(15, 23, 42);
+  doc.text('Rekapitulasi Absensi Siswa', pageWidth / 2, 13, { align: 'center' });
 
-  // Header configuration
-  const head = [
-    // Row 1: Top Titles
+  // 2. Subheader Periode & Rombel
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(51, 65, 85);
+  doc.text(`Periode: ${formatDateIndonesian(startDate)} s.d. ${formatDateIndonesian(endDate)} (${getDaysDifference(startDate, endDate)} Hari)`, marginX, 19);
+  doc.text(`Rombel: ${selectedClass === 'ALL' ? 'Semua Kelas' : selectedClass}`, marginX, 23.5);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(71, 85, 105);
+  doc.text(`T.A.: ${academicYear} | Keterangan: H=Hadir, S=Sakit, I=Izin, A=Alpa, D=Dispen`, pageWidth - marginX, 19, { align: 'right' });
+  doc.text(`Tanggal Cetak: ${getTodayIndonesian()}`, pageWidth - marginX, 23.5, { align: 'right' });
+
+  // 3. Header Tabel Bertingkat
+  const headConfig: any[] = [
     [
-      { content: `REKAP ABSENSI SISWA TAHUN PELAJARAN ${academicYear}`, colSpan: 5, styles: { halign: 'left', fontStyle: 'bold', fillColor: [255, 255, 255], textColor: [0, 0, 0] } },
-      { content: monthName, colSpan: midCol1, styles: { halign: 'center', fontStyle: 'bold', fillColor: [255, 255, 255], textColor: [0, 0, 0] } },
-      { content: startYear, colSpan: midCol2, styles: { halign: 'center', fontStyle: 'bold', fillColor: [255, 255, 255], textColor: [0, 0, 0] } },
-      { content: 'JUMLAH', colSpan: 4, styles: { halign: 'center', fontStyle: 'bold', fillColor: [255, 255, 255], textColor: [0, 0, 0] } },
+      { content: 'No', rowSpan: 2 },
+      { content: 'NISN', rowSpan: 2 },
+      { content: 'Nama Lengkap', rowSpan: 2 },
+      { content: 'Kelas', rowSpan: 2 },
+      { content: 'L/P', rowSpan: 2 },
+      { content: 'Status Presensi', colSpan: numDates },
+      { content: 'Rekapitulasi Jumlah', colSpan: 5 },
     ],
-    // Row 2: Day Initials & Summary Headers
     [
-      { content: 'No', rowSpan: 2, styles: { halign: 'center', valign: 'middle', fillColor: [255, 255, 255], fontStyle: 'bold' } },
-      { content: 'NIS', rowSpan: 2, styles: { halign: 'center', valign: 'middle', fillColor: [255, 255, 255], fontStyle: 'bold' } },
-      { content: 'NAMA', rowSpan: 2, styles: { halign: 'center', valign: 'middle', fillColor: [255, 255, 255], fontStyle: 'bold' } },
-      { content: 'L/P', rowSpan: 2, styles: { halign: 'center', valign: 'middle', fillColor: [255, 255, 255], fontStyle: 'bold' } },
-      { content: 'KELAS', rowSpan: 2, styles: { halign: 'center', valign: 'middle', fillColor: [255, 255, 255], fontStyle: 'bold' } },
-      ...dayInitials.map((init) => ({
-        content: init,
-        styles: { halign: 'center', valign: 'middle', fillColor: [255, 229, 153], textColor: [0, 0, 0], fontStyle: 'bold' }
+      ...datesList.map((d) => ({
+        content: String(parseInt(d.split('-')[2], 10)),
       })),
-      { content: 'S', styles: { halign: 'center', valign: 'middle', fillColor: [169, 208, 142], textColor: [0, 0, 0], fontStyle: 'bold' } },
-      { content: 'I', styles: { halign: 'center', valign: 'middle', fillColor: [248, 203, 173], textColor: [0, 0, 0], fontStyle: 'bold' } },
-      { content: 'A', styles: { halign: 'center', valign: 'middle', fillColor: [244, 176, 132], textColor: [0, 0, 0], fontStyle: 'bold' } },
-      { content: 'D', styles: { halign: 'center', valign: 'middle', fillColor: [255, 242, 204], textColor: [0, 0, 0], fontStyle: 'bold' } },
-    ],
-    // Row 3: Day Numbers
-    [
-      ...dayNumbers.map((num) => ({
-        content: String(num),
-        styles: { halign: 'center', valign: 'middle', fillColor: [155, 194, 230], textColor: [0, 0, 0], fontStyle: 'bold' }
-      })),
-      { content: '', styles: { fillColor: [169, 208, 142] } },
-      { content: '', styles: { fillColor: [248, 203, 173] } },
-      { content: '', styles: { fillColor: [244, 176, 132] } },
-      { content: '', styles: { fillColor: [255, 242, 204] } },
+      { content: 'H' },
+      { content: 'S' },
+      { content: 'I' },
+      { content: 'A' },
+      { content: 'D' },
     ],
   ];
 
-  // Body rows
-  const body = recapData.map((item, idx) => {
-    const dailyVals = datesList.map((d, i) => {
-      if (isSundays[i]) return '';
+  // 4. Baris Data Siswa
+  const tableRows: any[] = recapData.map((item, idx) => {
+    const dailyVals = datesList.map((d) => {
       const st = recordMap.get(`${item.studentId}_${d}`);
-      return (st === 'S' || st === 'I' || st === 'A' || st === 'D') ? st : '';
+      if (st === 'H' || st === 'S' || st === 'I' || st === 'A' || st === 'D') return st;
+      if (isWeekendDay(d)) return 'Libur';
+      return '-';
     });
 
     return [
       idx + 1,
       item.nisn,
       item.name,
-      item.gender,
       item.className,
+      item.gender,
       ...dailyVals,
+      item.hadir,
       item.sakit,
       item.izin,
       item.alpa,
@@ -389,71 +434,155 @@ export const exportAttendanceToPdf = (
     ];
   });
 
-  const numDates = datesList.length;
-  const dayColWidth = numDates > 0 ? Math.min(6, 175 / numDates) : 5.5;
+  // 5. Baris TOTAL di bawah
+  const dailyTotals = datesList.map((d) => {
+    if (isWeekendDay(d)) return '-';
+    let countDayH = 0;
+    recapData.forEach((s) => {
+      if (recordMap.get(`${s.studentId}_${d}`) === 'H') countDayH++;
+    });
+    return String(countDayH);
+  });
+
+  tableRows.push([
+    { content: `TOTAL (${recapData.length} Siswa)`, colSpan: 5, styles: { halign: 'center', fontStyle: 'bold' } },
+    ...dailyTotals,
+    totalH,
+    totalS,
+    totalI,
+    totalA,
+    totalD,
+  ]);
+
+  // Column width calculations
+  let colWidths: { [key: number]: any } = {};
+  const dayColW = numDates > 25 ? 4.5 : numDates > 15 ? 5.5 : numDates > 7 ? 6.5 : 8;
+  const sumColW = numDates > 25 ? 5 : numDates > 15 ? 6 : 7;
+
+  colWidths[0] = { halign: 'center', cellWidth: numDates > 25 ? 6 : 8 };
+  colWidths[1] = { halign: 'center', cellWidth: numDates > 25 ? 18 : 22 };
+  colWidths[2] = { halign: 'left', cellWidth: numDates > 25 ? 40 : numDates > 15 ? 50 : 65 };
+  colWidths[3] = { halign: 'center', cellWidth: numDates > 25 ? 11 : 14 };
+  colWidths[4] = { halign: 'center', cellWidth: numDates > 25 ? 7 : 9 };
+
+  for (let i = 0; i < numDates; i++) {
+    colWidths[5 + i] = { halign: 'center', cellWidth: dayColW };
+  }
+  for (let i = 0; i < 5; i++) {
+    colWidths[5 + numDates + i] = { halign: 'center', cellWidth: sumColW, fontStyle: 'bold' };
+  }
 
   autoTable(doc, {
-    head,
-    body,
-    startY: 6,
-    margin: { top: 6, left: 6, right: 6, bottom: 6 },
+    startY: 27,
+    head: headConfig,
+    body: tableRows,
+    theme: 'grid',
     styles: {
-      fontSize: 6.5,
-      cellPadding: 0.5,
+      fontSize: numDates > 25 ? 5.5 : numDates > 15 ? 6.5 : 7.5,
+      cellPadding: numDates > 25 ? 0.5 : 0.8,
       lineWidth: 0.1,
-      lineColor: [0, 0, 0],
-      textColor: [0, 0, 0],
+      lineColor: [203, 213, 225],
+      textColor: [30, 41, 59],
       valign: 'middle',
     },
-    columnStyles: {
-      0: { halign: 'center', cellWidth: 6 },
-      1: { halign: 'center', cellWidth: 15 },
-      2: { halign: 'left', cellWidth: numDates > 25 ? 42 : 55 },
-      3: { halign: 'center', cellWidth: 6 },
-      4: { halign: 'center', cellWidth: 11 },
+    headStyles: {
+      fillColor: [15, 118, 110], // Teal
+      textColor: [255, 255, 255],
+      fontSize: numDates > 25 ? 6 : 7.5,
+      fontStyle: 'bold',
+      halign: 'center',
+      valign: 'middle',
     },
+    columnStyles: colWidths,
     didParseCell: (data) => {
-      const colIdx = data.column.index;
-      if (data.section === 'body') {
-        if (colIdx >= 5 && colIdx < 5 + numDates) {
-          const dateIdx = colIdx - 5;
-          const isSun = isSundays[dateIdx];
-          if (isSun) {
-            data.cell.styles.fillColor = [239, 68, 68]; // Red Sunday column
+      // Header weekend styling (Sabtu & Minggu berwarna merah)
+      if (data.section === 'head') {
+        if (data.row.index === 1) {
+          const dIdx = data.column.index - 5;
+          if (dIdx >= 0 && dIdx < numDates && isWeekendDay(datesList[dIdx])) {
+            data.cell.styles.fillColor = [220, 38, 38]; // Merah hari libur
             data.cell.styles.textColor = [255, 255, 255];
-          } else {
-            const rawVal = data.cell.raw;
-            if (rawVal === 'S') {
-              data.cell.styles.fillColor = [169, 208, 142];
-              data.cell.styles.textColor = [0, 0, 0];
-              data.cell.styles.fontStyle = 'bold';
-            } else if (rawVal === 'I') {
-              data.cell.styles.fillColor = [248, 203, 173];
-              data.cell.styles.textColor = [0, 0, 0];
-              data.cell.styles.fontStyle = 'bold';
-            } else if (rawVal === 'A') {
-              data.cell.styles.fillColor = [244, 176, 132];
-              data.cell.styles.textColor = [0, 0, 0];
-              data.cell.styles.fontStyle = 'bold';
-            } else if (rawVal === 'D') {
-              data.cell.styles.fillColor = [255, 242, 204];
-              data.cell.styles.textColor = [0, 0, 0];
-              data.cell.styles.fontStyle = 'bold';
-            }
           }
-          data.cell.styles.halign = 'center';
-          data.cell.styles.cellWidth = dayColWidth;
-        } else if (colIdx >= 5 + numDates) {
-          data.cell.styles.halign = 'center';
+        }
+      }
+
+      // Body styling
+      if (data.section === 'body') {
+        // Highlight total bottom row
+        if (data.row.index === tableRows.length - 1) {
           data.cell.styles.fontStyle = 'bold';
-          data.cell.styles.cellWidth = 6.5;
+          data.cell.styles.fillColor = [226, 232, 240];
+          return;
+        }
+
+        const colIdx = data.column.index;
+        // Tanggal columns
+        if (colIdx >= 5 && colIdx < 5 + numDates) {
+          const dIdx = colIdx - 5;
+          const isWeekend = isWeekendDay(datesList[dIdx]);
+          const rawVal = data.cell.raw;
+
+          if (rawVal === 'H') {
+            data.cell.styles.fillColor = [220, 252, 231]; // Soft Green
+            data.cell.styles.textColor = [22, 101, 52];
+            data.cell.styles.fontStyle = 'bold';
+          } else if (rawVal === 'S') {
+            data.cell.styles.fillColor = [254, 243, 199]; // Soft Amber
+            data.cell.styles.textColor = [146, 64, 14];
+            data.cell.styles.fontStyle = 'bold';
+          } else if (rawVal === 'I') {
+            data.cell.styles.fillColor = [224, 242, 254]; // Soft Sky Blue
+            data.cell.styles.textColor = [7, 89, 133];
+            data.cell.styles.fontStyle = 'bold';
+          } else if (rawVal === 'A') {
+            data.cell.styles.fillColor = [254, 226, 226]; // Soft Red
+            data.cell.styles.textColor = [153, 27, 27];
+            data.cell.styles.fontStyle = 'bold';
+          } else if (rawVal === 'D') {
+            data.cell.styles.fillColor = [243, 232, 255]; // Soft Purple
+            data.cell.styles.textColor = [107, 33, 168];
+            data.cell.styles.fontStyle = 'bold';
+          } else if (isWeekend || rawVal === 'Libur') {
+            data.cell.styles.fillColor = [254, 226, 226]; // Libur Red Tint
+            data.cell.styles.textColor = [220, 38, 38];
+            data.cell.styles.fontStyle = 'bold';
+            data.cell.text = ['Libur'];
+          }
         }
       }
     },
+    margin: { left: marginX, right: marginX },
   });
 
+  const finalY = (doc as any).lastAutoTable.finalY + 8;
+  let sigY = finalY;
+
+  if (sigY > pageHeight - 36) {
+    doc.addPage();
+    sigY = 20;
+  }
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8.5);
+  doc.setTextColor(30, 41, 59);
+
+  // Left side signature: Koordinator Guru Piket / Wali Kelas
+  doc.text('Mengetahui,', marginX + 10, sigY);
+  doc.text('Koordinator Guru Piket / Wali Kelas', marginX + 10, sigY + 4.5);
+  doc.text('(..................................................)', marginX + 10, sigY + 22);
+  doc.text('NIP. ........................................', marginX + 10, sigY + 26.5);
+
+  // Right side signature: Kepala SMAN 1 Batu
+  const rightX = pageWidth - marginX - 65;
+  doc.text(`Kota Batu, ${getTodayIndonesian()}`, rightX, sigY);
+  doc.text(`Kepala ${schoolProfile.name}`, rightX, sigY + 4.5);
+  doc.setFont('helvetica', 'bold');
+  doc.text(schoolProfile.principalName, rightX, sigY + 22);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`NIP. ${schoolProfile.principalNip}`, rightX, sigY + 26.5);
+
   const sanitizedClassName = selectedClass === 'ALL' ? 'Semua_Kelas' : selectedClass.replace(/\s+/g, '_');
-  doc.save(`Rekap_Absensi_Siswa_${sanitizedClassName}_${monthName}_${startYear}.pdf`);
+  doc.save(`Rekapitulasi_Absensi_Siswa_${sanitizedClassName}_${startDate}_sd_${endDate}.pdf`);
 };
 
 
