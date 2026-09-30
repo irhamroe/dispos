@@ -3,7 +3,6 @@ import {
   UserCheck, 
   Search, 
   Phone, 
-  Mail, 
   Edit3, 
   Trash2,
   Plus, 
@@ -274,7 +273,7 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
                 <th className="py-2.5 px-2 w-10 text-center">No</th>
                 <th className="py-2.5 px-3 min-w-[200px]">Nama Guru &amp; NIP</th>
                 <th className="py-2.5 px-3 min-w-[130px] text-center">Rombel Binaan</th>
-                <th className="py-2.5 px-3 min-w-[180px]">Kontak &amp; Email Dinas</th>
+                <th className="py-2.5 px-3 min-w-[150px]">Kontak / No. HP</th>
                 <th className="py-2.5 px-2 w-32 text-center bg-slate-100">Aksi</th>
               </tr>
             </thead>
@@ -339,7 +338,7 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
                         </div>
                       </td>
 
-                      {/* Kontak WhatsApp & Email */}
+                      {/* Kontak WhatsApp */}
                       <td className="py-2.5 px-3 text-slate-600">
                         <div className="flex items-center gap-1.5">
                           <a
@@ -364,10 +363,6 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
                               <Copy className="w-3 h-3" />
                             )}
                           </button>
-                        </div>
-                        <div className="flex items-center gap-1 font-mono text-[10.5px] text-slate-500 mt-0.5">
-                          <Mail className="w-3 h-3 text-slate-400 shrink-0" />
-                          <span className="truncate">{t.email}</span>
                         </div>
                       </td>
 
