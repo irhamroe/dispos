@@ -50,8 +50,14 @@ export default function App() {
   // Authentication state
   const [currentUser, setCurrentUser] = useState<AdminUser | null>(() => {
     try {
-      const saved = localStorage.getItem('app_sman1batu_admin_user');
-      return saved ? JSON.parse(saved) : defaultAdminUser;
+      localStorage.removeItem('app_sman1batu_admin_user');
+      localStorage.removeItem('app_sman1batu_admin_user_v2');
+      const saved = localStorage.getItem('app_sman1batu_admin_user_v4');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed?.username === 'admin' || parsed?.role === 'Wali Kelas') return parsed;
+      }
+      return defaultAdminUser;
     } catch {
       return defaultAdminUser;
     }
@@ -60,12 +66,18 @@ export default function App() {
   // Classes state (36 Rombel X-1 to XII-12)
   const [classes, setClasses] = useState<RombelClass[]>(() => {
     try {
-      const saved = localStorage.getItem('app_sman1batu_classes');
+      localStorage.removeItem('app_sman1batu_classes');
+      localStorage.removeItem('app_sman1batu_classes_v2');
+      const saved = localStorage.getItem('app_sman1batu_classes_v4');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length >= 36) return sortClasses(parsed);
+        if (Array.isArray(parsed) && parsed.length >= 36 && parsed[0]?.homeroom === initialClasses[0]?.homeroom) {
+          return sortClasses(parsed);
+        }
       }
-      return sortClasses(initialClasses);
+      const sorted = sortClasses(initialClasses);
+      localStorage.setItem('app_sman1batu_classes_v4', JSON.stringify(sorted));
+      return sorted;
     } catch {
       return sortClasses(initialClasses);
     }
@@ -74,12 +86,18 @@ export default function App() {
   // Wali Kelas state (36 Teachers)
   const [waliKelasList, setWaliKelasList] = useState<WaliKelasTeacher[]>(() => {
     try {
-      const saved = localStorage.getItem('app_sman1batu_walikelas');
+      localStorage.removeItem('app_sman1batu_walikelas');
+      localStorage.removeItem('app_sman1batu_walikelas_v2');
+      const saved = localStorage.getItem('app_sman1batu_walikelas_v4');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length >= 36) return sortWaliKelas(parsed);
+        if (Array.isArray(parsed) && parsed.length >= 36 && parsed[0]?.name === initialWaliKelas[0]?.name) {
+          return sortWaliKelas(parsed);
+        }
       }
-      return sortWaliKelas(initialWaliKelas);
+      const sorted = sortWaliKelas(initialWaliKelas);
+      localStorage.setItem('app_sman1batu_walikelas_v4', JSON.stringify(sorted));
+      return sorted;
     } catch {
       return sortWaliKelas(initialWaliKelas);
     }
@@ -143,14 +161,19 @@ export default function App() {
     }
   });
 
-  // Users state (Multi-Role: Admin, Wali Kelas, Guru, Tendik)
+  // Users state (Multi-Role: Admin + 36 Wali Kelas)
   const [users, setUsers] = useState<AdminUser[]>(() => {
     try {
-      const saved = localStorage.getItem('app_sman1batu_users');
+      localStorage.removeItem('app_sman1batu_users');
+      localStorage.removeItem('app_sman1batu_users_v2');
+      const saved = localStorage.getItem('app_sman1batu_users_v4');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length >= 37 && parsed.some((u) => u.username === 'admin' && u.password === 'smabadispos')) {
+          return parsed;
+        }
       }
+      localStorage.setItem('app_sman1batu_users_v4', JSON.stringify(initialUsers));
       return initialUsers;
     } catch {
       return initialUsers;
@@ -176,7 +199,7 @@ export default function App() {
 
     setIsFirebaseConnected(true);
 
-    // Initial check: if Firestore is clean/empty or has stale demo data, seed real 1,274 students
+    // Initial check: if Firestore is clean/empty or has stale demo data, seed real data
     const checkAndSeedOnline = async () => {
       try {
         const [remoteStudents, remoteClasses, remoteWali, remoteRules, remoteUsers] = await Promise.all([
@@ -198,17 +221,40 @@ export default function App() {
           await batchSaveDocuments(COLLECTIONS.STUDENTS, initialStudents);
           setStudents(sortStudents(initialStudents));
         }
-        if (remoteClasses.length === 0) {
-          batchSaveDocuments(COLLECTIONS.CLASSES, initialClasses).catch(() => {});
+
+        const isStaleWali = remoteWali.length > 0 && (
+          remoteWali.length < 36 ||
+          remoteWali[0]?.name !== initialWaliKelas[0]?.name ||
+          remoteWali.some((w) => w.name === 'Drs. H. Mulyadi')
+        );
+        if (remoteWali.length === 0 || isStaleWali) {
+          await deleteAllDocumentsInCollection(COLLECTIONS.WALI_KELAS);
+          await batchSaveDocuments(COLLECTIONS.WALI_KELAS, initialWaliKelas);
+          setWaliKelasList(sortWaliKelas(initialWaliKelas));
         }
-        if (remoteWali.length === 0) {
-          batchSaveDocuments(COLLECTIONS.WALI_KELAS, initialWaliKelas).catch(() => {});
+
+        const isStaleClasses = remoteClasses.length > 0 && (
+          remoteClasses.length < 36 ||
+          remoteClasses[0]?.homeroom !== initialClasses[0]?.homeroom
+        );
+        if (remoteClasses.length === 0 || isStaleClasses) {
+          await deleteAllDocumentsInCollection(COLLECTIONS.CLASSES);
+          await batchSaveDocuments(COLLECTIONS.CLASSES, initialClasses);
+          setClasses(sortClasses(initialClasses));
         }
+
+        const isStaleUsers = remoteUsers.length > 0 && (
+          remoteUsers.length < 37 ||
+          remoteUsers.some((u) => u.username === 'walikelas' || u.username === 'operator')
+        );
+        if (remoteUsers.length === 0 || isStaleUsers) {
+          await deleteAllDocumentsInCollection(COLLECTIONS.USERS);
+          await batchSaveDocuments(COLLECTIONS.USERS, initialUsers);
+          setUsers(initialUsers);
+        }
+
         if (remoteRules.length === 0) {
           batchSaveDocuments(COLLECTIONS.VIOLATION_RULES, sampleViolationCatalog).catch(() => {});
-        }
-        if (remoteUsers.length === 0) {
-          batchSaveDocuments(COLLECTIONS.USERS, initialUsers).catch(() => {});
         }
       } catch (e) {
         console.warn('Auto-seed check failed:', e);
@@ -292,18 +338,18 @@ export default function App() {
   // Persist state to localStorage
   useEffect(() => {
     if (currentUser) {
-      localStorage.setItem('app_sman1batu_admin_user', JSON.stringify(currentUser));
+      localStorage.setItem('app_sman1batu_admin_user_v4', JSON.stringify(currentUser));
     } else {
-      localStorage.removeItem('app_sman1batu_admin_user');
+      localStorage.removeItem('app_sman1batu_admin_user_v4');
     }
   }, [currentUser]);
 
   useEffect(() => {
-    localStorage.setItem('app_sman1batu_classes', JSON.stringify(classes));
+    localStorage.setItem('app_sman1batu_classes_v4', JSON.stringify(classes));
   }, [classes]);
 
   useEffect(() => {
-    localStorage.setItem('app_sman1batu_walikelas', JSON.stringify(waliKelasList));
+    localStorage.setItem('app_sman1batu_walikelas_v4', JSON.stringify(waliKelasList));
   }, [waliKelasList]);
 
   useEffect(() => {
@@ -323,7 +369,7 @@ export default function App() {
   }, [violationRules]);
 
   useEffect(() => {
-    localStorage.setItem('app_sman1batu_users', JSON.stringify(users));
+    localStorage.setItem('app_sman1batu_users_v4', JSON.stringify(users));
   }, [users]);
 
   // Login handler

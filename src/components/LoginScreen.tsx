@@ -24,48 +24,48 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   users = [],
 }) => {
   const [username, setUsername] = useState('admin');
-  const [password, setPassword] = useState('admin123');
+  const [password, setPassword] = useState('smabadispos');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedPreset, setSelectedPreset] = useState<'admin' | 'wali' | 'guru' | 'tendik'>('admin');
+  const [selectedPreset, setSelectedPreset] = useState<string>('admin');
 
   const presetAccounts = [
     {
-      type: 'admin' as const,
-      role: '1. Admin (Super Admin)',
-      name: 'Drs. Rr. Wulandari Wahyuningsih, M.Pd.',
+      type: 'admin',
+      role: '1. Administrator (Super Admin)',
+      name: 'Admin',
       username: 'admin',
-      pass: 'admin123',
+      pass: 'smabadispos',
       badgeColor: 'bg-purple-900/60 text-purple-200 border-purple-700',
-      desc: 'Akses penuh seluruh 36 rombel, manajemen akun & aturan sekolah',
+      desc: 'Akses penuh sistem, kelola seluruh data wali kelas & siswa',
     },
     {
-      type: 'wali' as const,
-      role: '2. Wali Kelas (Kelas X-1)',
-      name: 'Drs. H. Mulyadi',
-      username: 'walikelas',
-      pass: 'wali123',
+      type: 'wali-x1',
+      role: '2. Wali Kelas X-1',
+      name: 'Dini Ayupratiwi, S.Pd',
+      username: '19940728 202421 2 057',
+      pass: '19940728 202421 2 057',
       badgeColor: 'bg-teal-900/60 text-teal-200 border-teal-700',
-      desc: 'Pantauan presensi rombel binaan & terbitkan surat panggilan ortu',
+      desc: 'Wali Kelas X-1 (Login menggunakan NIP)',
     },
     {
-      type: 'guru' as const,
-      role: '3. Guru (Piket / Mapel / BK)',
-      name: 'Ahmad Fauzan, M.Si.',
-      username: 'guru',
-      pass: 'guru123',
-      badgeColor: 'bg-sky-900/60 text-sky-200 border-sky-700',
-      desc: 'Input absensi harian / piket gerbang & pencatatan poin pelanggaran',
+      type: 'wali-xi5',
+      role: '3. Wali Kelas XI-5',
+      name: 'Moh. Irham Rozaki, S.Kom., Gr.',
+      username: '19891021 202221 1 017',
+      pass: '19891021 202221 1 017',
+      badgeColor: 'bg-teal-900/60 text-teal-200 border-teal-700',
+      desc: 'Wali Kelas XI-5 (Login menggunakan NIP)',
     },
     {
-      type: 'tendik' as const,
-      role: '4. Tendik (Tata Usaha)',
-      name: 'Joko Purwanto, S.AP.',
-      username: 'tendik',
-      pass: 'tendik123',
-      badgeColor: 'bg-amber-900/60 text-amber-200 border-amber-700',
-      desc: 'Pelayanan administrasi kesiswaan, surat izin/sakit & kearsipan',
+      type: 'wali-xii1',
+      role: '4. Wali Kelas XII-1',
+      name: 'Indah Herawati, S.Si',
+      username: '19800430 201001 2 006',
+      pass: '19800430 201001 2 006',
+      badgeColor: 'bg-teal-900/60 text-teal-200 border-teal-700',
+      desc: 'Wali Kelas XII-1 (Login menggunakan NIP)',
     },
   ];
 
@@ -82,10 +82,43 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
     setIsLoading(true);
 
     setTimeout(() => {
-      // 1. Check custom users passed or saved
-      const foundInUsers = users.find(
-        (u) => u.username.toLowerCase() === username.trim().toLowerCase()
-      );
+      const cleanInputUser = username.trim().replace(/\s+/g, '').toLowerCase();
+      const cleanInputPass = password.trim().replace(/\s+/g, '');
+      const rawInputUser = username.trim().toLowerCase();
+      const rawInputPass = password.trim();
+
+      // 1. Direct check for Admin user (username: admin, password: smabadispos)
+      if (rawInputUser === 'admin' && rawInputPass === 'smabadispos') {
+        setIsLoading(false);
+        const adminFromUsers = users.find((u) => u.username.toLowerCase() === 'admin');
+        if (adminFromUsers) {
+          onLoginSuccess(adminFromUsers);
+        } else {
+          onLoginSuccess({
+            id: 'usr-admin',
+            username: 'admin',
+            name: 'Admin',
+            role: 'Admin',
+            avatar: 'AD',
+            status: 'Aktif',
+            password: 'smabadispos',
+            department: 'Administrator SIM Presensi',
+          });
+        }
+        return;
+      }
+
+      // 2. Check matched user from users list (by Username or NIP, with or without spaces)
+      const foundInUsers = users.find((u) => {
+        const uName = u.username.trim().replace(/\s+/g, '').toLowerCase();
+        const uRawName = u.username.trim().toLowerCase();
+        const uNip = (u.nip || '').trim().replace(/\s+/g, '').toLowerCase();
+        return (
+          uName === cleanInputUser ||
+          uRawName === rawInputUser ||
+          uNip === cleanInputUser
+        );
+      });
 
       if (foundInUsers) {
         if (foundInUsers.status === 'Nonaktif') {
@@ -94,55 +127,25 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
           return;
         }
 
-        // Check password
-        const expectedPass = foundInUsers.password || 'admin123';
-        if (password === expectedPass || password === 'admin' || password === 'admin123') {
+        // Check password (support formatted NIP with spaces or compact digits)
+        const expectedPass = (foundInUsers.password || '').trim().replace(/\s+/g, '');
+        const rawExpectedPass = (foundInUsers.password || '').trim();
+        const nipClean = (foundInUsers.nip || '').trim().replace(/\s+/g, '');
+
+        if (
+          cleanInputPass === expectedPass ||
+          rawInputPass === rawExpectedPass ||
+          cleanInputPass === nipClean ||
+          (foundInUsers.role === 'Admin' && rawInputPass === 'smabadispos')
+        ) {
           setIsLoading(false);
           onLoginSuccess(foundInUsers);
           return;
         }
       }
 
-      // 2. Find matching preset
-      const match = presetAccounts.find(
-        (p) => p.username === username.trim() && p.pass === password
-      );
-
-      if (match) {
-        setIsLoading(false);
-        const mappedRole = match.type === 'admin' ? 'Admin' 
-          : match.type === 'wali' ? 'Wali Kelas' 
-          : match.type === 'guru' ? 'Guru' 
-          : 'Tendik';
-
-        onLoginSuccess({
-          id: `usr-${match.type}`,
-          username: match.username,
-          name: match.name,
-          role: mappedRole,
-          email: `${match.username}@sman1batu.sch.id`,
-          assignedClass: match.type === 'wali' ? 'X-1' : undefined,
-          department: match.type === 'tendik' ? 'Koordinator Tata Usaha' : undefined,
-          avatar: match.name.split(' ').slice(0, 2).map((n) => n[0]).join(''),
-          status: 'Aktif',
-          password: match.pass,
-        });
-      } else if (username === 'admin' && (password === 'admin' || password === 'admin123')) {
-        setIsLoading(false);
-        onLoginSuccess({
-          id: 'usr-admin',
-          username: 'admin',
-          name: 'Drs. Rr. Wulandari Wahyuningsih, M.Pd.',
-          role: 'Admin',
-          email: 'admin@sman1batu.sch.id',
-          avatar: 'WW',
-          status: 'Aktif',
-          password: 'admin123',
-        });
-      } else {
-        setIsLoading(false);
-        setErrorMsg('Username atau password tidak cocok. Silakan gunakan salah satu dari 4 akun peran demo di bawah atau periksa kembali kredensial Anda.');
-      }
+      setIsLoading(false);
+      setErrorMsg('Username atau password tidak cocok. Untuk Wali Kelas, gunakan NIP sebagai Username dan Password. Untuk Admin, gunakan user: admin dan password: smabadispos.');
     }, 400);
   };
 

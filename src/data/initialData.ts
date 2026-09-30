@@ -24,134 +24,89 @@ export interface RombelClass {
   capacity?: number;
 }
 
-const teacherPool = [
-  { name: 'Drs. H. Mulyadi', nip: '19680512 199303 1 004', phone: '0812-3341-2001', status: 'PNS' as const },
-  { name: 'Siti Aminah, S.Pd., M.Pd.', nip: '19740822 199802 2 003', phone: '0813-5562-2002', status: 'PNS' as const },
-  { name: 'Bambang Sugiantoro, M.Pd.', nip: '19710319 199703 1 005', phone: '0812-4478-2003', status: 'PNS' as const },
-  { name: 'Sri Rahayu, S.Pd.', nip: '19760614 200003 2 006', phone: '0815-7789-2004', status: 'PNS' as const },
-  { name: 'Ahmad Fauzan, M.Si.', nip: '19800918 200501 1 008', phone: '0812-8899-2005', status: 'PNS' as const },
-  { name: 'Dwi Astuti, S.Kom., M.T.', nip: '19830211 200801 2 012', phone: '0813-9912-2006', status: 'PNS' as const },
-  { name: 'Hendra Kusuma, S.Pd.', nip: '19790425 200604 1 009', phone: '0812-1123-2007', status: 'PNS' as const },
-  { name: 'Nurul Aini, M.Pd.', nip: '19821105 200902 2 011', phone: '0815-2234-2008', status: 'PNS' as const },
-  { name: 'Agus Priyono, S.T., M.Pd.', nip: '19770130 200312 1 007', phone: '0812-3345-2009', status: 'PNS' as const },
-  { name: 'Endang Lestari, S.Pd.', nip: '19850719 201001 2 015', phone: '0813-4456-2010', status: 'PPPK' as const },
-  { name: 'Wahyu Widodo, M.Pd.', nip: '19730914 199903 1 006', phone: '0812-5567-2011', status: 'PNS' as const },
-  { name: 'Rina Suryani, S.Pd.', nip: '19861208 201101 2 018', phone: '0815-6678-2012', status: 'PPPK' as const },
-  { name: 'Dr. Joko Santoso, M.Pd.', nip: '19700416 199512 1 003', phone: '0812-7789-2013', status: 'PNS' as const },
-  { name: 'Yuni Astuti, S.Pd.', nip: '19840321 200903 2 014', phone: '0813-8890-2014', status: 'PNS' as const },
-  { name: 'Arif Hidayat, M.Si.', nip: '19810810 200604 1 010', phone: '0815-9901-2015', status: 'PNS' as const },
-  { name: 'Tri Wahyuni, S.Pd.', nip: '19870503 201402 2 009', phone: '0812-0012-2016', status: 'PPPK' as const },
-  { name: 'Eko Prasetyo, S.Pd.', nip: '19780214 200501 1 007', phone: '0813-1123-2017', status: 'PNS' as const },
-  { name: 'Dewi Sartika, M.Pd.', nip: '19830927 200801 2 016', phone: '0815-2234-2018', status: 'PNS' as const },
-  { name: 'Sugeng Riyadi, S.Pd.', nip: '19721128 199803 1 005', phone: '0812-3345-2019', status: 'PNS' as const },
-  { name: 'Nurul Hidayati, S.Si.', nip: '19880115 201503 2 007', phone: '0813-4456-2020', status: 'PPPK' as const },
-  { name: 'Agung Wibowo, S.Pd.', nip: '19790620 200701 1 011', phone: '0815-5567-2021', status: 'PNS' as const },
-  { name: 'Lilik Sulistiyani, M.Pd.', nip: '19811009 200604 2 013', phone: '0812-6678-2022', status: 'PNS' as const },
-  { name: 'Mohammad Taufiq, S.Pd.', nip: '19860312 201001 1 014', phone: '0813-7789-2023', status: 'PPPK' as const },
-  { name: 'Retno Wulandari, S.Pd.', nip: '19890405 201903 2 008', phone: '0815-8890-2024', status: 'PPPK' as const },
-  { name: 'Sunardi, M.Pd.', nip: '19691204 199403 1 004', phone: '0812-9901-2025', status: 'PNS' as const },
-  { name: 'Fitri Handayani, S.Pd.', nip: '19840718 200902 2 017', phone: '0813-0012-2026', status: 'PNS' as const },
-  { name: 'Budi Darmawan, S.Kom.', nip: '19820524 200801 1 013', phone: '0815-1123-2027', status: 'PNS' as const },
-  { name: 'Sri Utami, S.Pd.', nip: '19750912 200212 2 004', phone: '0812-2234-2028', status: 'PNS' as const },
-  { name: 'Dedi Kurniawan, S.Pd.', nip: '19871130 201201 1 012', phone: '0813-3345-2029', status: 'PPPK' as const },
-  { name: 'Ani Wijayanti, M.Pd.', nip: '19800816 200501 2 010', phone: '0815-4456-2030', status: 'PNS' as const },
-  { name: 'Hari Suwondo, S.Pd.', nip: '19730419 199903 1 008', phone: '0812-5567-2031', status: 'PNS' as const },
-  { name: 'Diah Permatasari, S.Pd.', nip: '19880227 201403 2 006', phone: '0813-6678-2032', status: 'PPPK' as const },
-  { name: 'Wawan Setiawan, S.Pd.', nip: '19810103 200701 1 015', phone: '0815-7789-2033', status: 'PNS' as const },
-  { name: 'Kusuma Wardani, M.Pd.', nip: '19830614 200801 2 019', phone: '0812-8890-2034', status: 'PNS' as const },
-  { name: 'Rudy Hartono, S.T.', nip: '19781008 200604 1 012', phone: '0813-9901-2035', status: 'PNS' as const },
-  { name: 'Eni Purwanti, S.Pd.', nip: '19850901 201101 2 021', phone: '0815-0012-2036', status: 'PPPK' as const },
+export interface RawWaliKelasInput {
+  grade: 'X' | 'XI' | 'XII';
+  number: number;
+  name: string;
+  nip: string;
+  phone: string;
+  status: 'PNS' | 'PPPK' | 'GTT';
+}
+
+export const rawWaliKelasData: RawWaliKelasInput[] = [
+  // A. KELAS X
+  { grade: 'X', number: 1, name: 'Dini Ayupratiwi, S.Pd', nip: '19940728 202421 2 057', phone: '0812-3341-1001', status: 'PPPK' },
+  { grade: 'X', number: 2, name: 'Devi Anggraeni, S.Pd', nip: '19890725 202421 2 041', phone: '0812-3341-1002', status: 'PPPK' },
+  { grade: 'X', number: 3, name: 'Dewi Insya Siska, M.Pd', nip: '19780823 200604 2 029', phone: '0812-3341-1003', status: 'PNS' },
+  { grade: 'X', number: 4, name: 'Sutejo, S.Pd', nip: '19730709 200604 1 013', phone: '0812-3341-1004', status: 'PNS' },
+  { grade: 'X', number: 5, name: 'Suwil Roidah, S.Pd', nip: '19840712 202221 2 044', phone: '0812-3341-1005', status: 'PPPK' },
+  { grade: 'X', number: 6, name: 'Nenni Setyo Utami, ST', nip: '19750312 201001 2 013', phone: '0812-3341-1006', status: 'PNS' },
+  { grade: 'X', number: 7, name: 'Sri Nurhayani, S.Pd', nip: '19920814 202321 2 042', phone: '0812-3341-1007', status: 'PPPK' },
+  { grade: 'X', number: 8, name: 'Eka Hidayatul Mukarromah, S.Pd.I', nip: '19870913 202421 2 024', phone: '0812-3341-1008', status: 'PPPK' },
+  { grade: 'X', number: 9, name: 'Ahmad Muhajir RH, S.Pd', nip: '19820826 202221 1 011', phone: '0812-3341-1009', status: 'PPPK' },
+  { grade: 'X', number: 10, name: 'Any Novitasari, S.Pd.', nip: '19861121 201001 2 014', phone: '0812-3341-1010', status: 'PNS' },
+  { grade: 'X', number: 11, name: 'Diana Irawati, S.Pd', nip: '19810910 202421 2 008', phone: '0812-3341-1011', status: 'PPPK' },
+  { grade: 'X', number: 12, name: 'Ratih Sukmawati, S.Pd', nip: '19800802 202421 2 014', phone: '0812-3341-1012', status: 'PPPK' },
+
+  // B. KELAS XI
+  { grade: 'XI', number: 1, name: 'Rini Wahyuningsih, S.Pd', nip: '19731012 200801 2 005', phone: '0812-3341-2001', status: 'PNS' },
+  { grade: 'XI', number: 2, name: 'Didik Eko Susanto, S.Psi.', nip: '19760426 202221 1 003', phone: '0812-3341-2002', status: 'PPPK' },
+  { grade: 'XI', number: 3, name: 'Sennawati, S.Pd', nip: '19680704 199803 2 006', phone: '0812-3341-2003', status: 'PNS' },
+  { grade: 'XI', number: 4, name: 'Amitha Mustika Dhamayanti, S.Pd.', nip: '19920219 202321 2 039', phone: '0812-3341-2004', status: 'PPPK' },
+  { grade: 'XI', number: 5, name: 'Moh. Irham Rozaki, S.Kom., Gr.', nip: '19891021 202221 1 017', phone: '0812-3341-2005', status: 'PPPK' },
+  { grade: 'XI', number: 6, name: 'Hervina Sovia Rosa, S.Pd', nip: '19870724 202421 2 003', phone: '0812-3341-2006', status: 'PPPK' },
+  { grade: 'XI', number: 7, name: 'Lailaus Naeni, S.S., S.Pd', nip: '19900507 202221 2 016', phone: '0812-3341-2007', status: 'PPPK' },
+  { grade: 'XI', number: 8, name: 'Emy Khuriyah, S.Pd', nip: '19741114 200801 2 015', phone: '0812-3341-2008', status: 'PNS' },
+  { grade: 'XI', number: 9, name: 'Widya Ningsih, S.Kom.', nip: '19830912 202221 2 036', phone: '0812-3341-2009', status: 'PPPK' },
+  { grade: 'XI', number: 10, name: 'Aviv Ardhillah Risqa, S.Pd', nip: '19891204 202321 1 016', phone: '0812-3341-2010', status: 'PPPK' },
+  { grade: 'XI', number: 11, name: 'Juhadi Ishak, S.Pd', nip: '19790709 202221 1 012', phone: '0812-3341-2011', status: 'PPPK' },
+  { grade: 'XI', number: 12, name: 'Shinta Amalia, M.Pd', nip: '19681220 199412 2 002', phone: '0812-3341-2012', status: 'PNS' },
+
+  // C. KELAS XII
+  { grade: 'XII', number: 1, name: 'Indah Herawati, S.Si', nip: '19800430 201001 2 006', phone: '0812-3341-3001', status: 'PNS' },
+  { grade: 'XII', number: 2, name: 'Reny Widayanti, S.E.', nip: '19721203 200604 2 005', phone: '0812-3341-3002', status: 'PNS' },
+  { grade: 'XII', number: 3, name: 'Drs. Hari Prasetyo', nip: '19670523 199903 1 003', phone: '0812-3341-3003', status: 'PNS' },
+  { grade: 'XII', number: 4, name: 'Maria Cicilia Tri Palupi, S.Pd.', nip: '19750111 200801 2 011', phone: '0812-3341-3004', status: 'PNS' },
+  { grade: 'XII', number: 5, name: 'Distri Adi Setiawan, S.S', nip: '19831214 201101 1 005', phone: '0812-3341-3005', status: 'PNS' },
+  { grade: 'XII', number: 6, name: 'Iwan Yudi Hernawan, S.Pd., M.Pd.', nip: '19750406 200501 1 016', phone: '0812-3341-3006', status: 'PNS' },
+  { grade: 'XII', number: 7, name: 'Nita Rimayanti, S.Pd.', nip: '19860728 200903 2 005', phone: '0812-3341-3007', status: 'PNS' },
+  { grade: 'XII', number: 8, name: 'Ardianto, S.Pd.', nip: '19740708 201001 1 008', phone: '0812-3341-3008', status: 'PNS' },
+  { grade: 'XII', number: 9, name: 'Abdul Khamid, S.Pd', nip: '19690821 199403 1 005', phone: '0812-3341-3009', status: 'PNS' },
+  { grade: 'XII', number: 10, name: 'Abdul Aziz, S.Kom.', nip: '19940623 202221 1 006', phone: '0812-3341-3010', status: 'PPPK' },
+  { grade: 'XII', number: 11, name: 'Agustini Purwanti, M.Pd., S.Pd.', nip: '19750815 200501 2 011', phone: '0812-3341-3011', status: 'PNS' },
+  { grade: 'XII', number: 12, name: 'Aris Eko Kurniawan, S.Pd., M.Pd.', nip: '19810214 201001 1 017', phone: '0812-3341-3012', status: 'PNS' },
 ];
 
-export const initialClasses: RombelClass[] = [];
-export const initialWaliKelas: WaliKelasTeacher[] = [];
-
-// Generate Kelas X (X-1 s/d X-12)
-for (let i = 1; i <= 12; i++) {
-  const teacher = teacherPool[i - 1];
-  const classId = `c-x-${i}`;
-  const className = `X-${i}`;
-  
-  initialClasses.push({
+export const initialClasses: RombelClass[] = rawWaliKelasData.map((item) => {
+  const classId = `c-${item.grade.toLowerCase()}-${item.number}`;
+  const className = `${item.grade}-${item.number}`;
+  const building = item.grade === 'X' ? 'Gedung A' : item.grade === 'XI' ? 'Gedung B' : 'Gedung C';
+  const roomNumber = item.grade === 'X' ? 100 + item.number : item.grade === 'XI' ? 200 + item.number : 300 + item.number;
+  return {
     id: classId,
     name: className,
-    grade: 'X',
-    number: i,
-    homeroom: teacher.name,
-    room: `Gedung A - R.${100 + i}`,
+    grade: item.grade,
+    number: item.number,
+    homeroom: item.name,
+    room: `${building} - R.${roomNumber}`,
     capacity: 36,
-  });
+  };
+});
 
-  initialWaliKelas.push({
-    id: `wk-x-${i}`,
-    name: teacher.name,
-    nip: teacher.nip,
+export const initialWaliKelas: WaliKelasTeacher[] = rawWaliKelasData.map((item) => {
+  const classId = `c-${item.grade.toLowerCase()}-${item.number}`;
+  const className = `${item.grade}-${item.number}`;
+  return {
+    id: `wk-${item.grade.toLowerCase()}-${item.number}`,
+    name: item.name,
+    nip: item.nip,
     classId,
     className,
-    grade: 'X',
-    phone: teacher.phone,
-    email: `${teacher.name.toLowerCase().replace(/[^a-z]/g, '').slice(0, 10)}@sman1batu.sch.id`,
-    status: teacher.status,
-  });
-}
-
-// Generate Kelas XI (XI-1 s/d XI-12)
-for (let i = 1; i <= 12; i++) {
-  const teacher = teacherPool[12 + i - 1];
-  const classId = `c-xi-${i}`;
-  const className = `XI-${i}`;
-
-  initialClasses.push({
-    id: classId,
-    name: className,
-    grade: 'XI',
-    number: i,
-    homeroom: teacher.name,
-    room: `Gedung B - R.${200 + i}`,
-    capacity: 36,
-  });
-
-  initialWaliKelas.push({
-    id: `wk-xi-${i}`,
-    name: teacher.name,
-    nip: teacher.nip,
-    classId,
-    className,
-    grade: 'XI',
-    phone: teacher.phone,
-    email: `${teacher.name.toLowerCase().replace(/[^a-z]/g, '').slice(0, 10)}@sman1batu.sch.id`,
-    status: teacher.status,
-  });
-}
-
-// Generate Kelas XII (XII-1 s/d XII-12)
-for (let i = 1; i <= 12; i++) {
-  const teacher = teacherPool[24 + i - 1];
-  const classId = `c-xii-${i}`;
-  const className = `XII-${i}`;
-
-  initialClasses.push({
-    id: classId,
-    name: className,
-    grade: 'XII',
-    number: i,
-    homeroom: teacher.name,
-    room: `Gedung C - R.${300 + i}`,
-    capacity: 36,
-  });
-
-  initialWaliKelas.push({
-    id: `wk-xii-${i}`,
-    name: teacher.name,
-    nip: teacher.nip,
-    classId,
-    className,
-    grade: 'XII',
-    phone: teacher.phone,
-    email: `${teacher.name.toLowerCase().replace(/[^a-z]/g, '').slice(0, 10)}@sman1batu.sch.id`,
-    status: teacher.status,
-  });
-}
+    grade: item.grade,
+    phone: item.phone,
+    status: item.status,
+  };
+});
 
 import { realStudentsData } from './studentsData';
 
@@ -233,215 +188,49 @@ export const generateInitialAttendance = (allStudents: Student[] = initialStuden
 export const initialDisciplineRecords: DisciplineRecord[] = [];
 
 export const defaultAdminUser: AdminUser = {
-  id: 'usr-admin-1',
+  id: 'usr-admin',
   username: 'admin',
-  name: 'Drs. Rr. Wulandari Wahyuningsih, M.Pd.',
+  name: 'Admin',
   role: 'Admin',
-  email: 'admin@sman1batu.sch.id',
   phone: '0812-3344-5501',
   nip: '19690315 199412 2 002',
-  department: 'Kepala Sekolah / Penanggung Jawab Sistem',
-  avatar: 'WW',
+  department: 'Administrator SIM Presensi & Disiplin Positif',
+  avatar: 'AD',
   status: 'Aktif',
-  password: 'admin123',
-  createdAt: '2026-01-10',
+  password: 'smabadispos',
+  createdAt: '2026-01-01',
 };
 
 export const initialUsers: AdminUser[] = [
-  // 1. Role: Admin
+  // 1. Admin User
   defaultAdminUser,
-  {
-    id: 'usr-admin-2',
-    username: 'operator',
-    name: 'Bagus Santoso, S.Kom.',
-    role: 'Admin',
-    email: 'operator@sman1batu.sch.id',
-    phone: '0813-8822-1102',
-    nip: '19880415 201201 1 003',
-    department: 'Operator IT Dapodik & SIM Sekolah',
-    avatar: 'BS',
-    status: 'Aktif',
-    password: 'admin123',
-    createdAt: '2026-01-12',
-  },
 
-  // 2. Role: Wali Kelas
-  {
-    id: 'usr-wk-1',
-    username: 'walikelas',
-    name: 'Drs. H. Mulyadi',
-    role: 'Wali Kelas',
-    email: 'mulyadi@sman1batu.sch.id',
-    phone: '0812-3341-2001',
-    nip: '19680512 199303 1 004',
-    assignedClass: 'X-1',
-    department: 'Wali Kelas X-1 (Guru Biologi)',
-    avatar: 'HM',
-    status: 'Aktif',
-    password: 'wali123',
-    createdAt: '2026-01-15',
-  },
-  {
-    id: 'usr-wk-2',
-    username: 'siti_aminah',
-    name: 'Siti Aminah, S.Pd., M.Pd.',
-    role: 'Wali Kelas',
-    email: 'siti.aminah@sman1batu.sch.id',
-    phone: '0813-5562-2002',
-    nip: '19740822 199802 2 003',
-    assignedClass: 'X-2',
-    department: 'Wali Kelas X-2 (Guru Fisika)',
-    avatar: 'SA',
-    status: 'Aktif',
-    password: 'wali123',
-    createdAt: '2026-01-15',
-  },
-  {
-    id: 'usr-wk-3',
-    username: 'bambang_s',
-    name: 'Bambang Sugiantoro, M.Pd.',
-    role: 'Wali Kelas',
-    email: 'bambang.s@sman1batu.sch.id',
-    phone: '0812-4478-2003',
-    nip: '19710319 199703 1 005',
-    assignedClass: 'XI-1',
-    department: 'Wali Kelas XI-1 (Guru Kimia)',
-    avatar: 'BS',
-    status: 'Aktif',
-    password: 'wali123',
-    createdAt: '2026-01-15',
-  },
-  {
-    id: 'usr-wk-4',
-    username: 'joko_santoso',
-    name: 'Dr. Joko Santoso, M.Pd.',
-    role: 'Wali Kelas',
-    email: 'joko.santoso@sman1batu.sch.id',
-    phone: '0812-7789-2013',
-    nip: '19700416 199512 1 003',
-    assignedClass: 'XII-1',
-    department: 'Wali Kelas XII-1 (Guru Sosiologi)',
-    avatar: 'JS',
-    status: 'Aktif',
-    password: 'wali123',
-    createdAt: '2026-01-15',
-  },
+  // 2. 36 Wali Kelas Users (Username & Password = NIP)
+  ...rawWaliKelasData.map((item) => {
+    const className = `${item.grade}-${item.number}`;
+    const initials = item.name
+      .replace(/[^a-zA-Z\s]/g, '')
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((w) => w[0].toUpperCase())
+      .join('');
 
-  // 3. Role: Guru
-  {
-    id: 'usr-guru-1',
-    username: 'guru',
-    name: 'Ahmad Fauzan, M.Si.',
-    role: 'Guru',
-    email: 'ahmad.fauzan@sman1batu.sch.id',
-    phone: '0812-8899-2005',
-    nip: '19800918 200501 1 008',
-    department: 'Guru Matematika & Koordinator Piket',
-    avatar: 'AF',
-    status: 'Aktif',
-    password: 'guru123',
-    createdAt: '2026-01-16',
-  },
-  {
-    id: 'usr-guru-2',
-    username: 'sri_rahayu',
-    name: 'Sri Rahayu, S.Pd.',
-    role: 'Guru',
-    email: 'sri.rahayu@sman1batu.sch.id',
-    phone: '0815-7789-2004',
-    nip: '19760614 200003 2 006',
-    department: 'Guru Bimbingan Konseling (BK)',
-    avatar: 'SR',
-    status: 'Aktif',
-    password: 'guru123',
-    createdAt: '2026-01-16',
-  },
-  {
-    id: 'usr-guru-3',
-    username: 'hendra_k',
-    name: 'Hendra Kusuma, S.Pd.',
-    role: 'Guru',
-    email: 'hendra.k@sman1batu.sch.id',
-    phone: '0812-1123-2007',
-    nip: '19790425 200604 1 009',
-    department: 'Guru Pendidikan Jasmani & Kesehatan',
-    avatar: 'HK',
-    status: 'Aktif',
-    password: 'guru123',
-    createdAt: '2026-01-16',
-  },
-  {
-    id: 'usr-guru-4',
-    username: 'dwi_astuti',
-    name: 'Dwi Astuti, S.Kom., M.T.',
-    role: 'Guru',
-    email: 'dwi.astuti@sman1batu.sch.id',
-    phone: '0813-9912-2006',
-    nip: '19830211 200801 2 012',
-    department: 'Guru Informatika & Robotika',
-    avatar: 'DA',
-    status: 'Aktif',
-    password: 'guru123',
-    createdAt: '2026-01-16',
-  },
-
-  // 4. Role: Tendik (Tenaga Kependidikan)
-  {
-    id: 'usr-tendik-1',
-    username: 'tendik',
-    name: 'Joko Purwanto, S.AP.',
-    role: 'Tendik',
-    email: 'tu.sman1batu@gmail.com',
-    phone: '0812-7721-3301',
-    nip: '19750912 200112 1 002',
-    department: 'Kepala Urusan Tata Usaha & Kearsipan',
-    avatar: 'JP',
-    status: 'Aktif',
-    password: 'tendik123',
-    createdAt: '2026-01-18',
-  },
-  {
-    id: 'usr-tendik-2',
-    username: 'dewi_kesiswaan',
-    name: 'Dewi Anggraini, A.Md.',
-    role: 'Tendik',
-    email: 'kesiswaan.sman1batu@gmail.com',
-    phone: '0813-4411-9922',
-    nip: '19890620 201402 2 004',
-    department: 'Staf Administrasi Kesiswaan & Presensi',
-    avatar: 'DA',
-    status: 'Aktif',
-    password: 'tendik123',
-    createdAt: '2026-01-18',
-  },
-  {
-    id: 'usr-tendik-3',
-    username: 'eko_sarpras',
-    name: 'Eko Suprayitno',
-    role: 'Tendik',
-    email: 'sarpras.sman1batu@gmail.com',
-    phone: '0852-3344-7711',
-    nip: '19861110 201001 1 009',
-    department: 'Staf Sarana Prasarana & Keamanan',
-    avatar: 'ES',
-    status: 'Aktif',
-    password: 'tendik123',
-    createdAt: '2026-01-18',
-  },
-  {
-    id: 'usr-tendik-4',
-    username: 'ratna_kepegawaian',
-    name: 'Ratna Wulandari, S.E.',
-    role: 'Tendik',
-    email: 'kepegawaian.sman1batu@gmail.com',
-    phone: '0813-7766-5544',
-    nip: '19910518 201603 2 001',
-    department: 'Staf Administrasi Kepegawaian & SIMPEG',
-    avatar: 'RW',
-    status: 'Aktif',
-    password: 'tendik123',
-    createdAt: '2026-01-18',
-  },
+    return {
+      id: `usr-wk-${item.grade.toLowerCase()}-${item.number}`,
+      username: item.nip,
+      name: item.name,
+      role: 'Wali Kelas' as const,
+      phone: item.phone,
+      nip: item.nip,
+      assignedClass: className,
+      department: `Wali Kelas ${className}`,
+      avatar: initials || 'WK',
+      status: 'Aktif' as const,
+      password: item.nip,
+      createdAt: '2026-01-10',
+    };
+  }),
 ];
 
 export const sampleViolationCatalog: ViolationRule[] = [

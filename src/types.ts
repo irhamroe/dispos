@@ -97,7 +97,7 @@ export interface WaliKelasTeacher {
   className: string;
   grade: 'X' | 'XI' | 'XII';
   phone: string;
-  email: string;
+  email?: string;
   status: 'PNS' | 'PPPK' | 'GTT';
 }
 
