@@ -266,7 +266,7 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
               <tr className="bg-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-700 divide-x divide-slate-300 border-b border-slate-300">
                 <th className="py-2.5 px-2 w-10 text-center">No</th>
                 <th className="py-2.5 px-3 min-w-[200px]">Nama Guru &amp; NIP</th>
-                <th className="py-2.5 px-3 min-w-[130px] text-center">Rombel Binaan</th>
+                <th className="py-2.5 px-3 min-w-[110px] text-center">Kelas Binaan</th>
                 <th className="py-2.5 px-3 min-w-[150px]">Kontak / No. HP</th>
                 <th className="py-2.5 px-2 w-32 text-center bg-slate-100">Aksi</th>
               </tr>
@@ -280,7 +280,6 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
                 </tr>
               ) : (
                 filteredTeachers.map((t, idx) => {
-                  const studentCount = classStudentCounts[t.className] || 0;
                   const cleanPhone = t.phone.replace(/[^0-9]/g, '');
                   const waNumber = cleanPhone.startsWith('0') ? '62' + cleanPhone.slice(1) : cleanPhone;
 
@@ -317,19 +316,11 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
                         </div>
                       </td>
 
-                      {/* Rombel Binaan & Siswa */}
+                      {/* Kelas Binaan */}
                       <td className="py-2.5 px-3 text-center">
-                        <div className="inline-flex items-center gap-1.5">
-                          <span className="font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-md text-xs">
-                            {t.className}
-                          </span>
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700">
-                            Kelas {t.grade}
-                          </span>
-                        </div>
-                        <div className="text-[10.5px] font-semibold text-slate-600 mt-0.5">
-                          {studentCount} Siswa
-                        </div>
+                        <span className="font-bold text-teal-800 bg-teal-50 border border-teal-200 px-3 py-1 rounded-lg text-xs inline-block">
+                          {t.className}
+                        </span>
                       </td>
 
                       {/* Kontak WhatsApp */}
@@ -451,7 +442,7 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Rombel Binaan
+                    Kelas Binaan
                   </label>
                   <select
                     value={editClassId}
@@ -564,7 +555,7 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Rombel Binaan
+                    Kelas Binaan
                   </label>
                   <select
                     value={newClassId}
