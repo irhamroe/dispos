@@ -114,12 +114,10 @@ export const isSundayDate = (dateStr: string): boolean => {
 
 /**
  * Ekspor Rekapitulasi Presensi ke format Excel (.xls)
- * Layout sesuai format:
- * - Tanpa kop dinas resmi, judul: "Rekapitulasi Absensi Siswa"
- * - Subheader periode & rombel
- * - Header tabel bertingkat dengan warna Teal & Merah untuk Sabtu/Minggu (hari libur)
- * - Warna kotak disesuaikan dengan status absensi (H=Hijau, S=Kuning/Amber, I=Biru, A=Merah, D=Ungu)
- * - Rekapitulasi jumlah H, S, I, A, D dan baris TOTAL di bawah
+ * - Tanpa kop dinas resmi & tanpa blok tanda tangan
+ * - Di atas tabel hanya judul & subheader periode/rombel
+ * - Header tabel bertingkat dengan penanda hari libur (Sabtu/Minggu)
+ * - Warna kotak presensi sesuai status
  */
 export const exportAttendanceToExcel = (
   schoolProfile: SchoolProfile,
@@ -132,7 +130,6 @@ export const exportAttendanceToExcel = (
   const datesList = getDatesRangeList(startDate, endDate);
   const numDates = datesList.length;
   const totalCols = 5 + numDates + 5;
-  const academicYear = schoolProfile.academicYear || '2025/2026';
 
   // Map student attendance per date
   const recordMap = new Map<string, string>();
@@ -173,9 +170,8 @@ export const exportAttendanceToExcel = (
   body { font-family: 'Calibri', 'Segoe UI', Arial, sans-serif; font-size: 11px; }
   table { border-collapse: collapse; width: 100%; }
   th, td { border: 1px solid #cbd5e1; text-align: center; vertical-align: middle; padding: 4px 6px; }
-  .title-main { font-size: 14pt; font-weight: bold; text-align: center; border: none; padding: 8px 0; color: #0f172a; }
-  .meta-left { text-align: left; font-weight: bold; border: none; font-size: 10pt; color: #334155; }
-  .meta-right { text-align: right; font-size: 9.5pt; border: none; color: #475569; }
+  .title-main { font-size: 14pt; font-weight: bold; text-align: center; border: none; padding: 6px 0; color: #0f172a; }
+  .meta-sub { text-align: left; font-weight: bold; border: none; font-size: 10pt; color: #334155; padding-bottom: 6px; }
   .tbl-header { background-color: #0f766e; color: #ffffff; font-weight: bold; font-size: 10pt; border: 1px solid #0f766e; }
   .tbl-header-weekend { background-color: #dc2626; color: #ffffff; font-weight: bold; font-size: 10pt; border: 1px solid #dc2626; }
   .cell-h { background-color: #dcfce7; color: #166534; font-weight: bold; }
@@ -196,17 +192,12 @@ export const exportAttendanceToExcel = (
   <tr>
     <th colspan="${totalCols}" class="title-main">Rekapitulasi Absensi Siswa</th>
   </tr>
-  <!-- Meta row 1 -->
+  <!-- Subheader -->
   <tr>
-    <td colspan="5" class="meta-left">Periode: ${formatDateIndonesian(startDate)} s.d. ${formatDateIndonesian(endDate)} (${getDaysDifference(startDate, endDate)} Hari)</td>
-    <td colspan="${numDates + 5}" class="meta-right">T.A.: ${academicYear} | Keterangan: H=Hadir, S=Sakit, I=Izin, A=Alpa, D=Dispen</td>
+    <td colspan="${totalCols}" class="meta-sub">
+      Periode: ${formatDateIndonesian(startDate)} s.d. ${formatDateIndonesian(endDate)} (${getDaysDifference(startDate, endDate)} Hari) | Rombel: ${selectedClass === 'ALL' ? 'Semua Kelas' : selectedClass}
+    </td>
   </tr>
-  <!-- Meta row 2 -->
-  <tr>
-    <td colspan="5" class="meta-left">Rombel: ${selectedClass === 'ALL' ? 'Semua Kelas' : selectedClass}</td>
-    <td colspan="${numDates + 5}" class="meta-right">Tanggal Cetak: ${getTodayIndonesian()}</td>
-  </tr>
-  <tr><td colspan="${totalCols}" style="border: none; height: 6px;"></td></tr>
 
   <!-- Table Header Row 1 -->
   <tr>
@@ -280,30 +271,6 @@ export const exportAttendanceToExcel = (
     <td class="text-center font-bold">${totalA}</td>
     <td class="text-center font-bold">${totalD}</td>
   </tr>
-
-  <!-- Signature section -->
-  <tr><td colspan="${totalCols}" style="border: none; height: 16px;"></td></tr>
-  <tr>
-    <td colspan="4" style="border: none; text-align: left; font-size: 10pt;">Mengetahui,</td>
-    <td colspan="${totalCols - 8}" style="border: none;"></td>
-    <td colspan="4" style="border: none; text-align: left; font-size: 10pt;">Kota Batu, ${getTodayIndonesian()}</td>
-  </tr>
-  <tr>
-    <td colspan="4" style="border: none; text-align: left; font-size: 10pt;">Koordinator Guru Piket / Wali Kelas</td>
-    <td colspan="${totalCols - 8}" style="border: none;"></td>
-    <td colspan="4" style="border: none; text-align: left; font-size: 10pt;">Kepala ${schoolProfile.name}</td>
-  </tr>
-  <tr><td colspan="${totalCols}" style="border: none; height: 40px;"></td></tr>
-  <tr>
-    <td colspan="4" style="border: none; text-align: left; font-size: 10pt;">(..................................................)</td>
-    <td colspan="${totalCols - 8}" style="border: none;"></td>
-    <td colspan="4" style="border: none; text-align: left; font-size: 10pt; font-weight: bold;">${schoolProfile.principalName}</td>
-  </tr>
-  <tr>
-    <td colspan="4" style="border: none; text-align: left; font-size: 10pt;">NIP. ........................................</td>
-    <td colspan="${totalCols - 8}" style="border: none;"></td>
-    <td colspan="4" style="border: none; text-align: left; font-size: 10pt;">NIP. ${schoolProfile.principalNip}</td>
-  </tr>
 </table>
 </body>
 </html>
@@ -323,12 +290,11 @@ export const exportAttendanceToExcel = (
 
 /**
  * Ekspor Rekapitulasi Presensi ke format PDF
- * Layout sesuai format:
- * - Tanpa kop dinas resmi, judul: "Rekapitulasi Absensi Siswa"
- * - Subheader periode & rombel
- * - Header tabel bertingkat dengan warna Teal & Merah untuk Sabtu/Minggu (hari libur)
- * - Warna kotak status disesuaikan (H=Hijau, S=Kuning/Amber, I=Biru, A=Merah, D=Ungu)
- * - Kolom rekapitulasi jumlah H, S, I, A, D dan baris TOTAL di bawah
+ * - Desain presisi 1 Halaman Landscape A4
+ * - Tanpa kop dinas resmi & tanpa tanda tangan
+ * - Di atas tabel hanya judul & subheader periode/rombel
+ * - Header bertingkat Teal & Merah (Sabtu/Minggu)
+ * - Warna kotak presensi sesuai status (H=Hijau, S=Kuning, I=Biru, A=Merah, D=Ungu)
  */
 export const exportAttendanceToPdf = (
   schoolProfile: SchoolProfile,
@@ -345,11 +311,9 @@ export const exportAttendanceToPdf = (
   });
 
   const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
   const datesList = getDatesRangeList(startDate, endDate);
   const numDates = datesList.length;
-  const academicYear = schoolProfile.academicYear || '2025/2026';
-  const marginX = numDates > 20 ? 8 : 12;
+  const marginX = numDates > 20 ? 8 : 10;
 
   // Map student attendance per date
   const recordMap = new Map<string, string>();
@@ -370,22 +334,19 @@ export const exportAttendanceToPdf = (
 
   // 1. Judul di atas tabel: "Rekapitulasi Absensi Siswa"
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(13);
+  doc.setFontSize(12.5);
   doc.setTextColor(15, 23, 42);
-  doc.text('Rekapitulasi Absensi Siswa', pageWidth / 2, 13, { align: 'center' });
+  doc.text('Rekapitulasi Absensi Siswa', pageWidth / 2, 10.5, { align: 'center' });
 
   // 2. Subheader Periode & Rombel
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(8.5);
   doc.setTextColor(51, 65, 85);
-  doc.text(`Periode: ${formatDateIndonesian(startDate)} s.d. ${formatDateIndonesian(endDate)} (${getDaysDifference(startDate, endDate)} Hari)`, marginX, 19);
-  doc.text(`Rombel: ${selectedClass === 'ALL' ? 'Semua Kelas' : selectedClass}`, marginX, 23.5);
-
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8);
-  doc.setTextColor(71, 85, 105);
-  doc.text(`T.A.: ${academicYear} | Keterangan: H=Hadir, S=Sakit, I=Izin, A=Alpa, D=Dispen`, pageWidth - marginX, 19, { align: 'right' });
-  doc.text(`Tanggal Cetak: ${getTodayIndonesian()}`, pageWidth - marginX, 23.5, { align: 'right' });
+  doc.text(
+    `Periode: ${formatDateIndonesian(startDate)} s.d. ${formatDateIndonesian(endDate)} (${getDaysDifference(startDate, endDate)} Hari)   |   Rombel: ${selectedClass === 'ALL' ? 'Semua Kelas' : selectedClass}`,
+    marginX,
+    15.5
+  );
 
   // 3. Header Tabel Bertingkat
   const headConfig: any[] = [
@@ -454,6 +415,23 @@ export const exportAttendanceToPdf = (
     totalD,
   ]);
 
+  // Dynamic Compact Styling to ensure 1 single page fit
+  const rowCount = tableRows.length; // usually ~37 (36 students + 1 total)
+  let cellPadding = 0.5;
+  let fontSize = 6.5;
+  let headFontSize = 7;
+
+  if (rowCount > 32) {
+    cellPadding = 0.35;
+    fontSize = 6;
+    headFontSize = 6.5;
+  }
+  if (rowCount > 38) {
+    cellPadding = 0.25;
+    fontSize = 5.5;
+    headFontSize = 6;
+  }
+
   // Column width calculations
   let colWidths: { [key: number]: any } = {};
   const dayColW = numDates > 25 ? 4.5 : numDates > 15 ? 5.5 : numDates > 7 ? 6.5 : 8;
@@ -461,7 +439,7 @@ export const exportAttendanceToPdf = (
 
   colWidths[0] = { halign: 'center', cellWidth: numDates > 25 ? 6 : 8 };
   colWidths[1] = { halign: 'center', cellWidth: numDates > 25 ? 18 : 22 };
-  colWidths[2] = { halign: 'left', cellWidth: numDates > 25 ? 40 : numDates > 15 ? 50 : 65 };
+  colWidths[2] = { halign: 'left', cellWidth: numDates > 25 ? 42 : numDates > 15 ? 52 : 68 };
   colWidths[3] = { halign: 'center', cellWidth: numDates > 25 ? 11 : 14 };
   colWidths[4] = { halign: 'center', cellWidth: numDates > 25 ? 7 : 9 };
 
@@ -473,13 +451,13 @@ export const exportAttendanceToPdf = (
   }
 
   autoTable(doc, {
-    startY: 27,
+    startY: 18,
     head: headConfig,
     body: tableRows,
     theme: 'grid',
     styles: {
-      fontSize: numDates > 25 ? 5.5 : numDates > 15 ? 6.5 : 7.5,
-      cellPadding: numDates > 25 ? 0.5 : 0.8,
+      fontSize,
+      cellPadding,
       lineWidth: 0.1,
       lineColor: [203, 213, 225],
       textColor: [30, 41, 59],
@@ -488,10 +466,11 @@ export const exportAttendanceToPdf = (
     headStyles: {
       fillColor: [15, 118, 110], // Teal
       textColor: [255, 255, 255],
-      fontSize: numDates > 25 ? 6 : 7.5,
+      fontSize: headFontSize,
       fontStyle: 'bold',
       halign: 'center',
       valign: 'middle',
+      cellPadding: cellPadding + 0.2,
     },
     columnStyles: colWidths,
     didParseCell: (data) => {
@@ -551,35 +530,8 @@ export const exportAttendanceToPdf = (
         }
       }
     },
-    margin: { left: marginX, right: marginX },
+    margin: { top: 8, bottom: 6, left: marginX, right: marginX },
   });
-
-  const finalY = (doc as any).lastAutoTable.finalY + 8;
-  let sigY = finalY;
-
-  if (sigY > pageHeight - 36) {
-    doc.addPage();
-    sigY = 20;
-  }
-
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8.5);
-  doc.setTextColor(30, 41, 59);
-
-  // Left side signature: Koordinator Guru Piket / Wali Kelas
-  doc.text('Mengetahui,', marginX + 10, sigY);
-  doc.text('Koordinator Guru Piket / Wali Kelas', marginX + 10, sigY + 4.5);
-  doc.text('(..................................................)', marginX + 10, sigY + 22);
-  doc.text('NIP. ........................................', marginX + 10, sigY + 26.5);
-
-  // Right side signature: Kepala SMAN 1 Batu
-  const rightX = pageWidth - marginX - 65;
-  doc.text(`Kota Batu, ${getTodayIndonesian()}`, rightX, sigY);
-  doc.text(`Kepala ${schoolProfile.name}`, rightX, sigY + 4.5);
-  doc.setFont('helvetica', 'bold');
-  doc.text(schoolProfile.principalName, rightX, sigY + 22);
-  doc.setFont('helvetica', 'normal');
-  doc.text(`NIP. ${schoolProfile.principalNip}`, rightX, sigY + 26.5);
 
   const sanitizedClassName = selectedClass === 'ALL' ? 'Semua_Kelas' : selectedClass.replace(/\s+/g, '_');
   doc.save(`Rekapitulasi_Absensi_Siswa_${sanitizedClassName}_${startDate}_sd_${endDate}.pdf`);
