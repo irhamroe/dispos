@@ -47,7 +47,6 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
   const [editName, setEditName] = useState('');
   const [editNip, setEditNip] = useState('');
   const [editPhone, setEditPhone] = useState('');
-  const [editEmail, setEditEmail] = useState('');
   const [editClassId, setEditClassId] = useState('');
   const [editStatus, setEditStatus] = useState<'PNS' | 'PPPK' | 'GTT'>('PNS');
 
@@ -55,7 +54,6 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
   const [newName, setNewName] = useState('');
   const [newNip, setNewNip] = useState('');
   const [newPhone, setNewPhone] = useState('');
-  const [newEmail, setNewEmail] = useState('');
   const [newClassId, setNewClassId] = useState(classes[0]?.id || 'c-x-1');
   const [newStatus, setNewStatus] = useState<'PNS' | 'PPPK' | 'GTT'>('PNS');
 
@@ -90,7 +88,6 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
     setEditName(t.name);
     setEditNip(t.nip);
     setEditPhone(t.phone);
-    setEditEmail(t.email);
     setEditClassId(t.classId);
     setEditStatus(t.status);
   };
@@ -104,7 +101,6 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
       name: editName.trim(),
       nip: editNip.trim(),
       phone: editPhone.trim(),
-      email: editEmail.trim(),
       classId: editClassId,
       className: targetClass ? targetClass.name : editingTeacher.className,
       grade: targetClass ? targetClass.grade : editingTeacher.grade,
@@ -135,7 +131,6 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
       name: newName.trim(),
       nip: newNip.trim() || '-',
       phone: newPhone.trim() || '-',
-      email: newEmail.trim() || `${newName.toLowerCase().replace(/[^a-z]/g, '').slice(0, 10)}@sman1batu.sch.id`,
       classId: newClassId,
       className: targetClass ? targetClass.name : 'X-1',
       grade: targetClass ? targetClass.grade : 'X',
@@ -146,7 +141,6 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
     setNewName('');
     setNewNip('');
     setNewPhone('');
-    setNewEmail('');
   };
 
   const copyToClipboard = (text: string) => {
@@ -501,18 +495,6 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Email Dinas
-                </label>
-                <input
-                  type="email"
-                  value={editEmail}
-                  onChange={(e) => setEditEmail(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-hidden focus:bg-white focus:ring-1 focus:ring-teal-500 font-mono"
-                />
-              </div>
-
               <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
                 <button
                   type="button"
@@ -623,19 +605,6 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
                   placeholder="0812-3456-7890"
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900"
                   required
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Email Dinas
-                </label>
-                <input
-                  type="email"
-                  value={newEmail}
-                  onChange={(e) => setNewEmail(e.target.value)}
-                  placeholder="nama@sman1batu.sch.id"
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 font-mono"
                 />
               </div>
 
