@@ -411,7 +411,7 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                   <th rowSpan={2} className="py-2.5 px-2 text-center w-10 border-r border-slate-200/60">L/P</th>
                   <th rowSpan={2} className="py-2.5 px-2 text-center w-14 border-r border-slate-200/60">Kelas</th>
                   <th colSpan={datesList.length} className="py-1.5 px-2 text-center bg-teal-50 text-teal-900 border-r border-teal-200/80 font-bold">
-                    Status Presensi Per Tanggal ({datesList.length} Hari)
+                    Status Presensi
                   </th>
                   <th colSpan={6} className="py-1.5 px-2 text-center bg-slate-100 text-slate-700 font-bold">
                     Rekapitulasi Jumlah
