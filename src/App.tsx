@@ -44,7 +44,7 @@ import {
   deleteDisciplineRecord as deleteDisciplineFromDb,
   COLLECTIONS
 } from './services/firestoreService';
-import { getTodayIndonesian, getTodayDateString } from './utils/exportUtils';
+import { getTodayIndonesian, getTodayDateString, formatDayAndDateIndonesian } from './utils/exportUtils';
 
 export default function App() {
   // Authentication state
@@ -587,7 +587,7 @@ export default function App() {
         schoolProfile={initialSchoolProfile}
         onLogout={handleLogout}
         onToggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        todayStr={getTodayIndonesian()}
+        todayStr={formatDayAndDateIndonesian(getTodayDateString())}
         isFirebaseConnected={isFirebaseConnected}
         onOpenFirebaseModal={() => setIsFirebaseModalOpen(true)}
       />
