@@ -113,6 +113,24 @@ export const isSundayDate = (dateStr: string): boolean => {
 };
 
 /**
+ * Helper untuk menampilkan pratinjau (preview) PDF di tab baru peramban.
+ * Pengguna dapat melihat hasil, mengatur zoom, cetak (print), atau mengunduh langsung dari browser.
+ * Jika popup browser dicegah/diblokir, otomatis fallback ke unduhan langsung.
+ */
+export const previewOrDownloadPdf = (doc: jsPDF, filename: string) => {
+  try {
+    const pdfBlob = doc.output('blob');
+    const blobUrl = URL.createObjectURL(pdfBlob);
+    const win = window.open(blobUrl, '_blank');
+    if (!win || win.closed || typeof win.closed === 'undefined') {
+      doc.save(filename);
+    }
+  } catch {
+    doc.save(filename);
+  }
+};
+
+/**
  * Ekspor Rekapitulasi Presensi ke format Excel (.xls)
  * - Tanpa kop dinas resmi & tanpa blok tanda tangan
  * - Di atas tabel hanya judul & subheader periode/rombel
@@ -608,7 +626,8 @@ export const exportAttendanceToPdf = (
   });
 
   const sanitizedClassName = selectedClass === 'ALL' ? 'Semua_Kelas' : selectedClass.replace(/\s+/g, '_');
-  doc.save(`Rekapitulasi_Absensi_Siswa_${sanitizedClassName}_${startDate}_sd_${endDate}.pdf`);
+  const filename = `Rekapitulasi_Absensi_Siswa_${sanitizedClassName}_${startDate}_sd_${endDate}.pdf`;
+  previewOrDownloadPdf(doc, filename);
 };
 
 
@@ -785,7 +804,8 @@ export const exportDisciplineToPdf = (
   doc.setFont('helvetica', 'normal');
   doc.text(`NIP. ${schoolProfile.principalNip}`, rightX, sigY + 27);
 
-  doc.save(`Laporan_Data_Pelanggaran_SMAN1Batu_${new Date().toISOString().slice(0, 10)}.pdf`);
+  const filename = `Laporan_Data_Pelanggaran_SMAN1Batu_${new Date().toISOString().slice(0, 10)}.pdf`;
+  previewOrDownloadPdf(doc, filename);
 };
 
 /**
@@ -943,7 +963,8 @@ export const exportPermissionLettersToPdf = (
   doc.setFont('helvetica', 'normal');
   doc.text(`NIP. ${schoolProfile.principalNip}`, rightX, sigY + 27);
 
-  doc.save(`Laporan_Rekap_Surat_Izin_SMAN1Batu_${new Date().toISOString().slice(0, 10)}.pdf`);
+  const filename = `Laporan_Rekap_Surat_Izin_SMAN1Batu_${new Date().toISOString().slice(0, 10)}.pdf`;
+  previewOrDownloadPdf(doc, filename);
 };
 
 export interface ParentCallLetterData {
@@ -1209,5 +1230,6 @@ export const exportParentCallLetterToPdf = (data: ParentCallLetterData) => {
   doc.text(`NIP. ${schoolProfile.principalNip}`, rightX, curY);
 
   const cleanStudentName = student.name.replace(/[^a-zA-Z0-9]/g, '_');
-  doc.save(`Surat_Panggilan_${cleanStudentName}_${callDate}.pdf`);
+  const filename = `Surat_Panggilan_${cleanStudentName}_${callDate}.pdf`;
+  previewOrDownloadPdf(doc, filename);
 };
