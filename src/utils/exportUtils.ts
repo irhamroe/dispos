@@ -404,7 +404,7 @@ export const exportAttendanceToPdf = (
     const dailyVals = datesList.map((d) => {
       const st = recordMap.get(`${item.studentId}_${d}`);
       if (st === 'H' || st === 'S' || st === 'I' || st === 'A' || st === 'D') return st;
-      if (isWeekendDay(d)) return 'Libur';
+      if (isWeekendDay(d)) return '';
       return '-';
     });
 
@@ -426,7 +426,7 @@ export const exportAttendanceToPdf = (
 
   // 5. Baris TOTAL di bawah
   const dailyTotals = datesList.map((d) => {
-    if (isWeekendDay(d)) return '-';
+    if (isWeekendDay(d)) return '';
     let countDayH = 0;
     recapData.forEach((s) => {
       if (recordMap.get(`${s.studentId}_${d}`) === 'H') countDayH++;
@@ -602,6 +602,14 @@ export const exportAttendanceToPdf = (
         if (data.row.index === tableRows.length - 1) {
           data.cell.styles.fontStyle = 'bold';
           data.cell.styles.fillColor = [226, 232, 240];
+          const colIdx = data.column.index;
+          if (colIdx >= 5 && colIdx < 5 + numDates) {
+            const dIdx = colIdx - 5;
+            if (isWeekendDay(datesList[dIdx])) {
+              data.cell.styles.fillColor = [254, 226, 226]; // Libur Red Tint
+              data.cell.text = [''];
+            }
+          }
           return;
         }
 
@@ -611,6 +619,12 @@ export const exportAttendanceToPdf = (
           const dIdx = colIdx - 5;
           const isWeekend = isWeekendDay(datesList[dIdx]);
           const rawVal = data.cell.raw;
+
+          if (isWeekend) {
+            data.cell.styles.fillColor = [254, 226, 226]; // Libur Red Tint
+            data.cell.text = [''];
+            return;
+          }
 
           if (rawVal === 'H') {
             data.cell.styles.fillColor = [220, 252, 231]; // Soft Green
@@ -630,13 +644,8 @@ export const exportAttendanceToPdf = (
             data.cell.styles.fontStyle = 'bold';
           } else if (rawVal === 'D') {
             data.cell.styles.fillColor = [243, 232, 255]; // Soft Purple
-            data.cell.styles.textColor = [107, 33, 168];
+            data.cell.textColor = [107, 33, 168];
             data.cell.styles.fontStyle = 'bold';
-          } else if (isWeekend || rawVal === 'Libur') {
-            data.cell.styles.fillColor = [254, 226, 226]; // Libur Red Tint
-            data.cell.styles.textColor = [220, 38, 38];
-            data.cell.styles.fontStyle = 'bold';
-            data.cell.text = ['Libur'];
           }
         }
       }
