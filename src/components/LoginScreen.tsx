@@ -5,8 +5,6 @@ import {
   Eye, 
   EyeOff, 
   ShieldCheck, 
-  School, 
-  CheckCircle2, 
   AlertCircle,
   KeyRound
 } from 'lucide-react';
@@ -23,58 +21,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   schoolProfile,
   users = [],
 }) => {
-  const [username, setUsername] = useState('admin');
-  const [password, setPassword] = useState('smabadispos');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedPreset, setSelectedPreset] = useState<string>('admin');
-
-  const presetAccounts = [
-    {
-      type: 'admin',
-      role: '1. Administrator (Super Admin)',
-      name: 'Admin',
-      username: 'admin',
-      pass: 'smabadispos',
-      badgeColor: 'bg-purple-900/60 text-purple-200 border-purple-700',
-      desc: 'Akses penuh sistem, kelola seluruh data wali kelas & siswa',
-    },
-    {
-      type: 'wali-x1',
-      role: '2. Wali Kelas X-1',
-      name: 'Dini Ayupratiwi, S.Pd',
-      username: '19940728 202421 2 057',
-      pass: '19940728 202421 2 057',
-      badgeColor: 'bg-teal-900/60 text-teal-200 border-teal-700',
-      desc: 'Wali Kelas X-1 (Login menggunakan NIP)',
-    },
-    {
-      type: 'wali-xi5',
-      role: '3. Wali Kelas XI-5',
-      name: 'Moh. Irham Rozaki, S.Kom., Gr.',
-      username: '19891021 202221 1 017',
-      pass: '19891021 202221 1 017',
-      badgeColor: 'bg-teal-900/60 text-teal-200 border-teal-700',
-      desc: 'Wali Kelas XI-5 (Login menggunakan NIP)',
-    },
-    {
-      type: 'wali-xii1',
-      role: '4. Wali Kelas XII-1',
-      name: 'Indah Herawati, S.Si',
-      username: '19800430 201001 2 006',
-      pass: '19800430 201001 2 006',
-      badgeColor: 'bg-teal-900/60 text-teal-200 border-teal-700',
-      desc: 'Wali Kelas XII-1 (Login menggunakan NIP)',
-    },
-  ];
-
-  const handleSelectPreset = (preset: typeof presetAccounts[0]) => {
-    setSelectedPreset(preset.type);
-    setUsername(preset.username);
-    setPassword(preset.pass);
-    setErrorMsg('');
-  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -145,7 +96,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
       }
 
       setIsLoading(false);
-      setErrorMsg('Username atau password tidak cocok. Untuk Wali Kelas, gunakan NIP sebagai Username dan Password. Untuk Admin, gunakan user: admin dan password: smabadispos.');
+      setErrorMsg('Username atau kata sandi tidak valid. Silakan periksa kembali data login Anda.');
     }, 400);
   };
 
@@ -171,7 +122,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
             {schoolProfile.name}
           </h2>
           <p className="mt-1 text-sm text-slate-400">
-            Sistem Informasi Presensi Kehadiran & Disiplin Positif Siswa
+            Sistem Informasi Presensi Kehadiran &amp; Disiplin Positif Siswa
           </p>
         </div>
 
@@ -187,7 +138,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
 
             <div>
               <label htmlFor="username-input" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-                Username Admin / NIP
+                Username / NIP
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -197,9 +148,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                   id="username-input"
                   type="text"
                   required
+                  autoFocus
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Masukkan username..."
+                  placeholder="Masukkan username atau NIP..."
                   className="block w-full pl-10 pr-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
                 />
               </div>
@@ -228,7 +180,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                   type="button"
                   id="toggle-password-btn"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200"
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200 cursor-pointer"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -239,7 +191,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               type="submit"
               id="submit-login-btn"
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl shadow-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm transition-all focus:outline-hidden focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl shadow-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm transition-all focus:outline-hidden focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:opacity-50 cursor-pointer mt-2"
             >
               {isLoading ? (
                 <>
@@ -249,56 +201,18 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               ) : (
                 <>
                   <KeyRound className="w-4 h-4" />
-                  <span>Masuk ke Sistem Presensi</span>
+                  <span>Masuk ke Sistem</span>
                 </>
               )}
             </button>
           </form>
-
-          {/* Preset Demo Accounts for Quick Instant Login */}
-          <div className="mt-6 pt-5 border-t border-slate-700/80">
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 text-center mb-3">
-              Pilih Akun Cepat (Akses Demo Guru & Admin):
-            </p>
-            <div className="space-y-2">
-              {presetAccounts.map((acc) => {
-                const isSelected = selectedPreset === acc.type;
-                return (
-                  <button
-                    key={acc.type}
-                    type="button"
-                    id={`preset-login-${acc.type}`}
-                    onClick={() => handleSelectPreset(acc)}
-                    className={`w-full text-left p-2.5 rounded-xl border transition-all text-xs flex items-center justify-between ${
-                      isSelected
-                        ? 'bg-emerald-950/60 border-emerald-600 text-emerald-200'
-                        : 'bg-slate-900/40 border-slate-700/60 text-slate-300 hover:bg-slate-900 hover:border-slate-600'
-                    }`}
-                  >
-                    <div>
-                      <div className="font-bold text-white flex items-center gap-1.5">
-                        <span>{acc.role}</span>
-                        {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />}
-                      </div>
-                      <div className="text-[11px] text-slate-400 mt-0.5">
-                        User: <code className="text-emerald-300">{acc.username}</code> • Sandi: <code className="text-emerald-300">{acc.pass}</code>
-                      </div>
-                    </div>
-                    <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700">
-                      Gunakan
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
         </div>
 
         {/* Security badge note */}
         <div className="mt-4 text-center">
           <p className="text-xs text-slate-500 flex items-center justify-center gap-1.5">
             <Lock className="w-3.5 h-3.5 text-emerald-600" />
-            Sistem terenkripsi standar sekolah. Catatan kedisiplinan dan absensi terlindungi.
+            Sistem terenkripsi. Catatan kedisiplinan dan absensi terlindungi.
           </p>
         </div>
       </div>

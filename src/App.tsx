@@ -55,11 +55,11 @@ export default function App() {
       const saved = localStorage.getItem('app_sman1batu_admin_user_v4');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (parsed?.username === 'admin' || parsed?.role === 'Wali Kelas') return parsed;
+        if (parsed?.username && parsed?.role) return parsed;
       }
-      return defaultAdminUser;
+      return null;
     } catch {
-      return defaultAdminUser;
+      return null;
     }
   });
 
