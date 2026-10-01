@@ -22,7 +22,7 @@ import {
 import { AttendanceRecord, DisciplineRecord, Student } from '../types';
 import { RombelClass } from '../data/initialData';
 import { NavTab } from './Sidebar';
-import { formatDateIndonesian } from '../utils/exportUtils';
+import { formatDateIndonesian, formatDayAndDateIndonesian } from '../utils/exportUtils';
 import { sortClasses } from '../utils/sortUtils';
 
 interface DashboardViewProps {
@@ -212,7 +212,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               />
             </div>
             <div className="flex justify-between items-center mt-2 text-[11px] text-teal-100">
-              <span>{formatDateIndonesian(selectedDate)}</span>
+              <span>{formatDayAndDateIndonesian(selectedDate)}</span>
               <span>{selectedClassFilter === 'ALL' ? `${availableClasses.length} Rombel` : `Rombel ${selectedClassFilter}`}</span>
             </div>
           </div>

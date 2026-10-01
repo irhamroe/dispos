@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 import { DisciplineRecord, SchoolProfile, Student, ViolationCategory, DisciplineStatus, CoachingStatus, ViolationRule } from '../types';
 import { sampleViolationCatalog } from '../data/initialData';
-import { formatDateIndonesian } from '../utils/exportUtils';
+import { formatDateIndonesian, formatDayAndDateIndonesian } from '../utils/exportUtils';
 import { sortClasses, sortStudents } from '../utils/sortUtils';
 
 interface DisciplineViewProps {
@@ -625,7 +625,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                       </td>
                       <td className="py-3.5 px-3 text-slate-700 whitespace-nowrap">
                         <div className="font-semibold text-slate-800">{rec.date}</div>
-                        <div className="text-[10px] text-slate-400">{formatDateIndonesian(rec.date)}</div>
+                        <div className="text-[10px] text-slate-500 font-medium">{formatDayAndDateIndonesian(rec.date)}</div>
                       </td>
                       <td className="py-3.5 px-4">
                         <div className="font-bold text-slate-900">{rec.studentName}</div>
@@ -1188,7 +1188,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                 <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
                   <div className="text-slate-400 text-[10px] uppercase font-bold">Tanggal Kejadian</div>
                   <div className="font-bold text-slate-800 mt-1">{activeRecordForDetail.date}</div>
-                  <div className="text-[10px] text-slate-500">{formatDateIndonesian(activeRecordForDetail.date)}</div>
+                  <div className="text-[10px] text-slate-500 font-medium">{formatDayAndDateIndonesian(activeRecordForDetail.date)}</div>
                 </div>
 
                 <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">

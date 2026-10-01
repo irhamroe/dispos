@@ -27,6 +27,7 @@ import {
   exportPermissionLettersToExcel, 
   exportPermissionLettersToPdf, 
   formatDateIndonesian, 
+  formatDayAndDateIndonesian,
   getTodayDateString, 
   getTodayIndonesian 
 } from '../utils/exportUtils';
@@ -548,7 +549,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                       <td className="py-3 px-3 text-center text-slate-400 font-medium">{globalIdx}</td>
                       <td className="py-3 px-3 font-semibold text-slate-800 whitespace-nowrap">
                         {rec.date}
-                        <div className="text-[10px] text-slate-400">{formatDateIndonesian(rec.date)}</div>
+                        <div className="text-[10.5px] text-slate-500 font-medium">{formatDayAndDateIndonesian(rec.date)}</div>
                       </td>
                       <td className="py-3 px-3 text-center font-mono text-xs font-semibold text-slate-600">
                         {rec.nisn}
@@ -692,7 +693,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                   Kelas {markingRecord.className} • NISN: {markingRecord.nisn}
                 </div>
                 <div className="text-slate-800 font-semibold pt-1 border-t border-slate-200/80 mt-1 flex items-center justify-between">
-                  <span>Tanggal Presensi: {formatDateIndonesian(markingRecord.date)}</span>
+                  <span>Tanggal Presensi: {formatDayAndDateIndonesian(markingRecord.date)}</span>
                   <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                     markingRecord.status === 'I' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'
                   }`}>
@@ -783,7 +784,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                   Kelas {alpaModalRecord.className} • NISN: {alpaModalRecord.nisn}
                 </div>
                 <div className="text-slate-800 font-semibold pt-1 border-t border-slate-200/80 mt-1 flex items-center justify-between">
-                  <span>Tanggal Presensi: {formatDateIndonesian(alpaModalRecord.date)}</span>
+                  <span>Tanggal Presensi: {formatDayAndDateIndonesian(alpaModalRecord.date)}</span>
                   <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                     alpaModalRecord.status === 'I' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'
                   }`}>

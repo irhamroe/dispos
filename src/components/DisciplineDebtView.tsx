@@ -21,7 +21,7 @@ import {
   BellRing
 } from 'lucide-react';
 import { DisciplineRecord, SchoolProfile, Student } from '../types';
-import { formatDateIndonesian } from '../utils/exportUtils';
+import { formatDateIndonesian, formatDayAndDateIndonesian } from '../utils/exportUtils';
 import { sortClasses } from '../utils/sortUtils';
 
 interface DisciplineDebtViewProps {
@@ -401,7 +401,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                       <td className="py-3.5 px-3 text-center text-slate-400 font-medium">{idx + 1}</td>
                       <td className="py-3.5 px-3 text-slate-700 whitespace-nowrap">
                         <div className="font-semibold text-slate-800">{rec.date}</div>
-                        <div className="text-[10px] text-slate-400">{formatDateIndonesian(rec.date)}</div>
+                        <div className="text-[10px] text-slate-500 font-medium">{formatDayAndDateIndonesian(rec.date)}</div>
                       </td>
                       <td className="py-3.5 px-4">
                         <div className="font-bold text-slate-900">{rec.studentName}</div>

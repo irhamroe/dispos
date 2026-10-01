@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { AttendanceRecord, AttendanceStatus, LetterStatus, Student } from '../types';
 import { RombelClass } from '../data/initialData';
-import { formatDateIndonesian, getTodayDateString } from '../utils/exportUtils';
+import { formatDateIndonesian, formatDayAndDateIndonesian, getTodayDateString } from '../utils/exportUtils';
 import { sortClasses, sortStudents } from '../utils/sortUtils';
 
 interface DailyAttendanceViewProps {
@@ -296,7 +296,7 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
         {/* Dibawah judul: tanggal, pilih jenjang (tab pills sama seperti di rekap presensi), dan pilih kelas */}
         <div className="pt-3 border-t border-slate-100 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
           {/* Tanggal Presensi */}
-          <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs">
+          <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs flex-wrap">
             <Calendar className="w-4 h-4 text-teal-600 shrink-0" />
             <span className="text-slate-500 font-medium">Tanggal Presensi:</span>
             <input
@@ -306,6 +306,9 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
               onChange={(e) => onDateChange(e.target.value)}
               className="bg-transparent text-slate-900 font-bold focus:outline-hidden cursor-pointer"
             />
+            <span className="text-[11px] font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200/80">
+              {formatDayAndDateIndonesian(selectedDate)}
+            </span>
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-wrap">
