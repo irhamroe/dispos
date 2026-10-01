@@ -6,7 +6,6 @@ import {
   Menu, 
   ShieldCheck, 
   CalendarDays,
-  Database,
   Bell
 } from 'lucide-react';
 import { AdminUser, SchoolProfile } from '../types';
@@ -74,25 +73,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Right Header Section: Today Info & User Account */}
           <div className="flex items-center space-x-2.5 sm:space-x-3">
-            {/* Firebase Database Connection Pill / Trigger */}
-            <button
-              type="button"
-              id="navbar-firebase-btn"
-              onClick={onOpenFirebaseModal}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer shadow-xs ${
-                isFirebaseConnected
-                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-400/30'
-                  : 'bg-amber-500 hover:bg-amber-600 text-white border border-amber-400/30 animate-pulse'
-              }`}
-              title={isFirebaseConnected ? 'Firebase Cloud Firestore Terhubung' : 'Klik untuk hubungkan database Firebase'}
-            >
-              <span className={`w-2 h-2 rounded-full ${isFirebaseConnected ? 'bg-emerald-200 animate-ping' : 'bg-white'}`} />
-              <Database className="w-3.5 h-3.5" />
-              <span>
-                {isFirebaseConnected ? 'Firebase Aktif' : 'Hubungkan Firebase'}
-              </span>
-            </button>
-
             {/* Calendar pill */}
             <div className="hidden lg:flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-medium">
               <CalendarDays className="w-4 h-4 text-emerald-600" />
