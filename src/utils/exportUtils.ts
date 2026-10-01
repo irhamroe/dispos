@@ -313,7 +313,10 @@ export const exportAttendanceToPdf = (
   const pageWidth = doc.internal.pageSize.getWidth();
   const datesList = getDatesRangeList(startDate, endDate);
   const numDates = datesList.length;
-  const marginX = numDates > 20 ? 8 : 10;
+
+  // Margin horizontal dinamis agar tabel selalu optimal dan penuh
+  const marginX = numDates > 25 ? 6 : numDates > 15 ? 8 : 10;
+  const availableWidth = pageWidth - marginX * 2;
 
   // Map student attendance per date
   const recordMap = new Map<string, string>();
@@ -334,9 +337,9 @@ export const exportAttendanceToPdf = (
 
   // 1. Judul di atas tabel: "Rekapitulasi Absensi Siswa"
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(12.5);
+  doc.setFontSize(12);
   doc.setTextColor(15, 23, 42);
-  doc.text('Rekapitulasi Absensi Siswa', pageWidth / 2, 10.5, { align: 'center' });
+  doc.text('Rekapitulasi Absensi Siswa', pageWidth / 2, 9.5, { align: 'center' });
 
   // 2. Subheader Periode & Rombel
   doc.setFont('helvetica', 'bold');
@@ -345,7 +348,7 @@ export const exportAttendanceToPdf = (
   doc.text(
     `Periode: ${formatDateIndonesian(startDate)} s.d. ${formatDateIndonesian(endDate)} (${getDaysDifference(startDate, endDate)} Hari)   |   Rombel: ${selectedClass === 'ALL' ? 'Semua Kelas' : selectedClass}`,
     marginX,
-    15.5
+    14.5
   );
 
   // 3. Header Tabel Bertingkat
@@ -360,9 +363,10 @@ export const exportAttendanceToPdf = (
       { content: 'Rekapitulasi Jumlah', colSpan: 5 },
     ],
     [
-      ...datesList.map((d) => ({
-        content: String(parseInt(d.split('-')[2], 10)),
-      })),
+      ...datesList.map((d) => {
+        const dayNum = parseInt(d.split('-')[2], 10);
+        return { content: String(dayNum) };
+      }),
       { content: 'H' },
       { content: 'S' },
       { content: 'I' },
@@ -415,33 +419,103 @@ export const exportAttendanceToPdf = (
     totalD,
   ]);
 
-  // Dynamic Compact Styling to ensure 1 single page fit
-  const rowCount = tableRows.length; // usually ~37 (36 students + 1 total)
+  // 6. Dynamic Compact Styling agar selalu muat rapi dalam 1 halaman
+  const rowCount = tableRows.length; // ~37 baris untuk 36 siswa + 1 total
   let cellPadding = 0.5;
   let fontSize = 6.5;
   let headFontSize = 7;
 
-  if (rowCount > 32) {
-    cellPadding = 0.35;
-    fontSize = 6;
-    headFontSize = 6.5;
-  }
-  if (rowCount > 38) {
-    cellPadding = 0.25;
-    fontSize = 5.5;
-    headFontSize = 6;
+  if (rowCount <= 20) {
+    cellPadding = 1.1;
+    fontSize = 7.8;
+    headFontSize = 8.2;
+  } else if (rowCount <= 30) {
+    cellPadding = 0.7;
+    fontSize = 7.0;
+    headFontSize = 7.5;
+  } else if (rowCount <= 38) {
+    cellPadding = 0.42;
+    fontSize = 6.2;
+    headFontSize = 6.8;
+  } else {
+    cellPadding = 0.28;
+    fontSize = 5.6;
+    headFontSize = 6.2;
   }
 
-  // Column width calculations
-  let colWidths: { [key: number]: any } = {};
-  const dayColW = numDates > 25 ? 4.5 : numDates > 15 ? 5.5 : numDates > 7 ? 6.5 : 8;
-  const sumColW = numDates > 25 ? 5 : numDates > 15 ? 6 : 7;
+  // 7. Perhitungan Lebar Kolom Dinamis (100% Memenuhi Lebar Kertas)
+  let noW = 8;
+  let nisnW = 22;
+  let kelasW = 14;
+  let genderW = 9;
+  let sumColW = 6;
 
-  colWidths[0] = { halign: 'center', cellWidth: numDates > 25 ? 6 : 8 };
-  colWidths[1] = { halign: 'center', cellWidth: numDates > 25 ? 18 : 22 };
-  colWidths[2] = { halign: 'left', cellWidth: numDates > 25 ? 42 : numDates > 15 ? 52 : 68 };
-  colWidths[3] = { halign: 'center', cellWidth: numDates > 25 ? 11 : 14 };
-  colWidths[4] = { halign: 'center', cellWidth: numDates > 25 ? 7 : 9 };
+  if (numDates <= 4) {
+    noW = 10;
+    nisnW = 28;
+    kelasW = 18;
+    genderW = 12;
+    sumColW = 13;
+  } else if (numDates <= 10) {
+    noW = 9;
+    nisnW = 24;
+    kelasW = 16;
+    genderW = 10;
+    sumColW = 10;
+  } else if (numDates <= 20) {
+    noW = 8;
+    nisnW = 21;
+    kelasW = 13;
+    genderW = 8.5;
+    sumColW = 7.5;
+  } else if (numDates <= 25) {
+    noW = 7.5;
+    nisnW = 19;
+    kelasW = 12;
+    genderW = 8;
+    sumColW = 6.2;
+  } else {
+    noW = 6.5;
+    nisnW = 18;
+    kelasW = 11;
+    genderW = 7.5;
+    sumColW = 5.2;
+  }
+
+  const fixedNonDateWidth = noW + nisnW + kelasW + genderW + sumColW * 5;
+  const remainingForNamaAndDates = availableWidth - fixedNonDateWidth;
+
+  let namaW = 55;
+  let dayColW = 7;
+
+  if (numDates === 0) {
+    namaW = remainingForNamaAndDates;
+    dayColW = 0;
+  } else if (numDates <= 2) {
+    namaW = Math.min(85, remainingForNamaAndDates * 0.5);
+    dayColW = (remainingForNamaAndDates - namaW) / numDates;
+  } else if (numDates <= 5) {
+    namaW = Math.min(75, remainingForNamaAndDates * 0.45);
+    dayColW = (remainingForNamaAndDates - namaW) / numDates;
+  } else if (numDates <= 10) {
+    namaW = Math.min(68, remainingForNamaAndDates * 0.4);
+    dayColW = (remainingForNamaAndDates - namaW) / numDates;
+  } else if (numDates <= 20) {
+    namaW = Math.min(58, remainingForNamaAndDates * 0.35);
+    dayColW = (remainingForNamaAndDates - namaW) / numDates;
+  } else {
+    // > 20 hari (rentang panjang hingga 31 hari)
+    const minDayColW = 4.8;
+    dayColW = Math.max(minDayColW, (remainingForNamaAndDates - 45) / numDates);
+    namaW = Math.max(40, remainingForNamaAndDates - numDates * dayColW);
+  }
+
+  const colWidths: { [key: number]: any } = {};
+  colWidths[0] = { halign: 'center', cellWidth: noW };
+  colWidths[1] = { halign: 'center', cellWidth: nisnW };
+  colWidths[2] = { halign: 'left', cellWidth: namaW };
+  colWidths[3] = { halign: 'center', cellWidth: kelasW };
+  colWidths[4] = { halign: 'center', cellWidth: genderW };
 
   for (let i = 0; i < numDates; i++) {
     colWidths[5 + i] = { halign: 'center', cellWidth: dayColW };
@@ -451,7 +525,7 @@ export const exportAttendanceToPdf = (
   }
 
   autoTable(doc, {
-    startY: 18,
+    startY: 17,
     head: headConfig,
     body: tableRows,
     theme: 'grid',
@@ -530,7 +604,7 @@ export const exportAttendanceToPdf = (
         }
       }
     },
-    margin: { top: 8, bottom: 6, left: marginX, right: marginX },
+    margin: { top: 17, bottom: 5, left: marginX, right: marginX },
   });
 
   const sanitizedClassName = selectedClass === 'ALL' ? 'Semua_Kelas' : selectedClass.replace(/\s+/g, '_');
