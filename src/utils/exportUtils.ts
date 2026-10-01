@@ -147,7 +147,7 @@ export const exportAttendanceToExcel = (
 ) => {
   const datesList = getDatesRangeList(startDate, endDate);
   const numDates = datesList.length;
-  const totalCols = 5 + numDates + 5;
+  const totalCols = 5 + numDates + 5 + 1;
 
   // Map student attendance per date
   const recordMap = new Map<string, string>();
@@ -165,6 +165,9 @@ export const exportAttendanceToExcel = (
   const totalI = recapData.reduce((acc, c) => acc + c.izin, 0);
   const totalA = recapData.reduce((acc, c) => acc + c.alpa, 0);
   const totalD = recapData.reduce((acc, c) => acc + c.dispen, 0);
+  const avgRate = recapData.length > 0
+    ? Math.round(recapData.reduce((acc, c) => acc + c.percentage, 0) / recapData.length)
+    : 0;
 
   let html = `
 <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
@@ -226,6 +229,7 @@ export const exportAttendanceToExcel = (
     <th rowspan="2" class="tbl-header" style="width: 40px;">L/P</th>
     <th colspan="${numDates}" class="tbl-header">Status Presensi</th>
     <th colspan="5" class="tbl-header">Rekapitulasi Jumlah</th>
+    <th rowspan="2" class="tbl-header" style="width: 55px;">% Hadir</th>
   </tr>
 
   <!-- Table Header Row 2 -->
@@ -269,6 +273,7 @@ export const exportAttendanceToExcel = (
       <td class="text-center font-bold">${item.izin}</td>
       <td class="text-center font-bold">${item.alpa}</td>
       <td class="text-center font-bold">${item.dispen}</td>
+      <td class="text-center font-bold">${item.percentage}%</td>
     </tr>`;
   }).join('')}
 
@@ -288,7 +293,7 @@ export const exportAttendanceToExcel = (
     <td class="text-center font-bold">${totalI}</td>
     <td class="text-center font-bold">${totalA}</td>
     <td class="text-center font-bold">${totalD}</td>
-  </tr>
+    <td class="text-center font-bold">${avgRate}%</td>
 </table>
 </body>
 </html>
@@ -379,6 +384,7 @@ export const exportAttendanceToPdf = (
       { content: 'L/P', rowSpan: 2 },
       { content: 'Status Presensi', colSpan: numDates },
       { content: 'Rekapitulasi Jumlah', colSpan: 5 },
+      { content: '% Hadir', rowSpan: 2 },
     ],
     [
       ...datesList.map((d) => {
@@ -414,6 +420,7 @@ export const exportAttendanceToPdf = (
       item.izin,
       item.alpa,
       item.dispen,
+      `${item.percentage}%`,
     ];
   });
 
@@ -427,6 +434,10 @@ export const exportAttendanceToPdf = (
     return String(countDayH);
   });
 
+  const avgPercentage = recapData.length > 0
+    ? Math.round(recapData.reduce((acc, c) => acc + c.percentage, 0) / recapData.length)
+    : 0;
+
   tableRows.push([
     { content: `TOTAL (${recapData.length} Siswa)`, colSpan: 5, styles: { halign: 'center', fontStyle: 'bold' } },
     ...dailyTotals,
@@ -435,6 +446,7 @@ export const exportAttendanceToPdf = (
     totalI,
     totalA,
     totalD,
+    `${avgPercentage}%`,
   ]);
 
   // 6. Dynamic Compact Styling agar selalu muat rapi dalam 1 halaman
@@ -467,40 +479,46 @@ export const exportAttendanceToPdf = (
   let kelasW = 14;
   let genderW = 9;
   let sumColW = 6;
+  let pctColW = 8;
 
   if (numDates <= 4) {
     noW = 10;
     nisnW = 28;
     kelasW = 18;
     genderW = 12;
-    sumColW = 13;
+    sumColW = 12;
+    pctColW = 14;
   } else if (numDates <= 10) {
     noW = 9;
     nisnW = 24;
     kelasW = 16;
     genderW = 10;
-    sumColW = 10;
+    sumColW = 9;
+    pctColW = 12;
   } else if (numDates <= 20) {
     noW = 8;
     nisnW = 21;
     kelasW = 13;
     genderW = 8.5;
-    sumColW = 7.5;
+    sumColW = 7;
+    pctColW = 9.5;
   } else if (numDates <= 25) {
     noW = 7.5;
     nisnW = 19;
     kelasW = 12;
     genderW = 8;
-    sumColW = 6.2;
+    sumColW = 6;
+    pctColW = 8.5;
   } else {
     noW = 6.5;
     nisnW = 18;
     kelasW = 11;
     genderW = 7.5;
-    sumColW = 5.2;
+    sumColW = 5;
+    pctColW = 7.5;
   }
 
-  const fixedNonDateWidth = noW + nisnW + kelasW + genderW + sumColW * 5;
+  const fixedNonDateWidth = noW + nisnW + kelasW + genderW + sumColW * 5 + pctColW;
   const remainingForNamaAndDates = availableWidth - fixedNonDateWidth;
 
   let namaW = 55;
@@ -516,16 +534,16 @@ export const exportAttendanceToPdf = (
     namaW = Math.min(75, remainingForNamaAndDates * 0.45);
     dayColW = (remainingForNamaAndDates - namaW) / numDates;
   } else if (numDates <= 10) {
-    namaW = Math.min(68, remainingForNamaAndDates * 0.4);
+    namaW = Math.min(65, remainingForNamaAndDates * 0.4);
     dayColW = (remainingForNamaAndDates - namaW) / numDates;
   } else if (numDates <= 20) {
-    namaW = Math.min(58, remainingForNamaAndDates * 0.35);
+    namaW = Math.min(55, remainingForNamaAndDates * 0.35);
     dayColW = (remainingForNamaAndDates - namaW) / numDates;
   } else {
     // > 20 hari (rentang panjang hingga 31 hari)
-    const minDayColW = 4.8;
-    dayColW = Math.max(minDayColW, (remainingForNamaAndDates - 45) / numDates);
-    namaW = Math.max(40, remainingForNamaAndDates - numDates * dayColW);
+    const minDayColW = 4.6;
+    dayColW = Math.max(minDayColW, (remainingForNamaAndDates - 42) / numDates);
+    namaW = Math.max(38, remainingForNamaAndDates - numDates * dayColW);
   }
 
   const colWidths: { [key: number]: any } = {};
@@ -541,6 +559,7 @@ export const exportAttendanceToPdf = (
   for (let i = 0; i < 5; i++) {
     colWidths[5 + numDates + i] = { halign: 'center', cellWidth: sumColW, fontStyle: 'bold' };
   }
+  colWidths[5 + numDates + 5] = { halign: 'center', cellWidth: pctColW, fontStyle: 'bold' };
 
   autoTable(doc, {
     startY: 17,
