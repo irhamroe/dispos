@@ -17,7 +17,10 @@ import {
   FileCheck2,
   FileWarning,
   RefreshCw,
-  Sparkles
+  Sparkles,
+  UserX,
+  AlertTriangle,
+  CheckSquare
 } from 'lucide-react';
 import { AttendanceRecord, AttendanceStatus, LetterStatus, SchoolProfile, Student } from '../types';
 import { RombelClass } from '../data/initialData';
@@ -56,10 +59,17 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
   const [selectedClass, setSelectedClass] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  // Modal states
+  // Modal states - Terima Surat
   const [markingRecord, setMarkingRecord] = useState<AttendanceRecord | null>(null);
   const [letterReceiptDate, setLetterReceiptDate] = useState<string>(() => getTodayDateString());
   const [letterNotes, setLetterNotes] = useState<string>('');
+
+  // Modal states - Ubah ke Alpa
+  const [alpaModalRecord, setAlpaModalRecord] = useState<AttendanceRecord | null>(null);
+  const [alpaReason, setAlpaReason] = useState<string>('Surat izin/sakit belum diterima setelah batas waktu');
+
+  // Multi-select for batch convert to Alpa
+  const [selectedRecordIds, setSelectedRecordIds] = useState<string[]>([]);
 
   // Pagination
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -187,6 +197,66 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
     }
   };
 
+  // Open modal to change status to Alpa (A)
+  const handleOpenAlpaModal = (rec: AttendanceRecord) => {
+    setAlpaModalRecord(rec);
+    setAlpaReason('Surat izin/sakit belum diterima setelah batas waktu');
+  };
+
+  // Confirm single record change to Alpa
+  const handleConfirmConvertToAlpa = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!alpaModalRecord) return;
+
+    const todayStr = formatDateIndonesian(getTodayDateString());
+    const reasonText = alpaReason.trim() ? alpaReason.trim() : 'Surat izin/sakit tidak diserahkan';
+    const noteText = `Diubah ke Alpa (A) pada ${todayStr} - Alasan: ${reasonText}`;
+
+    const updated: AttendanceRecord = {
+      ...alpaModalRecord,
+      status: 'A',
+      hasLetter: 'Belum Ada Surat',
+      notes: alpaModalRecord.notes ? `${alpaModalRecord.notes} | ${noteText}` : noteText,
+    };
+
+    onUpdateAttendance([updated]);
+    setAlpaModalRecord(null);
+    setSelectedRecordIds((prev) => prev.filter((id) => id !== alpaModalRecord.id));
+  };
+
+  // Batch convert selected uncollected letters to Alpa
+  const handleBatchConvertToAlpa = () => {
+    const targets = filteredRecords.filter((r) => selectedRecordIds.includes(r.id) && r.hasLetter !== 'Sudah Ada Surat');
+    if (targets.length === 0) return;
+
+    if (window.confirm(`Yakin ingin mengubah status ${targets.length} siswa terpilih menjadi Alpa (A) karena belum menyerahkan surat izin/sakit?`)) {
+      const todayStr = formatDateIndonesian(getTodayDateString());
+      const updatedList: AttendanceRecord[] = targets.map((r) => ({
+        ...r,
+        status: 'A' as AttendanceStatus,
+        notes: r.notes ? `${r.notes} | Diubah ke Alpa (A) massal tgl ${todayStr}` : `Diubah ke Alpa (A) massal tgl ${todayStr}`,
+      }));
+      onUpdateAttendance(updatedList);
+      setSelectedRecordIds([]);
+    }
+  };
+
+  const handleToggleSelectAll = () => {
+    const uncollectedOnPage = paginatedRecords.filter((r) => r.hasLetter !== 'Sudah Ada Surat').map((r) => r.id);
+    const allSelected = uncollectedOnPage.length > 0 && uncollectedOnPage.every((id) => selectedRecordIds.includes(id));
+    if (allSelected) {
+      setSelectedRecordIds((prev) => prev.filter((id) => !uncollectedOnPage.includes(id)));
+    } else {
+      setSelectedRecordIds((prev) => Array.from(new Set([...prev, ...uncollectedOnPage])));
+    }
+  };
+
+  const handleToggleSelectRecord = (id: string) => {
+    setSelectedRecordIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
   // Export handlers
   const handleExportExcel = () => {
     const filterDesc = `${letterFilter === 'BELUM' ? 'Belum Kumpul Surat' : letterFilter === 'SUDAH' ? 'Sudah Ada Surat' : 'Semua'} (${startDate} s/d ${endDate}) Kelas ${selectedClass}`;
@@ -197,6 +267,10 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
     const filterDesc = `${letterFilter === 'BELUM' ? 'Belum Kumpul Surat' : letterFilter === 'SUDAH' ? 'Sudah Ada Surat' : 'Semua'} (${startDate} s/d ${endDate}) Kelas ${selectedClass}`;
     exportPermissionLettersToPdf(schoolProfile, filteredRecords, filterDesc);
   };
+
+  const uncollectedOnCurrentPage = paginatedRecords.filter((r) => r.hasLetter !== 'Sudah Ada Surat');
+  const isAllPageUncollectedSelected = uncollectedOnCurrentPage.length > 0 && uncollectedOnCurrentPage.every((r) => selectedRecordIds.includes(r.id));
+  const selectedUncollectedCount = filteredRecords.filter((r) => selectedRecordIds.includes(r.id) && r.hasLetter !== 'Sudah Ada Surat').length;
 
   return (
     <div className="space-y-6 pb-12">
@@ -233,7 +307,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
           </div>
         </div>
 
-        {/* Date Range & Presets */}
+        {/* Date Range & Letter Status Tabs */}
         <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2 text-xs">
             <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200">
@@ -262,44 +336,6 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                 }}
                 className="bg-transparent font-bold text-slate-800 focus:outline-hidden"
               />
-            </div>
-
-            {/* Quick Presets */}
-            <div className="flex items-center gap-1">
-              <button
-                type="button"
-                onClick={() => {
-                  const t = getTodayDateString();
-                  setStartDate(t);
-                  setEndDate(t);
-                  setCurrentPage(1);
-                }}
-                className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-semibold transition-colors cursor-pointer"
-              >
-                Hari Ini
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setStartDate('2026-09-14');
-                  setEndDate('2026-09-17');
-                  setCurrentPage(1);
-                }}
-                className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-semibold transition-colors cursor-pointer"
-              >
-                Minggu Aktif
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setStartDate('2026-09-01');
-                  setEndDate('2026-09-30');
-                  setCurrentPage(1);
-                }}
-                className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-semibold transition-colors cursor-pointer"
-              >
-                Bulan Ini
-              </button>
             </div>
           </div>
 
@@ -495,8 +531,9 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
       {/* Table Section */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-        <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+        {/* Table Top Bar */}
+        <div className="p-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2 flex-wrap">
             <h3 className="font-bold text-slate-800 text-sm">
               Daftar Siswa ({filteredRecords.length} Catatan)
             </h3>
@@ -506,6 +543,24 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
               </span>
             )}
           </div>
+
+          {/* Batch Convert to Alpa Action if selected */}
+          {selectedUncollectedCount > 0 && (
+            <div className="flex items-center gap-2 bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-xl animate-in fade-in">
+              <span className="text-xs font-bold text-rose-800">
+                {selectedUncollectedCount} Siswa Dipilih
+              </span>
+              <button
+                type="button"
+                onClick={handleBatchConvertToAlpa}
+                className="px-3 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition-colors shadow-2xs flex items-center gap-1.5 cursor-pointer"
+              >
+                <UserX className="w-3.5 h-3.5" />
+                <span>Ubah ke Alpa Sekaligus</span>
+              </button>
+            </div>
+          )}
+
           <div className="text-xs text-slate-500">
             Halaman {currentPage} dari {totalPages}
           </div>
@@ -515,20 +570,30 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
           <table className="w-full text-left text-xs border-collapse">
             <thead>
               <tr className="bg-slate-50/80 border-b border-slate-200/80 text-slate-500 font-bold uppercase text-[10.5px]">
-                <th className="py-3 px-3 w-12 text-center">No</th>
+                <th className="py-3 px-2 w-10 text-center">
+                  <input
+                    type="checkbox"
+                    checked={isAllPageUncollectedSelected}
+                    onChange={handleToggleSelectAll}
+                    disabled={uncollectedOnCurrentPage.length === 0}
+                    title="Pilih semua siswa belum ada surat di halaman ini"
+                    className="rounded text-rose-600 focus:ring-rose-500 w-4 h-4 cursor-pointer"
+                  />
+                </th>
+                <th className="py-3 px-2 w-10 text-center">No</th>
                 <th className="py-3 px-3 w-28">Tanggal</th>
                 <th className="py-3 px-3 w-28 text-center">NISN</th>
-                <th className="py-3 px-3 min-w-[180px]">Nama Siswa</th>
-                <th className="py-3 px-3 w-24 text-center">Kelas</th>
-                <th className="py-3 px-3 w-28 text-center">Status Presensi</th>
+                <th className="py-3 px-3 min-w-[170px]">Nama Siswa</th>
+                <th className="py-3 px-3 w-20 text-center">Kelas</th>
+                <th className="py-3 px-3 w-24 text-center">Status Presensi</th>
                 <th className="py-3 px-3 w-36 text-center">Status Surat Izin</th>
-                <th className="py-3 px-3 w-32 text-center">Aksi</th>
+                <th className="py-3 px-3 w-52 text-center">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {paginatedRecords.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-slate-400">
+                  <td colSpan={9} className="py-12 text-center text-slate-400">
                     <FileCheck2 className="w-10 h-10 text-slate-300 mx-auto mb-2" />
                     <p className="font-bold text-slate-600">Tidak ada data siswa yang cocok dengan filter.</p>
                     <p className="text-[11px] text-slate-400 mt-0.5">
@@ -543,13 +608,28 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                   const globalIdx = (currentPage - 1) * pageSize + idx + 1;
                   const isLetterCollected = rec.hasLetter === 'Sudah Ada Surat';
                   const student = students.find((s) => s.id === rec.studentId);
+                  const isSelected = selectedRecordIds.includes(rec.id);
 
                   return (
                     <tr
                       key={rec.id}
-                      className="hover:bg-slate-50/60 transition-colors"
+                      className={`hover:bg-slate-50/60 transition-colors ${
+                        isSelected ? 'bg-rose-50/30' : ''
+                      }`}
                     >
-                      <td className="py-3 px-3 text-center text-slate-400 font-medium">{globalIdx}</td>
+                      <td className="py-3 px-2 text-center">
+                        {!isLetterCollected ? (
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => handleToggleSelectRecord(rec.id)}
+                            className="rounded text-rose-600 focus:ring-rose-500 w-4 h-4 cursor-pointer"
+                          />
+                        ) : (
+                          <span className="text-slate-300 text-xs">-</span>
+                        )}
+                      </td>
+                      <td className="py-3 px-2 text-center text-slate-400 font-medium">{globalIdx}</td>
                       <td className="py-3 px-3 font-semibold text-slate-800 whitespace-nowrap">
                         {rec.date}
                         <div className="text-[10px] text-slate-400">{formatDateIndonesian(rec.date)}</div>
@@ -589,17 +669,29 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                         )}
                       </td>
                       <td className="py-3 px-3 text-center">
-                        <div className="flex items-center justify-center gap-1.5">
+                        <div className="flex items-center justify-center gap-1.5 flex-wrap">
                           {!isLetterCollected ? (
-                            <button
-                              type="button"
-                              onClick={() => handleOpenMarkModal(rec)}
-                              className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-colors shadow-2xs cursor-pointer flex items-center gap-1"
-                              title="Tandai surat sudah diterima oleh sekolah"
-                            >
-                              <CheckCircle2 className="w-3.5 h-3.5" />
-                              <span>Terima Surat</span>
-                            </button>
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => handleOpenMarkModal(rec)}
+                                className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-colors shadow-2xs cursor-pointer flex items-center gap-1"
+                                title="Tandai surat sudah diterima oleh sekolah"
+                              >
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                <span>Terima Surat</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => handleOpenAlpaModal(rec)}
+                                className="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-600 text-rose-700 hover:text-white border border-rose-200 hover:border-rose-600 font-bold text-[11px] transition-all shadow-2xs cursor-pointer flex items-center gap-1"
+                                title="Ubah status presensi menjadi Alpa (A) karena tidak mengumpulkan surat izin/sakit"
+                              >
+                                <UserX className="w-3.5 h-3.5" />
+                                <span>Ubah ke Alpa</span>
+                              </button>
+                            </>
                           ) : (
                             <button
                               type="button"
@@ -737,6 +829,89 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                 >
                   <CheckCircle2 className="w-4 h-4" />
                   <span>Simpan &amp; Tandai Sudah Ada Surat</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: Konfirmasi Ubah Status ke Alpa (A) */}
+      {alpaModalRecord && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 my-8">
+            <div className="p-5 bg-rose-700 text-white flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <UserX className="w-5 h-5 text-rose-200" />
+                <div>
+                  <h3 className="text-base font-bold">Ubah Status Presensi ke Alpa (A)</h3>
+                  <p className="text-xs text-rose-100">
+                    Sanksi/penyesuaian karena tidak menyerahkan surat izin atau sakit
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setAlpaModalRecord(null)}
+                className="p-1.5 rounded-lg text-rose-200 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleConfirmConvertToAlpa} className="p-6 space-y-4 text-xs">
+              {/* Info Siswa */}
+              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                <div className="font-extrabold text-slate-900 text-sm">{alpaModalRecord.studentName}</div>
+                <div className="text-slate-600 text-[11px]">
+                  Kelas {alpaModalRecord.className} • NISN: {alpaModalRecord.nisn}
+                </div>
+                <div className="text-slate-800 font-semibold pt-1 border-t border-slate-200/80 mt-1 flex items-center justify-between">
+                  <span>Tanggal Presensi: {formatDateIndonesian(alpaModalRecord.date)}</span>
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                    alpaModalRecord.status === 'I' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'
+                  }`}>
+                    Status Saat Ini: {alpaModalRecord.status === 'I' ? 'Izin (I)' : 'Sakit (S)'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Alert Peringatan */}
+              <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-start gap-2.5 text-rose-800">
+                <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+                <div className="text-[11.5px] leading-relaxed">
+                  <strong>Perhatian:</strong> Mengubah status presensi menjadi <strong>Alpa (A)</strong> akan memperbarui kehadiran siswa pada tanggal tersebut menjadi tanpa keterangan, dan masuk dalam akumulasi rekapitulasi presensi.
+                </div>
+              </div>
+
+              {/* Alasan Perubahan */}
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Keterangan / Alasan Perubahan ke Alpa
+                </label>
+                <textarea
+                  rows={2}
+                  value={alpaReason}
+                  onChange={(e) => setAlpaReason(e.target.value)}
+                  placeholder="Contoh: Surat izin/sakit belum diterima setelah batas waktu yang ditentukan."
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:outline-hidden focus:ring-1 focus:ring-rose-500"
+                />
+              </div>
+
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setAlpaModalRecord(null)}
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition-colors cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold transition-colors shadow-xs cursor-pointer flex items-center gap-2"
+                >
+                  <UserX className="w-4 h-4" />
+                  <span>Ya, Ubah Jadi Alpa (A)</span>
                 </button>
               </div>
             </form>
