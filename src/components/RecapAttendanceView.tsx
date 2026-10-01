@@ -39,9 +39,9 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
   classes,
   schoolProfile,
 }) => {
-  // Date Range state
-  const [startDate, setStartDate] = useState('2026-09-14');
-  const [endDate, setEndDate] = useState('2026-09-17');
+  // Date Range state - otomatis disetel ke tanggal hari ini saat aplikasi dibuka
+  const [startDate, setStartDate] = useState<string>(() => getTodayDateString());
+  const [endDate, setEndDate] = useState<string>(() => getTodayDateString());
 
   // Grade & Class filter
   const [selectedGrade, setSelectedGrade] = useState<'ALL' | 'X' | 'XI' | 'XII'>('X');
