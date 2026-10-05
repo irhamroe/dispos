@@ -152,12 +152,13 @@ export default function App() {
     try {
       localStorage.removeItem('app_sman1batu_violation_rules');
       localStorage.removeItem('app_sman1batu_violation_rules_v2');
-      const saved = localStorage.getItem('app_sman1batu_violation_rules_v3');
+      localStorage.removeItem('app_sman1batu_violation_rules_v3');
+      const saved = localStorage.getItem('app_sman1batu_violation_rules_v4');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length >= sampleViolationCatalog.length) return parsed;
+        if (Array.isArray(parsed) && parsed.length >= sampleViolationCatalog.length && parsed[0]?.name === sampleViolationCatalog[0]?.name) return parsed;
       }
-      localStorage.setItem('app_sman1batu_violation_rules_v3', JSON.stringify(sampleViolationCatalog));
+      localStorage.setItem('app_sman1batu_violation_rules_v4', JSON.stringify(sampleViolationCatalog));
       return sampleViolationCatalog;
     } catch {
       return sampleViolationCatalog;
@@ -270,7 +271,7 @@ export default function App() {
 
         const isStaleRules = remoteRules.length > 0 && (
           remoteRules.length < sampleViolationCatalog.length ||
-          remoteRules.some((r) => r.name.includes('> 15 menit'))
+          remoteRules.some((r) => r.name.includes('> 15 menit') || r.name.includes('Keterlambatan hadir'))
         );
         if (remoteRules.length === 0 || isStaleRules) {
           await deleteAllDocumentsInCollection(COLLECTIONS.VIOLATION_RULES);
@@ -386,7 +387,7 @@ export default function App() {
   }, [disciplineRecords]);
 
   useEffect(() => {
-    localStorage.setItem('app_sman1batu_violation_rules_v3', JSON.stringify(violationRules));
+    localStorage.setItem('app_sman1batu_violation_rules_v4', JSON.stringify(violationRules));
   }, [violationRules]);
 
   useEffect(() => {
@@ -448,7 +449,7 @@ export default function App() {
 
   const handleResetViolationRules = async () => {
     setViolationRules(sampleViolationCatalog);
-    localStorage.setItem('app_sman1batu_violation_rules_v3', JSON.stringify(sampleViolationCatalog));
+    localStorage.setItem('app_sman1batu_violation_rules_v4', JSON.stringify(sampleViolationCatalog));
     if (isFirebaseConfigured()) {
       await deleteAllDocumentsInCollection(COLLECTIONS.VIOLATION_RULES);
       await batchSaveDocuments(COLLECTIONS.VIOLATION_RULES, sampleViolationCatalog);
