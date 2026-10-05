@@ -17,11 +17,14 @@ import {
   ArrowRight,
   Download,
   Image as ImageIcon,
-  Paperclip
+  Paperclip,
+  Cloud,
+  ExternalLink
 } from 'lucide-react';
 import { DisciplineRecord, SchoolProfile, Student } from '../types';
 import { exportDisciplineToExcel, exportDisciplineToPdf, formatDateIndonesian } from '../utils/exportUtils';
 import { sortClasses } from '../utils/sortUtils';
+import { getGoogleDriveDirectImageUrl, getGoogleDriveViewUrl } from '../services/googleDriveService';
 
 interface DisciplineRecapViewProps {
   disciplineRecords: DisciplineRecord[];
@@ -565,11 +568,23 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
 
                   {activeRecordForDetail.coachingPhoto && (
                     <div>
-                      <div className="text-[11px] font-semibold text-slate-800 mb-1">Foto Dokumentasi Pembinaan:</div>
+                      <div className="text-[11px] font-semibold text-slate-800 mb-1 flex items-center justify-between">
+                        <span>Foto Dokumentasi Pembinaan:</span>
+                        {activeRecordForDetail.coachingPhoto.includes('drive.google.com') && (
+                          <a
+                            href={getGoogleDriveViewUrl(activeRecordForDetail.coachingPhoto)}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-[10px] text-teal-700 hover:underline flex items-center gap-1 font-bold"
+                          >
+                            <Cloud className="w-3 h-3 text-teal-600" /> Buka di Google Drive <ExternalLink className="w-3 h-3" />
+                          </a>
+                        )}
+                      </div>
                       <img
-                        src={activeRecordForDetail.coachingPhoto}
+                        src={getGoogleDriveDirectImageUrl(activeRecordForDetail.coachingPhoto)}
                         alt="Foto Pembinaan"
-                        className="w-full max-h-48 object-cover rounded-xl border border-teal-200 cursor-pointer"
+                        className="w-full max-h-56 object-cover rounded-xl border border-teal-200 cursor-pointer shadow-xs"
                         onClick={() =>
                           setActivePreviewImage({
                             url: activeRecordForDetail.coachingPhoto!,
@@ -581,12 +596,29 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                   )}
 
                   {activeRecordForDetail.coachingEvidenceFileName && (
-                    <div className="p-2.5 bg-white rounded-lg border border-teal-200 flex items-center gap-2">
-                      <FileText className="w-4 h-4 text-teal-600" />
-                      <span className="font-medium text-slate-800 flex-1 truncate">
-                        {activeRecordForDetail.coachingEvidenceFileName}
-                      </span>
-                      <span className="text-[10px] text-teal-700 font-bold">Surat Terverifikasi</span>
+                    <div className="p-3 bg-white rounded-xl border border-teal-200 flex items-center justify-between gap-2 shadow-2xs">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center shrink-0">
+                          <FileText className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-medium text-slate-800 truncate text-xs">
+                            {activeRecordForDetail.coachingEvidenceFileName}
+                          </p>
+                          <p className="text-[10px] text-teal-700 font-bold">Surat Terverifikasi</p>
+                        </div>
+                      </div>
+                      {activeRecordForDetail.coachingEvidenceFile && (
+                        <a
+                          href={getGoogleDriveViewUrl(activeRecordForDetail.coachingEvidenceFile)}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="px-3 py-1.5 bg-teal-50 hover:bg-teal-100 text-teal-700 font-bold text-[11px] rounded-lg transition-colors flex items-center gap-1 shrink-0"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                          <span>Buka Berkas</span>
+                        </a>
+                      )}
                     </div>
                   )}
                 </div>
@@ -612,17 +644,30 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
           <div className="max-w-2xl w-full bg-slate-900 rounded-2xl overflow-hidden border border-slate-700">
             <div className="p-3.5 bg-slate-800 text-white flex items-center justify-between text-xs font-bold">
               <span>{activePreviewImage.title}</span>
-              <button
-                type="button"
-                onClick={() => setActivePreviewImage(null)}
-                className="p-1 text-slate-400 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                {activePreviewImage.url.includes('drive.google.com') && (
+                  <a
+                    href={getGoogleDriveViewUrl(activePreviewImage.url)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-2.5 py-1 bg-teal-600 hover:bg-teal-500 text-white rounded-lg text-[10px] font-bold flex items-center gap-1"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    <span>Buka di Google Drive</span>
+                  </a>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setActivePreviewImage(null)}
+                  className="p-1 text-slate-400 hover:text-white"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
             <div className="p-4 flex items-center justify-center bg-black/50">
               <img
-                src={activePreviewImage.url}
+                src={getGoogleDriveDirectImageUrl(activePreviewImage.url)}
                 alt={activePreviewImage.title}
                 className="max-h-[75vh] w-auto max-w-full rounded-lg object-contain"
               />

@@ -18,11 +18,20 @@ import {
   Filter,
   Layers,
   Sparkles,
-  BellRing
+  BellRing,
+  Cloud,
+  ExternalLink,
+  Loader2
 } from 'lucide-react';
 import { DisciplineRecord, SchoolProfile, Student } from '../types';
 import { formatDateIndonesian } from '../utils/exportUtils';
 import { sortClasses } from '../utils/sortUtils';
+import { 
+  uploadFileToGoogleDrive, 
+  isGoogleDriveConfigured, 
+  getGoogleDriveDirectImageUrl, 
+  getGoogleDriveViewUrl 
+} from '../services/googleDriveService';
 
 interface DisciplineDebtViewProps {
   disciplineRecords: DisciplineRecord[];
@@ -43,6 +52,11 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
   const [selectedClass, setSelectedClass] = useState('ALL');
   const [debtFilterType, setDebtFilterType] = useState<'ALL' | 'NO_COACHING' | 'WAITING_LETTER'>('ALL');
   const [notice, setNotice] = useState<string | null>(null);
+
+  // Upload loading states for Google Drive
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [uploadingEvidence, setUploadingEvidence] = useState(false);
+  const [uploadingFollowUpDoc, setUploadingFollowUpDoc] = useState(false);
 
   // Modal states for resolving debt
   const [resolvingRecord, setResolvingRecord] = useState<DisciplineRecord | null>(null);
@@ -136,37 +150,100 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
   };
 
   // Upload handlers
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setCoachingPhotoName(file.name);
+
+    // Pratinjau lokal instan
     const reader = new FileReader();
     reader.onload = () => {
       setCoachingPhoto(reader.result as string);
     };
     reader.readAsDataURL(file);
+
+    if (isGoogleDriveConfigured() && resolvingRecord) {
+      setUploadingPhoto(true);
+      try {
+        const res = await uploadFileToGoogleDrive(file, 'photo', {
+          studentName: resolvingRecord.studentName,
+          className: resolvingRecord.className,
+          violationName: resolvingRecord.violationName,
+        });
+        if (res.success && res.fileUrl) {
+          setCoachingPhoto(res.fileUrl);
+          setCoachingPhotoName(res.fileName || file.name);
+        }
+      } catch (err) {
+        console.error('Error saat upload foto pembinaan ke Google Drive:', err);
+      } finally {
+        setUploadingPhoto(false);
+      }
+    }
   };
 
-  const handleDocumentUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDocumentUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setCoachingEvidenceFileName(file.name);
+
+    // Pratinjau lokal instan
     const reader = new FileReader();
     reader.onload = () => {
       setCoachingEvidenceFile(reader.result as string);
     };
     reader.readAsDataURL(file);
+
+    if (isGoogleDriveConfigured() && resolvingRecord) {
+      setUploadingEvidence(true);
+      try {
+        const res = await uploadFileToGoogleDrive(file, 'evidence', {
+          studentName: resolvingRecord.studentName,
+          className: resolvingRecord.className,
+          violationName: resolvingRecord.violationName,
+        });
+        if (res.success && res.fileUrl) {
+          setCoachingEvidenceFile(res.fileUrl);
+          setCoachingEvidenceFileName(res.fileName || file.name);
+        }
+      } catch (err) {
+        console.error('Error saat upload surat ke Google Drive:', err);
+      } finally {
+        setUploadingEvidence(false);
+      }
+    }
   };
 
-  const handleFollowUpDocUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFollowUpDocUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setFollowUpDocFileName(file.name);
+
+    // Pratinjau lokal instan
     const reader = new FileReader();
     reader.onload = () => {
       setFollowUpDocFile(reader.result as string);
     };
     reader.readAsDataURL(file);
+
+    if (isGoogleDriveConfigured() && letterUploadRecord) {
+      setUploadingFollowUpDoc(true);
+      try {
+        const res = await uploadFileToGoogleDrive(file, 'evidence', {
+          studentName: letterUploadRecord.studentName,
+          className: letterUploadRecord.className,
+          violationName: letterUploadRecord.violationName,
+        });
+        if (res.success && res.fileUrl) {
+          setFollowUpDocFile(res.fileUrl);
+          setFollowUpDocFileName(res.fileName || file.name);
+        }
+      } catch (err) {
+        console.error('Error saat upload berkas surat ke Google Drive:', err);
+      } finally {
+        setUploadingFollowUpDoc(false);
+      }
+    }
   };
 
   // Submit resolve modal
@@ -573,7 +650,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                     <span>Foto Pembinaan</span>
                     <span className="text-rose-500 font-bold">* (Syarat Wajib Minimal)</span>
                   </span>
-                  {coachingPhoto && (
+                  {coachingPhoto && !uploadingPhoto && (
                     <button
                       type="button"
                       onClick={() => {
@@ -581,7 +658,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                         setCoachingPhotoName('');
                         if (photoInputRef.current) photoInputRef.current.value = '';
                       }}
-                      className="text-[10px] text-rose-600 hover:underline"
+                      className="text-[10px] text-rose-600 hover:underline cursor-pointer"
                     >
                       Hapus Foto
                     </button>
@@ -596,17 +673,30 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                   className="hidden"
                 />
 
-                {coachingPhoto ? (
+                {uploadingPhoto ? (
+                  <div className="p-3.5 bg-emerald-50 border border-emerald-300 rounded-xl flex items-center justify-center gap-2 text-emerald-800 text-xs font-semibold">
+                    <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />
+                    <span>Mengunggah foto ke Google Drive (Folder: Foto Bukti Pembinaan)...</span>
+                  </div>
+                ) : coachingPhoto ? (
                   <div className="flex items-center gap-3 p-2.5 bg-slate-50 border border-emerald-300 rounded-xl">
                     <img
-                      src={coachingPhoto}
+                      src={getGoogleDriveDirectImageUrl(coachingPhoto)}
                       alt="Foto Pembinaan"
                       className="w-14 h-14 object-cover rounded-lg border border-slate-200 shadow-2xs cursor-pointer"
                       onClick={() => setPreviewPhoto({ url: coachingPhoto, title: `Foto Pembinaan: ${resolvingRecord.studentName}` })}
                     />
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-slate-800 truncate text-xs">{coachingPhotoName || 'Foto_Pembinaan.jpg'}</p>
-                      <p className="text-[10px] text-emerald-700">Foto pembinaan terlampir (syarat minimal terpenuhi)</p>
+                      <div className="flex items-center gap-1 mt-0.5">
+                        {coachingPhoto.includes('drive.google.com') || coachingPhoto.includes('googleusercontent.com') ? (
+                          <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-bold border border-emerald-200">
+                            <Cloud className="w-3 h-3 text-emerald-600" /> Google Drive (Folder Foto)
+                          </span>
+                        ) : (
+                          <p className="text-[10px] text-emerald-700">Foto pembinaan terlampir (syarat minimal terpenuhi)</p>
+                        )}
+                      </div>
                     </div>
                     <button
                       type="button"
@@ -636,7 +726,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                     <span>Bukti Surat Pembinaan (File Surat)</span>
                     <span className="text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded text-[10px] font-semibold">Bisa Menyusul</span>
                   </span>
-                  {coachingEvidenceFileName && (
+                  {coachingEvidenceFileName && !uploadingEvidence && (
                     <button
                       type="button"
                       onClick={() => {
@@ -644,7 +734,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                         setCoachingEvidenceFileName('');
                         if (docInputRef.current) docInputRef.current.value = '';
                       }}
-                      className="text-[10px] text-rose-600 hover:underline"
+                      className="text-[10px] text-rose-600 hover:underline cursor-pointer"
                     >
                       Hapus File
                     </button>
@@ -659,14 +749,27 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                   className="hidden"
                 />
 
-                {coachingEvidenceFileName ? (
+                {uploadingEvidence ? (
+                  <div className="p-3.5 bg-blue-50 border border-blue-300 rounded-xl flex items-center justify-center gap-2 text-blue-800 text-xs font-semibold">
+                    <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
+                    <span>Mengunggah dokumen ke Google Drive (Folder: Surat Bukti Pembinaan)...</span>
+                  </div>
+                ) : coachingEvidenceFileName ? (
                   <div className="flex items-center gap-3 p-2.5 bg-slate-50 border border-emerald-300 rounded-xl">
                     <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-bold text-xs shrink-0">
                       <FileText className="w-5 h-5" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-slate-800 truncate text-xs">{coachingEvidenceFileName}</p>
-                      <p className="text-[10px] text-emerald-700">Surat pembinaan resmi terlampir</p>
+                      <div className="flex items-center gap-1 mt-0.5">
+                        {coachingEvidenceFile && (coachingEvidenceFile.includes('drive.google.com') || coachingEvidenceFile.includes('googleusercontent.com')) ? (
+                          <span className="inline-flex items-center gap-1 text-[10px] text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-bold border border-blue-200">
+                            <Cloud className="w-3 h-3 text-blue-600" /> Google Drive (Folder Surat)
+                          </span>
+                        ) : (
+                          <p className="text-[10px] text-emerald-700">Surat pembinaan resmi terlampir</p>
+                        )}
+                      </div>
                     </div>
                     <button
                       type="button"
@@ -764,7 +867,12 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                   className="hidden"
                 />
 
-                {followUpDocFile || followUpDocFileName ? (
+                {uploadingFollowUpDoc ? (
+                  <div className="p-3.5 bg-amber-50 border border-amber-300 rounded-xl flex items-center justify-center gap-2 text-amber-800 text-xs font-semibold">
+                    <Loader2 className="w-4 h-4 animate-spin text-amber-600" />
+                    <span>Mengunggah dokumen ke Google Drive (Folder: Surat Bukti Pembinaan)...</span>
+                  </div>
+                ) : followUpDocFile || followUpDocFileName ? (
                   <div className="p-3 bg-white rounded-xl border border-emerald-300 flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2.5 min-w-0">
                       <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
@@ -774,7 +882,15 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                         <div className="text-xs font-bold text-slate-800 truncate">
                           {followUpDocFileName || 'Surat_Pembinaan_Bertandatangan.pdf'}
                         </div>
-                        <div className="text-[10px] text-emerald-600 font-semibold">Dokumen surat siap disimpan</div>
+                        <div className="flex items-center gap-1 mt-0.5">
+                          {followUpDocFile && (followUpDocFile.includes('drive.google.com') || followUpDocFile.includes('googleusercontent.com')) ? (
+                            <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-bold border border-emerald-200">
+                              <Cloud className="w-3 h-3 text-emerald-600" /> Google Drive (Folder Surat)
+                            </span>
+                          ) : (
+                            <div className="text-[10px] text-emerald-600 font-semibold">Dokumen surat siap disimpan</div>
+                          )}
+                        </div>
                       </div>
                     </div>
                     <button
@@ -825,17 +941,30 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
           <div className="max-w-2xl w-full bg-slate-900 rounded-2xl overflow-hidden border border-slate-700">
             <div className="p-3.5 bg-slate-800 text-white flex items-center justify-between text-xs font-bold">
               <span>{previewPhoto.title}</span>
-              <button
-                type="button"
-                onClick={() => setPreviewPhoto(null)}
-                className="p-1 text-slate-400 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                {previewPhoto.url.includes('drive.google.com') && (
+                  <a
+                    href={getGoogleDriveViewUrl(previewPhoto.url)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[10px] font-bold flex items-center gap-1"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    <span>Buka di Google Drive</span>
+                  </a>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setPreviewPhoto(null)}
+                  className="p-1 text-slate-400 hover:text-white"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
             <div className="p-4 flex items-center justify-center bg-black/50">
               <img
-                src={previewPhoto.url}
+                src={getGoogleDriveDirectImageUrl(previewPhoto.url)}
                 alt={previewPhoto.title}
                 className="max-h-[75vh] w-auto max-w-full rounded-lg object-contain"
               />

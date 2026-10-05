@@ -1,0 +1,401 @@
+/**
+ * Google Drive Integration Service
+ * Digunakan untuk mengunggah Foto Bukti Pembinaan dan Surat Bukti Pembinaan
+ * langsung ke Google Drive agar database Firestore tidak terbebani ukuran file (base64).
+ */
+
+export interface GoogleDriveConfig {
+  scriptUrl: string; // URL Web App dari Google Apps Script (e.g. https://script.google.com/macros/s/.../exec)
+  photoFolderId?: string; // Optional: Folder ID khusus Foto Bukti Pembinaan di Google Drive
+  evidenceFolderId?: string; // Optional: Folder ID khusus Surat Bukti Pembinaan di Google Drive
+  photoFolderName?: string; // Default: 'Foto Bukti Pembinaan'
+  evidenceFolderName?: string; // Default: 'Surat Bukti Pembinaan'
+  enabled: boolean;
+}
+
+const GDRIVE_CONFIG_STORAGE_KEY = 'app_sman1batu_gdrive_config_v1';
+
+export const DEFAULT_GDRIVE_CONFIG: GoogleDriveConfig = {
+  scriptUrl: (import.meta as any).env?.VITE_GDRIVE_SCRIPT_URL || '',
+  photoFolderId: (import.meta as any).env?.VITE_GDRIVE_PHOTO_FOLDER_ID || '',
+  evidenceFolderId: (import.meta as any).env?.VITE_GDRIVE_DOC_FOLDER_ID || '',
+  photoFolderName: 'Foto Bukti Pembinaan',
+  evidenceFolderName: 'Surat Bukti Pembinaan',
+  enabled: true,
+};
+
+// Ambil konfigurasi saat ini dari LocalStorage atau default
+export const getGoogleDriveConfig = (): GoogleDriveConfig => {
+  try {
+    const saved = localStorage.getItem(GDRIVE_CONFIG_STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return { ...DEFAULT_GDRIVE_CONFIG, ...parsed };
+    }
+  } catch (e) {
+    console.warn('Gagal membaca konfigurasi Google Drive dari localStorage:', e);
+  }
+  return DEFAULT_GDRIVE_CONFIG;
+};
+
+// Simpan konfigurasi ke LocalStorage
+export const saveGoogleDriveConfig = (config: Partial<GoogleDriveConfig>): GoogleDriveConfig => {
+  const current = getGoogleDriveConfig();
+  const updated: GoogleDriveConfig = {
+    ...current,
+    ...config,
+  };
+  try {
+    localStorage.setItem(GDRIVE_CONFIG_STORAGE_KEY, JSON.stringify(updated));
+  } catch (e) {
+    console.error('Gagal menyimpan konfigurasi Google Drive:', e);
+  }
+  return updated;
+};
+
+// Cek apakah Google Drive Web App sudah dikonfigurasi dan aktif
+export const isGoogleDriveConfigured = (): boolean => {
+  const config = getGoogleDriveConfig();
+  return Boolean(config.enabled && config.scriptUrl && config.scriptUrl.trim().startsWith('https://script.google.com/'));
+};
+
+export interface UploadResult {
+  success: boolean;
+  fileUrl: string; // URL Pratinjau / Share Google Drive
+  directUrl?: string; // URL Gambar Langsung / Thumbnail Google Drive
+  downloadUrl?: string;
+  fileId?: string;
+  fileName: string;
+  folderName?: string;
+  error?: string;
+}
+
+/**
+ * Konversi File menjadi Base64 string
+ */
+export const fileToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
+};
+
+/**
+ * Ekstrak File ID dari Google Drive URL
+ */
+export const extractGoogleDriveFileId = (url?: string): string | null => {
+  if (!url) return null;
+  // Match /d/FILE_ID or id=FILE_ID
+  const matchD = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if (matchD && matchD[1]) return matchD[1];
+
+  const matchId = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (matchId && matchId[1]) return matchId[1];
+
+  return null;
+};
+
+/**
+ * Dapatkan URL gambar langsung dari Google Drive untuk tag <img src="...">
+ */
+export const getGoogleDriveDirectImageUrl = (url?: string): string => {
+  if (!url) return '';
+  if (url.startsWith('data:image/')) return url; // Base64 data
+
+  const fileId = extractGoogleDriveFileId(url);
+  if (fileId) {
+    // lh3.googleusercontent.com atau drive.google.com/thumbnail memberikan render gambar terbaik & cepat tanpa CORS issue
+    return `https://lh3.googleusercontent.com/d/${fileId}`;
+  }
+
+  return url;
+};
+
+/**
+ * Dapatkan URL tampilan web Google Drive untuk dibuka di tab baru
+ */
+export const getGoogleDriveViewUrl = (url?: string): string => {
+  if (!url) return '';
+  const fileId = extractGoogleDriveFileId(url);
+  if (fileId) {
+    return `https://drive.google.com/file/d/${fileId}/view?usp=sharing`;
+  }
+  return url;
+};
+
+/**
+ * Unggah file ke Google Drive menggunakan Google Apps Script Web App
+ */
+export const uploadFileToGoogleDrive = async (
+  file: File,
+  folderType: 'photo' | 'evidence',
+  metadata?: {
+    studentName?: string;
+    className?: string;
+    violationName?: string;
+  }
+): Promise<UploadResult> => {
+  const config = getGoogleDriveConfig();
+
+  if (!isGoogleDriveConfigured()) {
+    return {
+      success: false,
+      fileUrl: '',
+      fileName: file.name,
+      error: 'Google Drive Apps Script belum dikonfigurasi. Silakan atur URL Web App di Pengaturan Google Drive.',
+    };
+  }
+
+  try {
+    const base64Data = await fileToBase64(file);
+
+    // Format nama file rapi jika ada info siswa
+    let customFileName = file.name;
+    const cleanExt = file.name.split('.').pop() || 'dat';
+    const timestamp = new Date().toISOString().slice(0, 10);
+    
+    if (metadata?.studentName && metadata?.className) {
+      const sanitizedStudent = metadata.studentName.replace(/[^a-zA-Z0-9_-]/g, '_');
+      const sanitizedClass = metadata.className.replace(/[^a-zA-Z0-9_-]/g, '_');
+      const prefix = folderType === 'photo' ? 'Foto_Pembinaan' : 'Surat_Pembinaan';
+      customFileName = `${prefix}_${sanitizedClass}_${sanitizedStudent}_${timestamp}.${cleanExt}`;
+    }
+
+    const payload = {
+      action: 'upload',
+      base64Data: base64Data,
+      fileName: customFileName,
+      mimeType: file.type || 'application/octet-stream',
+      folderType: folderType, // 'photo' | 'evidence'
+      photoFolderId: config.photoFolderId || '',
+      evidenceFolderId: config.evidenceFolderId || '',
+      photoFolderName: config.photoFolderName || 'Foto Bukti Pembinaan',
+      evidenceFolderName: config.evidenceFolderName || 'Surat Bukti Pembinaan',
+      studentName: metadata?.studentName || '',
+      className: metadata?.className || '',
+    };
+
+    // Menggunakan text/plain untuk menghindari CORS Preflight (OPTIONS) di Google Apps Script
+    const response = await fetch(config.scriptUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP Error ${response.status}: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+
+    if (result.status === 'success' || result.success) {
+      const fileId = result.fileId || extractGoogleDriveFileId(result.fileUrl);
+      const directUrl = fileId ? `https://lh3.googleusercontent.com/d/${fileId}` : result.directUrl || result.fileUrl;
+      const fileUrl = result.fileUrl || (fileId ? `https://drive.google.com/file/d/${fileId}/view?usp=sharing` : '');
+
+      return {
+        success: true,
+        fileUrl: fileUrl,
+        directUrl: directUrl,
+        downloadUrl: result.downloadUrl,
+        fileId: fileId,
+        fileName: result.fileName || customFileName,
+        folderName: result.folderName || (folderType === 'photo' ? 'Foto Bukti Pembinaan' : 'Surat Bukti Pembinaan'),
+      };
+    } else {
+      return {
+        success: false,
+        fileUrl: '',
+        fileName: file.name,
+        error: result.message || 'Gagal mengunggah file ke Google Drive (Respon script menunjukkan error).',
+      };
+    }
+  } catch (err: any) {
+    console.error('Error saat upload ke Google Drive:', err);
+    return {
+      success: false,
+      fileUrl: '',
+      fileName: file.name,
+      error: err?.message || 'Terjadi kesalahan jaringan saat mengunggah ke Google Drive.',
+    };
+  }
+};
+
+/**
+ * Uji koneksi ke Google Apps Script Web App
+ */
+export const testGoogleDriveConnection = async (scriptUrl?: string): Promise<{ success: boolean; message: string }> => {
+  const url = scriptUrl || getGoogleDriveConfig().scriptUrl;
+  if (!url || !url.trim().startsWith('https://script.google.com/')) {
+    return {
+      success: false,
+      message: 'URL Google Apps Script tidak valid. Harus diawali dengan https://script.google.com/',
+    };
+  }
+
+  try {
+    const payload = {
+      action: 'ping',
+    };
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      return {
+        success: false,
+        message: `Koneksi gagal: HTTP ${response.status} ${response.statusText}`,
+      };
+    }
+
+    const data = await response.json();
+    if (data.status === 'success' || data.success || data.message) {
+      return {
+        success: true,
+        message: data.message || 'Koneksi ke Google Drive Apps Script berhasil terhubung!',
+      };
+    } else {
+      return {
+        success: false,
+        message: data.message || 'Script merespon dengan status bukan success.',
+      };
+    }
+  } catch (err: any) {
+    return {
+      success: false,
+      message: `Gagal menghubungi endpoint: ${err?.message || 'Periksa koneksi internet atau hak akses Deploy Web App (Pilih Anyone).'}`
+    };
+  }
+};
+
+/**
+ * Kode Google Apps Script siap pakai untuk dipasang pengguna di script.google.com
+ */
+export const GOOGLE_APPS_SCRIPT_CODE = `/**
+ * =========================================================================
+ * GOOGLE APPS SCRIPT: PENYIMPANAN FOTO & SURAT PEMBINAAN SISWA DI GOOGLE DRIVE
+ * =========================================================================
+ * 
+ * CARA PASANG:
+ * 1. Buka https://script.google.com lalu klik "New Project" (Proyek Baru).
+ * 2. Hapus semua kode yang ada di editor, lalu PASTE kode di bawah ini seluruhnya.
+ * 3. Klik menu "Deploy" -> "New deployment".
+ * 4. Pilih tipe "Web app" (ikon gear/roda gigi).
+ * 5. Isi konfigurasi:
+ *    - Description: Upload Bukti Pembinaan Dispos
+ *    - Execute as: Me (email akun Google Anda)
+ *    - Who has access: Anyone (Siapa saja, TANPA login) -> Sangat penting!
+ * 6. Klik "Deploy", beri izin akses Google Drive saat diminta (Authorize Access).
+ * 7. Salin "Web app URL" (format: https://script.google.com/macros/s/.../exec).
+ * 8. Tempelkan URL tersebut ke Pengaturan Google Drive di Aplikasi Sistem Disiplin.
+ */
+
+function doGet(e) {
+  return ContentService.createTextOutput(JSON.stringify({
+    status: 'success',
+    message: 'Google Drive Apps Script Web App untuk Dispos aktif dan siap menerima upload.'
+  })).setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  try {
+    if (!e || !e.postData || !e.postData.contents) {
+      return ContentService.createTextOutput(JSON.stringify({
+        status: 'error',
+        message: 'Tidak ada data POST yang diterima.'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    var data = JSON.parse(e.postData.contents);
+
+    // Endpoint PING / TEST
+    if (data.action === 'ping') {
+      return ContentService.createTextOutput(JSON.stringify({
+        status: 'success',
+        message: 'Koneksi ke Google Drive Apps Script berhasil!'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // Endpoint UPLOAD FILE
+    var base64Data = data.base64Data || '';
+    var fileName = data.fileName || ('File_' + new Date().getTime());
+    var mimeType = data.mimeType || 'application/octet-stream';
+    var folderType = data.folderType || 'photo'; // 'photo' atau 'evidence'
+    
+    // Potong header data URL jika ada (e.g. data:image/jpeg;base64,)
+    if (base64Data.indexOf('base64,') > -1) {
+      base64Data = base64Data.split('base64,')[1];
+    }
+
+    var decoded = Utilities.base64Decode(base64Data);
+    var blob = Utilities.newBlob(decoded, mimeType, fileName);
+
+    // Tentukan folder target (Folder berbeda untuk Foto vs Surat Bukti)
+    var targetFolderName = folderType === 'evidence' 
+      ? (data.evidenceFolderName || 'Surat Bukti Pembinaan') 
+      : (data.photoFolderName || 'Foto Bukti Pembinaan');
+    
+    var customFolderId = folderType === 'evidence' ? data.evidenceFolderId : data.photoFolderId;
+    var targetFolder = null;
+
+    // 1. Cek jika ada custom folder ID
+    if (customFolderId && customFolderId.trim() !== '') {
+      try {
+        targetFolder = DriveApp.getFolderById(customFolderId.trim());
+      } catch (err) {
+        targetFolder = null;
+      }
+    }
+
+    // 2. Jika tidak ada ID khusus, cari atau buat folder sesuai nama
+    if (!targetFolder) {
+      var folders = DriveApp.getFoldersByName(targetFolderName);
+      if (folders.hasNext()) {
+        targetFolder = folders.next();
+      } else {
+        targetFolder = DriveApp.createFolder(targetFolderName);
+      }
+    }
+
+    // Buat file di dalam folder target
+    var file = targetFolder.createFile(blob);
+    
+    // Set permission agar bisa dilihat oleh siapa saja yang memiliki link
+    try {
+      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    } catch (permErr) {
+      // Abaikan jika akun workspace memiliki kebijakan khusus
+    }
+
+    var fileId = file.getId();
+    var fileUrl = file.getUrl();
+    var directUrl = 'https://lh3.googleusercontent.com/d/' + fileId;
+    var downloadUrl = file.getDownloadUrl();
+
+    return ContentService.createTextOutput(JSON.stringify({
+      status: 'success',
+      fileId: fileId,
+      fileUrl: fileUrl,
+      directUrl: directUrl,
+      downloadUrl: downloadUrl,
+      fileName: fileName,
+      folderName: targetFolder.getName()
+    })).setMimeType(ContentService.MimeType.JSON);
+
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({
+      status: 'error',
+      message: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+`;
