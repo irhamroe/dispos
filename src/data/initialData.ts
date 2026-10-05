@@ -288,270 +288,339 @@ export const initialUsers: AdminUser[] = [
 ];
 
 export const sampleViolationCatalog: ViolationRule[] = [
-  // A. BUDAYA DISIPLIN
+  // A. BUDAYA DISIPLIN (A1 - A19)
   {
-    id: 'vr-1',
+    id: 'vr-a1',
+    code: 'A1',
     name: 'Terlambat datang ke sekolah',
     category: 'Ringan',
     defaultPoints: 5,
     suggestedIntervention: 'Refleksi disiplin pagi dan pembiasaan literasi karakter 15 menit.'
   },
   {
-    id: 'vr-2',
-    name: 'Pulang sebelum waktunya tanpa izin',
+    id: 'vr-a2',
+    code: 'A2',
+    name: 'Pulang sekolah sebelum waktunya tanpa izin',
     category: 'Sedang',
     defaultPoints: 15,
     suggestedIntervention: 'Klarifikasi bersama wali kelas, pembuatan komitmen tertib waktu, dan penugasan mandiri.'
   },
   {
-    id: 'vr-3',
+    id: 'vr-a3',
+    code: 'A3',
     name: 'Keluar lingkungan sekolah saat jam pelajaran tanpa izin',
     category: 'Sedang',
     defaultPoints: 15,
     suggestedIntervention: 'Mediasi bersama guru piket dan pembuatan surat pernyataan komitmen tata tertib.'
   },
   {
-    id: 'vr-4',
+    id: 'vr-a4',
+    code: 'A4',
     name: 'Tidak masuk sekolah tanpa keterangan (Alpa)',
     category: 'Sedang',
     defaultPoints: 10,
     suggestedIntervention: 'Konfirmasi kehadiran langsung oleh wali kelas kepada orang tua dan pendampingan presensi.'
   },
   {
-    id: 'vr-5',
+    id: 'vr-a5',
+    code: 'A5',
     name: 'Tidak mengikuti atau tidak tertib saat upacara bendera',
     category: 'Ringan',
     defaultPoints: 5,
     suggestedIntervention: 'Pendampingan baris-berbaris dan penulisan refleksi nilai nasionalisme.'
   },
   {
-    id: 'vr-6',
+    id: 'vr-a6',
+    code: 'A6',
     name: 'Meninggalkan kelas saat pelajaran tanpa izin guru',
     category: 'Sedang',
     defaultPoints: 10,
     suggestedIntervention: 'Penyelesaian tugas di bawah bimbingan guru mapel dan dialog restitusi.'
   },
   {
-    id: 'vr-7',
+    id: 'vr-a7',
+    code: 'A7',
     name: 'Memakai jaket/sweater di sekolah tanpa izin',
     category: 'Ringan',
     defaultPoints: 5,
     suggestedIntervention: 'Penyimpanan jaket di loker/tas dan pembiasaan kerapian seragam sekolah.'
   },
   {
-    id: 'vr-8',
+    id: 'vr-a8',
+    code: 'A8',
     name: 'Rambut tidak rapi (tidak 3-2-1) atau dicat bagi laki-laki',
     category: 'Ringan',
     defaultPoints: 10,
     suggestedIntervention: 'Merapikan potongan rambut sesuai standar 3-2-1 maksimal dalam 2 hari kerja.'
   },
   {
-    id: 'vr-9',
+    id: 'vr-a9',
+    code: 'A9',
     name: 'Mewarnai/mengecat rambut bagi perempuan',
     category: 'Ringan',
     defaultPoints: 10,
     suggestedIntervention: 'Mengembalikan warna rambut alami/hitam dan pembinaan kerapian berpenampilan.'
   },
   {
-    id: 'vr-10',
+    id: 'vr-a10',
+    code: 'A10',
     name: 'Memakai gelang, kalung, anting, atau tindik bagi laki-laki',
     category: 'Ringan',
     defaultPoints: 5,
     suggestedIntervention: 'Pengamanan aksesoris oleh pihak sekolah dan penandatanganan komitmen tata tertib.'
   },
   {
-    id: 'vr-11',
+    id: 'vr-a11',
+    code: 'A11',
     name: 'Memakai make-up atau aksesoris berlebihan bagi perempuan',
     category: 'Ringan',
     defaultPoints: 5,
     suggestedIntervention: 'Pembersihan riasan wajah/cat kuku dan edukasi kesederhanaan penampilan di sekolah.'
   },
   {
-    id: 'vr-12',
+    id: 'vr-a12',
+    code: 'A12',
     name: 'Seragam atau atribut tidak lengkap / tidak sesuai jadwal',
     category: 'Ringan',
     defaultPoints: 5,
     suggestedIntervention: 'Melengkapi atribut seragam sekolah dan pemeriksaan berkala oleh wali kelas.'
   },
   {
-    id: 'vr-13',
+    id: 'vr-a13',
+    code: 'A13',
     name: 'Berpakaian tidak sopan / tidak rapi di lingkungan sekolah',
     category: 'Ringan',
     defaultPoints: 5,
     suggestedIntervention: 'Penggantian pakaian yang sopan dan edukasi etika berpakaian di lingkungan sekolah.'
   },
   {
-    id: 'vr-14',
+    id: 'vr-a14',
+    code: 'A14',
     name: 'Makan atau minum saat jam pelajaran tanpa izin',
     category: 'Ringan',
     defaultPoints: 5,
     suggestedIntervention: 'Pengingat adab belajar di kelas dan komitmen fokus mengikuti pembelajaran.'
   },
   {
-    id: 'vr-15',
+    id: 'vr-a15',
+    code: 'A15',
     name: 'Membeli makanan/minuman di luar jam istirahat',
     category: 'Ringan',
     defaultPoints: 5,
     suggestedIntervention: 'Pembinaan manajemen waktu istirahat dan kembali ke kelas mengikuti KBM.'
   },
   {
-    id: 'vr-16',
+    id: 'vr-a16',
+    code: 'A16',
     name: 'Membeli makanan/minuman dari luar lewat belanja online (COD)',
     category: 'Ringan',
     defaultPoints: 5,
     suggestedIntervention: 'Pengambilan barang di ruang piket setelah pulang dan edukasi jajan di kantin sekolah.'
   },
   {
-    id: 'vr-17',
+    id: 'vr-a17',
+    code: 'A17',
     name: 'Menggunakan HP/alat elektronik saat pelajaran tanpa izin',
     category: 'Sedang',
     defaultPoints: 10,
     suggestedIntervention: 'Penyimpanan HP di loker kelas dan penugasan rangkuman materi pembelajaran.'
   },
   {
-    id: 'vr-18',
+    id: 'vr-a18',
+    code: 'A18',
     name: 'Berpacaran / melakukan tindakan asusila di sekolah',
     category: 'Sedang',
     defaultPoints: 25,
     suggestedIntervention: 'Bimbingan konseling etika pergaulan remaja oleh Guru BK dan pemanggilan orang tua.'
   },
   {
-    id: 'vr-19',
+    id: 'vr-a19',
+    code: 'A19',
     name: 'Tidak menyelesaikan buku pembinaan dalam 5 hari kerja',
     category: 'Sedang',
     defaultPoints: 10,
     suggestedIntervention: 'Pemanggilan oleh Tim Ketertiban Sekolah untuk percepatan penyelesaian pembinaan.'
   },
 
-  // B. BUDAYA RELIGIUS DAN TOLERANSI
+  // B. BUDAYA RELIGIUS DAN TOLERANSI (B1 - B5)
   {
-    id: 'vr-20',
-    name: 'Tidak beribadah atau mengganggu teman yang sedang beribadah',
+    id: 'vr-b1',
+    code: 'B1',
+    name: 'Tidak melaksanakan ibadah sesuai ketentuan agama masing-masing',
     category: 'Sedang',
     defaultPoints: 15,
-    suggestedIntervention: 'Pembinaan karakter religius, penanaman toleransi, dan bimbingan rohani oleh guru agama.'
+    suggestedIntervention: 'Pembinaan karakter religius dan bimbingan rohani oleh guru agama.'
   },
   {
-    id: 'vr-21',
-    name: 'Tidak tertib saat berdoa bersama atau menyanyikan Indonesia Raya',
+    id: 'vr-b2',
+    code: 'B2',
+    name: 'Mengganggu atau tidak menghormati teman yang sedang beribadah',
+    category: 'Sedang',
+    defaultPoints: 15,
+    suggestedIntervention: 'Penanaman nilai toleransi beragama dan refleksi sikap bersama wali kelas.'
+  },
+  {
+    id: 'vr-b3',
+    code: 'B3',
+    name: 'Tidak tertib saat berdoa di awal dan akhir pembelajaran',
     category: 'Ringan',
     defaultPoints: 5,
-    suggestedIntervention: 'Refleksi nilai keagamaan dan kebangsaan bersama wali kelas.'
+    suggestedIntervention: 'Refleksi nilai keagamaan dan pembiasaan khidmat saat berdoa bersama.'
   },
   {
-    id: 'vr-22',
-    name: 'Berbicara tidak sopan atau bersikap kasar terhadap guru/teman',
+    id: 'vr-b4',
+    code: 'B4',
+    name: 'Berbicara tidak sopan atau berperilaku tidak ramah dan santun',
     category: 'Sedang',
     defaultPoints: 20,
     suggestedIntervention: 'Dialog restitusi empati dan permohonan maaf tulus secara lisan serta tertulis.'
   },
-
-  // C. BUDAYA PEDULI LINGKUNGAN
   {
-    id: 'vr-23',
-    name: 'Tidak melaksanakan piket kebersihan kelas/sekolah',
+    id: 'vr-b5',
+    code: 'B5',
+    name: 'Tidak tertib saat menyanyikan lagu Indonesia Raya di awal pembelajaran',
+    category: 'Ringan',
+    defaultPoints: 5,
+    suggestedIntervention: 'Refleksi nilai kebangsaan dan pembinaan sikap nasionalisme oleh wali kelas.'
+  },
+
+  // C. BUDAYA PEDULI LINGKUNGAN (C1 - C5)
+  {
+    id: 'vr-c1',
+    code: 'C1',
+    name: 'Tidak melaksanakan piket di dalam dan luar kelas',
     category: 'Ringan',
     defaultPoints: 5,
     suggestedIntervention: 'Melaksanakan bakti kebersihan ruang kelas dan halaman sekolah.'
   },
   {
-    id: 'vr-24',
-    name: 'Membuang sampah sembarangan atau tidak ikut Jumat Bersih',
+    id: 'vr-c2',
+    code: 'C2',
+    name: 'Tidak menjaga kebersihan dan keindahan fasilitas sekolah',
+    category: 'Ringan',
+    defaultPoints: 5,
+    suggestedIntervention: 'Bakti pemeliharaan fasilitas dan kebersihan lingkungan sekolah.'
+  },
+  {
+    id: 'vr-c3',
+    code: 'C3',
+    name: 'Membuang sampah sembarangan (tidak pada tempatnya)',
     category: 'Ringan',
     defaultPoints: 5,
     suggestedIntervention: 'Operasi semut pembersihan area sekolah dan pembuatan poster peduli kebersihan.'
   },
   {
-    id: 'vr-25',
-    name: 'Merusak atau mencoret-coret fasilitas sekolah',
+    id: 'vr-c4',
+    code: 'C4',
+    name: 'Tidak mengikuti kegiatan Jumat Sehat dan Jumat Bersih',
+    category: 'Ringan',
+    defaultPoints: 5,
+    suggestedIntervention: 'Penugasan bakti lingkungan sekolah bersama tim ketertiban.'
+  },
+  {
+    id: 'vr-c5',
+    code: 'C5',
+    name: 'Merusak fasilitas sekolah',
     category: 'Berat',
     defaultPoints: 35,
     suggestedIntervention: 'Tanggung jawab perbaikan/pembersihan sarana dan bakti pemeliharaan fasilitas sekolah.'
   },
 
-  // D. BUDAYA AMAN, NYAMAN, INKLUSIF DAN MERAYAKAN KEBHINEKAAN
+  // D. BUDAYA AMAN, NYAMAN, INKLUSIF DAN MERAYAKAN KEBHINEKAAN (D1 - D12)
   {
-    id: 'vr-26',
+    id: 'vr-d1',
+    code: 'D1',
     name: 'Terlibat atau menjadi anggota organisasi terlarang/geng liar',
     category: 'Berat',
     defaultPoints: 50,
     suggestedIntervention: 'Penanganan intensif Kepala Sekolah & Guru BK, pakta integritas, dan pemanggilan orang tua.'
   },
   {
-    id: 'vr-27',
-    name: 'Melakukan perundungan (bullying) verbal, fisik, atau siber',
+    id: 'vr-d2',
+    code: 'D2',
+    name: 'Melakukan perundungan (bullying) verbal, psikis, atau fisik',
     category: 'Berat',
     defaultPoints: 40,
     suggestedIntervention: 'Mediasi restoratif oleh Tim TPPK dan Guru BK serta pendampingan psikologis.'
   },
   {
-    id: 'vr-28',
+    id: 'vr-d3',
+    code: 'D3',
     name: 'Berkelahi, tawuran, atau main hakim sendiri',
     category: 'Berat',
     defaultPoints: 45,
     suggestedIntervention: 'Mediasi perdamaian resmi, konseling emosi oleh Guru BK, dan perjanjian bersama orang tua.'
   },
   {
-    id: 'vr-29',
+    id: 'vr-d4',
+    code: 'D4',
     name: 'Membawa, menyimpan, atau melihat konten pornografi',
     category: 'Berat',
     defaultPoints: 35,
     suggestedIntervention: 'Penghapusan konten, bimbingan etika digital oleh Guru BK, dan pendampingan orang tua.'
   },
   {
-    id: 'vr-30',
+    id: 'vr-d5',
+    code: 'D5',
     name: 'Membuat kegaduhan atau perayaan berlebihan di sekolah',
     category: 'Ringan',
     defaultPoints: 10,
     suggestedIntervention: 'Pembersihan area terdampak dan penulisan surat refleksi ketertiban bersama wali kelas.'
   },
   {
-    id: 'vr-31',
-    name: 'Membawa atau merokok / rokok elektrik (vape) di sekolah',
-    category: 'Sedang',
-    defaultPoints: 25,
-    suggestedIntervention: 'Penyitaan barang bukti, edukasi bahaya rokok oleh UKS/BK, dan pemanggilan orang tua.'
-  },
-  {
-    id: 'vr-32',
-    name: 'Membawa/mengonsumsi miras, narkoba, atau senjata tajam',
+    id: 'vr-d6',
+    code: 'D6',
+    name: 'Membawa senjata tajam, miras, rokok/vape, atau obat terlarang',
     category: 'Berat',
     defaultPoints: 75,
-    suggestedIntervention: 'Penanganan darurat Kepala Sekolah & Tim BK, penyitaan barang, dan pemanggilan orang tua.'
+    suggestedIntervention: 'Penyitaan barang bukti, penanganan darurat Kepala Sekolah & Tim BK, dan pemanggilan orang tua.'
   },
   {
-    id: 'vr-33',
+    id: 'vr-d7',
+    code: 'D7',
     name: 'Memalsukan tanda tangan kepala sekolah, guru, atau orang tua',
     category: 'Sedang',
     defaultPoints: 25,
     suggestedIntervention: 'Pembuatan surat pernyataan kejujuran dan klarifikasi langsung bersama orang tua.'
   },
   {
-    id: 'vr-34',
+    id: 'vr-d8',
+    code: 'D8',
     name: 'Terlibat tindak kriminal / kejahatan pidana',
     category: 'Berat',
     defaultPoints: 75,
     suggestedIntervention: 'Tindak lanjut khusus pimpinan sekolah bersama pihak berwenang dan pendampingan orang tua.'
   },
   {
-    id: 'vr-35',
-    name: 'Mengambil barang milik orang lain tanpa izin (Mencuri)',
+    id: 'vr-d9',
+    code: 'D9',
+    name: 'Mengambil atau meminjam barang tanpa izin (Mencuri)',
     category: 'Sedang',
     defaultPoints: 25,
     suggestedIntervention: 'Pengembalian barang kepada pemilik sah, permohonan maaf, dan pembinaan nilai kejujuran.'
   },
   {
-    id: 'vr-36',
+    id: 'vr-d10',
+    code: 'D10',
     name: 'Berjudi atau bermain judi online di sekolah',
     category: 'Sedang',
     defaultPoints: 25,
     suggestedIntervention: 'Konseling bahaya perjudian digital dan penandatanganan komitmen bersama orang tua.'
   },
   {
-    id: 'vr-37',
-    name: 'Merekam tanpa izin atau mengunggah konten negatif tentang sekolah',
+    id: 'vr-d11',
+    code: 'D11',
+    name: 'Mengunggah konten negatif tentang aktivitas sekolah',
     category: 'Sedang',
     defaultPoints: 25,
     suggestedIntervention: 'Penghapusan unggahan (take down), klarifikasi positif, dan edukasi etika bermedia sosial.'
+  },
+  {
+    id: 'vr-d12',
+    code: 'D12',
+    name: 'Merekam atau mendokumentasikan aktivitas sekolah tanpa izin tertulis',
+    category: 'Sedang',
+    defaultPoints: 25,
+    suggestedIntervention: 'Penghapusan dokumentasi dan edukasi privasi serta etika dokumentasi di lingkungan sekolah.'
   }
 ];

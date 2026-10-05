@@ -38,6 +38,7 @@ export type CoachingStatus = 'Belum' | 'Sudah';
 
 export interface ViolationRule {
   id: string;
+  code: string;
   name: string;
   category: ViolationCategory;
   defaultPoints: number;

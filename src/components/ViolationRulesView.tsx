@@ -44,6 +44,7 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
   const [editingRule, setEditingRule] = useState<ViolationRule | null>(null);
   
   // Form fields
+  const [formCode, setFormCode] = useState('');
   const [formName, setFormName] = useState('');
   const [formCategory, setFormCategory] = useState<ViolationCategory>('Ringan');
   const [formPoints, setFormPoints] = useState<number>(5);
@@ -52,6 +53,7 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
   // Open Create Modal
   const handleOpenCreateModal = () => {
     setEditingRule(null);
+    setFormCode('');
     setFormName('');
     setFormCategory('Ringan');
     setFormPoints(5);
@@ -62,6 +64,7 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
   // Open Edit Modal
   const handleOpenEditModal = (rule: ViolationRule) => {
     setEditingRule(rule);
+    setFormCode(rule.code || '');
     setFormName(rule.name);
     setFormCategory(rule.category);
     setFormPoints(rule.defaultPoints);
@@ -74,26 +77,30 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
     e.preventDefault();
     if (!formName.trim()) return;
 
+    const generatedCode = formCode.trim().toUpperCase() || `A${violationRules.length + 1}`;
+
     if (editingRule) {
       const updated: ViolationRule = {
         ...editingRule,
+        code: generatedCode,
         name: formName.trim(),
         category: formCategory,
         defaultPoints: Number(formPoints) || 5,
         suggestedIntervention: formIntervention.trim(),
       };
       onEditRule(updated);
-      setNotice(`Aturan "${updated.name}" berhasil diperbarui.`);
+      setNotice(`Aturan [${updated.code}] "${updated.name}" berhasil diperbarui.`);
     } else {
       const newRule: ViolationRule = {
         id: `vr-${Date.now()}`,
+        code: generatedCode,
         name: formName.trim(),
         category: formCategory,
         defaultPoints: Number(formPoints) || 5,
         suggestedIntervention: formIntervention.trim() || 'Refleksi disiplin dan komitmen tata tertib siswa.',
       };
       onAddRule(newRule);
-      setNotice(`Aturan baru "${newRule.name}" berhasil ditambahkan ke katalog.`);
+      setNotice(`Aturan baru [${newRule.code}] "${newRule.name}" berhasil ditambahkan ke katalog.`);
     }
 
     setIsModalOpen(false);
@@ -102,7 +109,7 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
 
   // Handle Delete with Confirmation
   const handleDelete = (rule: ViolationRule) => {
-    if (confirm(`Hapus aturan jenis pelanggaran:\n"${rule.name}"?`)) {
+    if (confirm(`Hapus aturan jenis pelanggaran [${rule.code || ''}]:\n"${rule.name}"?`)) {
       onDeleteRule(rule.id);
       setNotice(`Aturan "${rule.name}" telah dihapus.`);
       setTimeout(() => setNotice(null), 3500);
@@ -124,9 +131,10 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
       if (selectedCategory !== 'ALL' && rule.category !== selectedCategory) return false;
       if (searchQuery.trim() !== '') {
         const q = searchQuery.toLowerCase();
+        const matchCode = rule.code?.toLowerCase().includes(q);
         const matchName = rule.name.toLowerCase().includes(q);
         const matchIntervention = rule.suggestedIntervention?.toLowerCase().includes(q);
-        if (!matchName && !matchIntervention) return false;
+        if (!matchCode && !matchName && !matchIntervention) return false;
       }
       return true;
     });
@@ -353,6 +361,7 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
             <thead>
               <tr className="bg-slate-50 text-slate-500 font-bold text-[11px] uppercase tracking-wider border-b border-slate-100">
                 <th className="py-3 px-3 text-center w-12">No</th>
+                <th className="py-3 px-3 text-center w-20">Kode</th>
                 <th className="py-3 px-4 min-w-[260px]">Jenis Pelanggaran</th>
                 <th className="py-3 px-3 text-center w-28">Kategori</th>
                 {enablePointsSystem && (
@@ -364,7 +373,7 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
             <tbody className="divide-y divide-slate-100 text-xs">
               {filteredRules.length === 0 ? (
                 <tr>
-                  <td colSpan={enablePointsSystem ? 5 : 4} className="py-12 text-center text-slate-400">
+                  <td colSpan={enablePointsSystem ? 6 : 5} className="py-12 text-center text-slate-400">
                     <BookOpen className="w-8 h-8 text-slate-300 mx-auto mb-2" />
                     Tidak ada aturan jenis pelanggaran yang sesuai filter.
                   </td>
@@ -381,6 +390,11 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
                   return (
                     <tr key={rule.id} className="hover:bg-slate-50/70 transition-colors">
                       <td className="py-3.5 px-3 text-center text-slate-400 font-medium">{idx + 1}</td>
+                      <td className="py-3.5 px-3 text-center">
+                        <span className="inline-block px-2 py-0.5 rounded-md font-mono text-[11px] font-bold bg-slate-800 text-white shadow-xs">
+                          {rule.code || `A${idx + 1}`}
+                        </span>
+                      </td>
                       <td className="py-3.5 px-4 font-bold text-slate-900">{rule.name}</td>
                       <td className="py-3.5 px-3 text-center">
                         <span className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${badgeClass}`}>
@@ -444,19 +458,34 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
             </div>
 
             <form onSubmit={handleSubmitForm} className="p-6 space-y-4 text-xs">
-              {/* Nama Jenis Pelanggaran */}
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  Nama Jenis Pelanggaran <span className="text-rose-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Contoh: Terlambat hadir lebih dari 15 menit..."
-                  value={formName}
-                  onChange={(e) => setFormName(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:outline-hidden focus:ring-1 focus:ring-slate-600 text-xs"
-                />
+              {/* Kode & Nama Jenis Pelanggaran */}
+              <div className="grid grid-cols-4 gap-3">
+                <div className="col-span-1">
+                  <label className="block font-bold text-slate-700 mb-1">
+                    Kode <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Contoh: A1"
+                    value={formCode}
+                    onChange={(e) => setFormCode(e.target.value.toUpperCase())}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-mono font-bold focus:outline-hidden focus:ring-1 focus:ring-slate-600 text-xs uppercase"
+                  />
+                </div>
+                <div className="col-span-3">
+                  <label className="block font-bold text-slate-700 mb-1">
+                    Nama Jenis Pelanggaran <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Contoh: Terlambat datang ke sekolah..."
+                    value={formName}
+                    onChange={(e) => setFormName(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:outline-hidden focus:ring-1 focus:ring-slate-600 text-xs"
+                  />
+                </div>
               </div>
 
               {/* Kategori & Poin */}

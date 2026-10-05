@@ -1149,7 +1149,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                 >
                   {catalogToUse.map((cat, i) => (
                     <option key={cat.id || i} value={cat.name}>
-                      {cat.name}
+                      {cat.code ? `[${cat.code}] ` : ''}{cat.name}
                     </option>
                   ))}
                   <option value="Pelanggaran tata tertib lainnya">
