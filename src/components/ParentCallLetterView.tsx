@@ -47,6 +47,7 @@ interface ParentCallLetterViewProps {
   waliKelasList: WaliKelasTeacher[];
   schoolProfile: SchoolProfile;
   currentUserName: string;
+  enablePointsSystem?: boolean;
 }
 
 export const ParentCallLetterView: React.FC<ParentCallLetterViewProps> = ({
@@ -56,6 +57,7 @@ export const ParentCallLetterView: React.FC<ParentCallLetterViewProps> = ({
   waliKelasList,
   schoolProfile,
   currentUserName,
+  enablePointsSystem = true,
 }) => {
   // Filters for student selection
   const [selectedClass, setSelectedClass] = useState<string>('ALL');
@@ -204,6 +206,7 @@ export const ParentCallLetterView: React.FC<ParentCallLetterViewProps> = ({
       notes,
       senderTitle,
       senderName,
+      enablePointsSystem,
     };
     exportParentCallLetterToPdf(letterData);
   };
@@ -217,6 +220,9 @@ export const ParentCallLetterView: React.FC<ParentCallLetterViewProps> = ({
   const handleCopyWhatsApp = () => {
     if (!selectedStudent) return;
     const parentPhone = selectedStudent.parentPhone || selectedStudent.phone || '-';
+    const pointsText = enablePointsSystem
+      ? ` (${totalPoints} Poin dari ${includedViolations.length} catatan)`
+      : ` (${includedViolations.length} catatan pelanggaran)`;
     const text = `*SURAT PANGGILAN ORANG TUA / WALI SISWA*
 ${schoolProfile.name}
 ----------------------------------------
@@ -224,7 +230,7 @@ Yth. Bapak/Ibu Wali dari:
 *Nama Siswa:* ${selectedStudent.name}
 *NISN / Kelas:* ${selectedStudent.nisn} / ${selectedStudent.className}
 
-Sehubungan dengan akumulasi catatan pelanggaran tata tertib sekolah (${totalPoints} Poin dari ${includedViolations.length} catatan), kami mengharap kehadiran Bapak/Ibu pada:
+Sehubungan dengan akumulasi catatan pelanggaran tata tertib sekolah${pointsText}, kami mengharap kehadiran Bapak/Ibu pada:
 
 📅 *Hari/Tanggal:* ${formatDayAndDateIndonesian(callDate)}
 ⏰ *Pukul:* ${callTime}
@@ -557,9 +563,15 @@ Terima kasih atas kerja samanya.`);
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-1">
                           <span className="font-bold text-slate-900 truncate">{rec.violationName}</span>
-                          <span className="px-1.5 py-0.5 bg-rose-100 text-rose-800 rounded font-bold text-[10px] shrink-0">
-                            +{rec.points} Poin
-                          </span>
+                          {enablePointsSystem ? (
+                            <span className="px-1.5 py-0.5 bg-rose-100 text-rose-800 rounded font-bold text-[10px] shrink-0">
+                              +{rec.points} Poin
+                            </span>
+                          ) : (
+                            <span className="px-1.5 py-0.5 bg-slate-100 text-slate-700 rounded font-bold text-[10px] shrink-0">
+                              {rec.category}
+                            </span>
+                          )}
                         </div>
 
                         <div className="flex items-center gap-2 text-[10.5px] text-slate-500 mt-0.5">
@@ -588,7 +600,9 @@ Terima kasih atas kerja samanya.`);
               <div className="p-3 bg-slate-900 text-white rounded-xl flex items-center justify-between text-xs">
                 <span className="text-slate-300">Total Pelanggaran Terpilih:</span>
                 <span className="font-bold text-amber-300 text-sm">
-                  {includedViolations.length} Kasus • {totalPoints} Poin
+                  {enablePointsSystem 
+                    ? `${includedViolations.length} Kasus • ${totalPoints} Poin`
+                    : `${includedViolations.length} Kasus Kejadian`}
                 </span>
               </div>
             )}
@@ -895,14 +909,16 @@ Terima kasih atas kerja samanya.`);
                     <th className="border border-slate-300 py-1.5 px-2 w-24 text-center">Tanggal</th>
                     <th className="border border-slate-300 py-1.5 px-2 text-left">Nama / Jenis Pelanggaran</th>
                     <th className="border border-slate-300 py-1.5 px-2 w-20 text-center">Kategori</th>
-                    <th className="border border-slate-300 py-1.5 px-2 w-16 text-center">Poin</th>
+                    {enablePointsSystem && (
+                      <th className="border border-slate-300 py-1.5 px-2 w-16 text-center">Poin</th>
+                    )}
                     <th className="border border-slate-300 py-1.5 px-2 w-28 text-center">Status Pembinaan</th>
                   </tr>
                 </thead>
                 <tbody>
                   {includedViolations.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="border border-slate-300 py-3 text-center text-slate-500 italic">
+                      <td colSpan={enablePointsSystem ? 6 : 5} className="border border-slate-300 py-3 text-center text-slate-500 italic">
                         Tidak ada catatan pelanggaran khusus / Pembinaan preventif berkala.
                       </td>
                     </tr>
@@ -920,9 +936,11 @@ Terima kasih atas kerja samanya.`);
                           )}
                         </td>
                         <td className="border border-slate-300 py-1.5 px-2 text-center">{v.category}</td>
-                        <td className="border border-slate-300 py-1.5 px-2 text-center font-bold text-rose-700">
-                          {v.points}
-                        </td>
+                        {enablePointsSystem && (
+                          <td className="border border-slate-300 py-1.5 px-2 text-center font-bold text-rose-700">
+                            {v.points}
+                          </td>
+                        )}
                         <td className="border border-slate-300 py-1.5 px-2 text-center">
                           {v.coachingStatus === 'Sudah' ? (
                             <span className="text-emerald-700 font-semibold">Sudah Dibina</span>
@@ -938,14 +956,22 @@ Terima kasih atas kerja samanya.`);
                   <tfoot>
                     <tr className="bg-slate-100/80 font-bold border-t-2 border-slate-400">
                       <td colSpan={4} className="border border-slate-300 py-1.5 px-3 text-right">
-                        TOTAL AKUMULASI POIN PELANGGARAN:
+                        {enablePointsSystem ? 'TOTAL AKUMULASI POIN PELANGGARAN:' : 'TOTAL PELANGGARAN TERCATAT:'}
                       </td>
-                      <td className="border border-slate-300 py-1.5 px-2 text-center text-rose-700 font-black text-xs">
-                        {totalPoints} Poin
-                      </td>
-                      <td className="border border-slate-300 py-1.5 px-2 text-center text-slate-500 text-[10px]">
-                        {totalPoints >= 50 ? 'Kategori Kritis (BK)' : totalPoints >= 25 ? 'Perhatian Khusus' : 'Tahap Pembinaan'}
-                      </td>
+                      {enablePointsSystem ? (
+                        <>
+                          <td className="border border-slate-300 py-1.5 px-2 text-center text-rose-700 font-black text-xs">
+                            {totalPoints} Poin
+                          </td>
+                          <td className="border border-slate-300 py-1.5 px-2 text-center text-slate-500 text-[10px]">
+                            {totalPoints >= 50 ? 'Kategori Kritis (BK)' : totalPoints >= 25 ? 'Perhatian Khusus' : 'Tahap Pembinaan'}
+                          </td>
+                        </>
+                      ) : (
+                        <td className="border border-slate-300 py-1.5 px-2 text-center text-slate-900 font-black text-xs">
+                          {includedViolations.length} Kejadian
+                        </td>
+                      )}
                     </tr>
                   </tfoot>
                 )}

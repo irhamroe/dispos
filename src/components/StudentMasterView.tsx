@@ -48,6 +48,7 @@ interface StudentMasterViewProps {
   onDeleteStudent?: (studentId: string) => void;
   onResetToDefaultStudents?: () => Promise<void> | void;
   initialClassFilter?: string;
+  enablePointsSystem?: boolean;
 }
 
 export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
@@ -60,6 +61,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
   onDeleteStudent,
   onResetToDefaultStudents,
   initialClassFilter,
+  enablePointsSystem = true,
 }) => {
   const [isSyncing, setIsSyncing] = useState(false);
   const [selectedClass, setSelectedClass] = useState(initialClassFilter || 'ALL');
@@ -1329,7 +1331,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
               {/* Disiplin & Akademik */}
               {(() => {
                 const viols = disciplineRecords.filter((d) => d.studentId === viewingStudent.id);
-                const pts = viols.reduce((acc, curr) => acc + curr.points, 0);
+                const pts = viols.reduce((acc, curr) => acc + (curr.points || 0), 0);
                 return (
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-center justify-between">
                     <div>
@@ -1338,17 +1340,31 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                       </span>
                       <span className="font-bold text-slate-800">{viols.length} Catatan Kejadian</span>
                     </div>
-                    <span
-                      className={`px-3 py-1 rounded-xl text-xs font-black ${
-                        pts > 25
-                          ? 'bg-rose-100 text-rose-800'
-                          : pts > 0
-                          ? 'bg-amber-100 text-amber-800'
-                          : 'bg-emerald-100 text-emerald-800'
-                      }`}
-                    >
-                      {pts} Poin
-                    </span>
+                    {enablePointsSystem ? (
+                      <span
+                        className={`px-3 py-1 rounded-xl text-xs font-black ${
+                          pts > 25
+                            ? 'bg-rose-100 text-rose-800'
+                            : pts > 0
+                            ? 'bg-amber-100 text-amber-800'
+                            : 'bg-emerald-100 text-emerald-800'
+                        }`}
+                      >
+                        {pts} Poin
+                      </span>
+                    ) : (
+                      <span
+                        className={`px-3 py-1 rounded-xl text-xs font-bold ${
+                          viols.length > 2
+                            ? 'bg-rose-100 text-rose-800'
+                            : viols.length > 0
+                            ? 'bg-amber-100 text-amber-800'
+                            : 'bg-emerald-100 text-emerald-800'
+                        }`}
+                      >
+                        {viols.length === 0 ? 'Tertib' : `${viols.length} Kasus`}
+                      </span>
+                    )}
                   </div>
                 );
               })()}

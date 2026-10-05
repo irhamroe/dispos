@@ -161,6 +161,16 @@ export default function App() {
     }
   });
 
+  // Optional Points System Setting State (Default: True)
+  const [enablePointsSystem, setEnablePointsSystem] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('app_sman1batu_enable_points');
+      return saved !== null ? JSON.parse(saved) : true;
+    } catch {
+      return true;
+    }
+  });
+
   // Users state (Multi-Role: Admin + 36 Wali Kelas + Guru Mapel)
   const [users, setUsers] = useState<AdminUser[]>(() => {
     try {
@@ -369,6 +379,10 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('app_sman1batu_violation_rules', JSON.stringify(violationRules));
   }, [violationRules]);
+
+  useEffect(() => {
+    localStorage.setItem('app_sman1batu_enable_points', JSON.stringify(enablePointsSystem));
+  }, [enablePointsSystem]);
 
   useEffect(() => {
     localStorage.setItem('app_sman1batu_users_v5', JSON.stringify(users));
@@ -673,6 +687,7 @@ export default function App() {
                 setInitialViolationForDisc('');
               }}
               violationRules={violationRules}
+              enablePointsSystem={enablePointsSystem}
             />
           )}
 
@@ -702,6 +717,7 @@ export default function App() {
               waliKelasList={waliKelasList}
               schoolProfile={initialSchoolProfile}
               currentUserName={currentUser.name}
+              enablePointsSystem={enablePointsSystem}
             />
           )}
 
@@ -712,6 +728,8 @@ export default function App() {
               onEditRule={handleEditViolationRule}
               onDeleteRule={handleDeleteViolationRule}
               onResetRules={handleResetViolationRules}
+              enablePointsSystem={enablePointsSystem}
+              onTogglePointsSystem={setEnablePointsSystem}
             />
           )}
 
@@ -726,6 +744,7 @@ export default function App() {
               onDeleteStudent={handleDeleteStudent}
               onResetToDefaultStudents={handleResetToDefaultStudents}
               initialClassFilter={selectedClassForStudentView}
+              enablePointsSystem={enablePointsSystem}
             />
           )}
 

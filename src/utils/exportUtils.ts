@@ -1010,6 +1010,7 @@ export interface ParentCallLetterData {
   notes?: string;
   senderTitle: string;
   senderName: string;
+  enablePointsSystem?: boolean;
 }
 
 /**
@@ -1031,6 +1032,7 @@ export const exportParentCallLetterToPdf = (data: ParentCallLetterData) => {
     notes,
     senderTitle,
     senderName,
+    enablePointsSystem = true,
   } = data;
 
   const doc = new jsPDF({
@@ -1114,33 +1116,68 @@ export const exportParentCallLetterToPdf = (data: ParentCallLetterData) => {
 
   // Tabel Pelanggaran
   const totalPoints = violations.reduce((acc, v) => acc + (v.points || 0), 0);
-  const violationRows = violations.map((v, idx) => [
-    idx + 1,
-    v.date,
-    v.violationName,
-    v.category,
-    `${v.points} Poin`,
-    v.coachingStatus === 'Sudah' ? 'Sudah Dibina' : 'Belum Dibina',
-  ]);
+  const violationRows = violations.map((v, idx) => {
+    if (enablePointsSystem) {
+      return [
+        idx + 1,
+        v.date,
+        v.violationName,
+        v.category,
+        `${v.points} Poin`,
+        v.coachingStatus === 'Sudah' ? 'Sudah Dibina' : 'Belum Dibina',
+      ];
+    } else {
+      return [
+        idx + 1,
+        v.date,
+        v.violationName,
+        v.category,
+        v.coachingStatus === 'Sudah' ? 'Sudah Dibina' : 'Belum Dibina',
+      ];
+    }
+  });
+
+  const tableHead = enablePointsSystem
+    ? [['No', 'Tanggal Kejadian', 'Nama / Jenis Pelanggaran', 'Kategori', 'Poin', 'Status Pembinaan']]
+    : [['No', 'Tanggal Kejadian', 'Nama / Jenis Pelanggaran', 'Kategori', 'Status Pembinaan']];
+
+  const emptyBody = enablePointsSystem
+    ? [['-', '-', 'Tidak ada catatan pelanggaran khusus / Pembinaan preventif berkala', '-', '0 Poin', 'Selesai']]
+    : [['-', '-', 'Tidak ada catatan pelanggaran khusus / Pembinaan preventif berkala', '-', 'Selesai']];
+
+  const tableFoot = enablePointsSystem
+    ? (violationRows.length > 0 ? [[
+        { content: 'TOTAL AKUMULASI POIN PELANGGARAN', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } },
+        { content: `${totalPoints} Poin`, styles: { halign: 'center', fontStyle: 'bold', textColor: [185, 28, 28] } },
+        { content: '', styles: { halign: 'center' } }
+      ]] : undefined)
+    : (violationRows.length > 0 ? [[
+        { content: 'TOTAL PELANGGARAN TERCATAT', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } },
+        { content: `${violations.length} Kejadian`, styles: { halign: 'center', fontStyle: 'bold', textColor: [15, 23, 42] } }
+      ]] : undefined);
+
+  const columnStylesConfig = enablePointsSystem
+    ? {
+        0: { halign: 'center', cellWidth: 8 },
+        1: { halign: 'center', cellWidth: 24 },
+        2: { halign: 'left', cellWidth: 'auto' },
+        3: { halign: 'center', cellWidth: 18 },
+        4: { halign: 'center', cellWidth: 16 },
+        5: { halign: 'center', cellWidth: 24 },
+      }
+    : {
+        0: { halign: 'center', cellWidth: 8 },
+        1: { halign: 'center', cellWidth: 26 },
+        2: { halign: 'left', cellWidth: 'auto' },
+        3: { halign: 'center', cellWidth: 22 },
+        4: { halign: 'center', cellWidth: 28 },
+      };
 
   autoTable(doc, {
     startY: curY,
-    head: [[
-      'No',
-      'Tanggal Kejadian',
-      'Nama / Jenis Pelanggaran',
-      'Kategori',
-      'Poin',
-      'Status Pembinaan'
-    ]],
-    body: violationRows.length > 0 ? violationRows : [
-      ['-', '-', 'Tidak ada catatan pelanggaran khusus / Pembinaan preventif berkala', '-', '0 Poin', 'Selesai']
-    ],
-    foot: violationRows.length > 0 ? [[
-      { content: 'TOTAL AKUMULASI POIN PELANGGARAN', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } },
-      { content: `${totalPoints} Poin`, styles: { halign: 'center', fontStyle: 'bold', textColor: [185, 28, 28] } },
-      { content: '', styles: { halign: 'center' } }
-    ]] : undefined,
+    head: tableHead,
+    body: violationRows.length > 0 ? violationRows : emptyBody,
+    foot: tableFoot,
     theme: 'grid',
     headStyles: {
       fillColor: [15, 23, 42],
@@ -1160,14 +1197,7 @@ export const exportParentCallLetterToPdf = (data: ParentCallLetterData) => {
       fontSize: 7.5,
       fontStyle: 'bold',
     },
-    columnStyles: {
-      0: { halign: 'center', cellWidth: 8 },
-      1: { halign: 'center', cellWidth: 24 },
-      2: { halign: 'left', cellWidth: 'auto' },
-      3: { halign: 'center', cellWidth: 18 },
-      4: { halign: 'center', cellWidth: 16 },
-      5: { halign: 'center', cellWidth: 24 },
-    },
+    columnStyles: columnStylesConfig as any,
     margin: { left: marginX, right: marginX },
   });
 

@@ -51,6 +51,7 @@ interface DisciplineViewProps {
   initialViolationForModal?: string;
   onClearInitialModalData?: () => void;
   violationRules?: ViolationRule[];
+  enablePointsSystem?: boolean;
 }
 
 export const DisciplineView: React.FC<DisciplineViewProps> = ({
@@ -66,6 +67,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
   initialViolationForModal,
   onClearInitialModalData,
   violationRules = sampleViolationCatalog,
+  enablePointsSystem = true,
 }) => {
   const catalogToUse = violationRules && violationRules.length > 0 ? violationRules : sampleViolationCatalog;
 
