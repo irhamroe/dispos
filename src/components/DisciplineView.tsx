@@ -18,7 +18,8 @@ import {
   User,
   Paperclip,
   Maximize2,
-  Camera
+  Camera,
+  GraduationCap
 } from 'lucide-react';
 import { DisciplineRecord, SchoolProfile, Student, ViolationCategory, DisciplineStatus, CoachingStatus, ViolationRule } from '../types';
 import { sampleViolationCatalog } from '../data/initialData';
@@ -69,6 +70,22 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
   const [activeRecordForDetail, setActiveRecordForDetail] = useState<DisciplineRecord | null>(null);
   const [activePreviewImage, setActivePreviewImage] = useState<{ url: string; title: string } | null>(null);
 
+  // Unique available grades from students list
+  const availableGrades = React.useMemo(() => {
+    const gradeSet = new Set<string>();
+    students.forEach((s) => {
+      if (s.grade) {
+        gradeSet.add(s.grade);
+      } else if (s.className) {
+        const match = s.className.match(/^(X|XI|XII)/i);
+        if (match) gradeSet.add(match[1].toUpperCase());
+      }
+    });
+    if (gradeSet.size === 0) return ['X', 'XI', 'XII'];
+    const order: Record<string, number> = { 'X': 1, 'XI': 2, 'XII': 3 };
+    return Array.from(gradeSet).sort((a, b) => (order[a] ?? 99) - (order[b] ?? 99));
+  }, [students]);
+
   // Unique classes from students list
   const availableClasses = React.useMemo(() => {
     const classSet = new Set<string>();
@@ -78,19 +95,54 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
     return sortClasses(Array.from(classSet));
   }, [students]);
 
+  const defaultGrade = availableGrades[0] || 'X';
+  const [selectedGrade, setSelectedGrade] = useState<string>(defaultGrade);
+
+  // Available classes in currently selected grade for the modal
+  const availableClassesInGrade = React.useMemo(() => {
+    const classSet = new Set<string>();
+    students.forEach((s) => {
+      const sGrade = s.grade || (s.className ? s.className.match(/^(X|XI|XII)/i)?.[1]?.toUpperCase() : '');
+      if (sGrade === selectedGrade && s.className) {
+        classSet.add(s.className);
+      }
+    });
+    const sorted = sortClasses(Array.from(classSet));
+    return sorted.length > 0 ? sorted : availableClasses;
+  }, [students, selectedGrade, availableClasses]);
+
   // Form states strictly adhering to user requirements:
   // 1. Tanggal Kejadian
-  // 2. Pilih kelas
-  // 3. Nama Siswa
-  // 4. Jenis Pelanggaran
-  // 5. Poin (otomatis terisi ketika jenis pelanggaran dipilih - tidak ditampilkan teksnya)
-  // 6. Status Pembinaan (sudah / belum)
-  // 7. Jika sudah: Tanggal Pembinaan, Foto Pembinaan, Bukti Pembinaan (File Surat pembinaan)
-  const defaultClass = availableClasses[0] || 'X-1';
+  // 2. Pilih Jenjang
+  // 3. Pilih kelas
+  // 4. Nama Siswa
+  // 5. Jenis Pelanggaran
+  // 6. Poin (otomatis terisi ketika jenis pelanggaran dipilih - tidak ditampilkan teksnya)
+  // 7. Status Pembinaan (sudah / belum)
+  // 8. Jika sudah: Tanggal Pembinaan, Foto Pembinaan, Bukti Pembinaan (File Surat pembinaan)
+  const defaultClass = availableClassesInGrade[0] || availableClasses[0] || 'X-1';
   const [incidentDate, setIncidentDate] = useState<string>(() => {
     return new Date().toISOString().slice(0, 10);
   });
   const [selectedClass, setSelectedClass] = useState<string>(defaultClass);
+
+  // Handle grade change and update selectedClass to first class in grade
+  const handleGradeChange = (newGrade: string) => {
+    setSelectedGrade(newGrade);
+    const classSet = new Set<string>();
+    students.forEach((s) => {
+      const sGrade = s.grade || (s.className ? s.className.match(/^(X|XI|XII)/i)?.[1]?.toUpperCase() : '');
+      if (sGrade === newGrade && s.className) {
+        classSet.add(s.className);
+      }
+    });
+    const classesForGrade = sortClasses(Array.from(classSet));
+    if (classesForGrade.length > 0) {
+      if (!classesForGrade.includes(selectedClass)) {
+        setSelectedClass(classesForGrade[0]);
+      }
+    }
+  };
   const [selectedStudentId, setSelectedStudentId] = useState<string>('');
   const [violationName, setViolationName] = useState<string>(catalogToUse[0]?.name || '');
   
@@ -176,6 +228,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
   // Trigger open modal if requested from parent (e.g. from Daily Attendance view)
   useEffect(() => {
     if (initialStudentForModal) {
+      const sGrade = initialStudentForModal.grade || (initialStudentForModal.className ? initialStudentForModal.className.match(/^(X|XI|XII)/i)?.[1]?.toUpperCase() : '') || 'X';
+      setSelectedGrade(sGrade);
       setSelectedClass(initialStudentForModal.className);
       setSelectedStudentId(initialStudentForModal.id);
       if (initialViolationForModal) {
@@ -190,7 +244,17 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
   // Open modal reset handler
   const handleOpenModal = () => {
-    const firstClass = availableClasses[0] || 'X-1';
+    const firstGrade = availableGrades[0] || 'X';
+    setSelectedGrade(firstGrade);
+    const classSet = new Set<string>();
+    students.forEach((s) => {
+      const sGrade = s.grade || (s.className ? s.className.match(/^(X|XI|XII)/i)?.[1]?.toUpperCase() : '');
+      if (sGrade === firstGrade && s.className) {
+        classSet.add(s.className);
+      }
+    });
+    const classesForGrade = sortClasses(Array.from(classSet));
+    const firstClass = classesForGrade[0] || availableClasses[0] || 'X-1';
     setSelectedClass(firstClass);
     const firstStudent = students.find((s) => s.className === firstClass);
     if (firstStudent) {
@@ -855,9 +919,31 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                 />
               </div>
 
-              {/* 2. Pilih Kelas & 3. Nama Siswa */}
+              {/* 2. Pilihan Jenjang & 3. Pilih Kelas */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* 2. Pilih kelas */}
+                {/* 2. Pilih Jenjang */}
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                    <GraduationCap className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Pilih Jenjang</span>
+                    <span className="text-rose-500">*</span>
+                  </label>
+                  <select
+                    id="select-pilih-jenjang"
+                    required
+                    value={selectedGrade}
+                    onChange={(e) => handleGradeChange(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-bold focus:outline-hidden focus:ring-1 focus:ring-emerald-500 cursor-pointer"
+                  >
+                    {availableGrades.map((g) => (
+                      <option key={g} value={g}>
+                        Kelas {g}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* 3. Pilih Kelas */}
                 <div>
                   <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1.5">
                     <Layers className="w-3.5 h-3.5 text-emerald-600" />
@@ -869,36 +955,14 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                     required
                     value={selectedClass}
                     onChange={(e) => setSelectedClass(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-bold focus:outline-hidden focus:ring-1 focus:ring-emerald-500"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-bold focus:outline-hidden focus:ring-1 focus:ring-emerald-500 cursor-pointer"
                   >
-                    {availableClasses.map((cName) => (
-                      <option key={cName} value={cName}>
-                        Kelas {cName}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* 3. Nama Siswa */}
-                <div>
-                  <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Nama Siswa</span>
-                    <span className="text-rose-500">*</span>
-                  </label>
-                  <select
-                    id="select-nama-siswa"
-                    required
-                    value={selectedStudentId}
-                    onChange={(e) => setSelectedStudentId(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-semibold focus:outline-hidden focus:ring-1 focus:ring-emerald-500"
-                  >
-                    {studentsInSelectedClass.length === 0 ? (
-                      <option value="">Tidak ada siswa di kelas ini</option>
+                    {availableClassesInGrade.length === 0 ? (
+                      <option value="">Tidak ada kelas di jenjang ini</option>
                     ) : (
-                      studentsInSelectedClass.map((s) => (
-                        <option key={s.id} value={s.id}>
-                          {s.name} ({s.nisn})
+                      availableClassesInGrade.map((cName) => (
+                        <option key={cName} value={cName}>
+                          Kelas {cName}
                         </option>
                       ))
                     )}
@@ -906,7 +970,33 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                 </div>
               </div>
 
-              {/* 4. Jenis Pelanggaran */}
+              {/* 4. Nama Siswa */}
+              <div>
+                <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                  <User className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Nama Siswa</span>
+                  <span className="text-rose-500">*</span>
+                </label>
+                <select
+                  id="select-nama-siswa"
+                  required
+                  value={selectedStudentId}
+                  onChange={(e) => setSelectedStudentId(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-semibold focus:outline-hidden focus:ring-1 focus:ring-emerald-500 cursor-pointer"
+                >
+                  {studentsInSelectedClass.length === 0 ? (
+                    <option value="">Tidak ada siswa di kelas ini</option>
+                  ) : (
+                    studentsInSelectedClass.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name} ({s.nisn})
+                      </option>
+                    ))
+                  )}
+                </select>
+              </div>
+
+              {/* 5. Jenis Pelanggaran */}
               {/* Catatan: Poin otomatis terisi ketika jenis pelanggaran dipilih, tidak perlu ditampilkan tulisannya */}
               <div>
                 <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1.5">
