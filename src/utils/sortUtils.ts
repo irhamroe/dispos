@@ -84,9 +84,13 @@ export const sortWaliKelas = (teachersList: WaliKelasTeacher[]): WaliKelasTeache
  * (Data yang terakhir dimasukkan akan selalu berada di urutan paling atas)
  */
 export const sortDisciplineRecords = <T extends { date?: string; id?: string; createdAt?: string }>(
-  records: T[]
+  records?: T[] | null
 ): T[] => {
+  if (!records || !Array.isArray(records)) return [];
   return [...records].sort((a, b) => {
+    if (!a && !b) return 0;
+    if (!a) return 1;
+    if (!b) return -1;
     // 1. Compare explicit createdAt if present
     if (a.createdAt && b.createdAt && a.createdAt !== b.createdAt) {
       return b.createdAt.localeCompare(a.createdAt);

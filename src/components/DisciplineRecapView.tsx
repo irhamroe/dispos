@@ -22,6 +22,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { DisciplineRecord, SchoolProfile, Student } from '../types';
+import { exportDisciplineToExcel, exportDisciplineToPdf, formatDateIndonesian } from '../utils/exportUtils';
 import { sortClasses, sortDisciplineRecords } from '../utils/sortUtils';
 import { getGoogleDriveDirectImageUrl, getGoogleDriveViewUrl } from '../services/googleDriveService';
 
