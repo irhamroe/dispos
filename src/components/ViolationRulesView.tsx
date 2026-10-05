@@ -337,7 +337,7 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
-              placeholder="Cari nama jenis pelanggaran / restitusi..."
+              placeholder="Cari nama jenis pelanggaran..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-1 focus:ring-slate-500"
@@ -358,14 +358,13 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
                 {enablePointsSystem && (
                   <th className="py-3 px-3 text-center w-24">Poin Standar</th>
                 )}
-                <th className="py-3 px-4">Rekomendasi Restitusi / Pembinaan</th>
                 <th className="py-3 px-3 text-center w-28">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
               {filteredRules.length === 0 ? (
                 <tr>
-                  <td colSpan={enablePointsSystem ? 6 : 5} className="py-12 text-center text-slate-400">
+                  <td colSpan={enablePointsSystem ? 5 : 4} className="py-12 text-center text-slate-400">
                     <BookOpen className="w-8 h-8 text-slate-300 mx-auto mb-2" />
                     Tidak ada aturan jenis pelanggaran yang sesuai filter.
                   </td>
@@ -395,9 +394,6 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
                           </span>
                         </td>
                       )}
-                      <td className="py-3.5 px-4 text-slate-600 leading-relaxed">
-                        {rule.suggestedIntervention || '-'}
-                      </td>
                       <td className="py-3.5 px-3 text-center">
                         <div className="flex items-center justify-center gap-1.5">
                           <button
