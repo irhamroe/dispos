@@ -139,11 +139,12 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
     if (isGoogleDriveConfigured()) {
       setUploadingNewPhoto(true);
       try {
-        const studentCleanName = (newName.trim() || 'Siswa').replace(/[^a-zA-Z0-9_-]/g, '_');
-        const studentCleanNisn = (newNisn.trim() || 'NISN').replace(/[^a-zA-Z0-9_-]/g, '_');
-        const customName = `Foto_${studentCleanName}_${studentCleanNisn}`;
-        
-        const res = await uploadFileToGoogleDrive(file, 'student_photo', customName);
+        const chosenClass = classes.find((c) => c.id === newClassId);
+        const res = await uploadFileToGoogleDrive(file, 'student_photo', {
+          studentName: newName.trim() || 'SISWA',
+          nisn: newNisn.trim() || 'NIS',
+          className: chosenClass?.name || '',
+        });
         if (res.success && (res.directUrl || res.fileUrl)) {
           setNewPhotoUrl(res.directUrl || res.fileUrl);
         } else {
@@ -184,11 +185,12 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
     if (isGoogleDriveConfigured()) {
       setUploadingEditPhoto(true);
       try {
-        const studentCleanName = (editName.trim() || 'Siswa').replace(/[^a-zA-Z0-9_-]/g, '_');
-        const studentCleanNisn = (editNisn.trim() || 'NISN').replace(/[^a-zA-Z0-9_-]/g, '_');
-        const customName = `Foto_${studentCleanName}_${studentCleanNisn}`;
-
-        const res = await uploadFileToGoogleDrive(file, 'student_photo', customName);
+        const chosenClass = classes.find((c) => c.id === editClassId);
+        const res = await uploadFileToGoogleDrive(file, 'student_photo', {
+          studentName: editName.trim() || 'SISWA',
+          nisn: editNisn.trim() || 'NIS',
+          className: chosenClass?.name || '',
+        });
         if (res.success && (res.directUrl || res.fileUrl)) {
           setEditPhotoUrl(res.directUrl || res.fileUrl);
         } else {

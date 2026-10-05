@@ -161,7 +161,8 @@ export const uploadFileToGoogleDrive = async (
     className?: string;
     nisn?: string;
     violationName?: string;
-  }
+    customFileName?: string;
+  } | string
 ): Promise<UploadResult> => {
   const config = getGoogleDriveConfig();
 
@@ -179,21 +180,35 @@ export const uploadFileToGoogleDrive = async (
 
     // Format nama file rapi jika ada info siswa
     let customFileName = file.name;
-    const cleanExt = file.name.split('.').pop() || 'jpg';
+    const cleanExt = (file.name.split('.').pop() || 'jpg').toLowerCase();
     const timestamp = new Date().toISOString().slice(0, 10);
     
-    if (metadata?.studentName) {
-      const sanitizedStudent = metadata.studentName.replace(/[^a-zA-Z0-9_-]/g, '_');
-      const sanitizedClass = (metadata.className || 'Umum').replace(/[^a-zA-Z0-9_-]/g, '_');
-      const sanitizedNisn = (metadata.nisn || '').replace(/[^a-zA-Z0-9_-]/g, '_');
+    const metaObj = typeof metadata === 'string' ? { customFileName: metadata } : (metadata || {});
+
+    if (metaObj.customFileName) {
+      const base = metaObj.customFileName.replace(/\.[^/.]+$/, '');
+      customFileName = `${base}.${cleanExt}`;
+    } else if (metaObj.studentName || metaObj.nisn) {
+      const sanitizedStudent = (metaObj.studentName || 'SISWA')
+        .trim()
+        .replace(/\s+/g, '_')
+        .replace(/[^a-zA-Z0-9_-]/g, '_');
+      const sanitizedNis = (metaObj.nisn || 'NIS')
+        .trim()
+        .replace(/\s+/g, '_')
+        .replace(/[^a-zA-Z0-9_-]/g, '_');
+      const sanitizedClass = (metaObj.className || 'Umum')
+        .trim()
+        .replace(/\s+/g, '_')
+        .replace(/[^a-zA-Z0-9_-]/g, '_');
 
       if (folderType === 'student_photo') {
-        const nisnPart = sanitizedNisn ? `_${sanitizedNisn}` : '';
-        customFileName = `Foto_Siswa_${sanitizedClass}${nisnPart}_${sanitizedStudent}.${cleanExt}`;
+        // Format resmi: NIS_NAMA_SISWA.ext (misal: 12345_AHMAD_FAUZI.jpg)
+        customFileName = `${sanitizedNis}_${sanitizedStudent}.${cleanExt}`;
       } else if (folderType === 'photo') {
-        customFileName = `Foto_Pembinaan_${sanitizedClass}_${sanitizedStudent}_${timestamp}.${cleanExt}`;
+        customFileName = `Foto_Pembinaan_${sanitizedNis}_${sanitizedStudent}_${sanitizedClass}_${timestamp}.${cleanExt}`;
       } else {
-        customFileName = `Surat_Pembinaan_${sanitizedClass}_${sanitizedStudent}_${timestamp}.${cleanExt}`;
+        customFileName = `Surat_Pembinaan_${sanitizedNis}_${sanitizedStudent}_${sanitizedClass}_${timestamp}.${cleanExt}`;
       }
     }
 
@@ -209,9 +224,9 @@ export const uploadFileToGoogleDrive = async (
       photoFolderName: config.photoFolderName || 'Foto Bukti Pembinaan',
       evidenceFolderName: config.evidenceFolderName || 'Surat Bukti Pembinaan',
       studentPhotoFolderName: config.studentPhotoFolderName || 'Foto Siswa',
-      studentName: metadata?.studentName || '',
-      className: metadata?.className || '',
-      nisn: metadata?.nisn || '',
+      studentName: metaObj.studentName || '',
+      className: metaObj.className || '',
+      nisn: metaObj.nisn || '',
     };
 
     // Menggunakan text/plain untuk menghindari CORS Preflight (OPTIONS) di Google Apps Script
