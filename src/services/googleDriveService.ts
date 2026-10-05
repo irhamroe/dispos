@@ -1,15 +1,18 @@
 /**
  * Google Drive Integration Service
- * Digunakan untuk mengunggah Foto Bukti Pembinaan dan Surat Bukti Pembinaan
- * langsung ke Google Drive agar database Firestore tidak terbebani ukuran file (base64).
+ * Digunakan untuk mengunggah Foto Bukti Pembinaan, Surat Bukti Pembinaan,
+ * dan Foto Profil Siswa langsung ke Google Drive agar database Firestore
+ * tidak terbebani ukuran file (base64).
  */
 
 export interface GoogleDriveConfig {
   scriptUrl: string; // URL Web App dari Google Apps Script (e.g. https://script.google.com/macros/s/.../exec)
   photoFolderId?: string; // Optional: Folder ID khusus Foto Bukti Pembinaan di Google Drive
   evidenceFolderId?: string; // Optional: Folder ID khusus Surat Bukti Pembinaan di Google Drive
+  studentPhotoFolderId?: string; // Optional: Folder ID khusus Foto Profil Siswa di Google Drive
   photoFolderName?: string; // Default: 'Foto Bukti Pembinaan'
   evidenceFolderName?: string; // Default: 'Surat Bukti Pembinaan'
+  studentPhotoFolderName?: string; // Default: 'Foto Siswa'
   enabled: boolean;
 }
 
@@ -19,8 +22,10 @@ export const DEFAULT_GDRIVE_CONFIG: GoogleDriveConfig = {
   scriptUrl: (import.meta as any).env?.VITE_GDRIVE_SCRIPT_URL || '',
   photoFolderId: (import.meta as any).env?.VITE_GDRIVE_PHOTO_FOLDER_ID || '',
   evidenceFolderId: (import.meta as any).env?.VITE_GDRIVE_DOC_FOLDER_ID || '',
+  studentPhotoFolderId: (import.meta as any).env?.VITE_GDRIVE_STUDENT_PHOTO_FOLDER_ID || '',
   photoFolderName: 'Foto Bukti Pembinaan',
   evidenceFolderName: 'Surat Bukti Pembinaan',
+  studentPhotoFolderName: 'Foto Siswa',
   enabled: true,
 };
 
@@ -130,10 +135,11 @@ export const getGoogleDriveViewUrl = (url?: string): string => {
  */
 export const uploadFileToGoogleDrive = async (
   file: File,
-  folderType: 'photo' | 'evidence',
+  folderType: 'photo' | 'evidence' | 'student_photo',
   metadata?: {
     studentName?: string;
     className?: string;
+    nisn?: string;
     violationName?: string;
   }
 ): Promise<UploadResult> => {
@@ -153,14 +159,22 @@ export const uploadFileToGoogleDrive = async (
 
     // Format nama file rapi jika ada info siswa
     let customFileName = file.name;
-    const cleanExt = file.name.split('.').pop() || 'dat';
+    const cleanExt = file.name.split('.').pop() || 'jpg';
     const timestamp = new Date().toISOString().slice(0, 10);
     
-    if (metadata?.studentName && metadata?.className) {
+    if (metadata?.studentName) {
       const sanitizedStudent = metadata.studentName.replace(/[^a-zA-Z0-9_-]/g, '_');
-      const sanitizedClass = metadata.className.replace(/[^a-zA-Z0-9_-]/g, '_');
-      const prefix = folderType === 'photo' ? 'Foto_Pembinaan' : 'Surat_Pembinaan';
-      customFileName = `${prefix}_${sanitizedClass}_${sanitizedStudent}_${timestamp}.${cleanExt}`;
+      const sanitizedClass = (metadata.className || 'Umum').replace(/[^a-zA-Z0-9_-]/g, '_');
+      const sanitizedNisn = (metadata.nisn || '').replace(/[^a-zA-Z0-9_-]/g, '_');
+
+      if (folderType === 'student_photo') {
+        const nisnPart = sanitizedNisn ? `_${sanitizedNisn}` : '';
+        customFileName = `Foto_Siswa_${sanitizedClass}${nisnPart}_${sanitizedStudent}.${cleanExt}`;
+      } else if (folderType === 'photo') {
+        customFileName = `Foto_Pembinaan_${sanitizedClass}_${sanitizedStudent}_${timestamp}.${cleanExt}`;
+      } else {
+        customFileName = `Surat_Pembinaan_${sanitizedClass}_${sanitizedStudent}_${timestamp}.${cleanExt}`;
+      }
     }
 
     const payload = {
@@ -168,13 +182,16 @@ export const uploadFileToGoogleDrive = async (
       base64Data: base64Data,
       fileName: customFileName,
       mimeType: file.type || 'application/octet-stream',
-      folderType: folderType, // 'photo' | 'evidence'
+      folderType: folderType, // 'photo' | 'evidence' | 'student_photo'
       photoFolderId: config.photoFolderId || '',
       evidenceFolderId: config.evidenceFolderId || '',
+      studentPhotoFolderId: config.studentPhotoFolderId || '',
       photoFolderName: config.photoFolderName || 'Foto Bukti Pembinaan',
       evidenceFolderName: config.evidenceFolderName || 'Surat Bukti Pembinaan',
+      studentPhotoFolderName: config.studentPhotoFolderName || 'Foto Siswa',
       studentName: metadata?.studentName || '',
       className: metadata?.className || '',
+      nisn: metadata?.nisn || '',
     };
 
     // Menggunakan text/plain untuk menghindari CORS Preflight (OPTIONS) di Google Apps Script
@@ -197,6 +214,11 @@ export const uploadFileToGoogleDrive = async (
       const directUrl = fileId ? `https://lh3.googleusercontent.com/d/${fileId}` : result.directUrl || result.fileUrl;
       const fileUrl = result.fileUrl || (fileId ? `https://drive.google.com/file/d/${fileId}/view?usp=sharing` : '');
 
+      let fallbackFolderName = 'Foto Siswa';
+      if (folderType === 'photo') fallbackFolderName = config.photoFolderName || 'Foto Bukti Pembinaan';
+      if (folderType === 'evidence') fallbackFolderName = config.evidenceFolderName || 'Surat Bukti Pembinaan';
+      if (folderType === 'student_photo') fallbackFolderName = config.studentPhotoFolderName || 'Foto Siswa';
+
       return {
         success: true,
         fileUrl: fileUrl,
@@ -204,7 +226,7 @@ export const uploadFileToGoogleDrive = async (
         downloadUrl: result.downloadUrl,
         fileId: fileId,
         fileName: result.fileName || customFileName,
-        folderName: result.folderName || (folderType === 'photo' ? 'Foto Bukti Pembinaan' : 'Surat Bukti Pembinaan'),
+        folderName: result.folderName || fallbackFolderName,
       };
     } else {
       return {
@@ -282,7 +304,7 @@ export const testGoogleDriveConnection = async (scriptUrl?: string): Promise<{ s
  */
 export const GOOGLE_APPS_SCRIPT_CODE = `/**
  * =========================================================================
- * GOOGLE APPS SCRIPT: PENYIMPANAN FOTO & SURAT PEMBINAAN SISWA DI GOOGLE DRIVE
+ * GOOGLE APPS SCRIPT: PENYIMPANAN FOTO PEMBINAAN, SURAT, & FOTO SISWA DI GOOGLE DRIVE
  * =========================================================================
  * 
  * CARA PASANG:
@@ -291,7 +313,7 @@ export const GOOGLE_APPS_SCRIPT_CODE = `/**
  * 3. Klik menu "Deploy" -> "New deployment".
  * 4. Pilih tipe "Web app" (ikon gear/roda gigi).
  * 5. Isi konfigurasi:
- *    - Description: Upload Bukti Pembinaan Dispos
+ *    - Description: Upload Media Dispos (Foto Siswa, Bukti Pembinaan, Surat)
  *    - Execute as: Me (email akun Google Anda)
  *    - Who has access: Anyone (Siapa saja, TANPA login) -> Sangat penting!
  * 6. Klik "Deploy", beri izin akses Google Drive saat diminta (Authorize Access).
@@ -329,7 +351,7 @@ function doPost(e) {
     var base64Data = data.base64Data || '';
     var fileName = data.fileName || ('File_' + new Date().getTime());
     var mimeType = data.mimeType || 'application/octet-stream';
-    var folderType = data.folderType || 'photo'; // 'photo' atau 'evidence'
+    var folderType = data.folderType || 'photo'; // 'photo', 'evidence', atau 'student_photo'
     
     // Potong header data URL jika ada (e.g. data:image/jpeg;base64,)
     if (base64Data.indexOf('base64,') > -1) {
@@ -339,12 +361,21 @@ function doPost(e) {
     var decoded = Utilities.base64Decode(base64Data);
     var blob = Utilities.newBlob(decoded, mimeType, fileName);
 
-    // Tentukan folder target (Folder berbeda untuk Foto vs Surat Bukti)
-    var targetFolderName = folderType === 'evidence' 
-      ? (data.evidenceFolderName || 'Surat Bukti Pembinaan') 
-      : (data.photoFolderName || 'Foto Bukti Pembinaan');
+    // Tentukan folder target (Folder berbeda untuk Foto Pembinaan, Surat Bukti, dan Foto Siswa)
+    var targetFolderName = 'Foto Siswa';
+    var customFolderId = data.studentPhotoFolderId;
+
+    if (folderType === 'evidence') {
+      targetFolderName = data.evidenceFolderName || 'Surat Bukti Pembinaan';
+      customFolderId = data.evidenceFolderId;
+    } else if (folderType === 'photo') {
+      targetFolderName = data.photoFolderName || 'Foto Bukti Pembinaan';
+      customFolderId = data.photoFolderId;
+    } else if (folderType === 'student_photo') {
+      targetFolderName = data.studentPhotoFolderName || 'Foto Siswa';
+      customFolderId = data.studentPhotoFolderId;
+    }
     
-    var customFolderId = folderType === 'evidence' ? data.evidenceFolderId : data.photoFolderId;
     var targetFolder = null;
 
     // 1. Cek jika ada custom folder ID

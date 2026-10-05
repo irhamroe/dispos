@@ -38,6 +38,7 @@ import {
   ParentCallLetterData
 } from '../utils/exportUtils';
 import { sortClasses, sortStudents } from '../utils/sortUtils';
+import { getGoogleDriveDirectImageUrl } from '../services/googleDriveService';
 
 interface ParentCallLetterViewProps {
   students: Student[];
@@ -442,7 +443,7 @@ Terima kasih atas kerja samanya.`);
                   <div className="flex items-center gap-3">
                     {selectedStudent.photoUrl ? (
                       <img
-                        src={selectedStudent.photoUrl}
+                        src={getGoogleDriveDirectImageUrl(selectedStudent.photoUrl)}
                         alt={selectedStudent.name}
                         className="w-12 h-12 rounded-xl object-cover border border-slate-200 shadow-2xs shrink-0"
                       />

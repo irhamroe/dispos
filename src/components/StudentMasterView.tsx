@@ -22,11 +22,21 @@ import {
   Sparkles,
   Home,
   AlertCircle,
-  RefreshCw
+  RefreshCw,
+  Cloud,
+  Loader2
 } from 'lucide-react';
 import { Student, DisciplineRecord, AttendanceRecord } from '../types';
 import { RombelClass } from '../data/initialData';
 import { sortClasses, sortStudents } from '../utils/sortUtils';
+import { 
+  uploadFileToGoogleDrive, 
+  isGoogleDriveConfigured, 
+  getGoogleDriveDirectImageUrl, 
+  getGoogleDriveViewUrl, 
+  extractGoogleDriveFileId 
+} from '../services/googleDriveService';
+import { GoogleDriveConfigModal } from './GoogleDriveConfigModal';
 
 interface StudentMasterViewProps {
   students: Student[];
@@ -68,6 +78,9 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
   const [viewingStudent, setViewingStudent] = useState<Student | null>(null);
   const [zoomedPhoto, setZoomedPhoto] = useState<{ url: string; name: string } | null>(null);
+  const [isGoogleDriveModalOpen, setIsGoogleDriveModalOpen] = useState(false);
+  const [uploadingNewPhoto, setUploadingNewPhoto] = useState(false);
+  const [uploadingEditPhoto, setUploadingEditPhoto] = useState(false);
 
   // Sync if initialClassFilter prop changes
   React.useEffect(() => {
@@ -113,14 +126,43 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
     return sortClasses(list);
   }, [classes, selectedGrade]);
 
-  // Handle file upload for new student
-  const handleAddFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle file upload for new student (Google Drive supported)
+  const handleAddFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 3 * 1024 * 1024) {
-        alert('Ukuran file foto maksimal 3 MB.');
-        return;
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Ukuran file foto maksimal 5 MB.');
+      return;
+    }
+
+    if (isGoogleDriveConfigured()) {
+      setUploadingNewPhoto(true);
+      try {
+        const studentCleanName = (newName.trim() || 'Siswa').replace(/[^a-zA-Z0-9_-]/g, '_');
+        const studentCleanNisn = (newNisn.trim() || 'NISN').replace(/[^a-zA-Z0-9_-]/g, '_');
+        const customName = `Foto_${studentCleanName}_${studentCleanNisn}`;
+        
+        const res = await uploadFileToGoogleDrive(file, 'student_photo', customName);
+        if (res.success && (res.directUrl || res.fileUrl)) {
+          setNewPhotoUrl(res.directUrl || res.fileUrl);
+        } else {
+          console.warn('Google Drive upload response issue, falling back to Base64:', res.error);
+          alert('Peringatan: Gagal mengunggah ke Google Drive (' + (res.error || 'Terjadi kesalahan') + '). Foto dialihkan tersimpan secara lokal.');
+          const reader = new FileReader();
+          reader.onloadend = () => setNewPhotoUrl(reader.result as string);
+          reader.readAsDataURL(file);
+        }
+      } catch (err: any) {
+        console.error('Error upload foto siswa ke Google Drive:', err);
+        alert('Gagal mengunggah ke Google Drive: ' + (err?.message || 'Error') + '. Menggunakan penyimpanan lokal.');
+        const reader = new FileReader();
+        reader.onloadend = () => setNewPhotoUrl(reader.result as string);
+        reader.readAsDataURL(file);
+      } finally {
+        setUploadingNewPhoto(false);
       }
+    } else {
       const reader = new FileReader();
       reader.onloadend = () => {
         setNewPhotoUrl(reader.result as string);
@@ -129,14 +171,43 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
     }
   };
 
-  // Handle file upload for edit student
-  const handleEditFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle file upload for edit student (Google Drive supported)
+  const handleEditFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 3 * 1024 * 1024) {
-        alert('Ukuran file foto maksimal 3 MB.');
-        return;
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Ukuran file foto maksimal 5 MB.');
+      return;
+    }
+
+    if (isGoogleDriveConfigured()) {
+      setUploadingEditPhoto(true);
+      try {
+        const studentCleanName = (editName.trim() || 'Siswa').replace(/[^a-zA-Z0-9_-]/g, '_');
+        const studentCleanNisn = (editNisn.trim() || 'NISN').replace(/[^a-zA-Z0-9_-]/g, '_');
+        const customName = `Foto_${studentCleanName}_${studentCleanNisn}`;
+
+        const res = await uploadFileToGoogleDrive(file, 'student_photo', customName);
+        if (res.success && (res.directUrl || res.fileUrl)) {
+          setEditPhotoUrl(res.directUrl || res.fileUrl);
+        } else {
+          console.warn('Google Drive upload response issue, falling back to Base64:', res.error);
+          alert('Peringatan: Gagal mengunggah ke Google Drive (' + (res.error || 'Terjadi kesalahan') + '). Foto dialihkan tersimpan secara lokal.');
+          const reader = new FileReader();
+          reader.onloadend = () => setEditPhotoUrl(reader.result as string);
+          reader.readAsDataURL(file);
+        }
+      } catch (err: any) {
+        console.error('Error upload foto siswa ke Google Drive:', err);
+        alert('Gagal mengunggah ke Google Drive: ' + (err?.message || 'Error') + '. Menggunakan penyimpanan lokal.');
+        const reader = new FileReader();
+        reader.onloadend = () => setEditPhotoUrl(reader.result as string);
+        reader.readAsDataURL(file);
+      } finally {
+        setUploadingEditPhoto(false);
       }
+    } else {
       const reader = new FileReader();
       reader.onloadend = () => {
         setEditPhotoUrl(reader.result as string);
@@ -315,6 +386,20 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
 
           <button
             type="button"
+            onClick={() => setIsGoogleDriveModalOpen(true)}
+            className={`px-3.5 py-2.5 rounded-xl font-bold text-xs transition-all border flex items-center gap-2 cursor-pointer shadow-2xs ${
+              isGoogleDriveConfigured()
+                ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-300'
+                : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-300'
+            }`}
+            title="Konfigurasi penyimpanan foto siswa ke folder Google Drive"
+          >
+            <Cloud className={`w-3.5 h-3.5 ${isGoogleDriveConfigured() ? 'text-emerald-600' : 'text-slate-500'}`} />
+            <span>{isGoogleDriveConfigured() ? 'Google Drive Aktif' : 'Penyimpanan Drive'}</span>
+          </button>
+
+          <button
+            type="button"
             id="add-student-btn"
             onClick={() => setIsAddModalOpen(true)}
             className="px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs transition-all shadow-xs flex items-center gap-2 cursor-pointer"
@@ -482,9 +567,16 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                                 title="Klik untuk memperbesar foto"
                               >
                                 <img
-                                  src={s.photoUrl}
+                                  src={getGoogleDriveDirectImageUrl(s.photoUrl)}
                                   alt={s.name}
                                   className="w-9 h-9 rounded-lg object-cover border border-slate-200 shadow-2xs group-hover:ring-2 group-hover:ring-teal-500 transition-all"
+                                  onError={(e) => {
+                                    // Fallback to original URL if direct fails
+                                    const target = e.currentTarget;
+                                    if (s.photoUrl && target.src !== s.photoUrl) {
+                                      target.src = s.photoUrl;
+                                    }
+                                  }}
                                 />
                                 <div className="absolute inset-0 bg-slate-900/30 rounded-lg opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white">
                                   <Eye className="w-3 h-3" />
@@ -810,10 +902,15 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                 <div className="flex items-center gap-4">
                   {/* Foto Preview */}
                   <div className="relative group shrink-0">
-                    {newPhotoUrl ? (
+                    {uploadingNewPhoto ? (
+                      <div className="w-16 h-16 rounded-xl border-2 border-dashed border-teal-400 bg-teal-50 flex flex-col items-center justify-center text-teal-600 animate-pulse">
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span className="text-[9px] mt-1 font-bold">Drive...</span>
+                      </div>
+                    ) : newPhotoUrl ? (
                       <div className="relative">
                         <img
-                          src={newPhotoUrl}
+                          src={getGoogleDriveDirectImageUrl(newPhotoUrl)}
                           alt="Pratinjau Foto Siswa"
                           className="w-16 h-16 rounded-xl object-cover border-2 border-teal-500 shadow-sm"
                         />
@@ -823,7 +920,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                             setNewPhotoUrl('');
                             if (addFileInputRef.current) addFileInputRef.current.value = '';
                           }}
-                          className="absolute -top-1.5 -right-1.5 bg-rose-600 text-white p-1 rounded-full shadow-xs hover:bg-rose-700"
+                          className="absolute -top-1.5 -right-1.5 bg-rose-600 text-white p-1 rounded-full shadow-xs hover:bg-rose-700 cursor-pointer"
                           title="Hapus foto"
                         >
                           <Trash2 className="w-3 h-3" />
@@ -845,19 +942,26 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                           type="file"
                           ref={addFileInputRef}
                           accept="image/*"
+                          disabled={uploadingNewPhoto}
                           onChange={handleAddFileUpload}
                           className="hidden"
                           id="add-student-photo-file"
                         />
                         <label
                           htmlFor="add-student-photo-file"
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-xl font-bold text-xs cursor-pointer shadow-2xs"
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-xl font-bold text-xs cursor-pointer shadow-2xs ${
+                            uploadingNewPhoto ? 'opacity-50 pointer-events-none' : ''
+                          }`}
                         >
-                          <Upload className="w-3.5 h-3.5 text-teal-600" />
-                          <span>Pilih Foto dari Perangkat</span>
+                          {uploadingNewPhoto ? (
+                            <Loader2 className="w-3.5 h-3.5 text-teal-600 animate-spin" />
+                          ) : (
+                            <Upload className="w-3.5 h-3.5 text-teal-600" />
+                          )}
+                          <span>{uploadingNewPhoto ? 'Mengunggah ke Drive...' : 'Pilih Foto dari Perangkat'}</span>
                         </label>
                         <p className="text-[10px] text-slate-500 mt-1">
-                          Format JPG, PNG, WEBP (maks. 3 MB)
+                          Format JPG, PNG, WEBP (maks. 5 MB). {isGoogleDriveConfigured() ? '✨ Otomatis tersimpan ke folder "Foto Siswa" di Google Drive.' : ''}
                         </p>
                       </div>
                     ) : (
@@ -1074,10 +1178,15 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                 <div className="flex items-center gap-4">
                   {/* Foto Preview */}
                   <div className="relative group shrink-0">
-                    {editPhotoUrl ? (
+                    {uploadingEditPhoto ? (
+                      <div className="w-16 h-16 rounded-xl border-2 border-dashed border-teal-400 bg-teal-50 flex flex-col items-center justify-center text-teal-600 animate-pulse">
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span className="text-[9px] mt-1 font-bold">Drive...</span>
+                      </div>
+                    ) : editPhotoUrl ? (
                       <div className="relative">
                         <img
-                          src={editPhotoUrl}
+                          src={getGoogleDriveDirectImageUrl(editPhotoUrl)}
                           alt="Pratinjau Foto Siswa"
                           className="w-16 h-16 rounded-xl object-cover border-2 border-teal-500 shadow-sm"
                         />
@@ -1109,19 +1218,26 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                           type="file"
                           ref={editFileInputRef}
                           accept="image/*"
+                          disabled={uploadingEditPhoto}
                           onChange={handleEditFileUpload}
                           className="hidden"
                           id="edit-student-photo-file"
                         />
                         <label
                           htmlFor="edit-student-photo-file"
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-xl font-bold text-xs cursor-pointer shadow-2xs"
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-xl font-bold text-xs cursor-pointer shadow-2xs ${
+                            uploadingEditPhoto ? 'opacity-50 pointer-events-none' : ''
+                          }`}
                         >
-                          <Upload className="w-3.5 h-3.5 text-teal-600" />
-                          <span>Pilih / Ganti Foto</span>
+                          {uploadingEditPhoto ? (
+                            <Loader2 className="w-3.5 h-3.5 text-teal-600 animate-spin" />
+                          ) : (
+                            <Upload className="w-3.5 h-3.5 text-teal-600" />
+                          )}
+                          <span>{uploadingEditPhoto ? 'Mengunggah ke Drive...' : 'Pilih / Ganti Foto'}</span>
                         </label>
                         <p className="text-[10px] text-slate-500 mt-1">
-                          Format JPG, PNG, WEBP (maks. 3 MB)
+                          Format JPG, PNG, WEBP (maks. 5 MB). {isGoogleDriveConfigured() ? '✨ Otomatis tersimpan ke folder "Foto Siswa" di Google Drive.' : ''}
                         </p>
                       </div>
                     ) : (
@@ -1179,7 +1295,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
               <div className="flex items-center gap-4">
                 {viewingStudent.photoUrl ? (
                   <img
-                    src={viewingStudent.photoUrl}
+                    src={getGoogleDriveDirectImageUrl(viewingStudent.photoUrl)}
                     alt={viewingStudent.name}
                     onClick={() => setZoomedPhoto({ url: viewingStudent.photoUrl!, name: viewingStudent.name })}
                     className="w-18 h-18 rounded-2xl object-cover border-2 border-white/80 shadow-md cursor-pointer hover:scale-105 transition-transform"
@@ -1201,6 +1317,17 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                   </span>
                   <h3 className="font-extrabold text-base leading-tight mt-1">{viewingStudent.name}</h3>
                   <p className="font-mono text-xs text-teal-100 mt-0.5">NISN: {viewingStudent.nisn}</p>
+                  {extractGoogleDriveFileId(viewingStudent.photoUrl) && (
+                    <a
+                      href={getGoogleDriveViewUrl(viewingStudent.photoUrl)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[10px] text-teal-200 hover:text-white underline mt-1"
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                      <span>Buka Foto di Google Drive</span>
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
@@ -1296,7 +1423,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
           >
             <div className="relative">
               <img
-                src={zoomedPhoto.url}
+                src={getGoogleDriveDirectImageUrl(zoomedPhoto.url)}
                 alt={zoomedPhoto.name}
                 className="w-full h-72 object-cover rounded-xl border border-slate-200"
               />
@@ -1308,13 +1435,32 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <div className="px-2 pb-1 text-center">
+            <div className="px-2 pb-1 text-center space-y-1">
               <div className="font-bold text-sm text-slate-900">{zoomedPhoto.name}</div>
               <div className="text-[11px] text-slate-500">Foto Profil Resmi Siswa SMAN 1 Batu</div>
+              {extractGoogleDriveFileId(zoomedPhoto.url) && (
+                <div className="pt-1">
+                  <a
+                    href={getGoogleDriveViewUrl(zoomedPhoto.url)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 bg-teal-50 hover:bg-teal-100 text-teal-800 rounded-lg text-xs font-semibold transition-colors border border-teal-200"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>Buka File Asli di Google Drive</span>
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </div>
       )}
+
+      {/* Google Drive Configuration Modal */}
+      <GoogleDriveConfigModal
+        isOpen={isGoogleDriveModalOpen}
+        onClose={() => setIsGoogleDriveModalOpen(false)}
+      />
     </div>
   );
 };

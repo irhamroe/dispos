@@ -162,7 +162,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
             <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 flex items-start gap-2.5">
               <Sparkles className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
               <div>
-                <span className="font-bold">Otomatisasi Folder Google Drive:</span> File foto pembinaan akan otomatis disimpan di folder terpisah dari berkas surat bukti pembinaan di Google Drive Anda.
+                <span className="font-bold">Otomatisasi 3 Folder Google Drive:</span> Berkas akan otomatis disimpan di folder terpisah untuk <span className="font-semibold text-emerald-800">Foto Siswa</span>, <span className="font-semibold text-emerald-800">Foto Bukti Pembinaan</span>, dan <span className="font-semibold text-emerald-800">Surat Bukti Pembinaan</span>.
               </div>
             </div>
 
@@ -185,8 +185,32 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
               </p>
             </div>
 
-            {/* Folder Configuration */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+            {/* 3 Folders Configuration */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+              {/* 1. Folder Foto Siswa */}
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                <label className="block font-bold text-slate-800 text-xs mb-1 flex items-center gap-1.5">
+                  <FolderOpen className="w-3.5 h-3.5 text-purple-600" />
+                  <span>Folder Foto Siswa</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Foto Siswa"
+                  value={config.studentPhotoFolderName || 'Foto Siswa'}
+                  onChange={(e) => setConfig({ ...config, studentPhotoFolderName: e.target.value })}
+                  className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700"
+                />
+                <input
+                  type="text"
+                  placeholder="ID Folder (Opsional)"
+                  value={config.studentPhotoFolderId || ''}
+                  onChange={(e) => setConfig({ ...config, studentPhotoFolderId: e.target.value })}
+                  className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-[11px] font-mono text-slate-500 mt-1.5"
+                />
+                <p className="text-[10px] text-slate-400 mt-1">Untuk foto profil siswa.</p>
+              </div>
+
+              {/* 2. Folder Foto Bukti Pembinaan */}
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
                 <label className="block font-bold text-slate-800 text-xs mb-1 flex items-center gap-1.5">
                   <FolderOpen className="w-3.5 h-3.5 text-emerald-600" />
@@ -206,9 +230,10 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                   onChange={(e) => setConfig({ ...config, photoFolderId: e.target.value })}
                   className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-[11px] font-mono text-slate-500 mt-1.5"
                 />
-                <p className="text-[10px] text-slate-400 mt-1">Kosongkan ID jika ingin folder dibuat otomatis.</p>
+                <p className="text-[10px] text-slate-400 mt-1">Untuk dokumentasi pembinaan.</p>
               </div>
 
+              {/* 3. Folder Surat Bukti Pembinaan */}
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
                 <label className="block font-bold text-slate-800 text-xs mb-1 flex items-center gap-1.5">
                   <FolderOpen className="w-3.5 h-3.5 text-blue-600" />
@@ -228,7 +253,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                   onChange={(e) => setConfig({ ...config, evidenceFolderId: e.target.value })}
                   className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-[11px] font-mono text-slate-500 mt-1.5"
                 />
-                <p className="text-[10px] text-slate-400 mt-1">Kosongkan ID jika ingin folder dibuat otomatis.</p>
+                <p className="text-[10px] text-slate-400 mt-1">Untuk berkas surat TTD.</p>
               </div>
             </div>
 
