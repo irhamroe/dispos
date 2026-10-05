@@ -676,7 +676,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                 {uploadingPhoto ? (
                   <div className="p-3.5 bg-emerald-50 border border-emerald-300 rounded-xl flex items-center justify-center gap-2 text-emerald-800 text-xs font-semibold">
                     <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />
-                    <span>Mengunggah foto ke Google Drive (Folder: Foto Bukti Pembinaan)...</span>
+                    <span>Sedang mengunggah file...</span>
                   </div>
                 ) : coachingPhoto ? (
                   <div className="flex items-center gap-3 p-2.5 bg-slate-50 border border-emerald-300 rounded-xl">
@@ -752,7 +752,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                 {uploadingEvidence ? (
                   <div className="p-3.5 bg-blue-50 border border-blue-300 rounded-xl flex items-center justify-center gap-2 text-blue-800 text-xs font-semibold">
                     <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
-                    <span>Mengunggah dokumen ke Google Drive (Folder: Surat Bukti Pembinaan)...</span>
+                    <span>Sedang mengunggah file...</span>
                   </div>
                 ) : coachingEvidenceFileName ? (
                   <div className="flex items-center gap-3 p-2.5 bg-slate-50 border border-emerald-300 rounded-xl">
@@ -870,7 +870,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                 {uploadingFollowUpDoc ? (
                   <div className="p-3.5 bg-amber-50 border border-amber-300 rounded-xl flex items-center justify-center gap-2 text-amber-800 text-xs font-semibold">
                     <Loader2 className="w-4 h-4 animate-spin text-amber-600" />
-                    <span>Mengunggah dokumen ke Google Drive (Folder: Surat Bukti Pembinaan)...</span>
+                    <span>Sedang mengunggah file...</span>
                   </div>
                 ) : followUpDocFile || followUpDocFileName ? (
                   <div className="p-3 bg-white rounded-xl border border-emerald-300 flex items-center justify-between gap-3">

@@ -672,27 +672,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
             </div>
           </div>
 
-          {/* Tombol Aksi: Google Drive & Catat Pelanggaran */}
+          {/* Tombol Aksi: Catat Pelanggaran */}
           <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
-            <button
-              type="button"
-              onClick={() => setIsGoogleDriveModalOpen(true)}
-              className="px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold text-xs transition-all flex items-center gap-2 shadow-2xs cursor-pointer w-full sm:w-auto justify-center"
-              title="Konfigurasi penyimpanan Foto & Surat Bukti Pembinaan di Google Drive"
-            >
-              <Cloud className={`w-4 h-4 ${isGoogleDriveConfigured() ? 'text-emerald-600' : 'text-amber-500'}`} />
-              <span>Penyimpanan Google Drive</span>
-              {isGoogleDriveConfigured() ? (
-                <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-emerald-100 text-emerald-800">
-                  Aktif
-                </span>
-              ) : (
-                <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-100 text-amber-800">
-                  Lokal
-                </span>
-              )}
-            </button>
-
             <button
               type="button"
               id="catat-pelanggaran-btn"
@@ -1281,7 +1262,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                     {uploadingPhoto ? (
                       <div className="p-4 bg-emerald-50/70 border border-emerald-300 rounded-xl flex items-center justify-center gap-2.5 text-emerald-800 text-xs font-semibold">
                         <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />
-                        <span>Mengunggah foto ke Google Drive (Folder: Foto Bukti Pembinaan)...</span>
+                        <span>Sedang mengunggah file...</span>
                       </div>
                     ) : coachingPhoto ? (
                       <div className="flex items-center gap-3 p-2.5 bg-white border border-emerald-300 rounded-xl shadow-2xs">
@@ -1319,13 +1300,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                         <Upload className="w-5 h-5 text-emerald-600" />
                         <span className="font-bold text-slate-700 text-xs">Pilih atau Unggah Foto Kegiatan Pembinaan</span>
                         <div className="flex items-center gap-1 text-[10px] text-slate-500">
-                          {isGoogleDriveConfigured() ? (
-                            <span className="text-emerald-700 font-semibold flex items-center gap-1">
-                              <Cloud className="w-3 h-3" /> Otomatis tersimpan ke folder Google Drive "Foto Bukti Pembinaan"
-                            </span>
-                          ) : (
-                            <span>* Wajib diunggah untuk menyelesaikan pembinaan</span>
-                          )}
+                          <span>* Wajib diunggah untuk menyelesaikan pembinaan</span>
                         </div>
                       </div>
                     )}
@@ -1366,7 +1341,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                     {uploadingEvidence ? (
                       <div className="p-4 bg-blue-50/70 border border-blue-300 rounded-xl flex items-center justify-center gap-2.5 text-blue-800 text-xs font-semibold">
                         <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
-                        <span>Mengunggah dokumen ke Google Drive (Folder: Surat Bukti Pembinaan)...</span>
+                        <span>Sedang mengunggah file...</span>
                       </div>
                     ) : coachingEvidenceFileName ? (
                       <div className="flex items-center gap-3 p-2.5 bg-white border border-emerald-300 rounded-xl shadow-2xs">
@@ -1401,9 +1376,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                         <Upload className="w-5 h-5 text-slate-400" />
                         <span className="font-bold text-slate-700 text-xs">Unggah Dokumen Surat Pembinaan (Opsional / Bisa Menyusul)</span>
                         <span className="text-[10px] text-slate-400">
-                          {isGoogleDriveConfigured()
-                            ? 'Otomatis tersimpan ke folder Google Drive "Surat Bukti Pembinaan"'
-                            : 'Jika surat masih dalam proses tanda tangan, dapat diunggah menyusul'}
+                          Jika surat masih dalam proses tanda tangan, dapat diunggah menyusul
                         </span>
                       </div>
                     )}
@@ -1661,7 +1634,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                 {uploadingResolvePhoto ? (
                   <div className="p-4 bg-emerald-50/70 border border-emerald-300 rounded-xl flex items-center justify-center gap-2 text-emerald-800 font-semibold text-xs">
                     <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />
-                    <span>Mengunggah foto ke Google Drive (Folder: Foto Bukti Pembinaan)...</span>
+                    <span>Sedang mengunggah file...</span>
                   </div>
                 ) : resolveCoachingPhoto ? (
                   <div className="p-3 bg-slate-50 rounded-xl border border-emerald-300 flex items-center gap-3">
@@ -1747,7 +1720,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                 {uploadingResolveEvidence ? (
                   <div className="p-3.5 bg-blue-50/70 border border-blue-300 rounded-xl flex items-center justify-center gap-2 text-blue-800 font-semibold text-xs">
                     <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
-                    <span>Mengunggah dokumen ke Google Drive (Folder: Surat Bukti Pembinaan)...</span>
+                    <span>Sedang mengunggah file...</span>
                   </div>
                 ) : resolveCoachingEvidenceFile || resolveCoachingEvidenceFileName ? (
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-3">
@@ -1888,7 +1861,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                 {uploadingFollowUpDoc ? (
                   <div className="p-3.5 bg-amber-50/70 border border-amber-300 rounded-xl flex items-center justify-center gap-2 text-amber-800 font-semibold text-xs">
                     <Loader2 className="w-4 h-4 animate-spin text-amber-600" />
-                    <span>Mengunggah dokumen ke Google Drive (Folder: Surat Bukti Pembinaan)...</span>
+                    <span>Sedang mengunggah file...</span>
                   </div>
                 ) : followUpDocFile || followUpDocFileName ? (
                   <div className="p-3 bg-white rounded-xl border border-emerald-300 flex items-center justify-between gap-3">

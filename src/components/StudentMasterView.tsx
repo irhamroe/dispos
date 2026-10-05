@@ -388,20 +388,6 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
 
           <button
             type="button"
-            onClick={() => setIsGoogleDriveModalOpen(true)}
-            className={`px-3.5 py-2.5 rounded-xl font-bold text-xs transition-all border flex items-center gap-2 cursor-pointer shadow-2xs ${
-              isGoogleDriveConfigured()
-                ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-300'
-                : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-300'
-            }`}
-            title="Konfigurasi penyimpanan foto siswa ke folder Google Drive"
-          >
-            <Cloud className={`w-3.5 h-3.5 ${isGoogleDriveConfigured() ? 'text-emerald-600' : 'text-slate-500'}`} />
-            <span>{isGoogleDriveConfigured() ? 'Google Drive Aktif' : 'Penyimpanan Drive'}</span>
-          </button>
-
-          <button
-            type="button"
             id="add-student-btn"
             onClick={() => setIsAddModalOpen(true)}
             className="px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs transition-all shadow-xs flex items-center gap-2 cursor-pointer"
@@ -907,7 +893,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                     {uploadingNewPhoto ? (
                       <div className="w-16 h-16 rounded-xl border-2 border-dashed border-teal-400 bg-teal-50 flex flex-col items-center justify-center text-teal-600 animate-pulse">
                         <Loader2 className="w-5 h-5 animate-spin" />
-                        <span className="text-[9px] mt-1 font-bold">Drive...</span>
+                        <span className="text-[9px] mt-1 font-bold">Mengunggah...</span>
                       </div>
                     ) : newPhotoUrl ? (
                       <div className="relative">
@@ -960,10 +946,10 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                           ) : (
                             <Upload className="w-3.5 h-3.5 text-teal-600" />
                           )}
-                          <span>{uploadingNewPhoto ? 'Mengunggah ke Drive...' : 'Pilih Foto dari Perangkat'}</span>
+                          <span>{uploadingNewPhoto ? 'Sedang mengunggah file...' : 'Pilih Foto dari Perangkat'}</span>
                         </label>
                         <p className="text-[10px] text-slate-500 mt-1">
-                          Format JPG, PNG, WEBP (maks. 5 MB). {isGoogleDriveConfigured() ? '✨ Otomatis tersimpan ke folder "Foto Siswa" di Google Drive.' : ''}
+                          Format JPG, PNG, WEBP (maks. 5 MB)
                         </p>
                       </div>
                     ) : (
@@ -1183,7 +1169,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                     {uploadingEditPhoto ? (
                       <div className="w-16 h-16 rounded-xl border-2 border-dashed border-teal-400 bg-teal-50 flex flex-col items-center justify-center text-teal-600 animate-pulse">
                         <Loader2 className="w-5 h-5 animate-spin" />
-                        <span className="text-[9px] mt-1 font-bold">Drive...</span>
+                        <span className="text-[9px] mt-1 font-bold">Mengunggah...</span>
                       </div>
                     ) : editPhotoUrl ? (
                       <div className="relative">
@@ -1236,10 +1222,10 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                           ) : (
                             <Upload className="w-3.5 h-3.5 text-teal-600" />
                           )}
-                          <span>{uploadingEditPhoto ? 'Mengunggah ke Drive...' : 'Pilih / Ganti Foto'}</span>
+                          <span>{uploadingEditPhoto ? 'Sedang mengunggah file...' : 'Pilih / Ganti Foto'}</span>
                         </label>
                         <p className="text-[10px] text-slate-500 mt-1">
-                          Format JPG, PNG, WEBP (maks. 5 MB). {isGoogleDriveConfigured() ? '✨ Otomatis tersimpan ke folder "Foto Siswa" di Google Drive.' : ''}
+                          Format JPG, PNG, WEBP (maks. 5 MB)
                         </p>
                       </div>
                     ) : (
