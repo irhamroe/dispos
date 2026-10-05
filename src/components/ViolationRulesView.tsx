@@ -261,9 +261,11 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
             <Scale className="w-4 h-4 text-blue-500" />
           </div>
           <div className="text-2xl font-extrabold text-blue-800 mt-1">{ringanCount}</div>
-          <div className="text-[11px] text-blue-600/80 mt-0.5 font-medium">
-            {enablePointsSystem ? 'Bobot poin 5 - 10' : 'Refleksi & pembiasaan'}
-          </div>
+          {enablePointsSystem && (
+            <div className="text-[11px] text-blue-600/80 mt-0.5 font-medium">
+              Bobot poin 5 - 10
+            </div>
+          )}
         </div>
 
         <div className="bg-white p-4 rounded-2xl border border-amber-200 shadow-2xs">
@@ -272,9 +274,11 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
             <AlertTriangle className="w-4 h-4 text-amber-500" />
           </div>
           <div className="text-2xl font-extrabold text-amber-800 mt-1">{sedangCount}</div>
-          <div className="text-[11px] text-amber-600/80 mt-0.5 font-medium">
-            {enablePointsSystem ? 'Bobot poin 15 - 25' : 'Restitusi & dialog segitiga'}
-          </div>
+          {enablePointsSystem && (
+            <div className="text-[11px] text-amber-600/80 mt-0.5 font-medium">
+              Bobot poin 15 - 25
+            </div>
+          )}
         </div>
 
         <div className="bg-white p-4 rounded-2xl border border-rose-200 shadow-2xs">
@@ -283,9 +287,11 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
             <ShieldAlert className="w-4 h-4 text-rose-500" />
           </div>
           <div className="text-2xl font-extrabold text-rose-800 mt-1">{beratCount}</div>
-          <div className="text-[11px] text-rose-600/80 mt-0.5 font-medium">
-            {enablePointsSystem ? 'Bobot poin 30 - 50+' : 'Pendampingan BK & Orang Tua'}
-          </div>
+          {enablePointsSystem && (
+            <div className="text-[11px] text-rose-600/80 mt-0.5 font-medium">
+              Bobot poin 30 - 50+
+            </div>
+          )}
         </div>
       </div>
 
@@ -532,19 +538,7 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
                 )}
               </div>
 
-              {/* Rekomendasi Restitusi */}
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  Rekomendasi Restitusi / Tindakan Pembinaan
-                </label>
-                <textarea
-                  rows={3}
-                  placeholder="Contoh: Refleksi disiplin pagi bersama wali kelas dan tugas literasi karakter..."
-                  value={formIntervention}
-                  onChange={(e) => setFormIntervention(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:outline-hidden focus:ring-1 focus:ring-slate-600 text-xs resize-none"
-                />
-              </div>
+
 
               {/* Actions */}
               <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
