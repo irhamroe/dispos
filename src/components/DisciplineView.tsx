@@ -28,7 +28,7 @@ import {
 import { DisciplineRecord, SchoolProfile, Student, ViolationCategory, DisciplineStatus, CoachingStatus, ViolationRule } from '../types';
 import { sampleViolationCatalog } from '../data/initialData';
 import { formatDateIndonesian } from '../utils/exportUtils';
-import { sortClasses, sortStudents, sortDisciplineRecords } from '../utils/sortUtils';
+import { sortClasses, sortStudents, sortDisciplineRecords, sortViolationRules } from '../utils/sortUtils';
 import { 
   uploadFileToGoogleDrive, 
   isGoogleDriveConfigured, 
@@ -69,7 +69,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
   violationRules = sampleViolationCatalog,
   enablePointsSystem = true,
 }) => {
-  const catalogToUse = violationRules && violationRules.length > 0 ? violationRules : sampleViolationCatalog;
+  const catalogToUse = sortViolationRules(violationRules && violationRules.length > 0 ? violationRules : sampleViolationCatalog);
 
   // Filters & search state
   const [searchQuery, setSearchQuery] = useState('');

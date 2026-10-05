@@ -119,3 +119,48 @@ export const sortDisciplineRecords = <T extends { date?: string; id?: string; cr
   });
 };
 
+/**
+ * Compare two violation rule codes (e.g., A1, A2, ..., A19, B1, ..., B5, C1, ..., D1, ..., D12)
+ */
+export const compareViolationCodes = (a?: string, b?: string): number => {
+  if (!a && !b) return 0;
+  if (!a) return 1;
+  if (!b) return -1;
+  if (a === b) return 0;
+
+  const regex = /^([A-Za-z]+)(\d+)$/;
+  const matchA = a.trim().match(regex);
+  const matchB = b.trim().match(regex);
+
+  if (matchA && matchB) {
+    const letterA = matchA[1].toUpperCase();
+    const letterB = matchB[1].toUpperCase();
+    const letterComp = letterA.localeCompare(letterB);
+    if (letterComp !== 0) return letterComp;
+
+    const numA = parseInt(matchA[2], 10);
+    const numB = parseInt(matchB[2], 10);
+    return numA - numB;
+  }
+
+  return a.localeCompare(b, 'id', { numeric: true, sensitivity: 'base' });
+};
+
+/**
+ * Sort violation rules array naturally by code: A1..A19, B1..B5, C1..C5, D1..D12
+ */
+export const sortViolationRules = <T extends { code?: string; name?: string }>(
+  rulesList?: T[] | null
+): T[] => {
+  if (!rulesList || !Array.isArray(rulesList)) return [];
+  return [...rulesList].sort((a, b) => {
+    const codeA = a.code || '';
+    const codeB = b.code || '';
+    if (codeA || codeB) {
+      const codeComp = compareViolationCodes(codeA, codeB);
+      if (codeComp !== 0) return codeComp;
+    }
+    return (a.name || '').localeCompare(b.name || '', 'id', { sensitivity: 'base' });
+  });
+};
+

@@ -12,7 +12,7 @@ import {
   RombelClass
 } from './data/initialData';
 import { AdminUser, AttendanceRecord, DisciplineRecord, Student, DisciplineStatus, WaliKelasTeacher, ViolationRule } from './types';
-import { sortClasses, sortStudents, sortWaliKelas, sortDisciplineRecords } from './utils/sortUtils';
+import { sortClasses, sortStudents, sortWaliKelas, sortDisciplineRecords, sortViolationRules } from './utils/sortUtils';
 import { Navbar } from './components/Navbar';
 import { Sidebar, NavTab } from './components/Sidebar';
 import { LoginScreen } from './components/LoginScreen';
@@ -157,12 +157,15 @@ export default function App() {
       const saved = localStorage.getItem('app_sman1batu_violation_rules_v5');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length >= sampleViolationCatalog.length && parsed[0]?.code === 'A1') return parsed;
+        if (Array.isArray(parsed) && parsed.length >= sampleViolationCatalog.length && parsed[0]?.code === 'A1') {
+          return sortViolationRules(parsed);
+        }
       }
-      localStorage.setItem('app_sman1batu_violation_rules_v5', JSON.stringify(sampleViolationCatalog));
-      return sampleViolationCatalog;
+      const sorted = sortViolationRules(sampleViolationCatalog);
+      localStorage.setItem('app_sman1batu_violation_rules_v5', JSON.stringify(sorted));
+      return sorted;
     } catch {
-      return sampleViolationCatalog;
+      return sortViolationRules(sampleViolationCatalog);
     }
   });
 
@@ -325,7 +328,7 @@ export default function App() {
     // 6. Realtime Violation Rules subscription
     const unsubRules = subscribeToCollection<ViolationRule>(COLLECTIONS.VIOLATION_RULES, (data) => {
       if (data && data.length > 0) {
-        setViolationRules(data);
+        setViolationRules(sortViolationRules(data));
       }
     });
 
@@ -435,12 +438,12 @@ export default function App() {
 
   // Violation Rules management handlers
   const handleAddViolationRule = (newRule: ViolationRule) => {
-    setViolationRules((prev) => [newRule, ...prev]);
+    setViolationRules((prev) => sortViolationRules([newRule, ...prev]));
     saveDocument(COLLECTIONS.VIOLATION_RULES, newRule).catch(() => {});
   };
 
   const handleEditViolationRule = (updated: ViolationRule) => {
-    setViolationRules((prev) => prev.map((r) => (r.id === updated.id ? updated : r)));
+    setViolationRules((prev) => sortViolationRules(prev.map((r) => (r.id === updated.id ? updated : r))));
     saveDocument(COLLECTIONS.VIOLATION_RULES, updated).catch(() => {});
   };
 

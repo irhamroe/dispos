@@ -15,6 +15,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { ViolationRule, ViolationCategory } from '../types';
+import { sortViolationRules } from '../utils/sortUtils';
 
 interface ViolationRulesViewProps {
   violationRules: ViolationRule[];
@@ -125,9 +126,9 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
     }
   };
 
-  // Filtered Rules
+  // Filtered and Sorted Rules (A1..A19, B1..B5, C1..C5, D1..D12)
   const filteredRules = useMemo(() => {
-    return violationRules.filter((rule) => {
+    const list = violationRules.filter((rule) => {
       if (selectedCategory !== 'ALL' && rule.category !== selectedCategory) return false;
       if (searchQuery.trim() !== '') {
         const q = searchQuery.toLowerCase();
@@ -138,6 +139,7 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
       }
       return true;
     });
+    return sortViolationRules(list);
   }, [violationRules, selectedCategory, searchQuery]);
 
   // Counts
