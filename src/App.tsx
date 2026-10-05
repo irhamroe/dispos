@@ -147,14 +147,17 @@ export default function App() {
     }
   });
 
-  // Violation Rules Catalog state
+  // Violation Rules Catalog state (Official 37 rules based on Pedoman Disiplin Positif)
   const [violationRules, setViolationRules] = useState<ViolationRule[]>(() => {
     try {
-      const saved = localStorage.getItem('app_sman1batu_violation_rules');
+      localStorage.removeItem('app_sman1batu_violation_rules');
+      localStorage.removeItem('app_sman1batu_violation_rules_v2');
+      const saved = localStorage.getItem('app_sman1batu_violation_rules_v3');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length >= sampleViolationCatalog.length) return parsed;
       }
+      localStorage.setItem('app_sman1batu_violation_rules_v3', JSON.stringify(sampleViolationCatalog));
       return sampleViolationCatalog;
     } catch {
       return sampleViolationCatalog;
@@ -265,8 +268,14 @@ export default function App() {
           setUsers(initialUsers);
         }
 
-        if (remoteRules.length === 0) {
-          batchSaveDocuments(COLLECTIONS.VIOLATION_RULES, sampleViolationCatalog).catch(() => {});
+        const isStaleRules = remoteRules.length > 0 && (
+          remoteRules.length < sampleViolationCatalog.length ||
+          remoteRules.some((r) => r.name.includes('> 15 menit'))
+        );
+        if (remoteRules.length === 0 || isStaleRules) {
+          await deleteAllDocumentsInCollection(COLLECTIONS.VIOLATION_RULES);
+          await batchSaveDocuments(COLLECTIONS.VIOLATION_RULES, sampleViolationCatalog);
+          setViolationRules(sampleViolationCatalog);
         }
       } catch (e) {
         console.warn('Auto-seed check failed:', e);
@@ -377,7 +386,7 @@ export default function App() {
   }, [disciplineRecords]);
 
   useEffect(() => {
-    localStorage.setItem('app_sman1batu_violation_rules', JSON.stringify(violationRules));
+    localStorage.setItem('app_sman1batu_violation_rules_v3', JSON.stringify(violationRules));
   }, [violationRules]);
 
   useEffect(() => {
@@ -437,8 +446,13 @@ export default function App() {
     deleteDocument(COLLECTIONS.VIOLATION_RULES, ruleId).catch(() => {});
   };
 
-  const handleResetViolationRules = () => {
+  const handleResetViolationRules = async () => {
     setViolationRules(sampleViolationCatalog);
+    localStorage.setItem('app_sman1batu_violation_rules_v3', JSON.stringify(sampleViolationCatalog));
+    if (isFirebaseConfigured()) {
+      await deleteAllDocumentsInCollection(COLLECTIONS.VIOLATION_RULES);
+      await batchSaveDocuments(COLLECTIONS.VIOLATION_RULES, sampleViolationCatalog);
+    }
   };
 
   // Class management handlers
