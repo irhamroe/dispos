@@ -329,16 +329,17 @@ export const GOOGLE_APPS_SCRIPT_CODE = `/**
  * 
  * CARA PASANG:
  * 1. Buka https://script.google.com lalu klik "New Project" (Proyek Baru).
- * 2. Hapus semua kode yang ada di editor, lalu PASTE kode di bawah ini seluruhnya.
- * 3. Klik menu "Deploy" -> "New deployment".
- * 4. Pilih tipe "Web app" (ikon gear/roda gigi).
- * 5. Isi konfigurasi:
- *    - Description: Upload Media Dispos (Foto Siswa, Bukti Pembinaan, Surat)
+ * 2. HAPUS SEMUA teks/kode yang ada di editor sampai benar-benar kosong (Ctrl + A -> Delete).
+ * 3. PASTE / TEMPEL kode di bawah ini seluruhnya.
+ * 4. Klik menu "Deploy" -> "New deployment".
+ * 5. Pilih tipe "Web app" (ikon gear/roda gigi).
+ * 6. Isi konfigurasi:
+ *    - Description: Upload Media Dispos
  *    - Execute as: Me (email akun Google Anda)
- *    - Who has access: Anyone (Siapa saja, TANPA login) -> Sangat penting!
- * 6. Klik "Deploy", beri izin akses Google Drive saat diminta (Authorize Access).
- * 7. Salin "Web app URL" (format: https://script.google.com/macros/s/.../exec).
- * 8. Tempelkan URL tersebut ke Pengaturan Google Drive di Aplikasi Sistem Disiplin.
+ *    - Who has access: Anyone (Siapa saja) -> Sangat penting!
+ * 7. Klik "Deploy", beri izin akses Google Drive saat diminta (Authorize Access).
+ * 8. Salin "Web app URL" (format: https://script.google.com/macros/s/.../exec).
+ * 9. Tempelkan URL tersebut ke Pengaturan Google Drive di Aplikasi Sistem Disiplin.
  */
 
 function doGet(e) {
@@ -359,7 +360,7 @@ function doPost(e) {
 
     var data = JSON.parse(e.postData.contents);
 
-    // Endpoint PING / TEST
+    // Endpoint PING / TEST KONEKSI
     if (data.action === 'ping') {
       return ContentService.createTextOutput(JSON.stringify({
         status: 'success',
@@ -396,38 +397,8 @@ function doPost(e) {
       customFolderId = data.studentPhotoFolderId;
     }
     
-    // Helper ekstrak folder ID jika user memasukkan link URL lengkap
-    function cleanFolderId(input) {
-      if (!input) return '';
-      var str = input.toString().trim();
-      var matchF = str.match(/\/folders\/([a-zA-Z0-9_-]+)/);
-      if (matchF && matchF[1]) return matchF[1];
-      var matchI = str.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-      if (matchI && matchI[1]) return matchI[1];
-      return str;
-    }
-
-    var targetFolder = null;
-
-    // 1. Cek jika ada custom folder ID
-    var cleanedId = cleanFolderId(customFolderId);
-    if (cleanedId && cleanedId !== '') {
-      try {
-        targetFolder = DriveApp.getFolderById(cleanedId);
-      } catch (err) {
-        targetFolder = null;
-      }
-    }
-
-    // 2. Jika tidak ada ID khusus atau ID salah, cari atau buat folder sesuai nama
-    if (!targetFolder) {
-      var folders = DriveApp.getFoldersByName(targetFolderName);
-      if (folders.hasNext()) {
-        targetFolder = folders.next();
-      } else {
-        targetFolder = DriveApp.createFolder(targetFolderName);
-      }
-    }
+    // Dapatkan folder target di Drive
+    var targetFolder = getOrCreateDriveFolder(customFolderId, targetFolderName);
 
     // Buat file di dalam folder target
     var file = targetFolder.createFile(blob);
@@ -460,5 +431,35 @@ function doPost(e) {
       message: error.toString()
     })).setMimeType(ContentService.MimeType.JSON);
   }
+}
+
+// Fungsi bantu untuk mendapatkan atau membuat folder
+function getOrCreateDriveFolder(folderIdOrUrl, defaultFolderName) {
+  var folderId = extractCleanFolderId(folderIdOrUrl);
+  
+  if (folderId && folderId !== '') {
+    try {
+      return DriveApp.getFolderById(folderId);
+    } catch (e) {
+      // Jika folder ID tidak ditemukan / akses terbatas, buat/gunakan nama folder
+    }
+  }
+
+  var folders = DriveApp.getFoldersByName(defaultFolderName);
+  if (folders.hasNext()) {
+    return folders.next();
+  }
+  return DriveApp.createFolder(defaultFolderName);
+}
+
+// Helper ekstrak folder ID jika user memasukkan link URL lengkap
+function extractCleanFolderId(input) {
+  if (!input) return '';
+  var str = input.toString().trim();
+  var matchFolder = str.match(/\\/folders\\/([a-zA-Z0-9_-]+)/);
+  if (matchFolder && matchFolder[1]) return matchFolder[1];
+  var matchId = str.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (matchId && matchId[1]) return matchId[1];
+  return str;
 }
 `;
