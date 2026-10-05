@@ -28,7 +28,7 @@ import {
 import { DisciplineRecord, SchoolProfile, Student, ViolationCategory, DisciplineStatus, CoachingStatus, ViolationRule } from '../types';
 import { sampleViolationCatalog } from '../data/initialData';
 import { formatDateIndonesian } from '../utils/exportUtils';
-import { sortClasses, sortStudents } from '../utils/sortUtils';
+import { sortClasses, sortStudents, sortDisciplineRecords } from '../utils/sortUtils';
 import { 
   uploadFileToGoogleDrive, 
   isGoogleDriveConfigured, 
@@ -633,16 +633,19 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
     }
   };
 
-  // Filtered records
-  const filteredRecords = disciplineRecords.filter((rec) => {
-    const matchSearch =
-      rec.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      rec.nisn.includes(searchQuery) ||
-      rec.violationName.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchClass = filterClass === 'ALL' || rec.className === filterClass;
-    const matchCoaching = filterCoachingStatus === 'ALL' || rec.coachingStatus === filterCoachingStatus;
-    return matchSearch && matchClass && matchCoaching;
-  });
+  // Filtered records sorted by most recently entered first
+  const filteredRecords = React.useMemo(() => {
+    const list = disciplineRecords.filter((rec) => {
+      const matchSearch =
+        rec.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        rec.nisn.includes(searchQuery) ||
+        rec.violationName.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchClass = filterClass === 'ALL' || rec.className === filterClass;
+      const matchCoaching = filterCoachingStatus === 'ALL' || rec.coachingStatus === filterCoachingStatus;
+      return matchSearch && matchClass && matchCoaching;
+    });
+    return sortDisciplineRecords(list);
+  }, [disciplineRecords, searchQuery, filterClass, filterCoachingStatus]);
 
   // KPI calculations
   const totalRecords = disciplineRecords.length;

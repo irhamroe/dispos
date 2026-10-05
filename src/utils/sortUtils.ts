@@ -78,3 +78,40 @@ export const sortStudents = <T extends { name: string; className?: string; grade
 export const sortWaliKelas = (teachersList: WaliKelasTeacher[]): WaliKelasTeacher[] => {
   return [...teachersList].sort((a, b) => compareClassNames(a.className, b.className));
 };
+
+/**
+ * Sort discipline records by latest input / incident date and latest ID timestamp descending
+ * (Data yang terakhir dimasukkan akan selalu berada di urutan paling atas)
+ */
+export const sortDisciplineRecords = <T extends { date?: string; id?: string; createdAt?: string }>(
+  records: T[]
+): T[] => {
+  return [...records].sort((a, b) => {
+    // 1. Compare explicit createdAt if present
+    if (a.createdAt && b.createdAt && a.createdAt !== b.createdAt) {
+      return b.createdAt.localeCompare(a.createdAt);
+    }
+    // 2. Compare incident date descending (e.g. "2026-10-05" before "2026-09-17")
+    const dateA = a.date || '';
+    const dateB = b.date || '';
+    if (dateA !== dateB) {
+      return dateB.localeCompare(dateA);
+    }
+    // 3. Compare ID numeric timestamp / counter descending (e.g. disc-1728104593821)
+    const extractNum = (id?: string): number => {
+      if (!id) return 0;
+      const matches = id.match(/\d+/g);
+      if (matches && matches.length > 0) {
+        return parseInt(matches[matches.length - 1], 10) || 0;
+      }
+      return 0;
+    };
+    const numA = extractNum(a.id);
+    const numB = extractNum(b.id);
+    if (numA !== numB) {
+      return numB - numA;
+    }
+    return (b.id || '').localeCompare(a.id || '');
+  });
+};
+

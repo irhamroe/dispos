@@ -12,7 +12,7 @@ import {
   RombelClass
 } from './data/initialData';
 import { AdminUser, AttendanceRecord, DisciplineRecord, Student, DisciplineStatus, WaliKelasTeacher, ViolationRule } from './types';
-import { sortClasses, sortStudents, sortWaliKelas } from './utils/sortUtils';
+import { sortClasses, sortStudents, sortWaliKelas, sortDisciplineRecords } from './utils/sortUtils';
 import { Navbar } from './components/Navbar';
 import { Sidebar, NavTab } from './components/Sidebar';
 import { LoginScreen } from './components/LoginScreen';
@@ -137,11 +137,11 @@ export default function App() {
     }
   });
 
-  // Discipline Records state
+  // Discipline Records state (sorted by latest input first)
   const [disciplineRecords, setDisciplineRecords] = useState<DisciplineRecord[]>(() => {
     try {
       const saved = localStorage.getItem('app_sman1batu_discipline_v2');
-      return saved ? JSON.parse(saved) : initialDisciplineRecords;
+      return saved ? sortDisciplineRecords(JSON.parse(saved)) : initialDisciplineRecords;
     } catch {
       return initialDisciplineRecords;
     }
@@ -296,7 +296,7 @@ export default function App() {
     // 5. Realtime Discipline & Pelanggaran subscription
     const unsubDiscipline = subscribeToCollection<DisciplineRecord>(COLLECTIONS.DISCIPLINE, (data) => {
       if (data) {
-        setDisciplineRecords(data);
+        setDisciplineRecords(sortDisciplineRecords(data));
       }
     });
 
@@ -488,7 +488,7 @@ export default function App() {
 
   // Add new discipline record
   const handleAddDisciplineRecord = (newRecord: DisciplineRecord) => {
-    setDisciplineRecords((prev) => [newRecord, ...prev]);
+    setDisciplineRecords((prev) => sortDisciplineRecords([newRecord, ...prev]));
     saveDisciplineRecord(newRecord).catch(() => {});
   };
 
@@ -498,14 +498,14 @@ export default function App() {
       const updated = prev.map((r) => (r.id === id ? { ...r, status } : r));
       const target = updated.find((r) => r.id === id);
       if (target) saveDisciplineRecord(target).catch(() => {});
-      return updated;
+      return sortDisciplineRecords(updated);
     });
   };
 
   // Update full discipline record (including coaching)
   const handleUpdateDisciplineRecord = (updatedRecord: DisciplineRecord) => {
     setDisciplineRecords((prev) =>
-      prev.map((r) => (r.id === updatedRecord.id ? updatedRecord : r))
+      sortDisciplineRecords(prev.map((r) => (r.id === updatedRecord.id ? updatedRecord : r)))
     );
     saveDisciplineRecord(updatedRecord).catch(() => {});
   };

@@ -24,8 +24,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { DisciplineRecord, SchoolProfile, Student } from '../types';
-import { formatDateIndonesian } from '../utils/exportUtils';
-import { sortClasses } from '../utils/sortUtils';
+import { sortClasses, sortDisciplineRecords } from '../utils/sortUtils';
 import { 
   uploadFileToGoogleDrive, 
   isGoogleDriveConfigured, 
@@ -95,11 +94,12 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
   // 1. coachingStatus !== 'Sudah' OR no coaching photo (Belum Dibina)
   // 2. coachingStatus === 'Sudah' AND missing coachingEvidenceFileName (Surat Menyusul / Belum TTD)
   const allDebtRecords = useMemo(() => {
-    return disciplineRecords.filter((rec) => {
+    const list = disciplineRecords.filter((rec) => {
       const isCoachingBelum = rec.coachingStatus !== 'Sudah';
       const isMissingLetter = !rec.coachingEvidenceFileName && !rec.coachingEvidenceFile;
       return isCoachingBelum || isMissingLetter;
     });
+    return sortDisciplineRecords(list);
   }, [disciplineRecords]);
 
   // Sub-counts

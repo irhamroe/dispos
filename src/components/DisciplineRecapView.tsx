@@ -22,8 +22,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { DisciplineRecord, SchoolProfile, Student } from '../types';
-import { exportDisciplineToExcel, exportDisciplineToPdf, formatDateIndonesian } from '../utils/exportUtils';
-import { sortClasses } from '../utils/sortUtils';
+import { sortClasses, sortDisciplineRecords } from '../utils/sortUtils';
 import { getGoogleDriveDirectImageUrl, getGoogleDriveViewUrl } from '../services/googleDriveService';
 
 interface DisciplineRecapViewProps {
@@ -93,9 +92,9 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
     }
   };
 
-  // Filter records based on Date Range, Class, Status, and Search
+  // Filter records based on Date Range, Class, Status, and Search (sorted by latest first)
   const filteredRecords = useMemo(() => {
-    return disciplineRecords.filter((rec) => {
+    const list = disciplineRecords.filter((rec) => {
       // Date range check
       const withinDate = rec.date >= startDate && rec.date <= endDate;
       if (!withinDate) return false;
@@ -117,6 +116,7 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
 
       return true;
     });
+    return sortDisciplineRecords(list);
   }, [disciplineRecords, startDate, endDate, selectedClass, selectedStatus, searchQuery]);
 
   // KPI calculations for filtered data
