@@ -19,6 +19,7 @@ import {
   testGoogleDriveConnection, 
   GOOGLE_APPS_SCRIPT_CODE,
   isGoogleDriveConfigured,
+  extractGoogleDriveFolderId,
   GoogleDriveConfig
 } from '../services/googleDriveService';
 
@@ -202,12 +203,12 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                 />
                 <input
                   type="text"
-                  placeholder="ID Folder (Opsional)"
+                  placeholder="ID / Link Folder Google Drive"
                   value={config.studentPhotoFolderId || ''}
-                  onChange={(e) => setConfig({ ...config, studentPhotoFolderId: e.target.value })}
-                  className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-[11px] font-mono text-slate-500 mt-1.5"
+                  onChange={(e) => setConfig({ ...config, studentPhotoFolderId: extractGoogleDriveFolderId(e.target.value) })}
+                  className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-[11px] font-mono text-slate-600 mt-1.5 focus:border-purple-500"
                 />
-                <p className="text-[10px] text-slate-400 mt-1">Untuk foto profil siswa.</p>
+                <p className="text-[10px] text-slate-400 mt-1">ID atau URL link folder profil siswa.</p>
               </div>
 
               {/* 2. Folder Foto Bukti Pembinaan */}
@@ -225,12 +226,12 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                 />
                 <input
                   type="text"
-                  placeholder="ID Folder (Opsional)"
+                  placeholder="ID / Link Folder Google Drive"
                   value={config.photoFolderId || ''}
-                  onChange={(e) => setConfig({ ...config, photoFolderId: e.target.value })}
-                  className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-[11px] font-mono text-slate-500 mt-1.5"
+                  onChange={(e) => setConfig({ ...config, photoFolderId: extractGoogleDriveFolderId(e.target.value) })}
+                  className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-[11px] font-mono text-slate-600 mt-1.5 focus:border-emerald-500"
                 />
-                <p className="text-[10px] text-slate-400 mt-1">Untuk dokumentasi pembinaan.</p>
+                <p className="text-[10px] text-slate-400 mt-1">ID atau URL link folder bukti pembinaan.</p>
               </div>
 
               {/* 3. Folder Surat Bukti Pembinaan */}
@@ -248,12 +249,12 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                 />
                 <input
                   type="text"
-                  placeholder="ID Folder (Opsional)"
+                  placeholder="ID / Link Folder Google Drive"
                   value={config.evidenceFolderId || ''}
-                  onChange={(e) => setConfig({ ...config, evidenceFolderId: e.target.value })}
-                  className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-[11px] font-mono text-slate-500 mt-1.5"
+                  onChange={(e) => setConfig({ ...config, evidenceFolderId: extractGoogleDriveFolderId(e.target.value) })}
+                  className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-[11px] font-mono text-slate-600 mt-1.5 focus:border-blue-500"
                 />
-                <p className="text-[10px] text-slate-400 mt-1">Untuk berkas surat TTD.</p>
+                <p className="text-[10px] text-slate-400 mt-1">ID atau URL link folder surat bertandatangan.</p>
               </div>
             </div>
 

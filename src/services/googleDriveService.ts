@@ -43,12 +43,32 @@ export const getGoogleDriveConfig = (): GoogleDriveConfig => {
   return DEFAULT_GDRIVE_CONFIG;
 };
 
+/**
+ * Ekstrak Folder ID dari input (bisa berupa ID langsung atau link URL folder Google Drive)
+ */
+export const extractGoogleDriveFolderId = (input?: string): string => {
+  if (!input) return '';
+  const trimmed = input.trim();
+  // Format link folder: /folders/FOLDER_ID atau id=FOLDER_ID
+  const matchFolder = trimmed.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+  if (matchFolder && matchFolder[1]) return matchFolder[1];
+
+  const matchId = trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (matchId && matchId[1]) return matchId[1];
+
+  return trimmed;
+};
+
 // Simpan konfigurasi ke LocalStorage
 export const saveGoogleDriveConfig = (config: Partial<GoogleDriveConfig>): GoogleDriveConfig => {
   const current = getGoogleDriveConfig();
   const updated: GoogleDriveConfig = {
     ...current,
     ...config,
+    scriptUrl: config.scriptUrl ? config.scriptUrl.trim() : current.scriptUrl,
+    photoFolderId: config.photoFolderId !== undefined ? extractGoogleDriveFolderId(config.photoFolderId) : current.photoFolderId,
+    evidenceFolderId: config.evidenceFolderId !== undefined ? extractGoogleDriveFolderId(config.evidenceFolderId) : current.evidenceFolderId,
+    studentPhotoFolderId: config.studentPhotoFolderId !== undefined ? extractGoogleDriveFolderId(config.studentPhotoFolderId) : current.studentPhotoFolderId,
   };
   try {
     localStorage.setItem(GDRIVE_CONFIG_STORAGE_KEY, JSON.stringify(updated));
@@ -376,18 +396,30 @@ function doPost(e) {
       customFolderId = data.studentPhotoFolderId;
     }
     
+    // Helper ekstrak folder ID jika user memasukkan link URL lengkap
+    function cleanFolderId(input) {
+      if (!input) return '';
+      var str = input.toString().trim();
+      var matchF = str.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+      if (matchF && matchF[1]) return matchF[1];
+      var matchI = str.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+      if (matchI && matchI[1]) return matchI[1];
+      return str;
+    }
+
     var targetFolder = null;
 
     // 1. Cek jika ada custom folder ID
-    if (customFolderId && customFolderId.trim() !== '') {
+    var cleanedId = cleanFolderId(customFolderId);
+    if (cleanedId && cleanedId !== '') {
       try {
-        targetFolder = DriveApp.getFolderById(customFolderId.trim());
+        targetFolder = DriveApp.getFolderById(cleanedId);
       } catch (err) {
         targetFolder = null;
       }
     }
 
-    // 2. Jika tidak ada ID khusus, cari atau buat folder sesuai nama
+    // 2. Jika tidak ada ID khusus atau ID salah, cari atau buat folder sesuai nama
     if (!targetFolder) {
       var folders = DriveApp.getFoldersByName(targetFolderName);
       if (folders.hasNext()) {
