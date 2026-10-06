@@ -23,7 +23,8 @@ import {
   Cloud,
   ExternalLink,
   Loader2,
-  FolderOpen
+  FolderOpen,
+  Edit3
 } from 'lucide-react';
 import { DisciplineRecord, SchoolProfile, Student, ViolationCategory, DisciplineStatus, CoachingStatus, ViolationRule } from '../types';
 import { sampleViolationCatalog } from '../data/initialData';
@@ -206,6 +207,44 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
   const [followUpDocFile, setFollowUpDocFile] = useState<string | undefined>(undefined);
   const [followUpDocFileName, setFollowUpDocFileName] = useState<string>('');
   const followUpDocInputRef = useRef<HTMLInputElement>(null);
+
+  // States for Edit Record Modal (Antisipasi salah input)
+  const [editingRecord, setEditingRecord] = useState<DisciplineRecord | null>(null);
+  const [editDate, setEditDate] = useState<string>('');
+  const [editGrade, setEditGrade] = useState<string>('X');
+  const [editClass, setEditClass] = useState<string>('');
+  const [editStudentId, setEditStudentId] = useState<string>('');
+  const [editViolationName, setEditViolationName] = useState<string>('');
+  const [editPoints, setEditPoints] = useState<number>(5);
+  const [editCategory, setEditCategory] = useState<ViolationCategory>('Ringan');
+  const [editCoachingStatus, setEditCoachingStatus] = useState<CoachingStatus>('Belum');
+  const [editCoachingDate, setEditCoachingDate] = useState<string>('');
+  const [editCoachingPhoto, setEditCoachingPhoto] = useState<string | undefined>(undefined);
+  const [editCoachingPhotoName, setEditCoachingPhotoName] = useState<string>('');
+  const [editCoachingEvidenceFile, setEditCoachingEvidenceFile] = useState<string | undefined>(undefined);
+  const [editCoachingEvidenceFileName, setEditCoachingEvidenceFileName] = useState<string>('');
+  const [uploadingEditPhoto, setUploadingEditPhoto] = useState<boolean>(false);
+  const [uploadingEditEvidence, setUploadingEditEvidence] = useState<boolean>(false);
+  const editPhotoInputRef = useRef<HTMLInputElement>(null);
+  const editDocInputRef = useRef<HTMLInputElement>(null);
+
+  // Available classes in edit grade
+  const availableClassesInEditGrade = React.useMemo(() => {
+    const classSet = new Set<string>();
+    students.forEach((s) => {
+      const sGrade = s.grade || (s.className ? s.className.match(/^(X|XI|XII)/i)?.[1]?.toUpperCase() : '');
+      if (sGrade === editGrade && s.className) {
+        classSet.add(s.className);
+      }
+    });
+    const sorted = sortClasses(Array.from(classSet));
+    return sorted.length > 0 ? sorted : availableClasses;
+  }, [students, editGrade, availableClasses]);
+
+  // Students in selected edit class
+  const studentsInEditClass = React.useMemo(() => {
+    return sortStudents(students.filter((s) => s.className === editClass));
+  }, [students, editClass]);
 
   // Students in currently selected class in modal
   const studentsInSelectedClass = React.useMemo(() => {
@@ -545,6 +584,185 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
     setFollowUpRecord(null);
     setExportNotice(`Surat bukti pembinaan siswa ${updated.studentName} berhasil diunggah! Status pembinaan kini Lengkap.`);
     setTimeout(() => setExportNotice(null), 4000);
+  };
+
+  // Edit Record Handlers (Antisipasi salah input)
+  const handleOpenEditModal = (rec: DisciplineRecord) => {
+    setEditingRecord(rec);
+    setEditDate(rec.date);
+    const foundStudent = students.find((s) => s.id === rec.studentId);
+    const sGrade = foundStudent?.grade || (rec.className ? rec.className.match(/^(X|XI|XII)/i)?.[1]?.toUpperCase() : '') || 'X';
+    setEditGrade(sGrade);
+    setEditClass(rec.className);
+    setEditStudentId(rec.studentId);
+    setEditViolationName(rec.violationName);
+    setEditPoints(rec.points);
+    setEditCategory(rec.category);
+    setEditCoachingStatus(rec.coachingStatus || 'Belum');
+    setEditCoachingDate(rec.coachingDate || rec.date || new Date().toISOString().slice(0, 10));
+    setEditCoachingPhoto(rec.coachingPhoto);
+    setEditCoachingPhotoName(rec.coachingPhotoName || '');
+    setEditCoachingEvidenceFile(rec.coachingEvidenceFile);
+    setEditCoachingEvidenceFileName(rec.coachingEvidenceFileName || '');
+  };
+
+  const handleEditGradeChange = (newGrade: string) => {
+    setEditGrade(newGrade);
+    const classSet = new Set<string>();
+    students.forEach((s) => {
+      const sGrade = s.grade || (s.className ? s.className.match(/^(X|XI|XII)/i)?.[1]?.toUpperCase() : '');
+      if (sGrade === newGrade && s.className) {
+        classSet.add(s.className);
+      }
+    });
+    const classesForGrade = sortClasses(Array.from(classSet));
+    if (classesForGrade.length > 0) {
+      const firstClass = classesForGrade[0];
+      setEditClass(firstClass);
+      const firstStudent = students.find((s) => s.className === firstClass);
+      if (firstStudent) {
+        setEditStudentId(firstStudent.id);
+      }
+    }
+  };
+
+  const handleEditClassChange = (newClass: string) => {
+    setEditClass(newClass);
+    const firstStudent = students.find((s) => s.className === newClass);
+    if (firstStudent) {
+      setEditStudentId(firstStudent.id);
+    }
+  };
+
+  const handleEditViolationChange = (newViolation: string) => {
+    setEditViolationName(newViolation);
+    const { points, category } = determinePointsAndCategory(newViolation);
+    setEditPoints(points);
+    setEditCategory(category);
+  };
+
+  const handleEditPhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setEditCoachingPhotoName(file.name);
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setEditCoachingPhoto(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+
+    if (isGoogleDriveConfigured()) {
+      setUploadingEditPhoto(true);
+      const student = students.find((s) => s.id === editStudentId);
+      try {
+        const res = await uploadFileToGoogleDrive(file, 'photo', {
+          studentName: student?.name || editingRecord?.studentName,
+          className: student?.className || editClass,
+          violationName: editViolationName,
+        });
+        if (res.success && res.fileUrl) {
+          setEditCoachingPhoto(res.fileUrl);
+          setEditCoachingPhotoName(res.fileName || file.name);
+        }
+      } catch (err) {
+        console.error('Error upload foto edit:', err);
+      } finally {
+        setUploadingEditPhoto(false);
+      }
+    }
+  };
+
+  const handleEditDocumentUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setEditCoachingEvidenceFileName(file.name);
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setEditCoachingEvidenceFile(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+
+    if (isGoogleDriveConfigured()) {
+      setUploadingEditEvidence(true);
+      const student = students.find((s) => s.id === editStudentId);
+      try {
+        const res = await uploadFileToGoogleDrive(file, 'evidence', {
+          studentName: student?.name || editingRecord?.studentName,
+          className: student?.className || editClass,
+          violationName: editViolationName,
+        });
+        if (res.success && res.fileUrl) {
+          setEditCoachingEvidenceFile(res.fileUrl);
+          setEditCoachingEvidenceFileName(res.fileName || file.name);
+        }
+      } catch (err) {
+        console.error('Error upload surat edit:', err);
+      } finally {
+        setUploadingEditEvidence(false);
+      }
+    }
+  };
+
+  const handleSubmitEditRecord = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingRecord) return;
+    const student = students.find((s) => s.id === editStudentId);
+    if (!student) {
+      alert('Silakan pilih nama siswa yang valid.');
+      return;
+    }
+
+    if (editCoachingStatus === 'Sudah' && !editCoachingPhoto) {
+      alert('Syarat minimal untuk status pembinaan "Sudah" adalah melampirkan Foto Pembinaan. Berkas surat bukti pembinaan dapat menyusul.');
+      return;
+    }
+
+    const hasLetter = Boolean(editCoachingEvidenceFile || editCoachingEvidenceFileName);
+    let status: DisciplineStatus = 'Dalam Pantauan';
+    let positiveIntervention = editingRecord.positiveIntervention || 'Tindakan pembinaan dan dialog restitusi.';
+    
+    if (editCoachingStatus === 'Sudah') {
+      status = hasLetter ? 'Selesai' : 'Dalam Pantauan';
+      positiveIntervention = hasLetter
+        ? 'Pembinaan disiplin positif telah terlaksana lengkap beserta foto dan berkas surat bukti pembinaan.'
+        : 'Pembinaan disiplin positif telah terlaksana (Foto terlampir). Berkas surat bukti pembinaan menyusul.';
+    } else {
+      status = 'Dalam Pantauan';
+      positiveIntervention = 'Menunggu pelaksanaan sesi pembinaan disiplin positif bersama wali kelas / guru piket.';
+    }
+
+    const updated: DisciplineRecord = {
+      ...editingRecord,
+      date: editDate,
+      studentId: student.id,
+      studentName: student.name,
+      nisn: student.nisn,
+      classId: student.classId,
+      className: student.className,
+      category: editCategory,
+      violationName: editViolationName.trim(),
+      points: editPoints,
+      status,
+      positiveIntervention,
+      coachingStatus: editCoachingStatus,
+      coachingDate: editCoachingStatus === 'Sudah' ? editCoachingDate : undefined,
+      coachingPhoto: editCoachingStatus === 'Sudah' ? editCoachingPhoto : undefined,
+      coachingPhotoName: editCoachingStatus === 'Sudah' ? editCoachingPhotoName : undefined,
+      coachingEvidenceFile: editCoachingStatus === 'Sudah' ? editCoachingEvidenceFile : undefined,
+      coachingEvidenceFileName: editCoachingStatus === 'Sudah' ? editCoachingEvidenceFileName : undefined,
+    };
+
+    if (onUpdateRecord) {
+      onUpdateRecord(updated);
+    }
+
+    setEditingRecord(null);
+    setExportNotice(`Catatan pelanggaran siswa ${updated.studentName} berhasil diperbarui.`);
+    setTimeout(() => setExportNotice(null), 3500);
   };
 
   // Form Submit Handler
@@ -925,6 +1143,15 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                             </button>
                           ) : null}
                           
+                          <button
+                            type="button"
+                            onClick={() => handleOpenEditModal(rec)}
+                            className="p-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors cursor-pointer"
+                            title="Edit Catatan Pelanggaran"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+
                           <button
                             type="button"
                             onClick={() => setActiveRecordForDetail(rec)}
@@ -1891,6 +2118,387 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                 >
                   <CheckCircle2 className="w-4 h-4" />
                   <span>Simpan Surat Pembinaan</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: EDIT CATATAN PELANGGARAN (Antisipasi salah input) */}
+      {editingRecord && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-xl w-full border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 my-8">
+            {/* Modal Header */}
+            <div className="p-5 bg-gradient-to-r from-slate-800 to-slate-900 text-white flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+                  <Edit3 className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold">Edit Catatan Pelanggaran</h3>
+                  <p className="text-xs text-slate-300">
+                    Perbaiki data pelanggaran atau data pembinaan jika ada kesalahan input
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditingRecord(null)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Form */}
+            <form onSubmit={handleSubmitEditRecord} className="p-6 space-y-4 text-xs">
+              {/* 1. Tanggal Kejadian */}
+              <div>
+                <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Tanggal Kejadian</span>
+                  <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  type="date"
+                  required
+                  value={editDate}
+                  onChange={(e) => setEditDate(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-1 focus:ring-slate-600 font-semibold"
+                />
+              </div>
+
+              {/* 2. Pilihan Jenjang & 3. Pilih Kelas */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* 2. Pilih Jenjang */}
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                    <GraduationCap className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Pilih Jenjang</span>
+                    <span className="text-rose-500">*</span>
+                  </label>
+                  <select
+                    required
+                    value={editGrade}
+                    onChange={(e) => handleEditGradeChange(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-bold focus:outline-hidden focus:ring-1 focus:ring-slate-600 cursor-pointer"
+                  >
+                    {availableGrades.map((g) => (
+                      <option key={g} value={g}>
+                        Kelas {g}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* 3. Pilih Kelas */}
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                    <Layers className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Pilih Kelas</span>
+                    <span className="text-rose-500">*</span>
+                  </label>
+                  <select
+                    required
+                    value={editClass}
+                    onChange={(e) => handleEditClassChange(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-bold focus:outline-hidden focus:ring-1 focus:ring-slate-600 cursor-pointer"
+                  >
+                    {availableClassesInEditGrade.length === 0 ? (
+                      <option value="">Tidak ada kelas di jenjang ini</option>
+                    ) : (
+                      availableClassesInEditGrade.map((cName) => (
+                        <option key={cName} value={cName}>
+                          Kelas {cName}
+                        </option>
+                      ))
+                    )}
+                  </select>
+                </div>
+              </div>
+
+              {/* 4. Nama Siswa */}
+              <div>
+                <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                  <User className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Nama Siswa</span>
+                  <span className="text-rose-500">*</span>
+                </label>
+                <select
+                  required
+                  value={editStudentId}
+                  onChange={(e) => setEditStudentId(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-semibold focus:outline-hidden focus:ring-1 focus:ring-slate-600 cursor-pointer"
+                >
+                  {studentsInEditClass.length === 0 ? (
+                    <option value="">Tidak ada siswa di kelas ini</option>
+                  ) : (
+                    studentsInEditClass.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name} ({s.nisn})
+                      </option>
+                    ))
+                  )}
+                </select>
+              </div>
+
+              {/* 5. Jenis Pelanggaran */}
+              <div>
+                <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                  <ShieldAlert className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Jenis Pelanggaran</span>
+                  <span className="text-rose-500">*</span>
+                </label>
+                <select
+                  required
+                  value={editViolationName}
+                  onChange={(e) => handleEditViolationChange(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:outline-hidden focus:ring-1 focus:ring-slate-600 cursor-pointer"
+                >
+                  {catalogToUse.map((cat, i) => (
+                    <option key={cat.id || i} value={cat.name}>
+                      {cat.code ? `[${cat.code}] ` : ''}{cat.name}
+                    </option>
+                  ))}
+                  <option value="Pelanggaran tata tertib lainnya">
+                    Pelanggaran tata tertib lainnya
+                  </option>
+                </select>
+              </div>
+
+              {/* 6. Status Pembinaan (Sudah / Belum) */}
+              <div className="pt-1">
+                <label className="block font-bold text-slate-700 mb-1.5">
+                  Status Pembinaan
+                  <span className="text-rose-500 ml-0.5">*</span>
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setEditCoachingStatus('Belum')}
+                    className={`py-2.5 px-3 rounded-xl border font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      editCoachingStatus === 'Belum'
+                        ? 'bg-amber-50 border-amber-300 text-amber-800 ring-2 ring-amber-400/20'
+                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                    }`}
+                  >
+                    <Clock className="w-4 h-4 text-amber-500" />
+                    <span>Belum Dilakukan Pembinaan</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setEditCoachingStatus('Sudah')}
+                    className={`py-2.5 px-3 rounded-xl border font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      editCoachingStatus === 'Sudah'
+                        ? 'bg-emerald-50 border-emerald-300 text-emerald-800 ring-2 ring-emerald-500/20'
+                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                    }`}
+                  >
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    <span>Sudah Dilakukan Pembinaan</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* JIKA STATUS PEMBINAAN SUDAH */}
+              {editCoachingStatus === 'Sudah' && (
+                <div className="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200 space-y-3.5 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="flex items-center justify-between pb-1 border-b border-emerald-200/60">
+                    <div className="flex items-center gap-1.5 text-emerald-900 font-bold text-xs">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                      <span>Data Pelaksanaan Pembinaan</span>
+                    </div>
+                    <span className="text-[10px] text-slate-500 font-medium bg-white px-2 py-0.5 rounded-full border border-emerald-200">
+                      Minimal: Foto Pembinaan
+                    </span>
+                  </div>
+
+                  {/* Tanggal Pembinaan */}
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Tanggal Pembinaan</span>
+                      <span className="text-rose-500">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      required
+                      value={editCoachingDate}
+                      onChange={(e) => setEditCoachingDate(e.target.value)}
+                      className="w-full px-3 py-2 bg-white border border-emerald-300 rounded-xl text-slate-800 font-semibold focus:outline-hidden focus:ring-1 focus:ring-emerald-500"
+                    />
+                  </div>
+
+                  {/* Foto Pembinaan */}
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1 flex items-center justify-between">
+                      <span className="flex items-center gap-1.5">
+                        <ImageIcon className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>Foto Pembinaan</span>
+                        <span className="text-rose-500 font-bold text-[11px]">* (Wajib Ada)</span>
+                      </span>
+                      {editCoachingPhoto && !uploadingEditPhoto && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditCoachingPhoto(undefined);
+                            setEditCoachingPhotoName('');
+                            if (editPhotoInputRef.current) editPhotoInputRef.current.value = '';
+                          }}
+                          className="text-[10px] text-rose-600 hover:underline cursor-pointer"
+                        >
+                          Hapus Foto
+                        </button>
+                      )}
+                    </label>
+
+                    <input
+                      type="file"
+                      ref={editPhotoInputRef}
+                      accept="image/*"
+                      onChange={handleEditPhotoUpload}
+                      className="hidden"
+                    />
+
+                    {uploadingEditPhoto ? (
+                      <div className="p-3.5 bg-emerald-50/70 border border-emerald-300 rounded-xl flex items-center justify-center gap-2 text-emerald-800 text-xs font-semibold">
+                        <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />
+                        <span>Sedang mengunggah foto...</span>
+                      </div>
+                    ) : editCoachingPhoto ? (
+                      <div className="flex items-center gap-3 p-2.5 bg-white border border-emerald-300 rounded-xl shadow-2xs">
+                        <img
+                          src={getGoogleDriveDirectImageUrl(editCoachingPhoto)}
+                          alt="Foto Pembinaan"
+                          className="w-14 h-14 object-cover rounded-lg border border-slate-200 shadow-2xs cursor-pointer"
+                          onClick={() => setActivePreviewImage({ url: editCoachingPhoto, title: 'Pratinjau Foto Pembinaan' })}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-slate-800 truncate text-xs">{editCoachingPhotoName || 'Foto_Pembinaan.jpg'}</p>
+                          <div className="flex items-center gap-1.5 mt-0.5">
+                            {editCoachingPhoto.includes('drive.google.com') || editCoachingPhoto.includes('googleusercontent.com') ? (
+                              <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-bold border border-emerald-200">
+                                <Cloud className="w-3 h-3 text-emerald-600" /> Google Drive
+                              </span>
+                            ) : (
+                              <span className="text-[10px] text-emerald-600 font-semibold">Tersimpan lokal</span>
+                            )}
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => editPhotoInputRef.current?.click()}
+                          className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-[10px] transition-colors cursor-pointer"
+                        >
+                          Ganti
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => editPhotoInputRef.current?.click()}
+                        className="w-full p-3.5 border-2 border-dashed border-emerald-300 hover:border-emerald-500 bg-white/80 rounded-xl transition-all flex flex-col items-center justify-center gap-1 text-slate-500 cursor-pointer"
+                      >
+                        <Camera className="w-5 h-5 text-emerald-600" />
+                        <span className="font-bold text-xs text-slate-700">Unggah Foto Pembinaan</span>
+                        <span className="text-[10px] text-slate-400">Klik untuk mengambil/memilih foto</span>
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Bukti Pembinaan (Surat Bukti Pembinaan) */}
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1 flex items-center justify-between">
+                      <span className="flex items-center gap-1.5">
+                        <FileText className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>Surat Bukti Pembinaan</span>
+                        <span className="text-amber-700 bg-amber-100/80 px-1.5 py-0.5 rounded text-[10px] font-semibold">Bisa Menyusul</span>
+                      </span>
+                      {editCoachingEvidenceFileName && !uploadingEditEvidence && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditCoachingEvidenceFile(undefined);
+                            setEditCoachingEvidenceFileName('');
+                            if (editDocInputRef.current) editDocInputRef.current.value = '';
+                          }}
+                          className="text-[10px] text-rose-600 hover:underline cursor-pointer"
+                        >
+                          Hapus Surat
+                        </button>
+                      )}
+                    </label>
+
+                    <input
+                      type="file"
+                      ref={editDocInputRef}
+                      accept=".pdf,.doc,.docx,image/*"
+                      onChange={handleEditDocumentUpload}
+                      className="hidden"
+                    />
+
+                    {uploadingEditEvidence ? (
+                      <div className="p-3.5 bg-blue-50/70 border border-blue-300 rounded-xl flex items-center justify-center gap-2 text-blue-800 text-xs font-semibold">
+                        <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
+                        <span>Sedang mengunggah berkas surat...</span>
+                      </div>
+                    ) : editCoachingEvidenceFile || editCoachingEvidenceFileName ? (
+                      <div className="flex items-center gap-3 p-2.5 bg-white border border-emerald-300 rounded-xl shadow-2xs">
+                        <div className="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                          <FileText className="w-5 h-5" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-slate-800 truncate text-xs">{editCoachingEvidenceFileName || 'Surat_Pembinaan.pdf'}</p>
+                          <div className="flex items-center gap-1.5 mt-0.5">
+                            {editCoachingEvidenceFile && (editCoachingEvidenceFile.includes('drive.google.com') || editCoachingEvidenceFile.includes('googleusercontent.com')) ? (
+                              <span className="inline-flex items-center gap-1 text-[10px] text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-bold border border-blue-200">
+                                <Cloud className="w-3 h-3 text-blue-600" /> Google Drive
+                              </span>
+                            ) : (
+                              <span className="text-[10px] text-emerald-600 font-semibold">Dokumen terlampir</span>
+                            )}
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => editDocInputRef.current?.click()}
+                          className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-[10px] transition-colors cursor-pointer"
+                        >
+                          Ganti
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => editDocInputRef.current?.click()}
+                        className="w-full p-3.5 border-2 border-dashed border-slate-200 hover:border-emerald-400 bg-white/80 rounded-xl transition-all flex flex-col items-center justify-center gap-1 text-slate-500 cursor-pointer"
+                      >
+                        <FileText className="w-5 h-5 text-slate-400" />
+                        <span className="font-bold text-xs text-slate-700">Unggah Surat Pembinaan (Opsional / Menyusul)</span>
+                        <span className="text-[10px] text-slate-400">PDF, DOC, atau Scan Surat</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Actions */}
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setEditingRecord(null)}
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition-colors cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold transition-colors shadow-xs cursor-pointer flex items-center gap-1.5"
+                >
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <span>Simpan Perubahan</span>
                 </button>
               </div>
             </form>

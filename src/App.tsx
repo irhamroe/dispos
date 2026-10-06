@@ -394,7 +394,7 @@ export default function App() {
   }, [disciplineRecords]);
 
   useEffect(() => {
-    localStorage.setItem('app_sman1batu_violation_rules_v5', JSON.stringify(violationRules));
+    localStorage.setItem('app_sman1batu_violation_rules_v6', JSON.stringify(violationRules));
   }, [violationRules]);
 
   useEffect(() => {
