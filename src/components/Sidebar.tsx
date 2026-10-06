@@ -89,6 +89,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Dashboard Statistik',
       sublabel: 'Pantauan kehadiran hari ini',
       icon: LayoutDashboard,
+      iconBg: 'bg-[#0284C7] text-white',
+      inactiveIconBg: 'bg-[#E0F2FE] text-[#0284C7]',
+      activeBg: 'bg-[#E0F2FE] text-[#0369A1] shadow-xs',
       badge: null,
     },
     {
@@ -96,6 +99,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Presensi Harian',
       sublabel: 'Input & pembaruan absensi',
       icon: ClipboardCheck,
+      iconBg: 'bg-[#10B981] text-white',
+      inactiveIconBg: 'bg-[#D1FAE5] text-[#059669]',
+      activeBg: 'bg-[#ECFDF5] text-[#047857] shadow-xs',
       badge: `${todayCount.hadir}/${todayCount.total}`,
       badgeBg: 'bg-[#C8E6C9] text-[#1B5E20]',
     },
@@ -107,6 +113,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Rekap Presensi',
       sublabel: 'Rentang tanggal & ekspor',
       icon: CalendarRange,
+      iconBg: 'bg-[#0284C7] text-white',
+      inactiveIconBg: 'bg-[#E0F2FE] text-[#0284C7]',
       badge: 'Excel/PDF',
       badgeBg: 'bg-[#E1F5FE] text-[#0277BD]',
     },
@@ -115,6 +123,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Rekap Surat Izin',
       sublabel: 'Siswa belum kumpul surat',
       icon: FileWarning,
+      iconBg: 'bg-[#F59E0B] text-white',
+      inactiveIconBg: 'bg-[#FEF3C7] text-[#D97706]',
       badge: totalPendingLetters > 0 ? `${totalPendingLetters} Siswa` : 'Lengkap',
       badgeBg: totalPendingLetters > 0 ? 'bg-[#FFDAD6] text-[#410002]' : 'bg-[#C8E6C9] text-[#1B5E20]',
     },
@@ -126,6 +136,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Input Pelanggaran',
       sublabel: 'Catat pelanggaran & riwayat',
       icon: ShieldAlert,
+      iconBg: 'bg-[#F97316] text-white',
+      inactiveIconBg: 'bg-[#FFEDD5] text-[#EA580C]',
+      activeBg: 'bg-[#FFF7ED] text-[#C2410C] shadow-xs',
       badge: `${totalDisciplineCases} Data`,
       badgeBg: 'bg-[#FFE0B2] text-[#E65100]',
     },
@@ -134,6 +147,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Rekap Pelanggaran',
       sublabel: 'Rentang tanggal & ekspor',
       icon: CalendarDays,
+      iconBg: 'bg-[#14B8A6] text-white',
+      inactiveIconBg: 'bg-[#CCFBF1] text-[#0D9488]',
+      activeBg: 'bg-[#F0FDFA] text-[#0F766E] shadow-xs',
       badge: 'Laporan',
       badgeBg: 'bg-[#E0F2F1] text-[#00695C]',
     },
@@ -142,6 +158,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Tagihan Pembinaan',
       sublabel: 'Belum selesai pembinaan',
       icon: FileWarning,
+      iconBg: 'bg-[#F43F5E] text-white',
+      inactiveIconBg: 'bg-[#FFE4E6] text-[#E11D48]',
+      activeBg: 'bg-[#FFF1F2] text-[#BE123C] shadow-xs',
       badge: `${totalPendingDebt} Siswa`,
       badgeBg: totalPendingDebt > 0 ? 'bg-[#FFDAD6] text-[#410002]' : 'bg-[#C8E6C9] text-[#1B5E20]',
     },
@@ -150,6 +169,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Surat Panggilan Ortu',
       sublabel: 'Format resmi & rekap kasus',
       icon: Mail,
+      iconBg: 'bg-[#8B5CF6] text-white',
+      inactiveIconBg: 'bg-[#EDE9FE] text-[#7C3AED]',
+      activeBg: 'bg-[#F5F3FF] text-[#6D28D9] shadow-xs',
       badge: 'Resmi',
       badgeBg: 'bg-[#E0F2FE] text-[#0369A1]',
     },
@@ -158,6 +180,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Manajemen Aturan',
       sublabel: 'Katalog bobot poin & aturan',
       icon: SlidersHorizontal,
+      iconBg: 'bg-[#6366F1] text-white',
+      inactiveIconBg: 'bg-[#E0E7FF] text-[#4F46E5]',
+      activeBg: 'bg-[#EEF2FF] text-[#4338CA] shadow-xs',
       badge: '40 Aturan',
       badgeBg: 'bg-[#E0F2FE] text-[#0369A1]',
     },
@@ -169,6 +194,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Data Siswa',
       sublabel: 'Master 1.274 siswa',
       icon: Users,
+      iconBg: 'bg-[#3B82F6] text-white',
+      inactiveIconBg: 'bg-[#DBEAFE] text-[#2563EB]',
       badge: `${todayCount.total}`,
     },
     {
@@ -176,6 +203,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Data Kelas',
       sublabel: '36 Rombel X, XI, XII',
       icon: Layers,
+      iconBg: 'bg-[#A855F7] text-white',
+      inactiveIconBg: 'bg-[#F3E8FF] text-[#9333EA]',
       badge: '36 Rombel',
     },
     {
@@ -183,6 +212,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Data Wali Kelas',
       sublabel: '36 Guru pembina rombel',
       icon: UserCheck,
+      iconBg: 'bg-[#F59E0B] text-white',
+      inactiveIconBg: 'bg-[#FEF3C7] text-[#D97706]',
       badge: '36 Guru',
     },
     {
@@ -190,6 +221,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Manajemen User',
       sublabel: 'Role: Admin, Wali, Guru',
       icon: ShieldCheck,
+      iconBg: 'bg-[#10B981] text-white',
+      inactiveIconBg: 'bg-[#D1FAE5] text-[#059669]',
       badge: totalUsers > 0 ? `${totalUsers} Akun` : 'Multi-Role',
     },
   ];
@@ -252,7 +285,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     onClick={() => handleNavClick(item.id)}
                     className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-full text-left transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] group cursor-pointer active:scale-95 ${
                       isActive
-                        ? 'bg-[#E0F2FE] text-[#0369A1] font-medium shadow-xs'
+                        ? `${item.activeBg} font-medium shadow-xs`
                         : 'text-[#334155] hover:bg-[#0284C7]/10 hover:text-[#0F172A]'
                     }`}
                   >
@@ -260,8 +293,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       <div
                         className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
                           isActive
-                            ? 'bg-[#0284C7] text-white shadow-xs'
-                            : 'bg-[#E2F1FD] text-[#334155] group-hover:bg-[#0284C7] group-hover:text-white'
+                            ? `${item.iconBg} shadow-xs`
+                            : `${item.inactiveIconBg} group-hover:scale-105`
                         }`}
                       >
                         <Icon className="w-4 h-4" />
@@ -300,7 +333,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   }`}
                 >
                   <div className="flex items-center space-x-3 min-w-0">
-                    <div className="w-8 h-8 rounded-full bg-[#E2F1FD] text-[#334155] group-hover:bg-[#0284C7] group-hover:text-white flex items-center justify-center transition-all">
+                    <div className="w-8 h-8 rounded-full bg-[#E0F2FE] text-[#0284C7] group-hover:bg-[#0284C7] group-hover:text-white flex items-center justify-center transition-all">
                       <CalendarRange className="w-4 h-4" />
                     </div>
                     <div className="truncate">
@@ -344,11 +377,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           }`}
                         >
                           <div className="flex items-center space-x-2.5 min-w-0">
-                            <SubIcon
-                              className={`w-3.5 h-3.5 shrink-0 ${
-                                isSubActive ? 'text-white' : 'text-[#0284C7]'
+                            <div
+                              className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${
+                                isSubActive ? 'bg-white/20 text-white' : subItem.inactiveIconBg
                               }`}
-                            />
+                            >
+                              <SubIcon className="w-3.5 h-3.5 shrink-0" />
+                            </div>
                             <div className="truncate text-xs leading-tight">
                               {subItem.label}
                             </div>
@@ -391,7 +426,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     onClick={() => handleNavClick(item.id)}
                     className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-full text-left transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] group cursor-pointer active:scale-95 ${
                       isActive
-                        ? 'bg-[#E0F2FE] text-[#0369A1] font-medium shadow-xs'
+                        ? `${item.activeBg} font-medium shadow-xs`
                         : 'text-[#334155] hover:bg-[#0284C7]/10 hover:text-[#0F172A]'
                     }`}
                   >
@@ -399,8 +434,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       <div
                         className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
                           isActive
-                            ? 'bg-[#0284C7] text-white shadow-xs'
-                            : 'bg-[#E2F1FD] text-[#334155] group-hover:bg-[#0284C7] group-hover:text-white'
+                            ? `${item.iconBg} shadow-xs`
+                            : `${item.inactiveIconBg} group-hover:scale-105`
                         }`}
                       >
                         <Icon className="w-4 h-4" />
@@ -448,7 +483,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 }`}
               >
                 <div className="flex items-center space-x-2.5">
-                  <div className="w-7 h-7 rounded-full bg-[#0284C7] text-white flex items-center justify-center shadow-xs">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-xs">
                     <Database className="w-3.5 h-3.5" />
                   </div>
                   <div>
@@ -485,11 +520,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         }`}
                       >
                         <div className="flex items-center space-x-2.5 min-w-0">
-                          <SubIcon
-                            className={`w-3.5 h-3.5 shrink-0 ${
-                              isSubActive ? 'text-white' : 'text-[#0284C7]'
+                          <div
+                            className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${
+                              isSubActive ? 'bg-white/20 text-white' : sub.inactiveIconBg
                             }`}
-                          />
+                          >
+                            <SubIcon className="w-3.5 h-3.5 shrink-0" />
+                          </div>
                           <div className="truncate">
                             <div className="text-xs truncate leading-tight font-medium">{sub.label}</div>
                             <div className={`text-[9.5px] truncate ${isSubActive ? 'text-[#E0F2FE]' : 'text-[#334155]'}`}>

@@ -9,7 +9,11 @@ import {
   Layers, 
   ArrowRight, 
   XCircle, 
-  Sparkles 
+  Sparkles,
+  CheckCircle2,
+  Clock,
+  HeartPulse,
+  UserX
 } from 'lucide-react';
 import { AttendanceRecord, DisciplineRecord, Student } from '../types';
 import { RombelClass } from '../data/initialData';
@@ -174,98 +178,115 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
       </MdCard>
 
-      {/* Main KPI Bento Grid: Hero Stat + H, I, S, A, D Cards */}
+      {/* Main KPI Bento Grid: Hero Stat + H, I, S, A Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
         {/* Attendance Rate (Hero Card) */}
-        <div className="col-span-2 bg-[#0284C7] rounded-[32px] p-6 text-white shadow-sm flex flex-col justify-between relative overflow-hidden transition-all duration-300 hover:shadow-md">
+        <div className="col-span-2 bg-gradient-to-br from-[#0284C7] via-[#0369A1] to-[#0c4a6e] rounded-[32px] p-6 text-white shadow-md flex flex-col justify-between relative overflow-hidden transition-all duration-300 hover:shadow-lg group">
+          <TrendingUp className="w-28 h-28 absolute -right-3 -bottom-4 text-white/10 pointer-events-none group-hover:scale-110 transition-transform duration-500" />
           <div className="relative z-10">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium uppercase tracking-wider text-[#E0F2FE]">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#E0F2FE]">
                 Tingkat Kehadiran
               </span>
-              <span className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-white">
+              <span className="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-xs flex items-center justify-center text-white shadow-xs">
                 <TrendingUp className="w-5 h-5" />
               </span>
             </div>
             <div className="mt-3 flex items-baseline gap-2">
-              <span className="text-4xl sm:text-5xl font-bold tracking-tight">
+              <span className="text-4xl sm:text-5xl font-extrabold tracking-tight drop-shadow-xs">
                 {attendancePercentage}%
               </span>
-              <span className="text-xs text-[#E0F2FE]">
+              <span className="text-xs text-[#E0F2FE] font-medium">
                 ({hadirCount + dispenCount} dari {totalFiltered} siswa)
               </span>
             </div>
           </div>
 
           <div className="mt-5 relative z-10">
-            <div className="w-full bg-black/20 rounded-full h-2.5 overflow-hidden">
+            <div className="w-full bg-black/25 rounded-full h-2.5 overflow-hidden p-0.5">
               <div
-                className="bg-[#C8E6C9] h-full rounded-full transition-all duration-500"
+                className="bg-gradient-to-r from-[#4ade80] to-[#86efac] h-full rounded-full transition-all duration-500 shadow-xs"
                 style={{ width: `${attendancePercentage}%` }}
               />
             </div>
             <div className="flex justify-between items-center mt-2 text-[11px] text-[#E0F2FE]">
               <span>{formatDateIndonesian(selectedDate)}</span>
-              <span className="font-medium">{selectedClassFilter === 'ALL' ? `${availableClasses.length} Rombel` : `Rombel ${selectedClassFilter}`}</span>
+              <span className="font-semibold bg-white/15 px-2.5 py-0.5 rounded-full">{selectedClassFilter === 'ALL' ? `${availableClasses.length} Rombel` : `Rombel ${selectedClassFilter}`}</span>
             </div>
           </div>
         </div>
 
         {/* H: Hadir */}
-        <MdCard variant="filled" hoverable className="flex flex-col justify-between p-5">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-[#334155] uppercase">Hadir (H)</span>
-            <div className="w-8 h-8 rounded-full bg-[#C8E6C9] text-[#1B5E20] flex items-center justify-center font-bold text-xs">
-              H
+        <div className="bg-gradient-to-br from-[#ECFDF5] via-[#D1FAE5] to-[#A7F3D0]/60 border border-[#6EE7B7]/70 rounded-[28px] p-5 flex flex-col justify-between relative overflow-hidden shadow-xs hover:shadow-md transition-all duration-300 group">
+          <CheckCircle2 className="w-20 h-20 absolute -right-2 -bottom-2 text-[#10B981]/15 pointer-events-none group-hover:scale-110 transition-transform duration-300" />
+          <div className="flex items-center justify-between relative z-10">
+            <span className="text-xs font-bold text-[#065F46] uppercase tracking-wide">Hadir (H)</span>
+            <div className="w-8 h-8 rounded-xl bg-[#10B981] text-white flex items-center justify-center font-bold text-xs shadow-xs">
+              <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-3">
-            <div className="text-3xl font-bold text-[#1B5E20]">{hadirCount}</div>
-            <div className="text-[11px] text-[#334155] mt-0.5">Presensi aktif kelas</div>
+          <div className="mt-3 relative z-10">
+            <div className="text-3xl font-extrabold text-[#047857]">{hadirCount}</div>
+            <div className="text-[11px] font-medium text-[#065F46]/90 mt-0.5 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span>
+              Presensi aktif kelas
+            </div>
           </div>
-        </MdCard>
+        </div>
 
         {/* I: Izin */}
-        <MdCard variant="filled" hoverable className="flex flex-col justify-between p-5">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-[#334155] uppercase">Izin (I)</span>
-            <div className="w-8 h-8 rounded-full bg-[#E1F5FE] text-[#0277BD] flex items-center justify-center font-bold text-xs">
-              I
+        <div className="bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE] to-[#BAE6FD]/60 border border-[#7DD3FC]/70 rounded-[28px] p-5 flex flex-col justify-between relative overflow-hidden shadow-xs hover:shadow-md transition-all duration-300 group">
+          <Clock className="w-20 h-20 absolute -right-2 -bottom-2 text-[#0284C7]/15 pointer-events-none group-hover:scale-110 transition-transform duration-300" />
+          <div className="flex items-center justify-between relative z-10">
+            <span className="text-xs font-bold text-[#075985] uppercase tracking-wide">Izin (I)</span>
+            <div className="w-8 h-8 rounded-xl bg-[#0284C7] text-white flex items-center justify-center font-bold text-xs shadow-xs">
+              <Clock className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-3">
-            <div className="text-3xl font-bold text-[#0277BD]">{izinCount}</div>
-            <div className="text-[11px] text-[#334155] mt-0.5">Izin acara / urusan</div>
+          <div className="mt-3 relative z-10">
+            <div className="text-3xl font-extrabold text-[#0369A1]">{izinCount}</div>
+            <div className="text-[11px] font-medium text-[#075985]/90 mt-0.5 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0284C7]"></span>
+              Izin acara / urusan
+            </div>
           </div>
-        </MdCard>
+        </div>
 
         {/* S: Sakit */}
-        <MdCard variant="filled" hoverable className="flex flex-col justify-between p-5">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-[#334155] uppercase">Sakit (S)</span>
-            <div className="w-8 h-8 rounded-full bg-[#FFF3E0] text-[#E65100] flex items-center justify-center font-bold text-xs">
-              S
+        <div className="bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7] to-[#FDE68A]/60 border border-[#FCD34D]/70 rounded-[28px] p-5 flex flex-col justify-between relative overflow-hidden shadow-xs hover:shadow-md transition-all duration-300 group">
+          <HeartPulse className="w-20 h-20 absolute -right-2 -bottom-2 text-[#F59E0B]/15 pointer-events-none group-hover:scale-110 transition-transform duration-300" />
+          <div className="flex items-center justify-between relative z-10">
+            <span className="text-xs font-bold text-[#92400E] uppercase tracking-wide">Sakit (S)</span>
+            <div className="w-8 h-8 rounded-xl bg-[#F59E0B] text-white flex items-center justify-center font-bold text-xs shadow-xs">
+              <HeartPulse className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-3">
-            <div className="text-3xl font-bold text-[#E65100]">{sakitCount}</div>
-            <div className="text-[11px] text-[#334155] mt-0.5">Istirahat / rawat</div>
+          <div className="mt-3 relative z-10">
+            <div className="text-3xl font-extrabold text-[#B45309]">{sakitCount}</div>
+            <div className="text-[11px] font-medium text-[#92400E]/90 mt-0.5 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B]"></span>
+              Istirahat / rawat
+            </div>
           </div>
-        </MdCard>
+        </div>
 
         {/* A: Alpa */}
-        <MdCard variant="filled" hoverable className="flex flex-col justify-between p-5">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-[#334155] uppercase">Alpa (A)</span>
-            <div className="w-8 h-8 rounded-full bg-[#FFDAD6] text-[#410002] flex items-center justify-center font-bold text-xs">
-              A
+        <div className="bg-gradient-to-br from-[#FFF1F2] via-[#FFE4E6] to-[#FECDD3]/60 border border-[#FDA4AF]/70 rounded-[28px] p-5 flex flex-col justify-between relative overflow-hidden shadow-xs hover:shadow-md transition-all duration-300 group">
+          <UserX className="w-20 h-20 absolute -right-2 -bottom-2 text-[#F43F5E]/15 pointer-events-none group-hover:scale-110 transition-transform duration-300" />
+          <div className="flex items-center justify-between relative z-10">
+            <span className="text-xs font-bold text-[#9F1239] uppercase tracking-wide">Alpa (A)</span>
+            <div className="w-8 h-8 rounded-xl bg-[#F43F5E] text-white flex items-center justify-center font-bold text-xs shadow-xs">
+              <UserX className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-3">
-            <div className="text-3xl font-bold text-[#BA1A1A]">{alpaCount}</div>
-            <div className="text-[11px] text-[#BA1A1A] font-medium mt-0.5">Tanpa keterangan</div>
+          <div className="mt-3 relative z-10">
+            <div className="text-3xl font-extrabold text-[#E11D48]">{alpaCount}</div>
+            <div className="text-[11px] font-semibold text-[#BE123C] mt-0.5 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#F43F5E]"></span>
+              Tanpa keterangan
+            </div>
           </div>
-        </MdCard>
+        </div>
       </div>
 
       {/* Verification Surat Badge Bar */}
