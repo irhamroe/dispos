@@ -2,21 +2,21 @@
 
 @layer base {
   :root {
-    --md-surface: #FFFBFE;
-    --md-on-surface: #1C1B1F;
-    --md-primary: #6750A4;
+    --md-surface: #F8FAFC;
+    --md-on-surface: #0F172A;
+    --md-primary: #0284C7;
     --md-on-primary: #FFFFFF;
-    --md-secondary-container: #E8DEF8;
-    --md-on-secondary-container: #1D192B;
-    --md-tertiary: #7D5260;
+    --md-secondary-container: #E0F2FE;
+    --md-on-secondary-container: #0369A1;
+    --md-tertiary: #0EA5E9;
     --md-on-tertiary: #FFFFFF;
-    --md-surface-container: #F3EDF7;
-    --md-surface-container-low: #E7E0EC;
-    --md-surface-container-high: #ECE6F0;
-    --md-surface-variant: #E7E0EC;
-    --md-on-surface-variant: #49454F;
-    --md-outline: #79747E;
-    --md-outline-variant: #CAC4D0;
+    --md-surface-container: #F0F9FF;
+    --md-surface-container-low: #E2F1FD;
+    --md-surface-container-high: #D8ECFB;
+    --md-surface-variant: #E0F2FE;
+    --md-on-surface-variant: #334155;
+    --md-outline: #64748B;
+    --md-outline-variant: #CBD5E1;
     --md-ease: cubic-bezier(0.2, 0, 0, 1);
   }
 
@@ -41,19 +41,19 @@
 }
 
 .md-elevation-1 {
-  box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.08), 0px 1px 2px 0px rgba(0, 0, 0, 0.12);
+  box-shadow: 0px 1px 3px 1px rgba(2, 132, 199, 0.08), 0px 1px 2px 0px rgba(0, 0, 0, 0.06);
 }
 
 .md-elevation-2 {
-  box-shadow: 0px 2px 6px 2px rgba(0, 0, 0, 0.08), 0px 1px 2px 0px rgba(0, 0, 0, 0.14);
+  box-shadow: 0px 2px 6px 2px rgba(2, 132, 199, 0.1), 0px 1px 2px 0px rgba(0, 0, 0, 0.08);
 }
 
 .md-elevation-3 {
-  box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.08), 0px 1px 3px 0px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 4px 8px 3px rgba(2, 132, 199, 0.12), 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
 }
 
 .md-elevation-4 {
-  box-shadow: 0px 6px 10px 4px rgba(0, 0, 0, 0.08), 0px 2px 3px 0px rgba(0, 0, 0, 0.16);
+  box-shadow: 0px 6px 10px 4px rgba(2, 132, 199, 0.14), 0px 2px 3px 0px rgba(0, 0, 0, 0.12);
 }
 
 /* ==========================================================================
@@ -109,22 +109,22 @@
 .md-input-filled:focus {
   outline: none;
   border-bottom-color: var(--md-primary);
-  background-color: #EDE7F2;
+  background-color: #E0F2FE;
 }
 
-/* Custom Scrollbar in Material You Surface Tint */
+/* Custom Scrollbar in Material You Light Blue Tint */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #F3EDF7;
+  background: #F0F9FF;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #CAC4D0;
+  background: #BAE6FD;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #79747E;
+  background: #0284C7;
 }

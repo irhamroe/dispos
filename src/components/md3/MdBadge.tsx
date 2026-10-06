@@ -18,12 +18,12 @@ export const MdBadge: React.FC<MdBadgeProps> = ({
   }[size];
 
   const variantClasses = {
-    primary: 'bg-[#6750A4] text-white font-medium',
-    secondary: 'bg-[#E8DEF8] text-[#1D192B] font-medium',
-    tertiary: 'bg-[#7D5260] text-white font-medium',
+    primary: 'bg-[#0284C7] text-white font-medium',
+    secondary: 'bg-[#E0F2FE] text-[#0369A1] font-medium',
+    tertiary: 'bg-[#0EA5E9] text-white font-medium',
     success: 'bg-[#C8E6C9] text-[#1B5E20] font-medium',
     error: 'bg-[#FFDAD6] text-[#410002] font-medium',
-    surface: 'bg-[#E7E0EC] text-[#49454F] font-medium',
+    surface: 'bg-[#E2F1FD] text-[#334155] font-medium',
   }[variant];
 
   return (
@@ -53,8 +53,8 @@ export const MdChip: React.FC<MdChipProps> = ({
       type="button"
       className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium font-roboto transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] cursor-pointer active:scale-95 ${
         selected
-          ? 'bg-[#E8DEF8] text-[#1D192B] border border-[#6750A4]/20 shadow-xs'
-          : 'bg-[#FFFBFE] text-[#49454F] border border-[#79747E]/40 hover:bg-[#F3EDF7]'
+          ? 'bg-[#E0F2FE] text-[#0369A1] border border-[#0284C7]/30 shadow-xs'
+          : 'bg-[#F8FAFC] text-[#334155] border border-[#64748B]/30 hover:bg-[#F0F9FF]'
       } ${className}`}
       {...props}
     >
@@ -78,10 +78,10 @@ export const MdFab: React.FC<MdFabProps> = ({
   ...props
 }) => {
   const variantClasses = {
-    primary: 'bg-[#6750A4] text-white hover:bg-[#6750A4]/90 shadow-md hover:shadow-lg',
-    secondary: 'bg-[#E8DEF8] text-[#1D192B] hover:bg-[#DFD3F3] shadow-md hover:shadow-lg',
-    tertiary: 'bg-[#7D5260] text-white hover:bg-[#7D5260]/90 shadow-md hover:shadow-lg',
-    surface: 'bg-[#F3EDF7] text-[#6750A4] hover:bg-[#E8DEF8] shadow-md hover:shadow-lg',
+    primary: 'bg-[#0284C7] text-white hover:bg-[#0369A1] shadow-md hover:shadow-lg',
+    secondary: 'bg-[#E0F2FE] text-[#0369A1] hover:bg-[#BAE6FD] shadow-md hover:shadow-lg',
+    tertiary: 'bg-[#0EA5E9] text-white hover:bg-[#0284C7] shadow-md hover:shadow-lg',
+    surface: 'bg-[#F0F9FF] text-[#0284C7] hover:bg-[#E0F2FE] shadow-md hover:shadow-lg',
   }[variant];
 
   return (

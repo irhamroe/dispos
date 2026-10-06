@@ -331,18 +331,18 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
       {/* Header Banner */}
       <div className="bg-white/85 backdrop-blur-xl p-6 rounded-[32px] shadow-sm border border-white flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs  font-extrabold text-violet-700 uppercase tracking-wider mb-1">
+          <div className="flex items-center gap-2 text-xs  font-extrabold text-sky-700 uppercase tracking-wider mb-1">
             <span>Disiplin Positif</span>
             <ChevronRight className="w-3.5 h-3.5 text-violet-400" />
-            <span className="text-[#1C1B1F] font-black">Surat Panggilan Orang Tua</span>
+            <span className="text-[#0F172A] font-black">Surat Panggilan Orang Tua</span>
           </div>
-          <h1 className="text-xl sm:text-2xl  font-black text-[#1C1B1F] tracking-tight flex items-center gap-3">
+          <h1 className="text-xl sm:text-2xl  font-black text-[#0F172A] tracking-tight flex items-center gap-3">
             <div className="w-11 h-11 bg-gradient-to-br from-violet-500 to-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-xs">
               <Mail className="w-5 h-5" />
             </div>
             <span>Surat Panggilan Orang Tua / Wali Murid</span>
           </h1>
-          <p className="text-xs text-[#49454F] font-medium mt-1">
+          <p className="text-xs text-[#334155] font-medium mt-1">
             Format resmi sesuai Dinas Pendidikan Provinsi Jawa Timur &amp; SMAN 1 Batu, dilengkapi rincian pelanggaran siswa.
           </p>
         </div>
@@ -353,9 +353,9 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
             <div className="text-[10px]  font-extrabold text-amber-700 uppercase tracking-wider">Total Kasus</div>
             <div className="text-base  font-black text-amber-900">{disciplineRecords.length} Pelanggaran</div>
           </div>
-          <div className="px-4 py-2.5 bg-violet-50 rounded-2xl shadow-sm border border-violet-200/60 text-right">
-            <div className="text-[10px]  font-extrabold text-violet-700 uppercase tracking-wider">Siswa Terdata</div>
-            <div className="text-base  font-black text-violet-900">{studentViolationsMap.size} Siswa</div>
+          <div className="px-4 py-2.5 bg-sky-50 rounded-2xl shadow-sm border border-sky-200/60 text-right">
+            <div className="text-[10px]  font-extrabold text-sky-700 uppercase tracking-wider">Siswa Terdata</div>
+            <div className="text-base  font-black text-sky-900">{studentViolationsMap.size} Siswa</div>
           </div>
         </div>
       </div>
@@ -374,27 +374,27 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
         <div className="xl:col-span-5 space-y-6">
           {/* STEP 1: PILIH KELAS & SISWA */}
           <div className="bg-white/85 backdrop-blur-xl rounded-[32px] shadow-sm border border-white p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-violet-100 pb-3">
+            <div className="flex items-center justify-between border-b border-sky-100 pb-3">
               <div className="flex items-center gap-2.5">
                 <span className="w-7 h-7 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 text-white  font-black text-xs flex items-center justify-center shadow-xs">1</span>
-                <h2 className="text-sm  font-black text-[#1C1B1F]">Pilih Kelas &amp; Siswa</h2>
+                <h2 className="text-sm  font-black text-[#0F172A]">Pilih Kelas &amp; Siswa</h2>
               </div>
-              <span className="text-[11px] font-medium text-[#49454F]">
+              <span className="text-[11px] font-medium text-[#334155]">
                 {filteredStudents.length} siswa ditemukan
               </span>
             </div>
 
             {/* Filter Kelas */}
             <div>
-              <label className="block text-xs  font-extrabold text-[#1C1B1F] mb-1.5 flex items-center gap-1.5">
-                <Layers className="w-3.5 h-3.5 text-violet-600" />
+              <label className="block text-xs  font-extrabold text-[#0F172A] mb-1.5 flex items-center gap-1.5">
+                <Layers className="w-3.5 h-3.5 text-sky-600" />
                 <span>Pilih Kelas Siswa</span>
               </label>
               <select
                 id="select-call-class"
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="w-full px-4 py-2.5 bg-[#E7E0EC] rounded-2xl text-xs  font-extrabold text-[#1C1B1F] shadow-none focus:outline-hidden cursor-pointer border border-white/40"
+                className="w-full px-4 py-2.5 bg-[#E2F1FD] rounded-2xl text-xs  font-extrabold text-[#0F172A] shadow-none focus:outline-hidden cursor-pointer border border-white/40"
               >
                 <option value="ALL">Semua Kelas (36 Rombel X, XI, XII)</option>
                 {sortClasses(classes).map((cls) => (
@@ -408,22 +408,22 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
             {/* Search and Toggle Filter */}
             <div className="space-y-2.5">
               <div className="relative">
-                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#49454F]" />
+                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#334155]" />
                 <input
                   type="text"
                   placeholder="Cari nama siswa atau NISN..."
                   value={studentSearchQuery}
                   onChange={(e) => setStudentSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-[#E7E0EC] rounded-2xl text-xs text-[#1C1B1F] placeholder-clay-muted shadow-none focus:outline-hidden border border-white/40"
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#E2F1FD] rounded-2xl text-xs text-[#0F172A] placeholder-clay-muted shadow-none focus:outline-hidden border border-white/40"
                 />
               </div>
 
-              <label className="flex items-center gap-2 text-xs font-medium text-[#49454F] cursor-pointer select-none">
+              <label className="flex items-center gap-2 text-xs font-medium text-[#334155] cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={onlyWithViolations}
                   onChange={(e) => setOnlyWithViolations(e.target.checked)}
-                  className="rounded text-violet-600 focus:ring-violet-500 cursor-pointer"
+                  className="rounded text-sky-600 focus:ring-violet-500 cursor-pointer"
                 />
                 <span>Hanya tampilkan siswa yang memiliki catatan pelanggaran</span>
               </label>
@@ -431,20 +431,20 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
 
             {/* Select Student Dropdown */}
             <div>
-              <label className="block text-xs  font-extrabold text-[#1C1B1F] mb-1.5 flex items-center justify-between">
+              <label className="block text-xs  font-extrabold text-[#0F172A] mb-1.5 flex items-center justify-between">
                 <span className="flex items-center gap-1.5">
-                  <User className="w-3.5 h-3.5 text-violet-600" />
+                  <User className="w-3.5 h-3.5 text-sky-600" />
                   <span>Pilih Nama Siswa</span>
                 </span>
                 {selectedStudent && (
-                  <span className="text-[10px] text-violet-700  font-extrabold bg-violet-100 px-2.5 py-0.5 rounded-full shadow-xs">
+                  <span className="text-[10px] text-sky-700  font-extrabold bg-sky-100 px-2.5 py-0.5 rounded-full shadow-xs">
                     NISN: {selectedStudent.nisn}
                   </span>
                 )}
               </label>
               
               {filteredStudents.length === 0 ? (
-                <div className="p-3.5 bg-[#E7E0EC] rounded-2xl text-xs text-[#49454F] text-center shadow-none font-medium">
+                <div className="p-3.5 bg-[#E2F1FD] rounded-2xl text-xs text-[#334155] text-center shadow-none font-medium">
                   Tidak ada siswa yang sesuai kriteria pencarian di kelas ini.
                 </div>
               ) : (
@@ -452,7 +452,7 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                   id="select-call-student"
                   value={selectedStudent?.id || ''}
                   onChange={(e) => setSelectedStudentId(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-[#E7E0EC] rounded-2xl text-xs  font-extrabold text-[#1C1B1F] shadow-none focus:outline-hidden cursor-pointer border border-white/40"
+                  className="w-full px-4 py-2.5 bg-[#E2F1FD] rounded-2xl text-xs  font-extrabold text-[#0F172A] shadow-none focus:outline-hidden cursor-pointer border border-white/40"
                 >
                   {filteredStudents.map((s) => {
                     const viols = studentViolationsMap.get(s.id) || [];
@@ -469,7 +469,7 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
 
             {/* Student Info Card */}
             {selectedStudent && (
-              <div className="p-4 bg-[#E7E0EC]/70 shadow-none rounded-2xl space-y-2.5 text-xs">
+              <div className="p-4 bg-[#E2F1FD]/70 shadow-none rounded-2xl space-y-2.5 text-xs">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
                     {selectedStudent.photoUrl ? (
@@ -489,8 +489,8 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                       </div>
                     )}
                     <div>
-                      <div className="font-extrabold text-[#1C1B1F] text-sm leading-tight" >{selectedStudent.name}</div>
-                      <div className="text-[#49454F] text-[11px] font-medium mt-0.5">
+                      <div className="font-extrabold text-[#0F172A] text-sm leading-tight" >{selectedStudent.name}</div>
+                      <div className="text-[#334155] text-[11px] font-medium mt-0.5">
                         NISN: {selectedStudent.nisn} • {selectedStudent.gender === 'L' ? 'Laki-laki' : 'Perempuan'}
                       </div>
                     </div>
@@ -504,27 +504,27 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                 </div>
 
                 {selectedStudent.address && (
-                  <div className="pt-2 border-t border-violet-100/60 text-[11px] flex items-start gap-1.5 text-[#49454F]">
-                    <MapPin className="w-3.5 h-3.5 text-violet-600 shrink-0 mt-0.5" />
+                  <div className="pt-2 border-t border-sky-100/60 text-[11px] flex items-start gap-1.5 text-[#334155]">
+                    <MapPin className="w-3.5 h-3.5 text-sky-600 shrink-0 mt-0.5" />
                     <span>{selectedStudent.address}</span>
                   </div>
                 )}
 
-                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-violet-100/60 text-[11px]">
+                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-sky-100/60 text-[11px]">
                   <div>
-                    <span className="text-[#49454F] block text-[10px]">Wali Kelas:</span>
-                    <span className=" font-extrabold text-[#1C1B1F]">{studentWaliKelas?.name || 'Belum diatur'}</span>
+                    <span className="text-[#334155] block text-[10px]">Wali Kelas:</span>
+                    <span className=" font-extrabold text-[#0F172A]">{studentWaliKelas?.name || 'Belum diatur'}</span>
                   </div>
                   <div>
-                    <span className="text-[#49454F] block text-[10px]">Kontak Orang Tua:</span>
-                    <span className=" font-extrabold text-[#1C1B1F]">
+                    <span className="text-[#334155] block text-[10px]">Kontak Orang Tua:</span>
+                    <span className=" font-extrabold text-[#0F172A]">
                       {selectedStudent.parentPhone || selectedStudent.phone || 'Belum ada nomor'}
                     </span>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t border-violet-100/60">
-                  <span className="text-[#49454F] font-medium">Akumulasi Pelanggaran:</span>
+                <div className="flex items-center justify-between pt-2 border-t border-sky-100/60">
+                  <span className="text-[#334155] font-medium">Akumulasi Pelanggaran:</span>
                   <div className="flex items-center gap-1.5">
                     <span className="px-2.5 py-0.5 rounded-full  font-extrabold text-[11px] bg-amber-100 text-amber-800 shadow-xs">
                       {studentAllViolations.length} Kasus
@@ -540,16 +540,16 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
 
           {/* STEP 2: DAFTAR PELANGGARAN YANG DITAMPILKAN DALAM SURAT */}
           <div className="bg-white/85 backdrop-blur-xl rounded-[32px] shadow-sm border border-white p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-violet-100 pb-3">
+            <div className="flex items-center justify-between border-b border-sky-100 pb-3">
               <div className="flex items-center gap-2.5">
                 <span className="w-7 h-7 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 text-white  font-black text-xs flex items-center justify-center shadow-xs">2</span>
-                <h2 className="text-sm  font-black text-[#1C1B1F]">Rincian Pelanggaran</h2>
+                <h2 className="text-sm  font-black text-[#0F172A]">Rincian Pelanggaran</h2>
               </div>
               {studentAllViolations.length > 0 && (
                 <button
                   type="button"
                   onClick={handleSelectAllViolations}
-                  className="text-[11px]  font-extrabold text-violet-700 hover:underline cursor-pointer"
+                  className="text-[11px]  font-extrabold text-sky-700 hover:underline cursor-pointer"
                 >
                   {selectedViolationIds.length === studentAllViolations.length
                     ? 'Batal Pilih Semua'
@@ -558,7 +558,7 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
               )}
             </div>
 
-            <p className="text-[11px] text-[#49454F] leading-relaxed font-medium">
+            <p className="text-[11px] text-[#334155] leading-relaxed font-medium">
               Centang pelanggaran yang ingin dimasukkan ke dalam rincian surat panggilan orang tua.
             </p>
 
@@ -581,34 +581,34 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                       onClick={() => handleToggleViolation(rec.id)}
                       className={`p-3.5 rounded-2xl transition-all cursor-pointer flex items-start gap-3 ${
                         isChecked
-                          ? 'bg-white shadow-sm border border-violet-200/80 -translate-y-0.5'
-                          : 'bg-[#E7E0EC]/60 shadow-none opacity-70 hover:opacity-100'
+                          ? 'bg-white shadow-sm border border-sky-200/80 -translate-y-0.5'
+                          : 'bg-[#E2F1FD]/60 shadow-none opacity-70 hover:opacity-100'
                       }`}
                     >
                       <input
                         type="checkbox"
                         checked={isChecked}
                         onChange={() => {}}
-                        className="mt-1 rounded text-violet-600 focus:ring-violet-500 cursor-pointer"
+                        className="mt-1 rounded text-sky-600 focus:ring-violet-500 cursor-pointer"
                       />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-1">
-                          <span className=" font-extrabold text-[#1C1B1F] truncate">{rec.violationName}</span>
+                          <span className=" font-extrabold text-[#0F172A] truncate">{rec.violationName}</span>
                           {enablePointsSystem ? (
                             <span className="px-2 py-0.5 bg-rose-100 text-rose-800 rounded-full  font-black text-[10px] shadow-xs shrink-0">
                               +{rec.points} Poin
                             </span>
                           ) : (
-                            <span className="px-2 py-0.5 bg-violet-100 text-violet-800 rounded-full  font-bold text-[10px] shadow-xs shrink-0">
+                            <span className="px-2 py-0.5 bg-sky-100 text-sky-800 rounded-full  font-bold text-[10px] shadow-xs shrink-0">
                               {rec.category}
                             </span>
                           )}
                         </div>
 
-                        <div className="flex items-center gap-2 text-[10.5px] text-[#49454F] mt-1 font-medium">
+                        <div className="flex items-center gap-2 text-[10.5px] text-[#334155] mt-1 font-medium">
                           <span>{formatDateIndonesian(rec.date)}</span>
                           <span>•</span>
-                          <span className="font-semibold text-[#1C1B1F]">{rec.category}</span>
+                          <span className="font-semibold text-[#0F172A]">{rec.category}</span>
                           <span>•</span>
                           <span className={isCoached ? 'text-emerald-700 font-bold' : 'text-rose-700 font-bold'}>
                             {isCoached ? 'Sudah Dibina' : 'Belum Pembinaan'}
@@ -616,7 +616,7 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                         </div>
 
                         {rec.description && (
-                          <p className="text-[10.5px] text-[#49454F] italic mt-1.5 bg-[#E7E0EC] p-2 rounded-xl shadow-inner">
+                          <p className="text-[10.5px] text-[#334155] italic mt-1.5 bg-[#E2F1FD] p-2 rounded-xl shadow-inner">
                             "{rec.description}"
                           </p>
                         )}
@@ -641,61 +641,61 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
 
           {/* STEP 3: FORM DETAIL SURAT PANGGILAN */}
           <div className="bg-white/85 backdrop-blur-xl rounded-[32px] shadow-sm border border-white p-6 space-y-4">
-            <div className="flex items-center gap-2.5 border-b border-violet-100 pb-3">
+            <div className="flex items-center gap-2.5 border-b border-sky-100 pb-3">
               <span className="w-7 h-7 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 text-white  font-black text-xs flex items-center justify-center shadow-xs">3</span>
-              <h2 className="text-sm  font-black text-[#1C1B1F]">Detail Surat &amp; Jadwal Pertemuan</h2>
+              <h2 className="text-sm  font-black text-[#0F172A]">Detail Surat &amp; Jadwal Pertemuan</h2>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div>
-                <label className="block  font-extrabold text-[#1C1B1F] mb-1">Nomor Surat</label>
+                <label className="block  font-extrabold text-[#0F172A] mb-1">Nomor Surat</label>
                 <input
                   type="text"
                   value={letterNumber}
                   onChange={(e) => setLetterNumber(e.target.value)}
-                  className="w-full px-4 py-2 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-medium shadow-none focus:outline-hidden border border-white/40"
+                  className="w-full px-4 py-2 bg-[#E2F1FD] rounded-2xl text-[#0F172A] font-medium shadow-none focus:outline-hidden border border-white/40"
                 />
               </div>
 
               <div>
-                <label className="block  font-extrabold text-[#1C1B1F] mb-1 flex items-center gap-1">
-                  <CalendarDays className="w-3.5 h-3.5 text-violet-600" />
+                <label className="block  font-extrabold text-[#0F172A] mb-1 flex items-center gap-1">
+                  <CalendarDays className="w-3.5 h-3.5 text-sky-600" />
                   <span>Tanggal Surat</span>
                 </label>
                 <input
                   type="date"
                   value={letterDate}
                   onChange={(e) => setLetterDate(e.target.value)}
-                  className="w-full px-4 py-2 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F]  font-extrabold shadow-none focus:outline-hidden border border-white/40"
+                  className="w-full px-4 py-2 bg-[#E2F1FD] rounded-2xl text-[#0F172A]  font-extrabold shadow-none focus:outline-hidden border border-white/40"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block  font-extrabold text-[#1C1B1F] mb-1">Perihal</label>
+                <label className="block  font-extrabold text-[#0F172A] mb-1">Perihal</label>
                 <input
                   type="text"
                   value={perihal}
                   onChange={(e) => setPerihal(e.target.value)}
-                  className="w-full px-4 py-2 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F]  font-extrabold shadow-none focus:outline-hidden border border-white/40"
+                  className="w-full px-4 py-2 bg-[#E2F1FD] rounded-2xl text-[#0F172A]  font-extrabold shadow-none focus:outline-hidden border border-white/40"
                 />
               </div>
 
               <div>
-                <label className="block  font-extrabold text-[#1C1B1F] mb-1 flex items-center gap-1">
-                  <Calendar className="w-3.5 h-3.5 text-violet-600" />
+                <label className="block  font-extrabold text-[#0F172A] mb-1 flex items-center gap-1">
+                  <Calendar className="w-3.5 h-3.5 text-sky-600" />
                   <span>Tanggal Pertemuan</span>
                 </label>
                 <input
                   type="date"
                   value={callDate}
                   onChange={(e) => setCallDate(e.target.value)}
-                  className="w-full px-4 py-2 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F]  font-extrabold shadow-none focus:outline-hidden border border-white/40"
+                  className="w-full px-4 py-2 bg-[#E2F1FD] rounded-2xl text-[#0F172A]  font-extrabold shadow-none focus:outline-hidden border border-white/40"
                 />
               </div>
 
               <div>
-                <label className="block  font-extrabold text-[#1C1B1F] mb-1 flex items-center gap-1">
-                  <Clock className="w-3.5 h-3.5 text-violet-600" />
+                <label className="block  font-extrabold text-[#0F172A] mb-1 flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5 text-sky-600" />
                   <span>Waktu Pertemuan</span>
                 </label>
                 <input
@@ -703,26 +703,26 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                   value={callTime}
                   onChange={(e) => setCallTime(e.target.value)}
                   placeholder="Contoh: Pukul 12.30 WIB – selesai"
-                  className="w-full px-4 py-2 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-medium shadow-none focus:outline-hidden border border-white/40"
+                  className="w-full px-4 py-2 bg-[#E2F1FD] rounded-2xl text-[#0F172A] font-medium shadow-none focus:outline-hidden border border-white/40"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block  font-extrabold text-[#1C1B1F] mb-1 flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-violet-600" />
+                <label className="block  font-extrabold text-[#0F172A] mb-1 flex items-center gap-1">
+                  <MapPin className="w-3.5 h-3.5 text-sky-600" />
                   <span>Tempat Pertemuan</span>
                 </label>
                 <input
                   type="text"
                   value={callPlace}
                   onChange={(e) => setCallPlace(e.target.value)}
-                  className="w-full px-4 py-2 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-medium shadow-none focus:outline-hidden border border-white/40"
+                  className="w-full px-4 py-2 bg-[#E2F1FD] rounded-2xl text-[#0F172A] font-medium shadow-none focus:outline-hidden border border-white/40"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block  font-extrabold text-[#1C1B1F] mb-1 flex items-center gap-1">
-                  <UserCheck className="w-3.5 h-3.5 text-violet-600" />
+                <label className="block  font-extrabold text-[#0F172A] mb-1 flex items-center gap-1">
+                  <UserCheck className="w-3.5 h-3.5 text-sky-600" />
                   <span>Nama Kepala Sekolah</span>
                 </label>
                 <input
@@ -730,13 +730,13 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                   value={principalName}
                   onChange={(e) => handlePrincipalNameChange(e.target.value)}
                   placeholder="Nama Kepala Sekolah beserta gelar"
-                  className="w-full px-4 py-2 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-medium shadow-none focus:outline-hidden border border-white/40"
+                  className="w-full px-4 py-2 bg-[#E2F1FD] rounded-2xl text-[#0F172A] font-medium shadow-none focus:outline-hidden border border-white/40"
                 />
               </div>
 
               <div>
-                <label className="block  font-extrabold text-[#1C1B1F] mb-1 flex items-center gap-1">
-                  <Award className="w-3.5 h-3.5 text-violet-600" />
+                <label className="block  font-extrabold text-[#0F172A] mb-1 flex items-center gap-1">
+                  <Award className="w-3.5 h-3.5 text-sky-600" />
                   <span>Pangkat / Golongan</span>
                 </label>
                 <input
@@ -744,18 +744,18 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                   value={principalRank}
                   onChange={(e) => handlePrincipalRankChange(e.target.value)}
                   placeholder="Contoh: Pembina Utama Muda, IV/c"
-                  className="w-full px-4 py-2 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-medium shadow-none focus:outline-hidden border border-white/40"
+                  className="w-full px-4 py-2 bg-[#E2F1FD] rounded-2xl text-[#0F172A] font-medium shadow-none focus:outline-hidden border border-white/40"
                 />
               </div>
 
               <div>
-                <label className="block  font-extrabold text-[#1C1B1F] mb-1">NIP Kepala Sekolah</label>
+                <label className="block  font-extrabold text-[#0F172A] mb-1">NIP Kepala Sekolah</label>
                 <input
                   type="text"
                   value={principalNip}
                   onChange={(e) => handlePrincipalNipChange(e.target.value)}
                   placeholder="NIP Kepala Sekolah"
-                  className="w-full px-4 py-2 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-medium shadow-none focus:outline-hidden border border-white/40"
+                  className="w-full px-4 py-2 bg-[#E2F1FD] rounded-2xl text-[#0F172A] font-medium shadow-none focus:outline-hidden border border-white/40"
                 />
               </div>
             </div>
@@ -767,8 +767,8 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
           {/* Action Buttons Toolbar */}
           <div className="bg-white/85 backdrop-blur-xl p-4 rounded-[28px] shadow-sm border border-white flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <span className="text-xs  font-extrabold text-[#1C1B1F]">Aksi Dokumen:</span>
-              <span className="text-[10px] bg-violet-100 text-violet-800 px-2.5 py-0.5 rounded-full font-bold shadow-xs">
+              <span className="text-xs  font-extrabold text-[#0F172A]">Aksi Dokumen:</span>
+              <span className="text-[10px] bg-sky-100 text-sky-800 px-2.5 py-0.5 rounded-full font-bold shadow-xs">
                 Ukuran Cetak A4 Portrait
               </span>
             </div>
@@ -778,10 +778,10 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                 type="button"
                 id="btn-print-call-letter"
                 onClick={handlePrint}
-                className="px-4 py-2 rounded-2xl bg-white text-[#1C1B1F] hover:text-violet-700  font-extrabold text-xs transition-all shadow-xs hover:-translate-y-0.5 active:scale-95 cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-2 rounded-2xl bg-white text-[#0F172A] hover:text-sky-700  font-extrabold text-xs transition-all shadow-xs hover:-translate-y-0.5 active:scale-95 cursor-pointer flex items-center gap-1.5"
                 title="Cetak surat langsung ke printer"
               >
-                <Printer className="w-3.5 h-3.5 text-violet-600" />
+                <Printer className="w-3.5 h-3.5 text-sky-600" />
                 <span>Cetak Surat</span>
               </button>
 
@@ -800,7 +800,7 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                 type="button"
                 id="btn-copy-wa-message"
                 onClick={handleCopyWhatsApp}
-                className="px-4 py-2 rounded-2xl bg-white text-[#1C1B1F] hover:text-emerald-700  font-extrabold text-xs transition-all shadow-xs hover:-translate-y-0.5 active:scale-95 cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-2 rounded-2xl bg-white text-[#0F172A] hover:text-emerald-700  font-extrabold text-xs transition-all shadow-xs hover:-translate-y-0.5 active:scale-95 cursor-pointer flex items-center gap-1.5"
                 title="Salin ringkasan pesan panggilan untuk dikirim ke WhatsApp"
               >
                 <Copy className="w-3.5 h-3.5 text-emerald-600" />

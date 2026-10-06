@@ -255,12 +255,12 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
   );
 
   return (
-    <div className="space-y-6 pb-12 font-roboto text-[#1C1B1F]">
+    <div className="space-y-6 pb-12 font-roboto text-[#0F172A]">
       {/* Top Header Card */}
       <MdCard variant="elevated" radius="large" className="p-6 space-y-4">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <h2 className="text-xl sm:text-2xl font-medium text-[#1C1B1F] tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-medium text-[#0F172A] tracking-tight">
               Input Data Presensi
             </h2>
             {isUpdateMode && (
@@ -272,24 +272,24 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
         </div>
 
         {/* Date, Grade tabs, and Class selector */}
-        <div className="pt-3 border-t border-[#E8DEF8] flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+        <div className="pt-3 border-t border-[#E0F2FE] flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
           {/* Tanggal Presensi */}
-          <div className="flex items-center gap-2 bg-[#E7E0EC] rounded-full px-4 py-2 text-xs text-[#1C1B1F]">
-            <Calendar className="w-4 h-4 text-[#6750A4] shrink-0" />
-            <span className="text-[#49454F]">Tanggal:</span>
+          <div className="flex items-center gap-2 bg-[#E2F1FD] rounded-full px-4 py-2 text-xs text-[#0F172A]">
+            <Calendar className="w-4 h-4 text-[#0284C7] shrink-0" />
+            <span className="text-[#334155]">Tanggal:</span>
             <input
               id="attendance-date-input"
               type="date"
               value={selectedDate}
               onChange={(e) => onDateChange(e.target.value)}
-              className="bg-transparent text-[#1C1B1F] font-medium focus:outline-hidden cursor-pointer"
+              className="bg-transparent text-[#0F172A] font-medium focus:outline-hidden cursor-pointer"
             />
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-wrap">
             {/* Grade filter tabs */}
-            <div className="flex items-center gap-1.5 p-1 bg-[#E7E0EC] rounded-full text-xs">
-              <span className="text-[#49454F] px-2 text-[11px]">Jenjang:</span>
+            <div className="flex items-center gap-1.5 p-1 bg-[#E2F1FD] rounded-full text-xs">
+              <span className="text-[#334155] px-2 text-[11px]">Jenjang:</span>
               {(['X', 'XI', 'XII'] as const).map((gr) => (
                 <button
                   key={gr}
@@ -298,8 +298,8 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
                   onClick={() => handleGradeChange(gr)}
                   className={`px-4 py-1.5 rounded-full transition-all cursor-pointer whitespace-nowrap active:scale-95 ${
                     selectedGrade === gr
-                      ? 'bg-[#6750A4] text-white font-medium shadow-xs'
-                      : 'text-[#49454F] hover:bg-[#6750A4]/10'
+                      ? 'bg-[#0284C7] text-white font-medium shadow-xs'
+                      : 'text-[#334155] hover:bg-[#0284C7]/10'
                   }`}
                 >
                   Kelas {gr}
@@ -308,14 +308,14 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
             </div>
 
             {/* Class dropdown */}
-            <div className="flex items-center gap-2 bg-[#E7E0EC] rounded-full px-4 py-2 text-xs text-[#1C1B1F]">
-              <Layers className="w-4 h-4 text-[#6750A4] shrink-0" />
-              <span className="text-[#49454F]">Pilih Kelas:</span>
+            <div className="flex items-center gap-2 bg-[#E2F1FD] rounded-full px-4 py-2 text-xs text-[#0F172A]">
+              <Layers className="w-4 h-4 text-[#0284C7] shrink-0" />
+              <span className="text-[#334155]">Pilih Kelas:</span>
               <select
                 id="class-select"
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-transparent font-medium text-[#1C1B1F] focus:outline-hidden cursor-pointer"
+                className="bg-transparent font-medium text-[#0F172A] focus:outline-hidden cursor-pointer"
               >
                 {availableClasses.map((c) => (
                   <option key={c.id} value={c.name}>
@@ -362,17 +362,17 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
       {/* Attendance Summary Ribbon & Quick Action */}
       <MdCard variant="filled" radius="large" className="p-5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-2 text-xs">
-          <div className="flex items-center gap-1.5 font-medium text-[#1C1B1F] mr-1 flex-wrap">
-            <span className="px-2.5 py-0.5 rounded-full bg-[#E8DEF8] text-[#1D192B] text-[11px] font-medium">
+          <div className="flex items-center gap-1.5 font-medium text-[#0F172A] mr-1 flex-wrap">
+            <span className="px-2.5 py-0.5 rounded-full bg-[#E0F2FE] text-[#0369A1] text-[11px] font-medium">
               Jenjang {currentClassInfo?.grade || selectedGrade}
             </span>
             <span className="text-sm font-bold">Kelas {selectedClass}</span>
             {currentClassInfo?.homeroom && (
-              <span className="text-[#49454F] text-xs hidden sm:inline">
+              <span className="text-[#334155] text-xs hidden sm:inline">
                 ({currentClassInfo.homeroom})
               </span>
             )}
-            <span className="text-[#49454F]">• {draftCounts.total} Siswa:</span>
+            <span className="text-[#334155]">• {draftCounts.total} Siswa:</span>
           </div>
           <span className="px-3 py-1 rounded-full bg-[#C8E6C9] text-[#1B5E20] font-medium">
             H: {draftCounts.h}
@@ -386,12 +386,12 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
           <span className="px-3 py-1 rounded-full bg-[#FFDAD6] text-[#410002] font-medium">
             A: {draftCounts.a}
           </span>
-          <span className="px-3 py-1 rounded-full bg-[#E8DEF8] text-[#1D192B] font-medium">
+          <span className="px-3 py-1 rounded-full bg-[#E0F2FE] text-[#0369A1] font-medium">
             D: {draftCounts.d}
           </span>
 
           {(draftCounts.i > 0 || draftCounts.s > 0) && (
-            <span className="ml-2 px-3 py-1 rounded-full bg-[#E7E0EC] text-[#1C1B1F] text-[11px]">
+            <span className="ml-2 px-3 py-1 rounded-full bg-[#E2F1FD] text-[#0F172A] text-[11px]">
               Surat S/I: <strong className="text-[#1B5E20]">{draftCounts.suratLengkap} Ada</strong> • <strong className="text-[#BA1A1A]">{draftCounts.suratBelum} Belum</strong>
             </span>
           )}
@@ -401,36 +401,36 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
           variant="tonal"
           size="sm"
           onClick={handleMarkAllHadir}
-          icon={<Sparkles className="w-4 h-4 text-[#6750A4]" />}
+          icon={<Sparkles className="w-4 h-4 text-[#0284C7]" />}
         >
           <span>Tandai Semua Hadir (H)</span>
         </MdButton>
       </MdCard>
 
       {/* Student List Table */}
-      <div className="bg-[#F3EDF7] rounded-[32px] shadow-sm border border-[#E8DEF8] overflow-hidden">
+      <div className="bg-[#F0F9FF] rounded-[32px] shadow-sm border border-[#E0F2FE] overflow-hidden">
         {/* Table Toolbar */}
-        <div className="p-5 border-b border-[#E8DEF8] flex items-center justify-between">
+        <div className="p-5 border-b border-[#E0F2FE] flex items-center justify-between">
           <div className="relative w-full max-w-xs">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#49454F]" />
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#334155]" />
             <input
               id="search-class-student-input"
               type="text"
               placeholder="Cari nama siswa atau NISN..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-[#E7E0EC] rounded-full text-xs text-[#1C1B1F] placeholder-[#49454F] focus:outline-hidden"
+              className="w-full pl-10 pr-4 py-2 bg-[#E2F1FD] rounded-full text-xs text-[#0F172A] placeholder-[#334155] focus:outline-hidden"
             />
           </div>
-          <span className="text-xs text-[#49454F] ml-3">
-            Menampilkan <strong className="text-[#1C1B1F]">{filteredStudents.length} siswa</strong> ({selectedClass})
+          <span className="text-xs text-[#334155] ml-3">
+            Menampilkan <strong className="text-[#0F172A]">{filteredStudents.length} siswa</strong> ({selectedClass})
           </span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-[#E7E0EC]/80 text-[11px] font-medium uppercase tracking-wider text-[#49454F] border-b border-[#E8DEF8]">
+              <tr className="bg-[#E2F1FD]/80 text-[11px] font-medium uppercase tracking-wider text-[#334155] border-b border-[#E0F2FE]">
                 <th className="py-3 px-4 w-12 text-center">No</th>
                 <th className="py-3 px-3 w-28 text-center">NISN</th>
                 <th className="py-3 px-4 min-w-[200px]">Nama Siswa</th>
@@ -439,10 +439,10 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
                 <th className="py-3 px-4 min-w-[190px]">Surat Keterangan</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E8DEF8] text-xs">
+            <tbody className="divide-y divide-[#E0F2FE] text-xs">
               {filteredStudents.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-10 text-center text-[#49454F]">
+                  <td colSpan={6} className="py-10 text-center text-[#334155]">
                     Tidak ada siswa ditemukan pada kelas ini.
                   </td>
                 </tr>
@@ -454,11 +454,11 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
                   return (
                     <tr
                       key={student.id}
-                      className={`hover:bg-[#FFFBFE] transition-colors ${
+                      className={`hover:bg-[#F8FAFC] transition-colors ${
                         draft.status === 'A'
                           ? 'bg-[#FFDAD6]/30'
                           : draft.status === 'D'
-                          ? 'bg-[#E8DEF8]/30'
+                          ? 'bg-[#E0F2FE]/30'
                           : draft.status === 'S'
                           ? 'bg-[#FFF3E0]/40'
                           : draft.status === 'I'
@@ -466,13 +466,13 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
                           : ''
                       }`}
                     >
-                      <td className="py-3 px-4 text-center font-bold text-[#49454F]">
+                      <td className="py-3 px-4 text-center font-bold text-[#334155]">
                         {idx + 1}
                       </td>
-                      <td className="py-3 px-3 text-center font-mono text-xs text-[#1C1B1F]">
+                      <td className="py-3 px-3 text-center font-mono text-xs text-[#0F172A]">
                         {student.nisn}
                       </td>
-                      <td className="py-3 px-4 font-medium text-[#1C1B1F]">
+                      <td className="py-3 px-4 font-medium text-[#0F172A]">
                         {student.name}
                       </td>
                       <td className="py-3 px-2 text-center">
@@ -497,7 +497,7 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
                             className={`w-9 h-8 rounded-full font-bold text-xs transition-all duration-200 cursor-pointer active:scale-95 ${
                               draft.status === 'H'
                                 ? 'bg-[#2E7D32] text-white shadow-xs'
-                                : 'bg-[#FFFBFE] text-[#49454F] hover:bg-[#C8E6C9]'
+                                : 'bg-[#F8FAFC] text-[#334155] hover:bg-[#C8E6C9]'
                             }`}
                           >
                             H
@@ -512,7 +512,7 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
                             className={`w-9 h-8 rounded-full font-bold text-xs transition-all duration-200 cursor-pointer active:scale-95 ${
                               draft.status === 'S'
                                 ? 'bg-[#EF6C00] text-white shadow-xs'
-                                : 'bg-[#FFFBFE] text-[#49454F] hover:bg-[#FFE0B2]'
+                                : 'bg-[#F8FAFC] text-[#334155] hover:bg-[#FFE0B2]'
                             }`}
                           >
                             S
@@ -527,7 +527,7 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
                             className={`w-9 h-8 rounded-full font-bold text-xs transition-all duration-200 cursor-pointer active:scale-95 ${
                               draft.status === 'I'
                                 ? 'bg-[#0277BD] text-white shadow-xs'
-                                : 'bg-[#FFFBFE] text-[#49454F] hover:bg-[#E1F5FE]'
+                                : 'bg-[#F8FAFC] text-[#334155] hover:bg-[#E1F5FE]'
                             }`}
                           >
                             I
@@ -542,7 +542,7 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
                             className={`w-9 h-8 rounded-full font-bold text-xs transition-all duration-200 cursor-pointer active:scale-95 ${
                               draft.status === 'A'
                                 ? 'bg-[#C62828] text-white shadow-xs'
-                                : 'bg-[#FFFBFE] text-[#49454F] hover:bg-[#FFDAD6]'
+                                : 'bg-[#F8FAFC] text-[#334155] hover:bg-[#FFDAD6]'
                             }`}
                           >
                             A
@@ -556,8 +556,8 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
                             title="Dispen"
                             className={`w-9 h-8 rounded-full font-bold text-xs transition-all duration-200 cursor-pointer active:scale-95 ${
                               draft.status === 'D'
-                                ? 'bg-[#6750A4] text-white shadow-xs'
-                                : 'bg-[#FFFBFE] text-[#49454F] hover:bg-[#E8DEF8]'
+                                ? 'bg-[#0284C7] text-white shadow-xs'
+                                : 'bg-[#F8FAFC] text-[#334155] hover:bg-[#E0F2FE]'
                             }`}
                           >
                             D
@@ -577,7 +577,7 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
                                 className={`px-2.5 py-1 rounded-full text-[10px] font-medium flex items-center gap-1 transition-all cursor-pointer active:scale-95 ${
                                   draft.hasLetter === 'Sudah Ada Surat'
                                     ? 'bg-[#2E7D32] text-white'
-                                    : 'bg-[#FFFBFE] text-[#49454F] hover:bg-[#C8E6C9]'
+                                    : 'bg-[#F8FAFC] text-[#334155] hover:bg-[#C8E6C9]'
                                 }`}
                               >
                                 <FileCheck className="w-3 h-3" />
@@ -591,19 +591,19 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
                                 className={`px-2.5 py-1 rounded-full text-[10px] font-medium flex items-center gap-1 transition-all cursor-pointer active:scale-95 ${
                                   draft.hasLetter === 'Belum Ada Surat'
                                     ? 'bg-[#C62828] text-white'
-                                    : 'bg-[#FFFBFE] text-[#49454F] hover:bg-[#FFDAD6]'
+                                    : 'bg-[#F8FAFC] text-[#334155] hover:bg-[#FFDAD6]'
                                 }`}
                               >
                                 <FileX className="w-3 h-3" />
                                 <span>Belum Ada</span>
                               </button>
                             </div>
-                            <span className="text-[10px] text-[#49454F]">
+                            <span className="text-[10px] text-[#334155]">
                               {draft.hasLetter === 'Sudah Ada Surat' ? '✓ Ada surat fisik/foto' : '⚠ Belum kumpul surat'}
                             </span>
                           </div>
                         ) : (
-                          <span className="text-[11px] text-[#49454F] italic">
+                          <span className="text-[11px] text-[#334155] italic">
                             {draft.status === 'H' ? 'Hadir di kelas' : draft.status === 'D' ? 'Surat Tugas Dispen' : '-'}
                           </span>
                         )}
@@ -617,8 +617,8 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
         </div>
 
         {/* Bottom Save Bar */}
-        <div className="p-5 bg-[#E7E0EC]/60 border-t border-[#E8DEF8] flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-xs text-[#49454F]">
+        <div className="p-5 bg-[#E2F1FD]/60 border-t border-[#E0F2FE] flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="text-xs text-[#334155]">
             Pastikan siswa yang <strong>Sakit (S)</strong> dan <strong>Izin (I)</strong> telah dikonfirmasi status suratnya.
           </div>
           <MdButton

@@ -651,7 +651,7 @@ export default function App() {
   ).length;
 
   return (
-    <div className="min-h-screen bg-[#FFFBFE] flex flex-col font-roboto text-[#1C1B1F] relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-roboto text-[#0F172A] relative overflow-x-hidden">
       {/* Material You Layered Organic Ambient Blobs */}
       <MdBackgroundBlobs />
 

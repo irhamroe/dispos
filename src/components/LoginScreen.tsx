@@ -101,14 +101,14 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFBFE] flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden font-roboto text-[#1C1B1F]">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden font-roboto text-[#0F172A]">
       {/* Material You Layered Background */}
       <MdBackgroundBlobs />
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4">
         {/* School Logo & Header */}
         <div className="flex flex-col items-center text-center">
-          <div className="w-20 h-20 rounded-[28px] bg-[#F3EDF7] p-3 flex items-center justify-center shadow-md mb-4 border border-[#E8DEF8]">
+          <div className="w-20 h-20 rounded-[28px] bg-[#F0F9FF] p-3 flex items-center justify-center shadow-md mb-4 border border-[#E0F2FE]">
             <img 
               src="/logo.png" 
               alt={schoolProfile.name} 
@@ -118,22 +118,22 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
 
           <MdBadge variant="secondary" size="md" className="mb-2.5">
             <span className="flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#6750A4]" />
+              <ShieldCheck className="w-3.5 h-3.5 text-[#0284C7]" />
               Portal Autentikasi Tenaga Pendidik
             </span>
           </MdBadge>
 
-          <h1 className="text-2xl sm:text-3xl font-medium text-[#1C1B1F] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-medium text-[#0F172A] tracking-tight">
             {schoolProfile.name}
           </h1>
-          <p className="mt-1 text-xs sm:text-sm text-[#49454F]">
+          <p className="mt-1 text-xs sm:text-sm text-[#334155]">
             Sistem Informasi Presensi Kehadiran &amp; Disiplin Positif Siswa
           </p>
         </div>
 
         {/* Material You Login Card */}
         <div className="mt-7">
-          <MdCard variant="elevated" radius="large" className="p-7 sm:p-8 space-y-5 bg-[#F3EDF7]/95 backdrop-blur-md">
+          <MdCard variant="elevated" radius="large" className="p-7 sm:p-8 space-y-5 bg-[#F0F9FF]/95 backdrop-blur-md">
             <form onSubmit={handleLogin} className="space-y-4">
               {errorMsg && (
                 <div className="p-3.5 rounded-xl bg-[#FFDAD6] text-[#410002] text-xs font-medium flex items-start gap-2.5 border border-[#BA1A1A]/20">
@@ -157,11 +157,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
 
               {/* Password Input */}
               <div className="space-y-1">
-                <label className="block text-xs font-medium text-[#49454F] mb-1.5 ml-1">
+                <label className="block text-xs font-medium text-[#334155] mb-1.5 ml-1">
                   Kata Sandi (Password)
                 </label>
                 <div className="relative flex items-center">
-                  <div className="absolute left-3 text-[#49454F] pointer-events-none flex items-center">
+                  <div className="absolute left-3 text-[#334155] pointer-events-none flex items-center">
                     <Lock className="w-4 h-4" />
                   </div>
                   <input
@@ -171,13 +171,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Masukkan kata sandi..."
-                    className="w-full bg-[#E7E0EC] text-[#1C1B1F] placeholder-[#49454F]/60 rounded-t-xl rounded-b-none border-b-2 border-[#79747E] pl-10 pr-10 py-3 text-sm transition-all duration-200 focus:outline-hidden focus:border-[#6750A4] focus:bg-[#EDE7F2]"
+                    className="w-full bg-[#E2F1FD] text-[#0F172A] placeholder-[#334155]/60 rounded-t-xl rounded-b-none border-b-2 border-[#64748B] pl-10 pr-10 py-3 text-sm transition-all duration-200 focus:outline-hidden focus:border-[#0284C7] focus:bg-[#E0F2FE]"
                   />
                   <button
                     type="button"
                     id="toggle-password-btn"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 text-[#49454F] hover:text-[#6750A4] transition-colors cursor-pointer"
+                    className="absolute right-3 text-[#334155] hover:text-[#0284C7] transition-colors cursor-pointer"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -211,8 +211,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
 
         {/* Security Note */}
         <div className="mt-5 text-center">
-          <p className="text-xs text-[#49454F] flex items-center justify-center gap-1.5">
-            <Lock className="w-3.5 h-3.5 text-[#6750A4]" />
+          <p className="text-xs text-[#334155] flex items-center justify-center gap-1.5">
+            <Lock className="w-3.5 h-3.5 text-[#0284C7]" />
             <span>Sistem terenkripsi. Catatan kedisiplinan dan absensi terlindungi.</span>
           </p>
         </div>

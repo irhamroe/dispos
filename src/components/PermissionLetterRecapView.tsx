@@ -235,10 +235,10 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
               <FileText className="w-7 h-7" />
             </div>
             <div>
-              <h2 className="text-2xl sm:text-3xl font-black text-[#1C1B1F] tracking-tight" >
+              <h2 className="text-2xl sm:text-3xl font-black text-[#0F172A] tracking-tight" >
                 Rekap Surat Izin &amp; Sakit Siswa
               </h2>
-              <p className="text-sm text-[#49454F] mt-1 font-medium">
+              <p className="text-sm text-[#334155] mt-1 font-medium">
                 Monitoring kepatuhan pengumpulan bukti fisik surat izin dan surat dokter
               </p>
             </div>
@@ -273,9 +273,9 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
         {/* Date Range & Letter Status Tabs */}
         <div className="pt-4 border-t border-slate-200/60 flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3 text-xs">
-            <div className="flex items-center gap-2 bg-[#E7E0EC] px-4 py-2.5 rounded-2xl shadow-none">
-              <Calendar className="w-4 h-4 text-[#6750A4]" />
-              <span className="font-bold text-[#49454F]">Mulai:</span>
+            <div className="flex items-center gap-2 bg-[#E2F1FD] px-4 py-2.5 rounded-2xl shadow-none">
+              <Calendar className="w-4 h-4 text-[#0284C7]" />
+              <span className="font-bold text-[#334155]">Mulai:</span>
               <input
                 type="date"
                 value={startDate}
@@ -283,14 +283,14 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                   setStartDate(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="bg-transparent font-extrabold text-[#1C1B1F] focus:outline-hidden cursor-pointer"
+                className="bg-transparent font-extrabold text-[#0F172A] focus:outline-hidden cursor-pointer"
                 
               />
             </div>
 
-            <div className="flex items-center gap-2 bg-[#E7E0EC] px-4 py-2.5 rounded-2xl shadow-none">
-              <Calendar className="w-4 h-4 text-[#6750A4]" />
-              <span className="font-bold text-[#49454F]">Sampai:</span>
+            <div className="flex items-center gap-2 bg-[#E2F1FD] px-4 py-2.5 rounded-2xl shadow-none">
+              <Calendar className="w-4 h-4 text-[#0284C7]" />
+              <span className="font-bold text-[#334155]">Sampai:</span>
               <input
                 type="date"
                 value={endDate}
@@ -298,14 +298,14 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                   setEndDate(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="bg-transparent font-extrabold text-[#1C1B1F] focus:outline-hidden cursor-pointer"
+                className="bg-transparent font-extrabold text-[#0F172A] focus:outline-hidden cursor-pointer"
                 
               />
             </div>
           </div>
 
           {/* Quick Tab: Status Surat Filter */}
-          <div className="flex items-center p-1.5 bg-[#E7E0EC] rounded-2xl shadow-none text-xs font-bold gap-1">
+          <div className="flex items-center p-1.5 bg-[#E2F1FD] rounded-2xl shadow-none text-xs font-bold gap-1">
             <button
               type="button"
               onClick={() => {
@@ -315,7 +315,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
               className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
                 letterFilter === 'BELUM'
                   ? 'bg-gradient-to-br from-rose-500 to-red-600 text-white font-black shadow-xs -translate-y-0.5'
-                  : 'text-[#49454F] hover:text-[#1C1B1F]'
+                  : 'text-[#334155] hover:text-[#0F172A]'
               }`}
               
             >
@@ -332,7 +332,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
               className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
                 letterFilter === 'SUDAH'
                   ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-black shadow-xs -translate-y-0.5'
-                  : 'text-[#49454F] hover:text-[#1C1B1F]'
+                  : 'text-[#334155] hover:text-[#0F172A]'
               }`}
               
             >
@@ -348,8 +348,8 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
               }}
               className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer ${
                 letterFilter === 'ALL'
-                  ? 'bg-white text-[#1C1B1F] font-black shadow-xs -translate-y-0.5'
-                  : 'text-[#49454F] hover:text-[#1C1B1F]'
+                  ? 'bg-white text-[#0F172A] font-black shadow-xs -translate-y-0.5'
+                  : 'text-[#334155] hover:text-[#0F172A]'
               }`}
               
             >
@@ -362,7 +362,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
         <div className="pt-4 border-t border-slate-200/60 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
           {/* Tingkat */}
           <div>
-            <label className="block text-[11px] font-black text-[#49454F] mb-1.5 uppercase" >Tingkat</label>
+            <label className="block text-[11px] font-black text-[#334155] mb-1.5 uppercase" >Tingkat</label>
             <select
               value={selectedGrade}
               onChange={(e) => {
@@ -370,7 +370,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                 setSelectedClass('ALL');
                 setCurrentPage(1);
               }}
-              className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl font-extrabold text-[#1C1B1F] shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20 cursor-pointer"
+              className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl font-extrabold text-[#0F172A] shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#0284C7]/20 cursor-pointer"
               
             >
               <option value="ALL">Semua Tingkat (X, XI, XII)</option>
@@ -382,14 +382,14 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
           {/* Rombel / Kelas */}
           <div>
-            <label className="block text-[11px] font-black text-[#49454F] mb-1.5 uppercase" >Kelas / Rombel</label>
+            <label className="block text-[11px] font-black text-[#334155] mb-1.5 uppercase" >Kelas / Rombel</label>
             <select
               value={selectedClass}
               onChange={(e) => {
                 setSelectedClass(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl font-extrabold text-[#1C1B1F] shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20 cursor-pointer"
+              className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl font-extrabold text-[#0F172A] shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#0284C7]/20 cursor-pointer"
               
             >
               <option value="ALL">Semua Kelas ({availableClasses.length} Rombel)</option>
@@ -403,14 +403,14 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
           {/* Jenis Presensi: Izin vs Sakit */}
           <div>
-            <label className="block text-[11px] font-black text-[#49454F] mb-1.5 uppercase" >Jenis Ketidakhadiran</label>
+            <label className="block text-[11px] font-black text-[#334155] mb-1.5 uppercase" >Jenis Ketidakhadiran</label>
             <select
               value={typeFilter}
               onChange={(e) => {
                 setTypeFilter(e.target.value as any);
                 setCurrentPage(1);
               }}
-              className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl font-extrabold text-[#1C1B1F] shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20 cursor-pointer"
+              className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl font-extrabold text-[#0F172A] shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#0284C7]/20 cursor-pointer"
               
             >
               <option value="ALL">Semua (Izin &amp; Sakit)</option>
@@ -421,9 +421,9 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
           {/* Search Box */}
           <div>
-            <label className="block text-[11px] font-black text-[#49454F] mb-1.5 uppercase" >Cari Siswa</label>
+            <label className="block text-[11px] font-black text-[#334155] mb-1.5 uppercase" >Cari Siswa</label>
             <div className="relative">
-              <Search className="w-5 h-5 text-[#49454F] absolute left-4 top-1/2 -translate-y-1/2" />
+              <Search className="w-5 h-5 text-[#334155] absolute left-4 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder="Nama, NISN, atau alasan..."
@@ -432,7 +432,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full pl-11 pr-4 py-3 bg-[#E7E0EC] rounded-2xl font-medium text-xs text-[#1C1B1F] placeholder-[#49454F] shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20"
+                className="w-full pl-11 pr-4 py-3 bg-[#E2F1FD] rounded-2xl font-medium text-xs text-[#0F172A] placeholder-[#334155] shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#0284C7]/20"
               />
             </div>
           </div>
@@ -447,7 +447,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
               Belum Kumpul Surat
             </span>
             <div className="text-3xl font-black text-rose-700 mt-1" >{metrics.belumKumpul}</div>
-            <div className="text-[11px] text-[#49454F] mt-0.5 font-medium">Siswa wajib serahkan bukti fisik</div>
+            <div className="text-[11px] text-[#334155] mt-0.5 font-medium">Siswa wajib serahkan bukti fisik</div>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center font-bold shadow-xs">
             <FileWarning className="w-6 h-6" />
@@ -460,7 +460,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
               Izin Tanpa Surat (I)
             </span>
             <div className="text-3xl font-black text-sky-700 mt-1" >{metrics.izinBelum}</div>
-            <div className="text-[11px] text-[#49454F] mt-0.5 font-medium">Izin lisan / WA belum ada surat</div>
+            <div className="text-[11px] text-[#334155] mt-0.5 font-medium">Izin lisan / WA belum ada surat</div>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 text-white flex items-center justify-center font-black text-lg shadow-xs" >
             I
@@ -473,7 +473,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
               Sakit Tanpa Surat (S)
             </span>
             <div className="text-3xl font-black text-amber-700 mt-1" >{metrics.sakitBelum}</div>
-            <div className="text-[11px] text-[#49454F] mt-0.5 font-medium">Belum ada surat dokter / ortu</div>
+            <div className="text-[11px] text-[#334155] mt-0.5 font-medium">Belum ada surat dokter / ortu</div>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center font-black text-lg shadow-xs" >
             S
@@ -501,7 +501,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
         {/* Table Top Bar */}
         <div className="p-5 sm:p-6 border-b border-slate-200/60 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3 flex-wrap">
-            <h3 className="font-black text-[#1C1B1F] text-sm" >
+            <h3 className="font-black text-[#0F172A] text-sm" >
               Daftar Siswa ({filteredRecords.length} Catatan)
             </h3>
             {letterFilter === 'BELUM' && (
@@ -511,7 +511,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
             )}
           </div>
 
-          <div className="text-xs text-[#49454F] font-medium">
+          <div className="text-xs text-[#334155] font-medium">
             Halaman {currentPage} dari {totalPages}
           </div>
         </div>
@@ -519,7 +519,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-gradient-to-r from-slate-100/80 to-amber-50/50 border-b border-slate-200/80 text-[#49454F] font-black uppercase text-xs" >
+              <tr className="bg-gradient-to-r from-slate-100/80 to-amber-50/50 border-b border-slate-200/80 text-[#334155] font-black uppercase text-xs" >
                 <th className="py-4 px-4 w-12 text-center">No</th>
                 <th className="py-4 px-4 w-32">Tanggal</th>
                 <th className="py-4 px-4 w-28 text-center">NISN</th>
@@ -533,12 +533,12 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
             <tbody className="divide-y divide-slate-100">
               {paginatedRecords.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-16 text-center text-[#49454F]">
-                    <div className="w-16 h-16 rounded-full bg-[#E7E0EC] text-[#49454F] flex items-center justify-center mx-auto mb-3 shadow-xs">
+                  <td colSpan={8} className="py-16 text-center text-[#334155]">
+                    <div className="w-16 h-16 rounded-full bg-[#E2F1FD] text-[#334155] flex items-center justify-center mx-auto mb-3 shadow-xs">
                       <FileCheck2 className="w-8 h-8" />
                     </div>
-                    <p className="font-black text-base text-[#1C1B1F]" >Tidak ada data siswa yang cocok dengan filter.</p>
-                    <p className="text-xs text-[#49454F] mt-1">
+                    <p className="font-black text-base text-[#0F172A]" >Tidak ada data siswa yang cocok dengan filter.</p>
+                    <p className="text-xs text-[#334155] mt-1">
                       {letterFilter === 'BELUM'
                         ? 'Semua siswa izin & sakit pada kriteria ini telah mengumpulkan surat.'
                         : 'Coba ubah tanggal atau rentang pencarian.'}
@@ -556,21 +556,21 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                       key={rec.id}
                       className="hover:bg-amber-50/30 transition-colors"
                     >
-                      <td className="py-4 px-4 text-center text-[#49454F] font-bold">{globalIdx}</td>
-                      <td className="py-4 px-4 font-extrabold text-[#1C1B1F] whitespace-nowrap" >
+                      <td className="py-4 px-4 text-center text-[#334155] font-bold">{globalIdx}</td>
+                      <td className="py-4 px-4 font-extrabold text-[#0F172A] whitespace-nowrap" >
                         {rec.date}
-                        <div className="text-[11px] text-[#49454F] font-normal">{formatDateIndonesian(rec.date)}</div>
+                        <div className="text-[11px] text-[#334155] font-normal">{formatDateIndonesian(rec.date)}</div>
                       </td>
-                      <td className="py-4 px-4 text-center font-mono text-xs font-semibold text-[#49454F]">
+                      <td className="py-4 px-4 text-center font-mono text-xs font-semibold text-[#334155]">
                         {rec.nisn}
                       </td>
                       <td className="py-4 px-4">
-                        <div className="font-black text-sm text-[#1C1B1F]" >{rec.studentName}</div>
+                        <div className="font-black text-sm text-[#0F172A]" >{rec.studentName}</div>
                         {student && (
-                          <div className="text-[11px] text-[#49454F]">Gender: {student.gender}</div>
+                          <div className="text-[11px] text-[#334155]">Gender: {student.gender}</div>
                         )}
                       </td>
-                      <td className="py-4 px-4 font-black text-[#1C1B1F] text-center" >{rec.className}</td>
+                      <td className="py-4 px-4 font-black text-[#0F172A] text-center" >{rec.className}</td>
                       <td className="py-4 px-4 text-center">
                         {rec.status === 'I' ? (
                           <span className="px-3 py-1 rounded-xl text-xs font-black bg-sky-50 text-sky-700 border border-sky-200 inline-flex items-center gap-1 shadow-xs" >
@@ -625,7 +625,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                             <button
                               type="button"
                               onClick={() => handleRevertLetterStatus(rec)}
-                              className="px-3 py-1.5 rounded-xl bg-[#E7E0EC] hover:bg-white text-[#49454F] hover:text-rose-700 font-extrabold text-xs shadow-xs active:scale-[0.92] transition-all cursor-pointer"
+                              className="px-3 py-1.5 rounded-xl bg-[#E2F1FD] hover:bg-white text-[#334155] hover:text-rose-700 font-extrabold text-xs shadow-xs active:scale-[0.92] transition-all cursor-pointer"
                               title="Batalkan (Ubah kembali ke Belum Ada Surat)"
                               
                             >
@@ -644,7 +644,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
         {/* Pagination Controls */}
         {totalPages > 1 && (
-          <div className="p-5 bg-[#E7E0EC]/40 border-t border-slate-200/60 flex items-center justify-between text-xs text-[#49454F]">
+          <div className="p-5 bg-[#E2F1FD]/40 border-t border-slate-200/60 flex items-center justify-between text-xs text-[#334155]">
             <div className="font-medium">
               Menampilkan {paginatedRecords.length} dari {filteredRecords.length} catatan
             </div>
@@ -658,7 +658,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                 <ChevronLeft className="w-4 h-4 inline mr-1" />
                 Sebelumnya
               </button>
-              <span className="font-black text-[#1C1B1F] px-2" >
+              <span className="font-black text-[#0F172A] px-2" >
                 {currentPage} / {totalPages}
               </span>
               <button
@@ -677,7 +677,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
       {/* MODAL: Verifikasi / Terima Surat Izin */}
       {markingRecord && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#1C1B1F]/60 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
             <div className="p-6 bg-gradient-to-br from-emerald-600 to-teal-700 text-white flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -702,12 +702,12 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
             <form onSubmit={handleSaveMarkRecord} className="p-6 sm:p-8 space-y-5 text-xs">
               {/* Info Siswa */}
-              <div className="p-4 bg-[#E7E0EC] rounded-2xl shadow-none space-y-1">
-                <div className="font-black text-[#1C1B1F] text-sm" >{markingRecord.studentName}</div>
-                <div className="text-[#49454F] text-xs">
+              <div className="p-4 bg-[#E2F1FD] rounded-2xl shadow-none space-y-1">
+                <div className="font-black text-[#0F172A] text-sm" >{markingRecord.studentName}</div>
+                <div className="text-[#334155] text-xs">
                   Kelas {markingRecord.className} • NISN: {markingRecord.nisn}
                 </div>
-                <div className="text-[#1C1B1F] font-bold pt-1.5 border-t border-slate-300/40 mt-1.5 flex items-center justify-between">
+                <div className="text-[#0F172A] font-bold pt-1.5 border-t border-slate-300/40 mt-1.5 flex items-center justify-between">
                   <span>Tanggal Presensi: {formatDateIndonesian(markingRecord.date)}</span>
                   <span className={`px-2.5 py-0.5 rounded-lg text-xs font-black shadow-xs ${
                     markingRecord.status === 'I' ? 'bg-sky-100 text-sky-800' : 'bg-amber-100 text-amber-800'
@@ -719,7 +719,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
               {/* Tanggal Penyerahan Surat */}
               <div>
-                <label className="block font-black text-[#1C1B1F] mb-1.5 flex items-center gap-1.5" >
+                <label className="block font-black text-[#0F172A] mb-1.5 flex items-center gap-1.5" >
                   <Calendar className="w-4 h-4 text-emerald-600" />
                   <span>Tanggal Penyerahan Surat Fisik</span>
                   <span className="text-rose-500">*</span>
@@ -729,13 +729,13 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                   required
                   value={letterReceiptDate}
                   onChange={(e) => setLetterReceiptDate(e.target.value)}
-                  className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-bold shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-emerald-500/20 transition-all"
+                  className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl text-[#0F172A] font-bold shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-emerald-500/20 transition-all"
                 />
               </div>
 
               {/* Catatan / Keterangan Surat */}
               <div>
-                <label className="block font-black text-[#1C1B1F] mb-1.5" >
+                <label className="block font-black text-[#0F172A] mb-1.5" >
                   Catatan Keterangan Surat (Dokter / Orang Tua)
                 </label>
                 <textarea
@@ -743,7 +743,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                   value={letterNotes}
                   onChange={(e) => setLetterNotes(e.target.value)}
                   placeholder="Contoh: Surat dokter RS Karsa Husada Batu, izin istirahat 2 hari."
-                  className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-medium shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-emerald-500/20 transition-all"
+                  className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl text-[#0F172A] font-medium shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-emerald-500/20 transition-all"
                 />
               </div>
 
@@ -751,7 +751,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                 <button
                   type="button"
                   onClick={() => setMarkingRecord(null)}
-                  className="px-5 py-2.5 rounded-2xl bg-[#E7E0EC] hover:bg-white text-[#49454F] font-black transition-all shadow-xs active:scale-[0.92] active:shadow-none cursor-pointer"
+                  className="px-5 py-2.5 rounded-2xl bg-[#E2F1FD] hover:bg-white text-[#334155] font-black transition-all shadow-xs active:scale-[0.92] active:shadow-none cursor-pointer"
                   
                 >
                   Batal
@@ -772,7 +772,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
       {/* MODAL: Konfirmasi Ubah Status ke Alpa (A) */}
       {alpaModalRecord && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#1C1B1F]/60 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
             <div className="p-6 bg-gradient-to-br from-rose-600 to-red-700 text-white flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -797,12 +797,12 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
             <form onSubmit={handleConfirmConvertToAlpa} className="p-6 sm:p-8 space-y-5 text-xs">
               {/* Info Siswa */}
-              <div className="p-4 bg-[#E7E0EC] rounded-2xl shadow-none space-y-1">
-                <div className="font-black text-[#1C1B1F] text-sm" >{alpaModalRecord.studentName}</div>
-                <div className="text-[#49454F] text-xs">
+              <div className="p-4 bg-[#E2F1FD] rounded-2xl shadow-none space-y-1">
+                <div className="font-black text-[#0F172A] text-sm" >{alpaModalRecord.studentName}</div>
+                <div className="text-[#334155] text-xs">
                   Kelas {alpaModalRecord.className} • NISN: {alpaModalRecord.nisn}
                 </div>
-                <div className="text-[#1C1B1F] font-bold pt-1.5 border-t border-slate-300/40 mt-1.5 flex items-center justify-between">
+                <div className="text-[#0F172A] font-bold pt-1.5 border-t border-slate-300/40 mt-1.5 flex items-center justify-between">
                   <span>Tanggal Presensi: {formatDateIndonesian(alpaModalRecord.date)}</span>
                   <span className={`px-2.5 py-0.5 rounded-lg text-xs font-black shadow-xs ${
                     alpaModalRecord.status === 'I' ? 'bg-sky-100 text-sky-800' : 'bg-amber-100 text-amber-800'
@@ -822,7 +822,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
               {/* Alasan Perubahan */}
               <div>
-                <label className="block font-black text-[#1C1B1F] mb-1.5" >
+                <label className="block font-black text-[#0F172A] mb-1.5" >
                   Keterangan / Alasan Perubahan ke Alpa
                 </label>
                 <textarea
@@ -830,7 +830,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                   value={alpaReason}
                   onChange={(e) => setAlpaReason(e.target.value)}
                   placeholder="Contoh: Surat izin/sakit belum diterima setelah batas waktu yang ditentukan."
-                  className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-medium shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-rose-500/20"
+                  className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl text-[#0F172A] font-medium shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-rose-500/20"
                 />
               </div>
 
@@ -838,7 +838,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                 <button
                   type="button"
                   onClick={() => setAlpaModalRecord(null)}
-                  className="px-5 py-2.5 rounded-2xl bg-[#E7E0EC] hover:bg-white text-[#49454F] font-black transition-all shadow-xs active:scale-[0.92] active:shadow-none cursor-pointer"
+                  className="px-5 py-2.5 rounded-2xl bg-[#E2F1FD] hover:bg-white text-[#334155] font-black transition-all shadow-xs active:scale-[0.92] active:shadow-none cursor-pointer"
                   
                 >
                   Batal

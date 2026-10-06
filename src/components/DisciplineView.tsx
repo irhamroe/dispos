@@ -868,10 +868,10 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                 <ShieldAlert className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-xl sm:text-2xl  font-black text-[#1C1B1F] tracking-tight">
+                <h2 className="text-xl sm:text-2xl  font-black text-[#0F172A] tracking-tight">
                   Input Data Pelanggaran
                 </h2>
-                <p className="text-xs text-[#49454F] font-medium mt-0.5">
+                <p className="text-xs text-[#334155] font-medium mt-0.5">
                   Pencatatan data pelanggaran tata tertib dan status pembinaan siswa {schoolProfile.name}
                 </p>
               </div>
@@ -905,13 +905,13 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="bg-white/85 backdrop-blur-xl p-5 rounded-[28px] shadow-sm border border-white hover:-translate-y-1 transition-all duration-200">
           <div className="flex items-center justify-between">
-            <span className="text-xs  font-extrabold text-[#49454F] uppercase">Total Pelanggaran</span>
-            <div className="w-8 h-8 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center shadow-xs">
+            <span className="text-xs  font-extrabold text-[#334155] uppercase">Total Pelanggaran</span>
+            <div className="w-8 h-8 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shadow-xs">
               <ShieldAlert className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl  font-black text-[#1C1B1F] mt-2">{totalRecords}</div>
-          <div className="text-[11px] text-[#49454F] font-medium mt-0.5">36 Rombel X, XI, XII</div>
+          <div className="text-3xl  font-black text-[#0F172A] mt-2">{totalRecords}</div>
+          <div className="text-[11px] text-[#334155] font-medium mt-0.5">36 Rombel X, XI, XII</div>
         </div>
 
         <div className="bg-white/85 backdrop-blur-xl p-5 rounded-[28px] shadow-sm border border-white hover:-translate-y-1 transition-all duration-200">
@@ -951,28 +951,28 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
       {/* Main Table Card */}
       <div className="bg-white/85 backdrop-blur-xl rounded-[32px] shadow-sm border border-white overflow-hidden">
         {/* Filters Toolbar */}
-        <div className="p-5 border-b border-violet-100/60 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+        <div className="p-5 border-b border-sky-100/60 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
           <div className="relative w-full md:w-80">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#49454F]" />
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#334155]" />
             <input
               id="search-violation-input"
               type="text"
               placeholder="Cari nama siswa, NISN, atau jenis pelanggaran..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-[#E7E0EC] rounded-2xl text-xs text-[#1C1B1F] placeholder-clay-muted shadow-none focus:outline-hidden border border-white/40"
+              className="w-full pl-10 pr-4 py-2.5 bg-[#E2F1FD] rounded-2xl text-xs text-[#0F172A] placeholder-clay-muted shadow-none focus:outline-hidden border border-white/40"
             />
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5">
             {/* Class Filter */}
-            <div className="flex items-center gap-1.5 bg-[#E7E0EC] rounded-2xl px-3.5 py-2 text-xs text-[#1C1B1F] shadow-none border border-white/40">
-              <span className="text-[#49454F] font-medium">Kelas:</span>
+            <div className="flex items-center gap-1.5 bg-[#E2F1FD] rounded-2xl px-3.5 py-2 text-xs text-[#0F172A] shadow-none border border-white/40">
+              <span className="text-[#334155] font-medium">Kelas:</span>
               <select
                 id="filter-violation-class-select"
                 value={filterClass}
                 onChange={(e) => setFilterClass(e.target.value)}
-                className="bg-transparent  font-extrabold focus:outline-hidden cursor-pointer text-[#1C1B1F]"
+                className="bg-transparent  font-extrabold focus:outline-hidden cursor-pointer text-[#0F172A]"
               >
                 <option value="ALL">Semua Kelas</option>
                 {availableClasses.map((c) => (
@@ -984,13 +984,13 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
             </div>
 
             {/* Coaching Status Filter */}
-            <div className="flex items-center gap-1.5 bg-[#E7E0EC] rounded-2xl px-3.5 py-2 text-xs text-[#1C1B1F] shadow-none border border-white/40">
-              <span className="text-[#49454F] font-medium">Status Pembinaan:</span>
+            <div className="flex items-center gap-1.5 bg-[#E2F1FD] rounded-2xl px-3.5 py-2 text-xs text-[#0F172A] shadow-none border border-white/40">
+              <span className="text-[#334155] font-medium">Status Pembinaan:</span>
               <select
                 id="filter-coaching-status-select"
                 value={filterCoachingStatus}
                 onChange={(e) => setFilterCoachingStatus(e.target.value)}
-                className="bg-transparent  font-extrabold focus:outline-hidden cursor-pointer text-[#1C1B1F]"
+                className="bg-transparent  font-extrabold focus:outline-hidden cursor-pointer text-[#0F172A]"
               >
                 <option value="ALL">Semua Status</option>
                 <option value="Belum">Belum Pembinaan</option>
@@ -1004,7 +1004,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-[#E7E0EC]/70 text-[#1C1B1F]  font-black text-[11px] uppercase tracking-wider border-b border-violet-100">
+              <tr className="bg-[#E2F1FD]/70 text-[#0F172A]  font-black text-[11px] uppercase tracking-wider border-b border-sky-100">
                 <th className="py-3 px-3 text-center w-12">No</th>
                 <th className="py-3 px-3 w-28">Tanggal Kejadian</th>
                 <th className="py-3 px-4">Nama Siswa & Kelas</th>
@@ -1239,8 +1239,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
             <form onSubmit={handleSubmitCatatPelanggaran} className="p-6 space-y-4 text-xs">
               {/* 1. Tanggal Kejadian */}
               <div>
-                <label className="block  font-extrabold text-[#1C1B1F] mb-1.5 flex items-center gap-1.5">
-                  <Calendar className="w-4 h-4 text-violet-600" />
+                <label className="block  font-extrabold text-[#0F172A] mb-1.5 flex items-center gap-1.5">
+                  <Calendar className="w-4 h-4 text-sky-600" />
                   <span>Tanggal Kejadian</span>
                   <span className="text-rose-500">*</span>
                 </label>
@@ -1250,7 +1250,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                   id="input-tanggal-kejadian"
                   value={incidentDate}
                   onChange={(e) => setIncidentDate(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] shadow-none focus:outline-hidden  font-extrabold border border-white/40"
+                  className="w-full px-4 py-2.5 bg-[#E2F1FD] rounded-2xl text-[#0F172A] shadow-none focus:outline-hidden  font-extrabold border border-white/40"
                 />
               </div>
 
@@ -1258,8 +1258,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* 2. Pilih Jenjang */}
                 <div>
-                  <label className="block  font-extrabold text-[#1C1B1F] mb-1.5 flex items-center gap-1.5">
-                    <GraduationCap className="w-4 h-4 text-violet-600" />
+                  <label className="block  font-extrabold text-[#0F172A] mb-1.5 flex items-center gap-1.5">
+                    <GraduationCap className="w-4 h-4 text-sky-600" />
                     <span>Pilih Jenjang</span>
                     <span className="text-rose-500">*</span>
                   </label>
@@ -1268,7 +1268,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                     required
                     value={selectedGrade}
                     onChange={(e) => handleGradeChange(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F]  font-extrabold shadow-none focus:outline-hidden cursor-pointer border border-white/40"
+                    className="w-full px-4 py-2.5 bg-[#E2F1FD] rounded-2xl text-[#0F172A]  font-extrabold shadow-none focus:outline-hidden cursor-pointer border border-white/40"
                   >
                     {availableGrades.map((g) => (
                       <option key={g} value={g}>
@@ -1280,8 +1280,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
                 {/* 3. Pilih Kelas */}
                 <div>
-                  <label className="block  font-extrabold text-[#1C1B1F] mb-1.5 flex items-center gap-1.5">
-                    <Layers className="w-4 h-4 text-violet-600" />
+                  <label className="block  font-extrabold text-[#0F172A] mb-1.5 flex items-center gap-1.5">
+                    <Layers className="w-4 h-4 text-sky-600" />
                     <span>Pilih Kelas</span>
                     <span className="text-rose-500">*</span>
                   </label>
@@ -1290,7 +1290,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                     required
                     value={selectedClass}
                     onChange={(e) => setSelectedClass(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F]  font-extrabold shadow-none focus:outline-hidden cursor-pointer border border-white/40"
+                    className="w-full px-4 py-2.5 bg-[#E2F1FD] rounded-2xl text-[#0F172A]  font-extrabold shadow-none focus:outline-hidden cursor-pointer border border-white/40"
                   >
                     {availableClassesInGrade.length === 0 ? (
                       <option value="">Tidak ada kelas di jenjang ini</option>
@@ -1307,8 +1307,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
               {/* 4. Nama Siswa */}
               <div>
-                <label className="block  font-extrabold text-[#1C1B1F] mb-1.5 flex items-center gap-1.5">
-                  <User className="w-4 h-4 text-violet-600" />
+                <label className="block  font-extrabold text-[#0F172A] mb-1.5 flex items-center gap-1.5">
+                  <User className="w-4 h-4 text-sky-600" />
                   <span>Nama Siswa</span>
                   <span className="text-rose-500">*</span>
                 </label>
@@ -1317,7 +1317,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                   required
                   value={selectedStudentId}
                   onChange={(e) => setSelectedStudentId(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F]  font-extrabold shadow-none focus:outline-hidden cursor-pointer border border-white/40"
+                  className="w-full px-4 py-2.5 bg-[#E2F1FD] rounded-2xl text-[#0F172A]  font-extrabold shadow-none focus:outline-hidden cursor-pointer border border-white/40"
                 >
                   {studentsInSelectedClass.length === 0 ? (
                     <option value="">Tidak ada siswa di kelas ini</option>
@@ -1333,8 +1333,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
               {/* 5. Jenis Pelanggaran */}
               <div>
-                <label className="block  font-extrabold text-[#1C1B1F] mb-1.5 flex items-center gap-1.5">
-                  <ShieldAlert className="w-4 h-4 text-violet-600" />
+                <label className="block  font-extrabold text-[#0F172A] mb-1.5 flex items-center gap-1.5">
+                  <ShieldAlert className="w-4 h-4 text-sky-600" />
                   <span>Jenis Pelanggaran</span>
                   <span className="text-rose-500">*</span>
                 </label>
@@ -1343,7 +1343,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                   required
                   value={violationName}
                   onChange={(e) => handleViolationChange(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-medium shadow-none focus:outline-hidden border border-white/40"
+                  className="w-full px-4 py-2.5 bg-[#E2F1FD] rounded-2xl text-[#0F172A] font-medium shadow-none focus:outline-hidden border border-white/40"
                 >
                   {catalogToUse.map((cat, i) => (
                     <option key={cat.id || i} value={cat.name}>
@@ -1358,7 +1358,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
               {/* 5. Status Pembinaan (sudah/belum) */}
               <div className="pt-1">
-                <label className="block  font-extrabold text-[#1C1B1F] mb-1.5">
+                <label className="block  font-extrabold text-[#0F172A] mb-1.5">
                   Status Pembinaan
                   <span className="text-rose-500 ml-0.5">*</span>
                 </label>
@@ -1370,7 +1370,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                     className={`py-3 px-3.5 rounded-2xl  font-extrabold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
                       coachingStatus === 'Belum'
                         ? 'bg-amber-100 text-amber-900 shadow-xs -translate-y-0.5 ring-2 ring-amber-300'
-                        : 'bg-[#E7E0EC] text-[#49454F] hover:bg-white shadow-none'
+                        : 'bg-[#E2F1FD] text-[#334155] hover:bg-white shadow-none'
                     }`}
                   >
                     <Clock className="w-4 h-4 text-amber-600" />
@@ -1384,7 +1384,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                     className={`py-3 px-3.5 rounded-2xl  font-extrabold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
                       coachingStatus === 'Sudah'
                         ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-xs -translate-y-0.5 ring-2 ring-emerald-300'
-                        : 'bg-[#E7E0EC] text-[#49454F] hover:bg-white shadow-none'
+                        : 'bg-[#E2F1FD] text-[#334155] hover:bg-white shadow-none'
                     }`}
                   >
                     <CheckCircle2 className="w-4 h-4 text-white" />
@@ -1398,9 +1398,9 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
               {/* - Foto Pembinaan (Syarat Minimal Selesai) */}
               {/* - Bukti Pembinaan *(File Surat pembinaan - Bisa menyusul) */}
               {coachingStatus === 'Sudah' && (
-                <div className="p-5 rounded-[28px] bg-[#E7E0EC]/80 shadow-none border border-white/60 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
-                  <div className="flex items-center justify-between pb-2 border-b border-violet-200/60">
-                    <div className="flex items-center gap-2 text-[#1C1B1F]  font-extrabold text-xs">
+                <div className="p-5 rounded-[28px] bg-[#E2F1FD]/80 shadow-none border border-white/60 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="flex items-center justify-between pb-2 border-b border-sky-200/60">
+                    <div className="flex items-center gap-2 text-[#0F172A]  font-extrabold text-xs">
                       <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                       <span>Data Pelaksanaan Pembinaan Siswa</span>
                     </div>
@@ -1411,8 +1411,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
                   {/* Tanggal Pembinaan */}
                   <div>
-                    <label className="block  font-extrabold text-[#1C1B1F] mb-1.5 flex items-center gap-1.5">
-                      <Calendar className="w-4 h-4 text-violet-600" />
+                    <label className="block  font-extrabold text-[#0F172A] mb-1.5 flex items-center gap-1.5">
+                      <Calendar className="w-4 h-4 text-sky-600" />
                       <span>Tanggal Pembinaan</span>
                       <span className="text-rose-500">*</span>
                     </label>
@@ -1422,15 +1422,15 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                       id="input-tanggal-pembinaan"
                       value={coachingDate}
                       onChange={(e) => setCoachingDate(e.target.value)}
-                      className="w-full px-4 py-2.5 bg-white rounded-2xl text-[#1C1B1F]  font-extrabold shadow-sm focus:outline-hidden border border-white"
+                      className="w-full px-4 py-2.5 bg-white rounded-2xl text-[#0F172A]  font-extrabold shadow-sm focus:outline-hidden border border-white"
                     />
                   </div>
 
                   {/* Foto Pembinaan */}
                   <div>
-                    <label className="block  font-extrabold text-[#1C1B1F] mb-1.5 flex items-center justify-between">
+                    <label className="block  font-extrabold text-[#0F172A] mb-1.5 flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
-                        <ImageIcon className="w-4 h-4 text-violet-600" />
+                        <ImageIcon className="w-4 h-4 text-sky-600" />
                         <span>Foto Pembinaan</span>
                         <span className="text-rose-500 font-bold text-[11px]">* (Wajib Minimal)</span>
                       </span>
@@ -1472,7 +1472,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                           onClick={() => setActivePreviewImage({ url: coachingPhoto, title: 'Pratinjau Foto Pembinaan' })}
                         />
                         <div className="flex-1 min-w-0">
-                          <p className=" font-extrabold text-[#1C1B1F] truncate text-xs">{coachingPhotoName || 'Foto_Pembinaan.jpg'}</p>
+                          <p className=" font-extrabold text-[#0F172A] truncate text-xs">{coachingPhotoName || 'Foto_Pembinaan.jpg'}</p>
                           <div className="flex items-center gap-1.5 mt-0.5">
                             {coachingPhoto.includes('drive.google.com') || coachingPhoto.includes('googleusercontent.com') ? (
                               <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-bold shadow-xs">
@@ -1486,7 +1486,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                         <button
                           type="button"
                           onClick={() => photoInputRef.current?.click()}
-                          className="px-3 py-1.5 text-[11px]  font-extrabold bg-white text-violet-700 hover:bg-violet-50 rounded-xl shadow-xs active:scale-95 transition-all cursor-pointer"
+                          className="px-3 py-1.5 text-[11px]  font-extrabold bg-white text-sky-700 hover:bg-sky-50 rounded-xl shadow-xs active:scale-95 transition-all cursor-pointer"
                         >
                           Ganti
                         </button>
@@ -1496,9 +1496,9 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                         onClick={() => photoInputRef.current?.click()}
                         className="border-2 border-dashed border-violet-300 hover:border-violet-500 rounded-2xl p-4 text-center cursor-pointer bg-white/80 hover:bg-white shadow-sm transition-all flex flex-col items-center justify-center gap-1.5"
                       >
-                        <Upload className="w-5 h-5 text-violet-600" />
-                        <span className=" font-extrabold text-[#1C1B1F] text-xs">Pilih atau Unggah Foto Kegiatan Pembinaan</span>
-                        <span className="text-[10px] text-[#49454F]">
+                        <Upload className="w-5 h-5 text-sky-600" />
+                        <span className=" font-extrabold text-[#0F172A] text-xs">Pilih atau Unggah Foto Kegiatan Pembinaan</span>
+                        <span className="text-[10px] text-[#334155]">
                           * Wajib diunggah untuk menyelesaikan pembinaan
                         </span>
                       </div>
@@ -1507,9 +1507,9 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
                   {/* Bukti Pembinaan *(File Surat pembinaan) */}
                   <div>
-                    <label className="block  font-extrabold text-[#1C1B1F] mb-1.5 flex items-center justify-between">
+                    <label className="block  font-extrabold text-[#0F172A] mb-1.5 flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
-                        <Paperclip className="w-4 h-4 text-violet-600" />
+                        <Paperclip className="w-4 h-4 text-sky-600" />
                         <span>Surat Bukti Pembinaan</span>
                         <span className="text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full text-[10px]  font-bold shadow-xs">Bisa Menyusul</span>
                       </span>
@@ -1548,7 +1548,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                           <FileText className="w-5 h-5" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className=" font-extrabold text-[#1C1B1F] truncate text-xs">{coachingEvidenceFileName}</p>
+                          <p className=" font-extrabold text-[#0F172A] truncate text-xs">{coachingEvidenceFileName}</p>
                           <div className="flex items-center gap-1.5 mt-0.5">
                             {coachingEvidenceFile && (coachingEvidenceFile.includes('drive.google.com') || coachingEvidenceFile.includes('googleusercontent.com')) ? (
                               <span className="inline-flex items-center gap-1 text-[10px] text-sky-700 bg-sky-100 px-2 py-0.5 rounded-full font-bold shadow-xs">
@@ -1562,7 +1562,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                         <button
                           type="button"
                           onClick={() => docInputRef.current?.click()}
-                          className="px-3 py-1.5 text-[11px]  font-extrabold bg-white text-violet-700 hover:bg-violet-50 rounded-xl shadow-xs active:scale-95 transition-all cursor-pointer"
+                          className="px-3 py-1.5 text-[11px]  font-extrabold bg-white text-sky-700 hover:bg-sky-50 rounded-xl shadow-xs active:scale-95 transition-all cursor-pointer"
                         >
                           Ganti
                         </button>
@@ -1570,11 +1570,11 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                     ) : (
                       <div
                         onClick={() => docInputRef.current?.click()}
-                        className="border-2 border-dashed border-violet-200 hover:border-violet-400 rounded-2xl p-4 text-center cursor-pointer bg-white/70 hover:bg-white shadow-sm transition-all flex flex-col items-center justify-center gap-1.5"
+                        className="border-2 border-dashed border-sky-200 hover:border-violet-400 rounded-2xl p-4 text-center cursor-pointer bg-white/70 hover:bg-white shadow-sm transition-all flex flex-col items-center justify-center gap-1.5"
                       >
-                        <Upload className="w-5 h-5 text-[#49454F]" />
-                        <span className=" font-extrabold text-[#1C1B1F] text-xs">Unggah Dokumen Surat Pembinaan (Opsional / Menyusul)</span>
-                        <span className="text-[10px] text-[#49454F]">
+                        <Upload className="w-5 h-5 text-[#334155]" />
+                        <span className=" font-extrabold text-[#0F172A] text-xs">Unggah Dokumen Surat Pembinaan (Opsional / Menyusul)</span>
+                        <span className="text-[10px] text-[#334155]">
                           Jika surat masih dalam proses tanda tangan, dapat diunggah menyusul
                         </span>
                       </div>
@@ -1584,12 +1584,12 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
               )}
 
               {/* Form Buttons */}
-              <div className="pt-4 border-t border-violet-100 flex items-center justify-end gap-3">
+              <div className="pt-4 border-t border-sky-100 flex items-center justify-end gap-3">
                 <button
                   type="button"
                   id="cancel-catat-pelanggaran-btn"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-5 py-2.5 rounded-2xl bg-white text-[#49454F] hover:text-[#1C1B1F]  font-extrabold shadow-xs active:scale-95 transition-all cursor-pointer"
+                  className="px-5 py-2.5 rounded-2xl bg-white text-[#334155] hover:text-[#0F172A]  font-extrabold shadow-xs active:scale-95 transition-all cursor-pointer"
                 >
                   Batal
                 </button>

@@ -288,10 +288,10 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1C1B1F]/40 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/40 backdrop-blur-md animate-in fade-in duration-200">
       <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[32px] shadow-sm border border-white/80 w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-amber-500 via-teal-600 to-[#6750A4] text-white flex items-center justify-between shadow-sm">
+        <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-amber-500 via-teal-600 to-[#0284C7] text-white flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-3.5">
             <div className="w-10 h-10 bg-white/20 rounded-2xl flex items-center justify-center shadow-xs">
               <Database className="w-5 h-5 text-amber-200" />
@@ -311,14 +311,14 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-purple-100/50 bg-[#FFFBFE] px-6 sm:px-8 pt-3 gap-2.5 text-xs font-black" >
+        <div className="flex border-b border-sky-100/50 bg-[#F8FAFC] px-6 sm:px-8 pt-3 gap-2.5 text-xs font-black" >
           <button
             type="button"
             onClick={() => setActiveTab('config')}
             className={`pb-3 px-4 rounded-t-2xl transition-all cursor-pointer ${
               activeTab === 'config'
-                ? 'bg-white text-[#6750A4] shadow-xs border-b-2 border-[#6750A4]'
-                : 'text-[#49454F] hover:text-[#1C1B1F]'
+                ? 'bg-white text-[#0284C7] shadow-xs border-b-2 border-[#0284C7]'
+                : 'text-[#334155] hover:text-[#0F172A]'
             }`}
           >
             1. Konfigurasi API
@@ -328,8 +328,8 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
             onClick={() => setActiveTab('sync')}
             className={`pb-3 px-4 rounded-t-2xl transition-all cursor-pointer ${
               activeTab === 'sync'
-                ? 'bg-white text-[#6750A4] shadow-xs border-b-2 border-[#6750A4]'
-                : 'text-[#49454F] hover:text-[#1C1B1F]'
+                ? 'bg-white text-[#0284C7] shadow-xs border-b-2 border-[#0284C7]'
+                : 'text-[#334155] hover:text-[#0F172A]'
             }`}
           >
             2. Sinkron & Migrasi Data
@@ -339,8 +339,8 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
             onClick={() => setActiveTab('guide')}
             className={`pb-3 px-4 rounded-t-2xl transition-all cursor-pointer ${
               activeTab === 'guide'
-                ? 'bg-white text-[#6750A4] shadow-xs border-b-2 border-[#6750A4]'
-                : 'text-[#49454F] hover:text-[#1C1B1F]'
+                ? 'bg-white text-[#0284C7] shadow-xs border-b-2 border-[#0284C7]'
+                : 'text-[#334155] hover:text-[#0F172A]'
             }`}
           >
             3. Panduan Setup
@@ -373,7 +373,7 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
                     ? `Firebase Aktif (${projectId || 'Terkonfigurasi'})`
                     : 'Firebase Belum Terhubung'}
                 </div>
-                <div className="text-[11px] text-[#49454F] font-medium mt-0.5">
+                <div className="text-[11px] text-[#334155] font-medium mt-0.5">
                   {isConfigured
                     ? 'Aplikasi siap melakukan penyimpanan data ke Cloud Firestore.'
                     : 'Saat ini aplikasi berjalan dalam mode Offline (LocalStorage).'}
@@ -413,10 +413,10 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
           {activeTab === 'config' && (
             <div className="space-y-4">
               {/* Quick Paste Snippet */}
-              <div className="p-4 bg-[#FFFBFE] border border-white/80 rounded-[24px] shadow-none space-y-2">
+              <div className="p-4 bg-[#F8FAFC] border border-white/80 rounded-[24px] shadow-none space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="font-extrabold text-[#1C1B1F] flex items-center gap-2 text-xs" >
-                    <Sparkles className="w-4 h-4 text-[#6750A4]" />
+                  <span className="font-extrabold text-[#0F172A] flex items-center gap-2 text-xs" >
+                    <Sparkles className="w-4 h-4 text-[#0284C7]" />
                     Auto-Fill: Paste Konfigurasi Firebase dari Console
                   </span>
                 </div>
@@ -425,14 +425,14 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
                   value={pasteSnippet}
                   onChange={(e) => handleParseSnippet(e.target.value)}
                   placeholder='Tempel (paste) kode SDK di sini, contoh: const firebaseConfig = { apiKey: "AIza...", projectId: "..." };'
-                  className="w-full p-3 bg-white border border-white/80 rounded-2xl font-mono text-[11px] text-[#1C1B1F] placeholder-[#49454F]/60 shadow-none focus:outline-hidden focus:ring-4 focus:ring-[#6750A4]/20 transition-all"
+                  className="w-full p-3 bg-white border border-white/80 rounded-2xl font-mono text-[11px] text-[#0F172A] placeholder-[#334155]/60 shadow-none focus:outline-hidden focus:ring-4 focus:ring-[#0284C7]/20 transition-all"
                 />
               </div>
 
               {/* Form Fields */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-[11px] font-extrabold text-[#1C1B1F] mb-1.5" >
+                  <label className="block text-[11px] font-extrabold text-[#0F172A] mb-1.5" >
                     API Key <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -440,12 +440,12 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
                     value={apiKey}
                     onChange={(e) => setApiKey(e.target.value)}
                     placeholder="AIzaSy..."
-                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl font-mono text-xs font-semibold text-[#1C1B1F] placeholder-[#49454F]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#6750A4]/20 transition-all"
+                    className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl font-mono text-xs font-semibold text-[#0F172A] placeholder-[#334155]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#0284C7]/20 transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-extrabold text-[#1C1B1F] mb-1.5" >
+                  <label className="block text-[11px] font-extrabold text-[#0F172A] mb-1.5" >
                     Project ID <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -453,12 +453,12 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
                     value={projectId}
                     onChange={(e) => setProjectId(e.target.value)}
                     placeholder="sman1batu-dispos-app"
-                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl font-mono text-xs font-semibold text-[#1C1B1F] placeholder-[#49454F]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#6750A4]/20 transition-all"
+                    className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl font-mono text-xs font-semibold text-[#0F172A] placeholder-[#334155]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#0284C7]/20 transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-extrabold text-[#1C1B1F] mb-1.5" >
+                  <label className="block text-[11px] font-extrabold text-[#0F172A] mb-1.5" >
                     Auth Domain
                   </label>
                   <input
@@ -466,12 +466,12 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
                     value={authDomain}
                     onChange={(e) => setAuthDomain(e.target.value)}
                     placeholder="sman1batu.firebaseapp.com"
-                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl font-mono text-xs font-semibold text-[#1C1B1F] placeholder-[#49454F]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#6750A4]/20 transition-all"
+                    className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl font-mono text-xs font-semibold text-[#0F172A] placeholder-[#334155]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#0284C7]/20 transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-extrabold text-[#1C1B1F] mb-1.5" >
+                  <label className="block text-[11px] font-extrabold text-[#0F172A] mb-1.5" >
                     Storage Bucket
                   </label>
                   <input
@@ -479,12 +479,12 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
                     value={storageBucket}
                     onChange={(e) => setStorageBucket(e.target.value)}
                     placeholder="sman1batu.appspot.com"
-                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl font-mono text-xs font-semibold text-[#1C1B1F] placeholder-[#49454F]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#6750A4]/20 transition-all"
+                    className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl font-mono text-xs font-semibold text-[#0F172A] placeholder-[#334155]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#0284C7]/20 transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-extrabold text-[#1C1B1F] mb-1.5" >
+                  <label className="block text-[11px] font-extrabold text-[#0F172A] mb-1.5" >
                     Messaging Sender ID
                   </label>
                   <input
@@ -492,12 +492,12 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
                     value={messagingSenderId}
                     onChange={(e) => setMessagingSenderId(e.target.value)}
                     placeholder="1234567890"
-                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl font-mono text-xs font-semibold text-[#1C1B1F] placeholder-[#49454F]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#6750A4]/20 transition-all"
+                    className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl font-mono text-xs font-semibold text-[#0F172A] placeholder-[#334155]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#0284C7]/20 transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-extrabold text-[#1C1B1F] mb-1.5" >
+                  <label className="block text-[11px] font-extrabold text-[#0F172A] mb-1.5" >
                     App ID
                   </label>
                   <input
@@ -505,12 +505,12 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
                     value={appId}
                     onChange={(e) => setAppId(e.target.value)}
                     placeholder="1:1234567890:web:abcdef"
-                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl font-mono text-xs font-semibold text-[#1C1B1F] placeholder-[#49454F]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#6750A4]/20 transition-all"
+                    className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl font-mono text-xs font-semibold text-[#0F172A] placeholder-[#334155]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#0284C7]/20 transition-all"
                   />
                 </div>
               </div>
 
-              <div className="pt-3 flex items-center justify-between border-t border-purple-100/50">
+              <div className="pt-3 flex items-center justify-between border-t border-sky-100/50">
                 {isConfigured ? (
                   <button
                     type="button"
@@ -528,7 +528,7 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
                 <button
                   type="button"
                   onClick={handleSaveConfig}
-                  className="px-6 py-2.5 bg-gradient-to-br from-[#E8DEF8] to-[#6750A4] hover:from-[#9333EA] hover:to-[#6D28D9] text-white font-black rounded-2xl shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none transition-all flex items-center gap-2 cursor-pointer"
+                  className="px-6 py-2.5 bg-gradient-to-br from-[#E0F2FE] to-[#0284C7] hover:from-[#9333EA] hover:to-[#6D28D9] text-white font-black rounded-2xl shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none transition-all flex items-center gap-2 cursor-pointer"
                   
                 >
                   <CheckCircle2 className="w-4 h-4" />
@@ -545,17 +545,17 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
                 <Info className="w-5 h-5 text-sky-600 shrink-0 mt-0.5" />
                 <div className="text-xs">
                   <span className="font-black text-sm block" >Migrasi &amp; Sinkronisasi Koleksi Firestore</span>
-                  <p className="mt-1 leading-relaxed text-[#49454F]">
+                  <p className="mt-1 leading-relaxed text-[#334155]">
                     Unggah seluruh data lokal awal (36 Rombel, ~1.300 Siswa, Aturan Pelanggaran) ke Firestore agar dapat diakses dari perangkat manapun secara bersamaan.
                   </p>
                 </div>
               </div>
 
               {uploadProgress && (
-                <div className="p-4 bg-[#FFFBFE] rounded-[24px] border border-white/80 shadow-none space-y-2">
-                  <div className="flex items-center justify-between text-xs font-black text-[#1C1B1F]" >
+                <div className="p-4 bg-[#F8FAFC] rounded-[24px] border border-white/80 shadow-none space-y-2">
+                  <div className="flex items-center justify-between text-xs font-black text-[#0F172A]" >
                     <span className="flex items-center gap-2">
-                      <RefreshCw className="w-4 h-4 text-[#6750A4] animate-spin" />
+                      <RefreshCw className="w-4 h-4 text-[#0284C7] animate-spin" />
                       {uploadProgress.label}
                     </span>
                     <span>
@@ -566,7 +566,7 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
                   </div>
                   <div className="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden shadow-inner">
                     <div
-                      className="bg-gradient-to-r from-[#E8DEF8] to-[#6750A4] h-2.5 rounded-full transition-all duration-300"
+                      className="bg-gradient-to-r from-[#E0F2FE] to-[#0284C7] h-2.5 rounded-full transition-all duration-300"
                       style={{
                         width: `${
                           uploadProgress.total > 0
@@ -588,15 +588,15 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                 {/* Upload Button */}
-                <div className="p-5 rounded-[28px] border border-purple-200 bg-purple-50/50 flex flex-col justify-between space-y-4 shadow-sm">
+                <div className="p-5 rounded-[28px] border border-sky-200 bg-sky-50/50 flex flex-col justify-between space-y-4 shadow-sm">
                   <div>
-                    <div className="font-black text-sm text-[#1C1B1F] flex items-center gap-2" >
-                      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#E8DEF8] to-[#6750A4] text-white flex items-center justify-center shadow-xs">
+                    <div className="font-black text-sm text-[#0F172A] flex items-center gap-2" >
+                      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#E0F2FE] to-[#0284C7] text-white flex items-center justify-center shadow-xs">
                         <UploadCloud className="w-4 h-4" />
                       </div>
                       <span>Upload Lokal ➔ Firestore</span>
                     </div>
-                    <p className="text-[11px] text-[#49454F] mt-2 leading-relaxed">
+                    <p className="text-[11px] text-[#334155] mt-2 leading-relaxed">
                       Kirim {students.length} Siswa, 36 Rombel, dan data absensi lokal ke database Cloud Firestore.
                     </p>
                   </div>
@@ -604,7 +604,7 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
                     type="button"
                     onClick={handleUploadAllDataToFirestore}
                     disabled={isUploading || !isConfigured}
-                    className="w-full py-3 bg-gradient-to-br from-[#E8DEF8] to-[#6750A4] hover:from-[#9333EA] hover:to-[#6D28D9] disabled:bg-slate-300 text-white font-black rounded-2xl transition-all shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
+                    className="w-full py-3 bg-gradient-to-br from-[#E0F2FE] to-[#0284C7] hover:from-[#9333EA] hover:to-[#6D28D9] disabled:bg-slate-300 text-white font-black rounded-2xl transition-all shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
                     
                   >
                     <UploadCloud className="w-4 h-4" />
@@ -615,13 +615,13 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
                 {/* Download Button */}
                 <div className="p-5 rounded-[28px] border border-sky-200 bg-sky-50/50 flex flex-col justify-between space-y-4 shadow-sm">
                   <div>
-                    <div className="font-black text-sm text-[#1C1B1F] flex items-center gap-2" >
+                    <div className="font-black text-sm text-[#0F172A] flex items-center gap-2" >
                       <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-sky-400 to-sky-600 text-white flex items-center justify-center shadow-xs">
                         <DownloadCloud className="w-4 h-4" />
                       </div>
                       <span>Tarik Firestore ➔ Lokal</span>
                     </div>
-                    <p className="text-[11px] text-[#49454F] mt-2 leading-relaxed">
+                    <p className="text-[11px] text-[#334155] mt-2 leading-relaxed">
                       Ambil pembaruan terkini dari Cloud Firestore dan terapkan pada sesi aplikasi saat ini.
                     </p>
                   </div>
@@ -642,19 +642,19 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
 
           {/* TAB 3: STEP-BY-STEP GUIDE */}
           {activeTab === 'guide' && (
-            <div className="space-y-4 text-[#1C1B1F] leading-relaxed">
-              <div className="p-5 bg-[#FFFBFE] border border-white/80 rounded-[28px] shadow-none space-y-3">
-                <div className="font-black text-[#1C1B1F] text-sm flex items-center gap-2" >
+            <div className="space-y-4 text-[#0F172A] leading-relaxed">
+              <div className="p-5 bg-[#F8FAFC] border border-white/80 rounded-[28px] shadow-none space-y-3">
+                <div className="font-black text-[#0F172A] text-sm flex items-center gap-2" >
                   <span>Langkah-Langkah Membuat Database di Firebase Console:</span>
                 </div>
-                <ol className="list-decimal list-inside space-y-2 text-[11px] text-[#49454F] font-medium leading-relaxed">
+                <ol className="list-decimal list-inside space-y-2 text-[11px] text-[#334155] font-medium leading-relaxed">
                   <li>
                     Buka{' '}
                     <a
                       href="https://console.firebase.google.com"
                       target="_blank"
                       rel="noreferrer"
-                      className="text-[#6750A4] font-black underline inline-flex items-center gap-1"
+                      className="text-[#0284C7] font-black underline inline-flex items-center gap-1"
                       
                     >
                       Firebase Console <ExternalLink className="w-3.5 h-3.5" />
@@ -683,7 +683,7 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
 
               <div className="p-4 bg-amber-50/80 border border-amber-200 rounded-[24px] text-[11px] text-amber-950 shadow-xs">
                 <strong className="font-black" >Aturan Keamanan (Firestore Rules):</strong>
-                <pre className="mt-2 p-3 bg-white/90 rounded-xl border border-amber-200 font-mono text-[10.5px] overflow-x-auto text-[#1C1B1F] shadow-inner">
+                <pre className="mt-2 p-3 bg-white/90 rounded-xl border border-amber-200 font-mono text-[10.5px] overflow-x-auto text-[#0F172A] shadow-inner">
 {`rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -699,12 +699,12 @@ service cloud.firestore {
         </div>
 
         {/* Footer */}
-        <div className="px-6 sm:px-8 py-4 bg-[#FFFBFE] border-t border-purple-100/50 flex items-center justify-between text-xs text-[#49454F]">
+        <div className="px-6 sm:px-8 py-4 bg-[#F8FAFC] border-t border-sky-100/50 flex items-center justify-between text-xs text-[#334155]">
           <span className="font-bold" >Sistem Informasi Absensi &amp; Dispos SMAN 1 Batu</span>
           <button
             type="button"
             onClick={onClose}
-            className="px-5 py-2 bg-white hover:bg-slate-50 text-[#1C1B1F] font-extrabold rounded-xl transition-all shadow-xs hover:-translate-y-0.5 active:scale-95 cursor-pointer border border-white/60"
+            className="px-5 py-2 bg-white hover:bg-slate-50 text-[#0F172A] font-extrabold rounded-xl transition-all shadow-xs hover:-translate-y-0.5 active:scale-95 cursor-pointer border border-white/60"
             
           >
             Tutup

@@ -21,14 +21,14 @@ export const MdCard: React.FC<MdCardProps> = ({
   }[radius];
 
   const variantClasses = {
-    filled: 'bg-[#F3EDF7] text-[#1C1B1F] border-0',
-    elevated: 'bg-[#F3EDF7] text-[#1C1B1F] shadow-sm',
-    tonal: 'bg-[#E8DEF8] text-[#1D192B] border-0',
-    outlined: 'bg-[#FFFBFE] text-[#1C1B1F] border border-[#79747E]/30 shadow-none',
+    filled: 'bg-[#F0F9FF] text-[#0F172A] border border-[#E0F2FE]',
+    elevated: 'bg-[#F0F9FF] text-[#0F172A] shadow-sm border border-[#E0F2FE]',
+    tonal: 'bg-[#E0F2FE] text-[#0369A1] border-0',
+    outlined: 'bg-[#F8FAFC] text-[#0F172A] border border-[#64748B]/20 shadow-none',
   }[variant];
 
   const hoverClasses = hoverable
-    ? 'transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] hover:shadow-md hover:scale-[1.01] hover:bg-[#EFE7F3]'
+    ? 'transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] hover:shadow-md hover:scale-[1.01] hover:bg-[#E0F2FE]'
     : 'transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)]';
 
   return (

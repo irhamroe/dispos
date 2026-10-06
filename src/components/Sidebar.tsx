@@ -151,7 +151,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       sublabel: 'Format resmi & rekap kasus',
       icon: Mail,
       badge: 'Resmi',
-      badgeBg: 'bg-[#E8DEF8] text-[#1D192B]',
+      badgeBg: 'bg-[#E0F2FE] text-[#0369A1]',
     },
     {
       id: 'aturan-pelanggaran' as NavTab,
@@ -159,7 +159,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       sublabel: 'Katalog bobot poin & aturan',
       icon: SlidersHorizontal,
       badge: '40 Aturan',
-      badgeBg: 'bg-[#E8DEF8] text-[#1D192B]',
+      badgeBg: 'bg-[#E0F2FE] text-[#0369A1]',
     },
   ];
 
@@ -210,23 +210,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div
           id="mobile-sidebar-backdrop"
           onClick={onCloseMobile}
-          className="fixed inset-0 z-40 bg-[#1C1B1F]/40 backdrop-blur-xs lg:hidden transition-opacity"
+          className="fixed inset-0 z-40 bg-[#0F172A]/40 backdrop-blur-xs lg:hidden transition-opacity"
         />
       )}
 
       {/* Sidebar container with Material You */}
       <aside
         id="app-sidebar"
-        className={`fixed top-20 bottom-4 left-3 z-40 w-72 bg-[#F3EDF7]/95 backdrop-blur-md rounded-[32px] shadow-sm border border-[#E8DEF8] flex flex-col justify-between transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] lg:translate-x-0 ${
+        className={`fixed top-20 bottom-4 left-3 z-40 w-72 bg-[#F0F9FF]/95 backdrop-blur-md rounded-[32px] shadow-sm border border-[#E0F2FE] flex flex-col justify-between transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] lg:translate-x-0 ${
           isOpenMobile ? 'translate-x-0 top-3 bottom-3 left-3 shadow-lg' : '-translate-x-[110%]'
         }`}
       >
         {/* Mobile Close Button Header */}
-        <div className="lg:hidden flex items-center justify-between px-5 pt-4 pb-2 border-b border-[#E8DEF8]">
-          <span className="font-medium text-sm text-[#1C1B1F]">Navigasi Menu</span>
+        <div className="lg:hidden flex items-center justify-between px-5 pt-4 pb-2 border-b border-[#E0F2FE]">
+          <span className="font-medium text-sm text-[#0F172A]">Navigasi Menu</span>
           <button
             onClick={onCloseMobile}
-            className="p-1.5 rounded-full bg-[#E8DEF8] text-[#1D192B] active:scale-95 transition-all"
+            className="p-1.5 rounded-full bg-[#E0F2FE] text-[#0369A1] active:scale-95 transition-all"
           >
             <X className="w-4 h-4" />
           </button>
@@ -236,7 +236,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* Section 1: Presensi & Kehadiran */}
           <div>
             <div className="mb-2 px-3">
-              <span className="text-[11px] font-medium uppercase tracking-wider text-[#6750A4]">
+              <span className="text-[11px] font-medium uppercase tracking-wider text-[#0284C7]">
                 Presensi &amp; Kehadiran
               </span>
             </div>
@@ -252,16 +252,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     onClick={() => handleNavClick(item.id)}
                     className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-full text-left transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] group cursor-pointer active:scale-95 ${
                       isActive
-                        ? 'bg-[#E8DEF8] text-[#1D192B] font-medium shadow-xs'
-                        : 'text-[#49454F] hover:bg-[#6750A4]/10 hover:text-[#1C1B1F]'
+                        ? 'bg-[#E0F2FE] text-[#0369A1] font-medium shadow-xs'
+                        : 'text-[#334155] hover:bg-[#0284C7]/10 hover:text-[#0F172A]'
                     }`}
                   >
                     <div className="flex items-center space-x-3 min-w-0">
                       <div
                         className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
                           isActive
-                            ? 'bg-[#6750A4] text-white shadow-xs'
-                            : 'bg-[#E7E0EC] text-[#49454F] group-hover:bg-[#6750A4] group-hover:text-white'
+                            ? 'bg-[#0284C7] text-white shadow-xs'
+                            : 'bg-[#E2F1FD] text-[#334155] group-hover:bg-[#0284C7] group-hover:text-white'
                         }`}
                       >
                         <Icon className="w-4 h-4" />
@@ -270,7 +270,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         <div className="text-xs font-medium truncate leading-tight">
                           {item.label}
                         </div>
-                        <div className="text-[10px] text-[#49454F] truncate mt-0.5">
+                        <div className="text-[10px] text-[#334155] truncate mt-0.5">
                           {item.sublabel}
                         </div>
                       </div>
@@ -295,19 +295,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   onClick={() => setIsRecapOpen(!isRecapOpen)}
                   className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-full text-left transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] group cursor-pointer active:scale-95 ${
                     isRecapTab && !isRecapOpen
-                      ? 'bg-[#E8DEF8] text-[#1D192B] font-medium'
-                      : 'text-[#49454F] hover:bg-[#6750A4]/10 hover:text-[#1C1B1F]'
+                      ? 'bg-[#E0F2FE] text-[#0369A1] font-medium'
+                      : 'text-[#334155] hover:bg-[#0284C7]/10 hover:text-[#0F172A]'
                   }`}
                 >
                   <div className="flex items-center space-x-3 min-w-0">
-                    <div className="w-8 h-8 rounded-full bg-[#E7E0EC] text-[#49454F] group-hover:bg-[#6750A4] group-hover:text-white flex items-center justify-center transition-all">
+                    <div className="w-8 h-8 rounded-full bg-[#E2F1FD] text-[#334155] group-hover:bg-[#0284C7] group-hover:text-white flex items-center justify-center transition-all">
                       <CalendarRange className="w-4 h-4" />
                     </div>
                     <div className="truncate">
                       <div className="text-xs font-medium truncate">
                         Rekap Kehadiran
                       </div>
-                      <div className="text-[10px] text-[#49454F] truncate mt-0.5">
+                      <div className="text-[10px] text-[#334155] truncate mt-0.5">
                         Presensi &amp; surat izin
                       </div>
                     </div>
@@ -320,15 +320,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       </span>
                     )}
                     {isRecapOpen ? (
-                      <ChevronDown className="w-4 h-4 text-[#79747E]" />
+                      <ChevronDown className="w-4 h-4 text-[#64748B]" />
                     ) : (
-                      <ChevronRight className="w-4 h-4 text-[#79747E]" />
+                      <ChevronRight className="w-4 h-4 text-[#64748B]" />
                     )}
                   </div>
                 </button>
 
                 {isRecapOpen && (
-                  <div className="mt-1 ml-3 p-1.5 bg-[#E7E0EC]/60 rounded-2xl space-y-1">
+                  <div className="mt-1 ml-3 p-1.5 bg-[#E2F1FD]/60 rounded-2xl space-y-1">
                     {recapSubItems.map((subItem) => {
                       const SubIcon = subItem.icon;
                       const isSubActive = currentTab === subItem.id;
@@ -339,14 +339,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           onClick={() => handleNavClick(subItem.id)}
                           className={`w-full flex items-center justify-between px-3 py-2 rounded-full text-left transition-all cursor-pointer active:scale-95 ${
                             isSubActive
-                              ? 'bg-[#6750A4] text-white font-medium shadow-xs'
-                              : 'text-[#49454F] hover:bg-[#6750A4]/10'
+                              ? 'bg-[#0284C7] text-white font-medium shadow-xs'
+                              : 'text-[#334155] hover:bg-[#0284C7]/10'
                           }`}
                         >
                           <div className="flex items-center space-x-2.5 min-w-0">
                             <SubIcon
                               className={`w-3.5 h-3.5 shrink-0 ${
-                                isSubActive ? 'text-white' : 'text-[#6750A4]'
+                                isSubActive ? 'text-white' : 'text-[#0284C7]'
                               }`}
                             />
                             <div className="truncate text-xs leading-tight">
@@ -375,7 +375,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* Section 2: Disiplin Positif */}
           <div>
             <div className="mb-2 px-3">
-              <span className="text-[11px] font-medium uppercase tracking-wider text-[#6750A4]">
+              <span className="text-[11px] font-medium uppercase tracking-wider text-[#0284C7]">
                 Disiplin Positif
               </span>
             </div>
@@ -391,16 +391,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     onClick={() => handleNavClick(item.id)}
                     className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-full text-left transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] group cursor-pointer active:scale-95 ${
                       isActive
-                        ? 'bg-[#E8DEF8] text-[#1D192B] font-medium shadow-xs'
-                        : 'text-[#49454F] hover:bg-[#6750A4]/10 hover:text-[#1C1B1F]'
+                        ? 'bg-[#E0F2FE] text-[#0369A1] font-medium shadow-xs'
+                        : 'text-[#334155] hover:bg-[#0284C7]/10 hover:text-[#0F172A]'
                     }`}
                   >
                     <div className="flex items-center space-x-3 min-w-0">
                       <div
                         className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
                           isActive
-                            ? 'bg-[#6750A4] text-white shadow-xs'
-                            : 'bg-[#E7E0EC] text-[#49454F] group-hover:bg-[#6750A4] group-hover:text-white'
+                            ? 'bg-[#0284C7] text-white shadow-xs'
+                            : 'bg-[#E2F1FD] text-[#334155] group-hover:bg-[#0284C7] group-hover:text-white'
                         }`}
                       >
                         <Icon className="w-4 h-4" />
@@ -409,7 +409,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         <div className="text-xs font-medium truncate leading-tight">
                           {item.label}
                         </div>
-                        <div className="text-[10px] text-[#49454F] truncate mt-0.5">
+                        <div className="text-[10px] text-[#334155] truncate mt-0.5">
                           {item.sublabel}
                         </div>
                       </div>
@@ -431,43 +431,43 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* Section 3: Master Data */}
           <div>
             <div className="mb-2 px-3">
-              <span className="text-[11px] font-medium uppercase tracking-wider text-[#6750A4]">
+              <span className="text-[11px] font-medium uppercase tracking-wider text-[#0284C7]">
                 Master Data
               </span>
             </div>
 
-            <div className="rounded-2xl overflow-hidden bg-[#E7E0EC]/40 border border-[#E8DEF8]">
+            <div className="rounded-2xl overflow-hidden bg-[#E2F1FD]/40 border border-[#E0F2FE]">
               <button
                 type="button"
                 id="nav-btn-manajemen-data"
                 onClick={() => setIsManagementOpen(!isManagementOpen)}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 text-left transition-colors cursor-pointer ${
                   isManagementTab
-                    ? 'bg-[#E8DEF8] text-[#1D192B] font-medium'
-                    : 'text-[#49454F] hover:bg-[#6750A4]/10 font-medium'
+                    ? 'bg-[#E0F2FE] text-[#0369A1] font-medium'
+                    : 'text-[#334155] hover:bg-[#0284C7]/10 font-medium'
                 }`}
               >
                 <div className="flex items-center space-x-2.5">
-                  <div className="w-7 h-7 rounded-full bg-[#6750A4] text-white flex items-center justify-center shadow-xs">
+                  <div className="w-7 h-7 rounded-full bg-[#0284C7] text-white flex items-center justify-center shadow-xs">
                     <Database className="w-3.5 h-3.5" />
                   </div>
                   <div>
                     <div className="text-xs font-medium leading-tight">Master Data</div>
-                    <div className="text-[10px] text-[#49454F]">Siswa, Kelas, Wali & User</div>
+                    <div className="text-[10px] text-[#334155]">Siswa, Kelas, Wali & User</div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-1.5">
                   {isManagementOpen ? (
-                    <ChevronDown className="w-4 h-4 text-[#79747E]" />
+                    <ChevronDown className="w-4 h-4 text-[#64748B]" />
                   ) : (
-                    <ChevronRight className="w-4 h-4 text-[#79747E]" />
+                    <ChevronRight className="w-4 h-4 text-[#64748B]" />
                   )}
                 </div>
               </button>
 
               {isManagementOpen && (
-                <div className="p-1.5 space-y-1 bg-[#E7E0EC]/60">
+                <div className="p-1.5 space-y-1 bg-[#E2F1FD]/60">
                   {managementSubItems.map((sub) => {
                     const SubIcon = sub.icon;
                     const isSubActive =
@@ -480,19 +480,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         onClick={() => handleNavClick(sub.id)}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-full text-left transition-all cursor-pointer active:scale-95 ${
                           isSubActive
-                            ? 'bg-[#6750A4] text-white font-medium shadow-xs'
-                            : 'text-[#49454F] hover:bg-[#6750A4]/10'
+                            ? 'bg-[#0284C7] text-white font-medium shadow-xs'
+                            : 'text-[#334155] hover:bg-[#0284C7]/10'
                         }`}
                       >
                         <div className="flex items-center space-x-2.5 min-w-0">
                           <SubIcon
                             className={`w-3.5 h-3.5 shrink-0 ${
-                              isSubActive ? 'text-white' : 'text-[#6750A4]'
+                              isSubActive ? 'text-white' : 'text-[#0284C7]'
                             }`}
                           />
                           <div className="truncate">
                             <div className="text-xs truncate leading-tight font-medium">{sub.label}</div>
-                            <div className={`text-[9.5px] truncate ${isSubActive ? 'text-[#E8DEF8]' : 'text-[#49454F]'}`}>
+                            <div className={`text-[9.5px] truncate ${isSubActive ? 'text-[#E0F2FE]' : 'text-[#334155]'}`}>
                               {sub.sublabel}
                             </div>
                           </div>
@@ -502,7 +502,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
                             isSubActive
                               ? 'bg-white/20 text-white'
-                              : 'bg-[#FFFBFE] text-[#49454F]'
+                              : 'bg-[#F8FAFC] text-[#334155]'
                           }`}
                         >
                           {sub.badge}
@@ -516,32 +516,32 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
 
           {/* Quick Attendance Widget in Sidebar */}
-          <div className="p-4 rounded-2xl bg-[#E8DEF8]/60 border border-[#E8DEF8]">
+          <div className="p-4 rounded-2xl bg-[#E0F2FE]/60 border border-[#E0F2FE]">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-medium text-[#1C1B1F] flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-[#6750A4]" />
+              <span className="text-xs font-medium text-[#0F172A] flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-[#0284C7]" />
                 Presensi Hari Ini
               </span>
-              <span className="text-xs font-bold text-[#6750A4]">
+              <span className="text-xs font-bold text-[#0284C7]">
                 {attendancePercent}%
               </span>
             </div>
 
             {/* Material You Progress Bar */}
-            <div className="w-full bg-[#E7E0EC] rounded-full h-2 overflow-hidden mb-3">
+            <div className="w-full bg-[#E2F1FD] rounded-full h-2 overflow-hidden mb-3">
               <div
-                className="bg-[#6750A4] h-full rounded-full transition-all duration-300"
+                className="bg-[#0284C7] h-full rounded-full transition-all duration-300"
                 style={{ width: `${attendancePercent}%` }}
               />
             </div>
 
             <div className="grid grid-cols-2 gap-2 text-center text-xs">
-              <div className="p-2 rounded-xl bg-[#FFFBFE]">
-                <div className="text-[10px] text-[#49454F]">Hadir</div>
+              <div className="p-2 rounded-xl bg-[#F8FAFC]">
+                <div className="text-[10px] text-[#334155]">Hadir</div>
                 <div className="text-xs font-bold text-[#1B5E20]">{todayCount.hadir}</div>
               </div>
-              <div className="p-2 rounded-xl bg-[#FFFBFE]">
-                <div className="text-[10px] text-[#49454F]">Alpa</div>
+              <div className="p-2 rounded-xl bg-[#F8FAFC]">
+                <div className="text-[10px] text-[#334155]">Alpa</div>
                 <div className="text-xs font-bold text-[#B71C1C]">{todayCount.alpa}</div>
               </div>
             </div>
@@ -549,12 +549,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Sidebar Footer */}
-        <div className="p-3.5 border-t border-[#E8DEF8] bg-[#E8DEF8]/30 rounded-b-[32px]">
-          <div className="flex items-start space-x-2.5 text-xs text-[#49454F]">
-            <Sparkles className="w-4 h-4 text-[#6750A4] shrink-0 mt-0.5" />
+        <div className="p-3.5 border-t border-[#E0F2FE] bg-[#E0F2FE]/30 rounded-b-[32px]">
+          <div className="flex items-start space-x-2.5 text-xs text-[#334155]">
+            <Sparkles className="w-4 h-4 text-[#0284C7] shrink-0 mt-0.5" />
             <div>
-              <p className="font-medium text-[#1C1B1F] text-[11px]">SMAN 1 Batu • Presensi</p>
-              <p className="text-[10px] text-[#49454F] mt-0.5 leading-tight">
+              <p className="font-medium text-[#0F172A] text-[11px]">SMAN 1 Batu • Presensi</p>
+              <p className="text-[10px] text-[#334155] mt-0.5 leading-tight">
                 36 Rombel dengan integrasi disiplin positif.
               </p>
             </div>

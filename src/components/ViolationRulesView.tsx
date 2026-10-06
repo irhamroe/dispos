@@ -141,19 +141,19 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
   const beratCount = violationRules.filter((r) => r.category === 'Berat').length;
 
   return (
-    <div className="space-y-6 pb-12 font-roboto text-[#1C1B1F]">
+    <div className="space-y-6 pb-12 font-roboto text-[#0F172A]">
       {/* Header Banner */}
       <MdCard variant="elevated" radius="large" className="p-6 sm:p-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-[#6750A4] text-white flex items-center justify-center shadow-xs shrink-0">
+            <div className="w-12 h-12 rounded-full bg-[#0284C7] text-white flex items-center justify-center shadow-xs shrink-0">
               <SlidersHorizontal className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="text-2xl sm:text-3xl font-medium text-[#1C1B1F] tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-medium text-[#0F172A] tracking-tight">
                 Manajemen Aturan Pelanggaran
               </h2>
-              <p className="text-sm text-[#49454F] mt-1">
+              <p className="text-sm text-[#334155] mt-1">
                 Kelola katalog tata tertib: input, edit, dan hapus jenis pelanggaran beserta bobot poin dan restitusi
               </p>
             </div>
@@ -192,22 +192,22 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-base shadow-xs shrink-0 ${
-              enablePointsSystem ? 'bg-[#6750A4] text-white' : 'bg-[#E7E0EC] text-[#49454F]'
+              enablePointsSystem ? 'bg-[#0284C7] text-white' : 'bg-[#E2F1FD] text-[#334155]'
             }`}>
               <Sparkles className="w-6 h-6" />
             </div>
             <div>
               <div className="flex items-center gap-2.5 flex-wrap">
-                <h3 className="font-medium text-[#1D192B] text-base">Mode Sistem Poin Pelanggaran</h3>
+                <h3 className="font-medium text-[#0369A1] text-base">Mode Sistem Poin Pelanggaran</h3>
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                   enablePointsSystem 
                     ? 'bg-[#C8E6C9] text-[#1B5E20]' 
-                    : 'bg-[#E7E0EC] text-[#49454F]'
+                    : 'bg-[#E2F1FD] text-[#334155]'
                 }`}>
                   {enablePointsSystem ? 'AKTIF (Mode Poin)' : 'NONAKTIF (Fokus Restoratif)'}
                 </span>
               </div>
-              <p className="text-xs text-[#49454F] mt-1">
+              <p className="text-xs text-[#334155] mt-1">
                 {enablePointsSystem
                   ? 'Sistem mencatat dan menampilkan angka bobot poin pelanggaran serta akumulasi poin setiap siswa.'
                   : 'Sistem menyembunyikan perhitungan angka poin dan murni berfokus pada pendekatan Disiplin Positif Restoratif, dokumentasi foto & berkas pembinaan.'}
@@ -230,13 +230,13 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <MdCard variant="filled" hoverable className="p-5">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-[#49454F] uppercase tracking-wider">Total Aturan</span>
-            <div className="w-9 h-9 rounded-full bg-[#E7E0EC] text-[#1C1B1F] flex items-center justify-center">
+            <span className="text-xs font-medium text-[#334155] uppercase tracking-wider">Total Aturan</span>
+            <div className="w-9 h-9 rounded-full bg-[#E2F1FD] text-[#0F172A] flex items-center justify-center">
               <BookOpen className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-bold text-[#1C1B1F] mt-2 tracking-tight">{totalCount}</div>
-          <div className="text-xs text-[#49454F] mt-1">Katalog aktif di sistem</div>
+          <div className="text-3xl font-bold text-[#0F172A] mt-2 tracking-tight">{totalCount}</div>
+          <div className="text-xs text-[#334155] mt-1">Katalog aktif di sistem</div>
         </MdCard>
 
         <MdCard variant="filled" hoverable className="p-5">
@@ -295,8 +295,8 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
               onClick={() => setSelectedCategory('ALL')}
               className={`px-4 py-2 rounded-full text-xs font-medium transition-all cursor-pointer active:scale-95 ${
                 selectedCategory === 'ALL'
-                  ? 'bg-[#6750A4] text-white shadow-xs'
-                  : 'bg-[#FFFBFE] text-[#49454F] hover:bg-[#E8DEF8]'
+                  ? 'bg-[#0284C7] text-white shadow-xs'
+                  : 'bg-[#F8FAFC] text-[#334155] hover:bg-[#E0F2FE]'
               }`}
             >
               Semua ({totalCount})
@@ -307,7 +307,7 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
               className={`px-4 py-2 rounded-full text-xs font-medium transition-all cursor-pointer active:scale-95 ${
                 selectedCategory === 'Ringan'
                   ? 'bg-[#0277BD] text-white shadow-xs'
-                  : 'bg-[#FFFBFE] text-[#49454F] hover:bg-[#E1F5FE]'
+                  : 'bg-[#F8FAFC] text-[#334155] hover:bg-[#E1F5FE]'
               }`}
             >
               Ringan ({ringanCount})
@@ -318,7 +318,7 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
               className={`px-4 py-2 rounded-full text-xs font-medium transition-all cursor-pointer active:scale-95 ${
                 selectedCategory === 'Sedang'
                   ? 'bg-[#E65100] text-white shadow-xs'
-                  : 'bg-[#FFFBFE] text-[#49454F] hover:bg-[#FFF3E0]'
+                  : 'bg-[#F8FAFC] text-[#334155] hover:bg-[#FFF3E0]'
               }`}
             >
               Sedang ({sedangCount})
@@ -329,7 +329,7 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
               className={`px-4 py-2 rounded-full text-xs font-medium transition-all cursor-pointer active:scale-95 ${
                 selectedCategory === 'Berat'
                   ? 'bg-[#BA1A1A] text-white shadow-xs'
-                  : 'bg-[#FFFBFE] text-[#49454F] hover:bg-[#FFDAD6]'
+                  : 'bg-[#F8FAFC] text-[#334155] hover:bg-[#FFDAD6]'
               }`}
             >
               Berat ({beratCount})
@@ -338,24 +338,24 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
 
           {/* Search Box */}
           <div className="relative flex-1 sm:max-w-xs">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#49454F]" />
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#334155]" />
             <input
               type="text"
               placeholder="Cari nama jenis pelanggaran..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-[#E7E0EC] rounded-full text-xs text-[#1C1B1F] placeholder-[#49454F] focus:outline-hidden"
+              className="w-full pl-10 pr-4 py-2 bg-[#E2F1FD] rounded-full text-xs text-[#0F172A] placeholder-[#334155] focus:outline-hidden"
             />
           </div>
         </div>
       </MdCard>
 
       {/* Rules Table */}
-      <div className="rounded-[32px] bg-[#F3EDF7] shadow-sm border border-[#E8DEF8] overflow-hidden">
+      <div className="rounded-[32px] bg-[#F0F9FF] shadow-sm border border-[#E0F2FE] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-[#E7E0EC]/80 text-[#49454F] font-medium text-xs uppercase tracking-wider border-b border-[#E8DEF8]">
+              <tr className="bg-[#E2F1FD]/80 text-[#334155] font-medium text-xs uppercase tracking-wider border-b border-[#E0F2FE]">
                 <th className="py-3 px-4 text-center w-14">No</th>
                 <th className="py-3 px-4 text-center w-24">Kode</th>
                 <th className="py-3 px-5 min-w-[260px]">Jenis Pelanggaran</th>
@@ -366,11 +366,11 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
                 <th className="py-3 px-4 text-center w-32">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E8DEF8] text-xs">
+            <tbody className="divide-y divide-[#E0F2FE] text-xs">
               {filteredRules.length === 0 ? (
                 <tr>
-                  <td colSpan={enablePointsSystem ? 6 : 5} className="py-16 text-center text-[#49454F]">
-                    <div className="w-12 h-12 rounded-full bg-[#E7E0EC] text-[#49454F] flex items-center justify-center mx-auto mb-3">
+                  <td colSpan={enablePointsSystem ? 6 : 5} className="py-16 text-center text-[#334155]">
+                    <div className="w-12 h-12 rounded-full bg-[#E2F1FD] text-[#334155] flex items-center justify-center mx-auto mb-3">
                       <BookOpen className="w-6 h-6" />
                     </div>
                     <span className="font-medium">Tidak ada aturan jenis pelanggaran yang sesuai filter.</span>
@@ -386,14 +386,14 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
                   }
 
                   return (
-                    <tr key={rule.id} className="hover:bg-[#FFFBFE] transition-colors">
-                      <td className="py-3 px-4 text-center text-[#49454F] font-bold">{idx + 1}</td>
+                    <tr key={rule.id} className="hover:bg-[#F8FAFC] transition-colors">
+                      <td className="py-3 px-4 text-center text-[#334155] font-bold">{idx + 1}</td>
                       <td className="py-3 px-4 text-center">
-                        <span className="inline-block px-3 py-1 rounded-full font-mono text-xs font-bold bg-[#E7E0EC] text-[#1C1B1F]">
+                        <span className="inline-block px-3 py-1 rounded-full font-mono text-xs font-bold bg-[#E2F1FD] text-[#0F172A]">
                           {rule.code || `A${idx + 1}`}
                         </span>
                       </td>
-                      <td className="py-3 px-5 font-medium text-[#1C1B1F] text-sm">{rule.name}</td>
+                      <td className="py-3 px-5 font-medium text-[#0F172A] text-sm">{rule.name}</td>
                       <td className="py-3 px-4 text-center">
                         <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${badgeClass}`}>
                           {rule.category}
@@ -401,7 +401,7 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
                       </td>
                       {enablePointsSystem && (
                         <td className="py-3 px-4 text-center">
-                          <span className="font-bold text-[#1C1B1F] bg-[#E7E0EC] px-3 py-1 rounded-full">
+                          <span className="font-bold text-[#0F172A] bg-[#E2F1FD] px-3 py-1 rounded-full">
                             {rule.defaultPoints} Poin
                           </span>
                         </td>
@@ -411,7 +411,7 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
                           <button
                             type="button"
                             onClick={() => handleOpenEditModal(rule)}
-                            className="p-2 rounded-full bg-[#E8DEF8] text-[#6750A4] hover:bg-[#DFD3F3] active:scale-95 transition-all cursor-pointer"
+                            className="p-2 rounded-full bg-[#E0F2FE] text-[#0284C7] hover:bg-[#DFD3F3] active:scale-95 transition-all cursor-pointer"
                             title="Edit Aturan"
                           >
                             <Edit3 className="w-4 h-4" />
@@ -437,9 +437,9 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
 
       {/* MODAL: Input / Edit Aturan */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#1C1B1F]/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-[#FFFBFE] rounded-[32px] max-w-lg w-full border border-[#E8DEF8] shadow-lg overflow-hidden animate-in fade-in zoom-in-95 my-8">
-            <div className="p-6 bg-[#6750A4] text-white flex items-center justify-between">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/40 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-[#F8FAFC] rounded-[32px] max-w-lg w-full border border-[#E0F2FE] shadow-lg overflow-hidden animate-in fade-in zoom-in-95 my-8">
+            <div className="p-6 bg-[#0284C7] text-white flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
                   <SlidersHorizontal className="w-5 h-5 text-white" />
@@ -515,7 +515,7 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
                 )}
               </div>
 
-              <div className="pt-4 border-t border-[#E8DEF8] flex items-center justify-end gap-3">
+              <div className="pt-4 border-t border-[#E0F2FE] flex items-center justify-end gap-3">
                 <MdButton
                   type="button"
                   variant="text"

@@ -201,15 +201,15 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
   };
 
   return (
-    <div className="space-y-6 pb-12 font-roboto text-[#1C1B1F]">
+    <div className="space-y-6 pb-12 font-roboto text-[#0F172A]">
       {/* Header & Filter Controls */}
       <MdCard variant="elevated" radius="large" className="p-6 sm:p-8 space-y-5">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-medium text-[#1C1B1F] tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-medium text-[#0F172A] tracking-tight">
               Rekap Presensi
             </h2>
-            <p className="text-sm text-[#49454F] mt-1">
+            <p className="text-sm text-[#334155] mt-1">
               Laporan akumulasi kehadiran siswa per rentang tanggal dan kelas
             </p>
           </div>
@@ -237,10 +237,10 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
         </div>
 
         {/* Date Range Selection */}
-        <div className="pt-4 border-t border-[#E8DEF8] flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-2 bg-[#E7E0EC] rounded-full px-4 py-2 text-xs text-[#1C1B1F]">
-            <Calendar className="w-4 h-4 text-[#6750A4] shrink-0" />
-            <span className="text-[#49454F]">Tanggal Awal:</span>
+        <div className="pt-4 border-t border-[#E0F2FE] flex flex-wrap items-center gap-4">
+          <div className="flex items-center gap-2 bg-[#E2F1FD] rounded-full px-4 py-2 text-xs text-[#0F172A]">
+            <Calendar className="w-4 h-4 text-[#0284C7] shrink-0" />
+            <span className="text-[#334155]">Tanggal Awal:</span>
             <input
               id="recap-start-date"
               type="date"
@@ -249,13 +249,13 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                 setStartDate(e.target.value);
                 setCurrentPage(1);
               }}
-              className="bg-transparent text-[#1C1B1F] font-medium focus:outline-hidden cursor-pointer"
+              className="bg-transparent text-[#0F172A] font-medium focus:outline-hidden cursor-pointer"
             />
           </div>
 
-          <div className="flex items-center gap-2 bg-[#E7E0EC] rounded-full px-4 py-2 text-xs text-[#1C1B1F]">
-            <Calendar className="w-4 h-4 text-[#6750A4] shrink-0" />
-            <span className="text-[#49454F]">Tanggal Akhir:</span>
+          <div className="flex items-center gap-2 bg-[#E2F1FD] rounded-full px-4 py-2 text-xs text-[#0F172A]">
+            <Calendar className="w-4 h-4 text-[#0284C7] shrink-0" />
+            <span className="text-[#334155]">Tanggal Akhir:</span>
             <input
               id="recap-end-date"
               type="date"
@@ -264,16 +264,16 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                 setEndDate(e.target.value);
                 setCurrentPage(1);
               }}
-              className="bg-transparent text-[#1C1B1F] font-medium focus:outline-hidden cursor-pointer"
+              className="bg-transparent text-[#0F172A] font-medium focus:outline-hidden cursor-pointer"
             />
           </div>
         </div>
 
         {/* Grade and Class Filtering Controls */}
-        <div className="pt-4 border-t border-[#E8DEF8] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+        <div className="pt-4 border-t border-[#E0F2FE] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
           {/* Grade filter tabs */}
-          <div className="flex items-center gap-1.5 p-1 bg-[#E7E0EC] rounded-full text-xs">
-            <span className="text-[#49454F] px-2 text-[11px]">Jenjang:</span>
+          <div className="flex items-center gap-1.5 p-1 bg-[#E2F1FD] rounded-full text-xs">
+            <span className="text-[#334155] px-2 text-[11px]">Jenjang:</span>
             {(['X', 'XI', 'XII', 'ALL'] as const).map((gr) => (
               <button
                 key={gr}
@@ -290,8 +290,8 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                 }}
                 className={`px-3.5 py-1.5 rounded-full transition-all cursor-pointer active:scale-95 ${
                   selectedGrade === gr
-                    ? 'bg-[#6750A4] text-white font-medium shadow-xs'
-                    : 'text-[#49454F] hover:bg-[#6750A4]/10'
+                    ? 'bg-[#0284C7] text-white font-medium shadow-xs'
+                    : 'text-[#334155] hover:bg-[#0284C7]/10'
                 }`}
               >
                 {gr === 'ALL' ? 'Semua (36 Kelas)' : `Kelas ${gr}`}
@@ -300,9 +300,9 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
           </div>
 
           {/* Class dropdown */}
-          <div className="flex items-center gap-2 bg-[#E7E0EC] rounded-full px-4 py-2 text-xs text-[#1C1B1F]">
-            <Layers className="w-4 h-4 text-[#6750A4] shrink-0" />
-            <span className="text-[#49454F]">Pilih Kelas:</span>
+          <div className="flex items-center gap-2 bg-[#E2F1FD] rounded-full px-4 py-2 text-xs text-[#0F172A]">
+            <Layers className="w-4 h-4 text-[#0284C7] shrink-0" />
+            <span className="text-[#334155]">Pilih Kelas:</span>
             <select
               id="recap-class-select"
               value={selectedClass}
@@ -310,7 +310,7 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                 setSelectedClass(e.target.value);
                 setCurrentPage(1);
               }}
-              className="bg-transparent font-medium text-[#1C1B1F] focus:outline-hidden cursor-pointer"
+              className="bg-transparent font-medium text-[#0F172A] focus:outline-hidden cursor-pointer"
             >
               <option value="ALL">Semua Kelas ({availableClasses.length} Kelas)</option>
               {availableClasses.map((c) => (
@@ -326,7 +326,7 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
       {/* Summary KPI Bar for Selected Range */}
       <MdCard variant="filled" radius="large" className="p-5 flex flex-wrap items-center justify-between gap-4 text-xs">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="font-medium text-[#1C1B1F]">
+          <span className="font-medium text-[#0F172A]">
             Total Rekap ({searchedRecapList.length} Siswa):
           </span>
           <span className="px-3 py-1 rounded-full bg-[#C8E6C9] text-[#1B5E20] font-bold">
@@ -341,26 +341,26 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
           <span className="px-3 py-1 rounded-full bg-[#FFDAD6] text-[#410002] font-bold">
             A: {aggregateTotals.totalA}
           </span>
-          <span className="px-3 py-1 rounded-full bg-[#E8DEF8] text-[#1D192B] font-bold">
+          <span className="px-3 py-1 rounded-full bg-[#E0F2FE] text-[#0369A1] font-bold">
             D: {aggregateTotals.totalD}
           </span>
-          <span className="px-3 py-1 rounded-full bg-[#E8DEF8] text-[#6750A4] font-bold">
+          <span className="px-3 py-1 rounded-full bg-[#E0F2FE] text-[#0284C7] font-bold">
             Rata-rata: {aggregateTotals.avgRate}%
           </span>
         </div>
 
-        <div className="flex items-center gap-2 text-xs text-[#49454F]">
-          <FileCheck className="w-4 h-4 text-[#6750A4]" />
+        <div className="flex items-center gap-2 text-xs text-[#334155]">
+          <FileCheck className="w-4 h-4 text-[#0284C7]" />
           <span>Surat I/S Terverifikasi: <strong className="text-[#1B5E20]">{aggregateTotals.totalSuratAda}</strong> • Belum: <strong className="text-[#BA1A1A]">{aggregateTotals.totalSuratBelum}</strong></span>
         </div>
       </MdCard>
 
       {/* Recap Table */}
-      <div className="rounded-[32px] bg-[#F3EDF7] shadow-sm border border-[#E8DEF8] overflow-hidden">
+      <div className="rounded-[32px] bg-[#F0F9FF] shadow-sm border border-[#E0F2FE] overflow-hidden">
         {/* Search Toolbar */}
-        <div className="p-5 sm:p-6 border-b border-[#E8DEF8] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+        <div className="p-5 sm:p-6 border-b border-[#E0F2FE] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
           <div className="relative w-full sm:w-80">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#49454F]" />
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#334155]" />
             <input
               id="search-recap-student"
               type="text"
@@ -370,12 +370,12 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                 setSearchQuery(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full pl-10 pr-4 py-2 bg-[#E7E0EC] rounded-full text-xs text-[#1C1B1F] placeholder-[#49454F] focus:outline-hidden"
+              className="w-full pl-10 pr-4 py-2 bg-[#E2F1FD] rounded-full text-xs text-[#0F172A] placeholder-[#334155] focus:outline-hidden"
             />
           </div>
 
-          <div className="text-xs text-[#49454F]">
-            Periode: <strong className="text-[#1C1B1F]">{formatDateIndonesian(startDate)}</strong> s.d. <strong className="text-[#1C1B1F]">{formatDateIndonesian(endDate)}</strong> ({diffDays} hari)
+          <div className="text-xs text-[#334155]">
+            Periode: <strong className="text-[#0F172A]">{formatDateIndonesian(startDate)}</strong> s.d. <strong className="text-[#0F172A]">{formatDateIndonesian(endDate)}</strong> ({diffDays} hari)
           </div>
         </div>
 
@@ -384,20 +384,20 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
             {isDailyView ? (
               /* THEAD: MODE HARIAN */
               <thead>
-                <tr className="bg-[#E7E0EC]/80 border-b border-[#E8DEF8] text-xs font-medium uppercase tracking-wider text-[#49454F]">
-                  <th rowSpan={2} className="py-3 px-3 w-12 text-center border-r border-[#E8DEF8]">No</th>
-                  <th rowSpan={2} className="py-3 px-3 w-28 border-r border-[#E8DEF8]">NISN</th>
-                  <th rowSpan={2} className="py-3 px-4 min-w-[180px] border-r border-[#E8DEF8]">Nama Lengkap Siswa</th>
-                  <th rowSpan={2} className="py-3 px-2 text-center w-10 border-r border-[#E8DEF8]">L/P</th>
-                  <th rowSpan={2} className="py-3 px-2 text-center w-14 border-r border-[#E8DEF8]">Kelas</th>
-                  <th colSpan={datesList.length} className="py-2 px-2 text-center bg-[#E8DEF8] text-[#1D192B] border-r border-[#E8DEF8] font-medium">
+                <tr className="bg-[#E2F1FD]/80 border-b border-[#E0F2FE] text-xs font-medium uppercase tracking-wider text-[#334155]">
+                  <th rowSpan={2} className="py-3 px-3 w-12 text-center border-r border-[#E0F2FE]">No</th>
+                  <th rowSpan={2} className="py-3 px-3 w-28 border-r border-[#E0F2FE]">NISN</th>
+                  <th rowSpan={2} className="py-3 px-4 min-w-[180px] border-r border-[#E0F2FE]">Nama Lengkap Siswa</th>
+                  <th rowSpan={2} className="py-3 px-2 text-center w-10 border-r border-[#E0F2FE]">L/P</th>
+                  <th rowSpan={2} className="py-3 px-2 text-center w-14 border-r border-[#E0F2FE]">Kelas</th>
+                  <th colSpan={datesList.length} className="py-2 px-2 text-center bg-[#E0F2FE] text-[#0369A1] border-r border-[#E0F2FE] font-medium">
                     Status Presensi
                   </th>
-                  <th colSpan={6} className="py-2 px-2 text-center bg-[#E7E0EC] text-[#1C1B1F] font-medium">
+                  <th colSpan={6} className="py-2 px-2 text-center bg-[#E2F1FD] text-[#0F172A] font-medium">
                     Rekapitulasi Jumlah
                   </th>
                 </tr>
-                <tr className="bg-[#EDE7F2] border-b border-[#E8DEF8] text-[10px] font-medium uppercase text-[#49454F]">
+                <tr className="bg-[#E0F2FE] border-b border-[#E0F2FE] text-[10px] font-medium uppercase text-[#334155]">
                   {datesList.map((dateStr) => {
                     const dayNum = parseInt(dateStr.split('-')[2], 10);
                     const shortDay = getDayShortName(dateStr);
@@ -408,29 +408,29 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                         className={`py-2 px-0.5 text-center min-w-[36px] w-[36px] border-r transition-colors ${
                           isWeekend 
                             ? 'bg-[#FFDAD6] text-[#410002] font-bold' 
-                            : 'border-r-[#E8DEF8] text-[#49454F]'
+                            : 'border-r-[#E0F2FE] text-[#334155]'
                         }`}
                         title={`${formatDateIndonesian(dateStr)} ${isWeekend ? '- Hari Libur Sekolah' : ''}`}
                       >
                         <div className="leading-tight">
-                          <span className={`block text-[8.5px] ${isWeekend ? 'text-[#410002]' : 'text-[#49454F]'}`}>{shortDay}</span>
-                          <span className={`block text-[11px] font-bold ${isWeekend ? 'text-[#410002]' : 'text-[#1C1B1F]'}`}>{dayNum}</span>
+                          <span className={`block text-[8.5px] ${isWeekend ? 'text-[#410002]' : 'text-[#334155]'}`}>{shortDay}</span>
+                          <span className={`block text-[11px] font-bold ${isWeekend ? 'text-[#410002]' : 'text-[#0F172A]'}`}>{dayNum}</span>
                         </div>
                       </th>
                     );
                   })}
-                  <th className="py-2 px-1 text-center w-11 text-[#1B5E20] bg-[#C8E6C9]/40 border-r border-[#E8DEF8]">H</th>
-                  <th className="py-2 px-1 text-center w-11 text-[#E65100] bg-[#FFF3E0]/40 border-r border-[#E8DEF8]">S</th>
-                  <th className="py-2 px-1 text-center w-11 text-[#0277BD] bg-[#E1F5FE]/40 border-r border-[#E8DEF8]">I</th>
-                  <th className="py-2 px-1 text-center w-11 text-[#BA1A1A] bg-[#FFDAD6]/40 border-r border-[#E8DEF8]">A</th>
-                  <th className="py-2 px-1 text-center w-11 text-[#6750A4] bg-[#E8DEF8]/40 border-r border-[#E8DEF8]">D</th>
-                  <th className="py-2 px-2 text-center w-14 text-[#1C1B1F] bg-[#E7E0EC]">%</th>
+                  <th className="py-2 px-1 text-center w-11 text-[#1B5E20] bg-[#C8E6C9]/40 border-r border-[#E0F2FE]">H</th>
+                  <th className="py-2 px-1 text-center w-11 text-[#E65100] bg-[#FFF3E0]/40 border-r border-[#E0F2FE]">S</th>
+                  <th className="py-2 px-1 text-center w-11 text-[#0277BD] bg-[#E1F5FE]/40 border-r border-[#E0F2FE]">I</th>
+                  <th className="py-2 px-1 text-center w-11 text-[#BA1A1A] bg-[#FFDAD6]/40 border-r border-[#E0F2FE]">A</th>
+                  <th className="py-2 px-1 text-center w-11 text-[#0284C7] bg-[#E0F2FE]/40 border-r border-[#E0F2FE]">D</th>
+                  <th className="py-2 px-2 text-center w-14 text-[#0F172A] bg-[#E2F1FD]">%</th>
                 </tr>
               </thead>
             ) : (
               /* THEAD: MODE REKAP BULANAN */
               <thead>
-                <tr className="bg-[#E7E0EC]/80 border-b border-[#E8DEF8] text-xs font-medium uppercase tracking-wider text-[#49454F]">
+                <tr className="bg-[#E2F1FD]/80 border-b border-[#E0F2FE] text-xs font-medium uppercase tracking-wider text-[#334155]">
                   <th className="py-3 px-3 w-12 text-center">No</th>
                   <th className="py-3 px-3 w-28">NISN</th>
                   <th className="py-3 px-4 min-w-[200px]">Nama Lengkap Siswa</th>
@@ -440,16 +440,16 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                   <th className="py-3 px-2 text-center w-16 text-[#E65100]">Sakit (S)</th>
                   <th className="py-3 px-2 text-center w-16 text-[#0277BD]">Izin (I)</th>
                   <th className="py-3 px-2 text-center w-16 text-[#BA1A1A]">Alpa (A)</th>
-                  <th className="py-3 px-2 text-center w-16 text-[#6750A4]">Dispen (D)</th>
+                  <th className="py-3 px-2 text-center w-16 text-[#0284C7]">Dispen (D)</th>
                   <th className="py-3 px-3 text-center w-20">% Kehadiran</th>
                 </tr>
               </thead>
             )}
 
-            <tbody className="divide-y divide-[#E8DEF8] text-xs">
+            <tbody className="divide-y divide-[#E0F2FE] text-xs">
               {paginatedList.length === 0 ? (
                 <tr>
-                  <td colSpan={isDailyView ? datesList.length + 11 : 11} className="py-12 text-center text-[#49454F]">
+                  <td colSpan={isDailyView ? datesList.length + 11 : 11} className="py-12 text-center text-[#334155]">
                     Tidak ada data presensi pada kriteria pencarian ini.
                   </td>
                 </tr>
@@ -459,17 +459,17 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
 
                   if (isDailyView) {
                     return (
-                      <tr key={item.studentId} className="hover:bg-[#FFFBFE] transition-colors">
-                        <td className="py-3 px-3 text-center text-[#49454F] font-bold border-r border-[#E8DEF8]">
+                      <tr key={item.studentId} className="hover:bg-[#F8FAFC] transition-colors">
+                        <td className="py-3 px-3 text-center text-[#334155] font-bold border-r border-[#E0F2FE]">
                           {globalIdx}
                         </td>
-                        <td className="py-3 px-3 font-mono text-[11px] text-[#49454F] border-r border-[#E8DEF8]">
+                        <td className="py-3 px-3 font-mono text-[11px] text-[#334155] border-r border-[#E0F2FE]">
                           {item.nisn}
                         </td>
-                        <td className="py-3 px-4 font-medium text-[#1C1B1F] border-r border-[#E8DEF8]">
+                        <td className="py-3 px-4 font-medium text-[#0F172A] border-r border-[#E0F2FE]">
                           {item.name}
                         </td>
-                        <td className="py-3 px-2 text-center border-r border-[#E8DEF8]">
+                        <td className="py-3 px-2 text-center border-r border-[#E0F2FE]">
                           <span
                             className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
                               item.gender === 'L' ? 'bg-[#E1F5FE] text-[#0277BD]' : 'bg-[#FCE4EC] text-[#C2185B]'
@@ -478,8 +478,8 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                             {item.gender}
                           </span>
                         </td>
-                        <td className="py-3 px-2 text-center border-r border-[#E8DEF8]">
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#E7E0EC] text-[#1C1B1F]">
+                        <td className="py-3 px-2 text-center border-r border-[#E0F2FE]">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#E2F1FD] text-[#0F172A]">
                             {item.className}
                           </span>
                         </td>
@@ -498,10 +498,10 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                               key={dateStr}
                               className={`py-2.5 px-0.5 text-center border-r transition-colors ${
                                 isWeekend 
-                                  ? 'bg-[#FFDAD6]/30 border-r-[#E8DEF8]' 
+                                  ? 'bg-[#FFDAD6]/30 border-r-[#E0F2FE]' 
                                   : isMissingLetter
-                                  ? 'bg-[#FFF3E0]/40 border-r-[#E8DEF8]'
-                                  : 'border-r-[#E8DEF8]'
+                                  ? 'bg-[#FFF3E0]/40 border-r-[#E0F2FE]'
+                                  : 'border-r-[#E0F2FE]'
                               }`}
                             >
                               {rec ? (
@@ -519,7 +519,7 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                                         : 'bg-[#E1F5FE] text-[#0277BD]'
                                       : rec.status === 'A'
                                       ? 'bg-[#FFDAD6] text-[#410002]'
-                                      : 'bg-[#E8DEF8] text-[#1D192B]'
+                                      : 'bg-[#E0F2FE] text-[#0369A1]'
                                   }`}
                                   title={
                                     rec.status === 'H'
@@ -544,7 +544,7 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                                   )}
                                 </span>
                               ) : (
-                                <span className={`font-mono text-[11px] select-none ${isWeekend ? 'text-[#BA1A1A]/40' : 'text-[#79747E]/40'}`}>
+                                <span className={`font-mono text-[11px] select-none ${isWeekend ? 'text-[#BA1A1A]/40' : 'text-[#64748B]/40'}`}>
                                   -
                                 </span>
                               )}
@@ -553,19 +553,19 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                         })}
 
                         {/* Summary totals */}
-                        <td className="py-3 px-1 text-center font-bold text-[#1B5E20] bg-[#C8E6C9]/20 border-r border-[#E8DEF8]">
+                        <td className="py-3 px-1 text-center font-bold text-[#1B5E20] bg-[#C8E6C9]/20 border-r border-[#E0F2FE]">
                           {item.hadir}
                         </td>
-                        <td className="py-3 px-1 text-center font-bold text-[#E65100] bg-[#FFF3E0]/20 border-r border-[#E8DEF8]">
+                        <td className="py-3 px-1 text-center font-bold text-[#E65100] bg-[#FFF3E0]/20 border-r border-[#E0F2FE]">
                           {item.sakit}
                         </td>
-                        <td className="py-3 px-1 text-center font-bold text-[#0277BD] bg-[#E1F5FE]/20 border-r border-[#E8DEF8]">
+                        <td className="py-3 px-1 text-center font-bold text-[#0277BD] bg-[#E1F5FE]/20 border-r border-[#E0F2FE]">
                           {item.izin}
                         </td>
-                        <td className={`py-3 px-1 text-center font-bold border-r border-[#E8DEF8] ${item.alpa > 0 ? 'text-[#BA1A1A] bg-[#FFDAD6]/30' : 'text-[#49454F]'}`}>
+                        <td className={`py-3 px-1 text-center font-bold border-r border-[#E0F2FE] ${item.alpa > 0 ? 'text-[#BA1A1A] bg-[#FFDAD6]/30' : 'text-[#334155]'}`}>
                           {item.alpa}
                         </td>
-                        <td className="py-3 px-1 text-center font-bold text-[#6750A4] bg-[#E8DEF8]/20 border-r border-[#E8DEF8]">
+                        <td className="py-3 px-1 text-center font-bold text-[#0284C7] bg-[#E0F2FE]/20 border-r border-[#E0F2FE]">
                           {item.dispen}
                         </td>
                         <td className="py-3 px-2 text-center">
@@ -587,14 +587,14 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
 
                   /* TBODY: MODE REKAP BULANAN */
                   return (
-                    <tr key={item.studentId} className="hover:bg-[#FFFBFE] transition-colors">
-                      <td className="py-3.5 px-3 text-center text-[#49454F] font-bold">
+                    <tr key={item.studentId} className="hover:bg-[#F8FAFC] transition-colors">
+                      <td className="py-3.5 px-3 text-center text-[#334155] font-bold">
                         {globalIdx}
                       </td>
-                      <td className="py-3.5 px-3 font-mono text-[11px] text-[#49454F]">
+                      <td className="py-3.5 px-3 font-mono text-[11px] text-[#334155]">
                         {item.nisn}
                       </td>
-                      <td className="py-3.5 px-4 font-medium text-[#1C1B1F]">
+                      <td className="py-3.5 px-4 font-medium text-[#0F172A]">
                         {item.name}
                       </td>
                       <td className="py-3.5 px-2 text-center">
@@ -607,7 +607,7 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                         </span>
                       </td>
                       <td className="py-3.5 px-2 text-center">
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#E7E0EC] text-[#1C1B1F]">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#E2F1FD] text-[#0F172A]">
                           {item.className}
                         </span>
                       </td>
@@ -620,10 +620,10 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                       <td className="py-3.5 px-2 text-center font-bold text-[#0277BD] bg-[#E1F5FE]/20">
                         {item.izin}
                       </td>
-                      <td className={`py-3.5 px-2 text-center font-bold ${item.alpa > 0 ? 'text-[#BA1A1A] bg-[#FFDAD6]/30' : 'text-[#49454F]'}`}>
+                      <td className={`py-3.5 px-2 text-center font-bold ${item.alpa > 0 ? 'text-[#BA1A1A] bg-[#FFDAD6]/30' : 'text-[#334155]'}`}>
                         {item.alpa}
                       </td>
-                      <td className="py-3.5 px-2 text-center font-bold text-[#6750A4] bg-[#E8DEF8]/20">
+                      <td className="py-3.5 px-2 text-center font-bold text-[#0284C7] bg-[#E0F2FE]/20">
                         {item.dispen}
                       </td>
                       <td className="py-3.5 px-3 text-center">
@@ -648,9 +648,9 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
         </div>
 
         {/* Legend / Status Code Guide */}
-        <div className="px-6 py-4 bg-[#E7E0EC]/50 border-t border-[#E8DEF8] flex flex-wrap items-center justify-between gap-3 text-xs text-[#49454F]">
+        <div className="px-6 py-4 bg-[#E2F1FD]/50 border-t border-[#E0F2FE] flex flex-wrap items-center justify-between gap-3 text-xs text-[#334155]">
           <div className="flex items-center gap-3 flex-wrap">
-            <span className="font-bold text-[#1C1B1F]">Keterangan Kode:</span>
+            <span className="font-bold text-[#0F172A]">Keterangan Kode:</span>
             <span className="inline-flex items-center gap-1.5">
               <span className="w-6 h-6 rounded-full bg-[#C8E6C9] text-[#1B5E20] font-bold inline-flex items-center justify-center text-xs">H</span>
               <span>Hadir</span>
@@ -668,18 +668,18 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
               <span>Alpa</span>
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <span className="w-6 h-6 rounded-full bg-[#E8DEF8] text-[#1D192B] font-bold inline-flex items-center justify-center text-xs">D</span>
+              <span className="w-6 h-6 rounded-full bg-[#E0F2FE] text-[#0369A1] font-bold inline-flex items-center justify-center text-xs">D</span>
               <span>Dispensasi</span>
             </span>
             {isDailyView && (
-              <span className="inline-flex items-center gap-2 pl-3 border-l border-[#CAC4D0]">
+              <span className="inline-flex items-center gap-2 pl-3 border-l border-[#CBD5E1]">
                 <span className="px-2 py-0.5 rounded-full bg-[#FFDAD6] text-[#410002] font-bold inline-flex items-center justify-center text-[10px]">
                   Sab &amp; Min
                 </span>
                 <span className="font-medium text-[#BA1A1A]">Libur Akhir Pekan</span>
               </span>
             )}
-            <span className="inline-flex items-center gap-2 pl-3 border-l border-[#CAC4D0]">
+            <span className="inline-flex items-center gap-2 pl-3 border-l border-[#CBD5E1]">
               <span className="relative inline-flex items-center justify-center w-6 h-6 rounded-full font-bold text-[10px] bg-[#FFE0B2] text-[#E65100] ring-2 ring-[#BA1A1A]">
                 S
                 <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#BA1A1A] rounded-full border border-white flex items-center justify-center text-[7px] text-white font-bold leading-none">!</span>
@@ -691,8 +691,8 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
 
         {/* Pagination Bar */}
         {totalPages > 1 && (
-          <div className="p-5 bg-[#E7E0EC]/40 border-t border-[#E8DEF8] flex items-center justify-between text-xs">
-            <div className="text-[#49454F]">
+          <div className="p-5 bg-[#E2F1FD]/40 border-t border-[#E0F2FE] flex items-center justify-between text-xs">
+            <div className="text-[#334155]">
               Menampilkan {paginatedList.length} dari total {searchedRecapList.length} siswa
             </div>
             <div className="flex items-center gap-2">
@@ -701,11 +701,11 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                 id="prev-page-btn"
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                className="p-2 rounded-full bg-white disabled:opacity-40 hover:bg-[#E8DEF8] text-[#1C1B1F] cursor-pointer active:scale-95"
+                className="p-2 rounded-full bg-white disabled:opacity-40 hover:bg-[#E0F2FE] text-[#0F172A] cursor-pointer active:scale-95"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <span className="font-bold text-[#1C1B1F] px-2">
+              <span className="font-bold text-[#0F172A] px-2">
                 Halaman {currentPage} dari {totalPages}
               </span>
               <button
@@ -713,7 +713,7 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                 id="next-page-btn"
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                className="p-2 rounded-full bg-white disabled:opacity-40 hover:bg-[#E8DEF8] text-[#1C1B1F] cursor-pointer active:scale-95"
+                className="p-2 rounded-full bg-white disabled:opacity-40 hover:bg-[#E0F2FE] text-[#0F172A] cursor-pointer active:scale-95"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>

@@ -151,10 +151,10 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
               <CalendarDays className="w-7 h-7" />
             </div>
             <div>
-              <h2 className="text-2xl sm:text-3xl font-black text-[#1C1B1F] tracking-tight" >
+              <h2 className="text-2xl sm:text-3xl font-black text-[#0F172A] tracking-tight" >
                 Rekap Pelanggaran & Pembinaan
               </h2>
-              <p className="text-sm text-[#49454F] mt-1 font-medium">
+              <p className="text-sm text-[#334155] mt-1 font-medium">
                 Laporan rekapitulasi data pelanggaran tata tertib dan status pembinaan berdasarkan rentang tanggal
               </p>
             </div>
@@ -166,7 +166,7 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
               type="button"
               id="export-recap-excel-btn"
               onClick={handleExportExcel}
-              className="px-4 py-3 rounded-2xl bg-white/90 text-[#1C1B1F] hover:text-emerald-700 font-extrabold text-xs transition-all flex items-center justify-center gap-2 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none flex-1 sm:flex-initial cursor-pointer"
+              className="px-4 py-3 rounded-2xl bg-white/90 text-[#0F172A] hover:text-emerald-700 font-extrabold text-xs transition-all flex items-center justify-center gap-2 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none flex-1 sm:flex-initial cursor-pointer"
               
             >
               <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
@@ -177,7 +177,7 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
               type="button"
               id="export-recap-pdf-btn"
               onClick={handleExportPdf}
-              className="px-4 py-3 rounded-2xl bg-white/90 text-[#1C1B1F] hover:text-rose-700 font-extrabold text-xs transition-all flex items-center justify-center gap-2 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none flex-1 sm:flex-initial cursor-pointer"
+              className="px-4 py-3 rounded-2xl bg-white/90 text-[#0F172A] hover:text-rose-700 font-extrabold text-xs transition-all flex items-center justify-center gap-2 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none flex-1 sm:flex-initial cursor-pointer"
               
             >
               <FileText className="w-4 h-4 text-rose-600" />
@@ -199,7 +199,7 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200/60 pb-4">
           <div className="flex items-center gap-2.5">
             <CalendarRange className="w-5 h-5 text-teal-600" />
-            <span className="font-black text-[#1C1B1F] text-xs uppercase tracking-wider" >
+            <span className="font-black text-[#0F172A] text-xs uppercase tracking-wider" >
               Filter Rentang Tanggal & Parameter
             </span>
           </div>
@@ -209,7 +209,7 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
             <button
               type="button"
               onClick={handlePresetToday}
-              className="px-3.5 py-1.5 rounded-xl text-xs font-extrabold bg-[#E7E0EC] hover:bg-white text-[#49454F] hover:text-[#6750A4] shadow-none transition-all cursor-pointer"
+              className="px-3.5 py-1.5 rounded-xl text-xs font-extrabold bg-[#E2F1FD] hover:bg-white text-[#334155] hover:text-[#0284C7] shadow-none transition-all cursor-pointer"
               
             >
               Hari Ini
@@ -217,7 +217,7 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
             <button
               type="button"
               onClick={handlePreset7Days}
-              className="px-3.5 py-1.5 rounded-xl text-xs font-extrabold bg-[#E7E0EC] hover:bg-white text-[#49454F] hover:text-[#6750A4] shadow-none transition-all cursor-pointer"
+              className="px-3.5 py-1.5 rounded-xl text-xs font-extrabold bg-[#E2F1FD] hover:bg-white text-[#334155] hover:text-[#0284C7] shadow-none transition-all cursor-pointer"
               
             >
               7 Hari Terakhir
@@ -225,7 +225,7 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
             <button
               type="button"
               onClick={handlePresetMonth}
-              className="px-3.5 py-1.5 rounded-xl text-xs font-extrabold bg-[#E7E0EC] hover:bg-white text-[#49454F] hover:text-[#6750A4] shadow-none transition-all cursor-pointer"
+              className="px-3.5 py-1.5 rounded-xl text-xs font-extrabold bg-[#E2F1FD] hover:bg-white text-[#334155] hover:text-[#0284C7] shadow-none transition-all cursor-pointer"
               
             >
               Bulan Ini
@@ -233,7 +233,7 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
             <button
               type="button"
               onClick={handlePresetAll}
-              className="px-3.5 py-1.5 rounded-xl text-xs font-extrabold bg-[#E7E0EC] hover:bg-white text-[#49454F] hover:text-[#6750A4] shadow-none transition-all cursor-pointer"
+              className="px-3.5 py-1.5 rounded-xl text-xs font-extrabold bg-[#E2F1FD] hover:bg-white text-[#334155] hover:text-[#0284C7] shadow-none transition-all cursor-pointer"
               
             >
               Semua Data
@@ -244,36 +244,36 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
           {/* Tanggal Awal */}
           <div>
-            <label className="block font-black text-[#1C1B1F] mb-1.5" >Tanggal Awal</label>
+            <label className="block font-black text-[#0F172A] mb-1.5" >Tanggal Awal</label>
             <input
               type="date"
               id="recap-start-date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-bold shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20 transition-all"
+              className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl text-[#0F172A] font-bold shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#0284C7]/20 transition-all"
             />
           </div>
 
           {/* Tanggal Akhir */}
           <div>
-            <label className="block font-black text-[#1C1B1F] mb-1.5" >Tanggal Akhir</label>
+            <label className="block font-black text-[#0F172A] mb-1.5" >Tanggal Akhir</label>
             <input
               type="date"
               id="recap-end-date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-bold shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20 transition-all"
+              className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl text-[#0F172A] font-bold shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#0284C7]/20 transition-all"
             />
           </div>
 
           {/* Filter Kelas */}
           <div>
-            <label className="block font-black text-[#1C1B1F] mb-1.5" >Pilih Kelas</label>
+            <label className="block font-black text-[#0F172A] mb-1.5" >Pilih Kelas</label>
             <select
               id="recap-class-select"
               value={selectedClass}
               onChange={(e) => setSelectedClass(e.target.value)}
-              className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-extrabold shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20 transition-all cursor-pointer"
+              className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl text-[#0F172A] font-extrabold shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#0284C7]/20 transition-all cursor-pointer"
               
             >
               <option value="ALL">Semua Kelas (36 Rombel)</option>
@@ -287,12 +287,12 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
 
           {/* Filter Status Pembinaan */}
           <div>
-            <label className="block font-black text-[#1C1B1F] mb-1.5" >Status Pembinaan</label>
+            <label className="block font-black text-[#0F172A] mb-1.5" >Status Pembinaan</label>
             <select
               id="recap-status-select"
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-extrabold shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20 transition-all cursor-pointer"
+              className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl text-[#0F172A] font-extrabold shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#0284C7]/20 transition-all cursor-pointer"
               
             >
               <option value="ALL">Semua Status Pembinaan</option>
@@ -304,13 +304,13 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
 
         {/* Search Bar */}
         <div className="relative">
-          <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[#49454F]" />
+          <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[#334155]" />
           <input
             type="text"
             placeholder="Cari nama siswa, NISN, atau jenis pelanggaran pada rentang tanggal ini..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-11 pr-4 py-3.5 bg-[#E7E0EC] rounded-2xl text-xs text-[#1C1B1F] placeholder-[#49454F] shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20 transition-all font-medium"
+            className="w-full pl-11 pr-4 py-3.5 bg-[#E2F1FD] rounded-2xl text-xs text-[#0F172A] placeholder-[#334155] shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#0284C7]/20 transition-all font-medium"
           />
         </div>
       </div>
@@ -319,13 +319,13 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
         <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-sm border border-white/60 hover:-translate-y-1.5 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-black text-[#49454F] uppercase tracking-wider" >Kasus Pada Rentang</span>
+            <span className="text-[11px] font-black text-[#334155] uppercase tracking-wider" >Kasus Pada Rentang</span>
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-400 to-slate-600 text-white flex items-center justify-center shadow-xs">
               <ShieldAlert className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-[#1C1B1F] mt-2 tracking-tight" >{totalCount}</div>
-          <div className="text-[10px] text-[#49454F] mt-1 font-medium truncate">
+          <div className="text-2xl sm:text-3xl font-black text-[#0F172A] mt-2 tracking-tight" >{totalCount}</div>
+          <div className="text-[10px] text-[#334155] mt-1 font-medium truncate">
             {formatDateIndonesian(startDate)} - {formatDateIndonesian(endDate)}
           </div>
         </div>
@@ -367,21 +367,21 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
       {/* Recap Table with Claymorphism */}
       <div className="rounded-[32px] bg-white/80 backdrop-blur-xl shadow-sm border border-white/60 overflow-hidden">
         <div className="p-5 sm:p-6 border-b border-slate-200/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div className="text-xs font-black text-[#1C1B1F] flex items-center gap-2.5" >
+          <div className="text-xs font-black text-[#0F172A] flex items-center gap-2.5" >
             <span className="text-sm">Daftar Pelanggaran Hasil Rekapitulasi</span>
             <span className="px-3 py-1 bg-teal-50 text-teal-700 rounded-xl font-extrabold border border-teal-200 shadow-xs">
               {filteredRecords.length} Data
             </span>
           </div>
-          <div className="text-xs text-[#49454F]">
-            Rentang: <span className="font-extrabold text-[#1C1B1F]">{startDate} s/d {endDate}</span>
+          <div className="text-xs text-[#334155]">
+            Rentang: <span className="font-extrabold text-[#0F172A]">{startDate} s/d {endDate}</span>
           </div>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gradient-to-r from-slate-100/80 to-teal-50/50 text-[#49454F] font-black text-xs uppercase tracking-wider border-b border-slate-200/60" >
+              <tr className="bg-gradient-to-r from-slate-100/80 to-teal-50/50 text-[#334155] font-black text-xs uppercase tracking-wider border-b border-slate-200/60" >
                 <th className="py-4 px-4 text-center w-14">No</th>
                 <th className="py-4 px-4 w-32">Tanggal Kejadian</th>
                 <th className="py-4 px-5">Nama Siswa & Kelas</th>
@@ -395,8 +395,8 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
             <tbody className="divide-y divide-slate-100 text-xs">
               {filteredRecords.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-16 text-center text-[#49454F]">
-                    <div className="w-16 h-16 rounded-full bg-[#E7E0EC] text-[#49454F] flex items-center justify-center mx-auto mb-3 shadow-xs">
+                  <td colSpan={8} className="py-16 text-center text-[#334155]">
+                    <div className="w-16 h-16 rounded-full bg-[#E2F1FD] text-[#334155] flex items-center justify-center mx-auto mb-3 shadow-xs">
                       <CalendarRange className="w-8 h-8" />
                     </div>
                     <span className="font-bold">Tidak ada catatan pelanggaran pada rentang tanggal dan kriteria filter ini.</span>
@@ -407,14 +407,14 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                   const isSudah = rec.coachingStatus === 'Sudah';
                   return (
                     <tr key={rec.id} className="hover:bg-teal-50/40 transition-colors">
-                      <td className="py-4 px-4 text-center text-[#49454F] font-bold">{idx + 1}</td>
-                      <td className="py-4 px-4 text-[#1C1B1F] whitespace-nowrap">
-                        <div className="font-extrabold text-[#1C1B1F]" >{rec.date}</div>
-                        <div className="text-[11px] text-[#49454F]">{formatDateIndonesian(rec.date)}</div>
+                      <td className="py-4 px-4 text-center text-[#334155] font-bold">{idx + 1}</td>
+                      <td className="py-4 px-4 text-[#0F172A] whitespace-nowrap">
+                        <div className="font-extrabold text-[#0F172A]" >{rec.date}</div>
+                        <div className="text-[11px] text-[#334155]">{formatDateIndonesian(rec.date)}</div>
                       </td>
                       <td className="py-4 px-5">
-                        <div className="font-black text-[#1C1B1F] text-sm" >{rec.studentName}</div>
-                        <div className="text-xs text-[#49454F] mt-0.5 flex items-center gap-1.5">
+                        <div className="font-black text-[#0F172A] text-sm" >{rec.studentName}</div>
+                        <div className="text-xs text-[#334155] mt-0.5 flex items-center gap-1.5">
                           <span className="font-extrabold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-lg border border-teal-200 shadow-2xs">
                             Kelas {rec.className}
                           </span>
@@ -423,8 +423,8 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                         </div>
                       </td>
                       <td className="py-4 px-5">
-                        <div className="font-bold text-[#1C1B1F]">{rec.violationName}</div>
-                        <div className="text-[11px] text-[#49454F] mt-0.5">Pelapor: {rec.reportedBy}</div>
+                        <div className="font-bold text-[#0F172A]">{rec.violationName}</div>
+                        <div className="text-[11px] text-[#334155] mt-0.5">Pelapor: {rec.reportedBy}</div>
                       </td>
                       <td className="py-4 px-4 text-center">
                         <span
@@ -450,14 +450,14 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                       </td>
                       <td className="py-4 px-4 text-center">
                         {isSudah && rec.coachingDate ? (
-                          <div className="text-[#1C1B1F] font-extrabold" >
+                          <div className="text-[#0F172A] font-extrabold" >
                             {rec.coachingDate}
-                            <div className="text-[11px] text-[#49454F] font-normal">
+                            <div className="text-[11px] text-[#334155] font-normal">
                               {formatDateIndonesian(rec.coachingDate)}
                             </div>
                           </div>
                         ) : (
-                          <span className="text-[#49454F] text-xs font-bold">-</span>
+                          <span className="text-[#334155] text-xs font-bold">-</span>
                         )}
                       </td>
                       <td className="py-4 px-4 text-center">
@@ -488,7 +488,7 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                             </button>
                           )}
                           {!rec.coachingPhoto && !rec.coachingEvidenceFileName && (
-                            <span className="text-[#49454F] text-xs font-bold">-</span>
+                            <span className="text-[#334155] text-xs font-bold">-</span>
                           )}
                         </div>
                       </td>
@@ -496,10 +496,10 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                         <button
                           type="button"
                           onClick={() => setActiveRecordForDetail(rec)}
-                          className="px-3 py-1.5 rounded-xl bg-white/90 hover:bg-white text-[#1C1B1F] font-extrabold text-xs shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none transition-all flex items-center justify-center gap-1.5 mx-auto cursor-pointer"
+                          className="px-3 py-1.5 rounded-xl bg-white/90 hover:bg-white text-[#0F172A] font-extrabold text-xs shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none transition-all flex items-center justify-center gap-1.5 mx-auto cursor-pointer"
                           
                         >
-                          <Eye className="w-3.5 h-3.5 text-[#6750A4]" />
+                          <Eye className="w-3.5 h-3.5 text-[#0284C7]" />
                           <span>Detail</span>
                         </button>
                       </td>
@@ -514,7 +514,7 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
 
       {/* Detail Modal */}
       {activeRecordForDetail && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#1C1B1F]/60 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
             <div className="p-6 bg-gradient-to-br from-slate-800 to-slate-900 text-white flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -536,23 +536,23 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
             </div>
 
             <div className="p-6 sm:p-8 space-y-4 text-xs">
-              <div className="p-4 bg-[#E7E0EC] rounded-2xl shadow-none space-y-1">
-                <div className="text-[#49454F] text-[10px] uppercase font-black" >Identitas Siswa</div>
-                <div className="text-base font-black text-[#1C1B1F]" >{activeRecordForDetail.studentName}</div>
-                <div className="text-[#49454F] text-xs">
+              <div className="p-4 bg-[#E2F1FD] rounded-2xl shadow-none space-y-1">
+                <div className="text-[#334155] text-[10px] uppercase font-black" >Identitas Siswa</div>
+                <div className="text-base font-black text-[#0F172A]" >{activeRecordForDetail.studentName}</div>
+                <div className="text-[#334155] text-xs">
                   Kelas {activeRecordForDetail.className} • NISN: {activeRecordForDetail.nisn}
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-4 bg-[#E7E0EC] rounded-2xl shadow-none">
-                  <div className="text-[#49454F] text-[10px] uppercase font-black" >Tanggal Kejadian</div>
-                  <div className="font-extrabold text-[#1C1B1F] mt-1" >{activeRecordForDetail.date}</div>
-                  <div className="text-[11px] text-[#49454F]">{formatDateIndonesian(activeRecordForDetail.date)}</div>
+                <div className="p-4 bg-[#E2F1FD] rounded-2xl shadow-none">
+                  <div className="text-[#334155] text-[10px] uppercase font-black" >Tanggal Kejadian</div>
+                  <div className="font-extrabold text-[#0F172A] mt-1" >{activeRecordForDetail.date}</div>
+                  <div className="text-[11px] text-[#334155]">{formatDateIndonesian(activeRecordForDetail.date)}</div>
                 </div>
 
-                <div className="p-4 bg-[#E7E0EC] rounded-2xl shadow-none">
-                  <div className="text-[#49454F] text-[10px] uppercase font-black" >Status Pembinaan</div>
+                <div className="p-4 bg-[#E2F1FD] rounded-2xl shadow-none">
+                  <div className="text-[#334155] text-[10px] uppercase font-black" >Status Pembinaan</div>
                   <div className="mt-1">
                     <span
                       className={`inline-flex items-center gap-1 px-3 py-1 rounded-xl font-extrabold text-xs shadow-xs ${
@@ -570,10 +570,10 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                 </div>
               </div>
 
-              <div className="p-4 bg-[#E7E0EC] rounded-2xl shadow-none">
-                <div className="text-[#49454F] text-[10px] uppercase font-black" >Jenis Pelanggaran</div>
-                <div className="font-black text-[#1C1B1F] text-sm mt-0.5" >{activeRecordForDetail.violationName}</div>
-                <div className="text-[#49454F] mt-1 text-xs">{activeRecordForDetail.description}</div>
+              <div className="p-4 bg-[#E2F1FD] rounded-2xl shadow-none">
+                <div className="text-[#334155] text-[10px] uppercase font-black" >Jenis Pelanggaran</div>
+                <div className="font-black text-[#0F172A] text-sm mt-0.5" >{activeRecordForDetail.violationName}</div>
+                <div className="text-[#334155] mt-1 text-xs">{activeRecordForDetail.description}</div>
               </div>
 
               {activeRecordForDetail.coachingStatus === 'Sudah' && (
@@ -583,7 +583,7 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                     <span>Dokumentasi Pembinaan Siswa</span>
                   </div>
                   {activeRecordForDetail.coachingDate && (
-                    <div className="text-[#1C1B1F]">
+                    <div className="text-[#0F172A]">
                       <span className="font-bold">Tanggal Pelaksanaan:</span>{' '}
                       {activeRecordForDetail.coachingDate} ({formatDateIndonesian(activeRecordForDetail.coachingDate)})
                     </div>
@@ -591,7 +591,7 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
 
                   {activeRecordForDetail.coachingPhoto && (
                     <div>
-                      <div className="text-xs font-bold text-[#1C1B1F] mb-1.5 flex items-center justify-between">
+                      <div className="text-xs font-bold text-[#0F172A] mb-1.5 flex items-center justify-between">
                         <span>Foto Dokumentasi Pembinaan:</span>
                         {activeRecordForDetail.coachingPhoto.includes('drive.google.com') && (
                           <a
@@ -625,7 +625,7 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                           <FileText className="w-5 h-5" />
                         </div>
                         <div className="min-w-0">
-                          <p className="font-bold text-[#1C1B1F] truncate text-xs">
+                          <p className="font-bold text-[#0F172A] truncate text-xs">
                             {activeRecordForDetail.coachingEvidenceFileName}
                           </p>
                           <p className="text-[10px] text-teal-700 font-black">Surat Terverifikasi</p>
@@ -666,7 +666,7 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
       {/* Image Preview Modal */}
       {activePreviewImage && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="max-w-2xl w-full bg-[#1C1B1F] rounded-[32px] overflow-hidden border border-white/20 shadow-sm">
+          <div className="max-w-2xl w-full bg-[#0F172A] rounded-[32px] overflow-hidden border border-white/20 shadow-sm">
             <div className="p-4 bg-slate-800 text-white flex items-center justify-between text-xs font-extrabold" >
               <span>{activePreviewImage.title}</span>
               <div className="flex items-center gap-2">

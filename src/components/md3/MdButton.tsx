@@ -24,13 +24,13 @@ export const MdButton: React.FC<MdButtonProps> = ({
 
   const variantClasses = {
     filled:
-      'bg-[#6750A4] text-white hover:bg-[#6750A4]/90 shadow-none hover:shadow-md active:bg-[#6750A4]/80',
+      'bg-[#0284C7] text-white hover:bg-[#0369A1] shadow-none hover:shadow-md active:bg-[#075985]',
     tonal:
-      'bg-[#E8DEF8] text-[#1D192B] hover:bg-[#DFD3F3] active:bg-[#D4C4EC] shadow-none hover:shadow-sm',
+      'bg-[#E0F2FE] text-[#0369A1] hover:bg-[#BAE6FD] active:bg-[#7DD3FC] shadow-none hover:shadow-sm',
     outlined:
-      'border border-[#79747E] bg-transparent text-[#6750A4] hover:bg-[#6750A4]/10 active:bg-[#6750A4]/15',
+      'border border-[#64748B] bg-transparent text-[#0284C7] hover:bg-[#0284C7]/10 active:bg-[#0284C7]/15',
     text:
-      'bg-transparent text-[#6750A4] hover:bg-[#6750A4]/10 active:bg-[#6750A4]/15 shadow-none',
+      'bg-transparent text-[#0284C7] hover:bg-[#0284C7]/10 active:bg-[#0284C7]/15 shadow-none',
     danger:
       'bg-[#BA1A1A] text-white hover:bg-[#BA1A1A]/90 active:bg-[#93000A] shadow-none hover:shadow-md',
   }[variant];

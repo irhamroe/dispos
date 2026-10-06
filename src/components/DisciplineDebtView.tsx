@@ -305,10 +305,10 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
               <FileWarning className="w-7 h-7" />
             </div>
             <div>
-              <h2 className="text-2xl sm:text-3xl font-black text-[#1C1B1F] tracking-tight" >
+              <h2 className="text-2xl sm:text-3xl font-black text-[#0F172A] tracking-tight" >
                 Tagihan Pembinaan & Surat Siswa
               </h2>
-              <p className="text-sm text-[#49454F] mt-1 font-medium">
+              <p className="text-sm text-[#334155] mt-1 font-medium">
                 Monitoring siswa yang belum menyelesaikan sesi pembinaan atau belum mengumpulkan surat bukti pembinaan
               </p>
             </div>
@@ -334,15 +334,15 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
         <div className="rounded-[32px] bg-white/80 p-6 backdrop-blur-xl shadow-sm border border-white/60 hover:-translate-y-1.5 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black text-[#49454F] uppercase tracking-wider" >Total Seluruh Tagihan</span>
+            <span className="text-xs font-black text-[#334155] uppercase tracking-wider" >Total Seluruh Tagihan</span>
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-slate-400 to-slate-600 text-white flex items-center justify-center shadow-xs">
               <FileWarning className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl sm:text-4xl font-black text-[#1C1B1F] mt-2 tracking-tight" >
+          <div className="text-3xl sm:text-4xl font-black text-[#0F172A] mt-2 tracking-tight" >
             {totalDebtCount}
           </div>
-          <div className="text-xs text-[#49454F] mt-1 font-medium">Siswa dengan kewajiban belum tuntas</div>
+          <div className="text-xs text-[#334155] mt-1 font-medium">Siswa dengan kewajiban belum tuntas</div>
         </div>
 
         <div className="rounded-[32px] bg-white/80 p-6 backdrop-blur-xl shadow-sm border border-rose-200/60 hover:-translate-y-1.5 transition-all">
@@ -383,7 +383,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
               className={`px-4 py-2.5 rounded-2xl text-xs font-extrabold transition-all cursor-pointer ${
                 debtFilterType === 'ALL'
                   ? 'bg-gradient-to-br from-rose-500 to-red-600 text-white shadow-xs -translate-y-0.5'
-                  : 'bg-[#E7E0EC] text-[#49454F] shadow-none hover:bg-white/80'
+                  : 'bg-[#E2F1FD] text-[#334155] shadow-none hover:bg-white/80'
               }`}
               
             >
@@ -395,7 +395,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
               className={`px-4 py-2.5 rounded-2xl text-xs font-extrabold transition-all cursor-pointer ${
                 debtFilterType === 'NO_COACHING'
                   ? 'bg-gradient-to-br from-rose-500 to-red-600 text-white shadow-xs -translate-y-0.5'
-                  : 'bg-[#E7E0EC] text-[#49454F] shadow-none hover:bg-white/80'
+                  : 'bg-[#E2F1FD] text-[#334155] shadow-none hover:bg-white/80'
               }`}
               
             >
@@ -407,7 +407,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
               className={`px-4 py-2.5 rounded-2xl text-xs font-extrabold transition-all cursor-pointer ${
                 debtFilterType === 'WAITING_LETTER'
                   ? 'bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-xs -translate-y-0.5'
-                  : 'bg-[#E7E0EC] text-[#49454F] shadow-none hover:bg-white/80'
+                  : 'bg-[#E2F1FD] text-[#334155] shadow-none hover:bg-white/80'
               }`}
               
             >
@@ -416,12 +416,12 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
           </div>
 
           {/* Class Filter */}
-          <div className="flex items-center gap-2 bg-[#E7E0EC] rounded-2xl px-4 py-2 shadow-none shrink-0">
-            <span className="text-xs font-bold text-[#49454F]">Kelas:</span>
+          <div className="flex items-center gap-2 bg-[#E2F1FD] rounded-2xl px-4 py-2 shadow-none shrink-0">
+            <span className="text-xs font-bold text-[#334155]">Kelas:</span>
             <select
               value={selectedClass}
               onChange={(e) => setSelectedClass(e.target.value)}
-              className="bg-transparent font-extrabold focus:outline-hidden cursor-pointer text-[#1C1B1F] text-xs"
+              className="bg-transparent font-extrabold focus:outline-hidden cursor-pointer text-[#0F172A] text-xs"
               
             >
               <option value="ALL">Semua Kelas</option>
@@ -436,13 +436,13 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
 
         {/* Search Input */}
         <div className="relative">
-          <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[#49454F]" />
+          <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[#334155]" />
           <input
             type="text"
             placeholder="Cari nama siswa, NISN, atau jenis pelanggaran pada daftar tagihan..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-11 pr-4 py-3.5 bg-[#E7E0EC] rounded-2xl text-xs text-[#1C1B1F] placeholder-[#49454F] shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20 transition-all font-medium"
+            className="w-full pl-11 pr-4 py-3.5 bg-[#E2F1FD] rounded-2xl text-xs text-[#0F172A] placeholder-[#334155] shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#0284C7]/20 transition-all font-medium"
           />
         </div>
       </div>
@@ -452,7 +452,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gradient-to-r from-slate-100/80 to-purple-50/50 text-[#49454F] font-black text-xs uppercase tracking-wider border-b border-slate-200/60" >
+              <tr className="bg-gradient-to-r from-slate-100/80 to-purple-50/50 text-[#334155] font-black text-xs uppercase tracking-wider border-b border-slate-200/60" >
                 <th className="py-4 px-4 text-center w-14">No</th>
                 <th className="py-4 px-4 w-32">Tgl Kejadian</th>
                 <th className="py-4 px-5">Nama Siswa & Kelas</th>
@@ -465,12 +465,12 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
             <tbody className="divide-y divide-slate-100 text-xs">
               {filteredDebtRecords.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-16 text-center text-[#49454F]">
+                  <td colSpan={7} className="py-16 text-center text-[#334155]">
                     <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-3 shadow-xs">
                       <CheckCircle2 className="w-8 h-8" />
                     </div>
-                    <span className="font-black text-[#1C1B1F] block text-base" >Tidak Ada Tagihan Aktif!</span>
-                    <span className="text-xs text-[#49454F] mt-1 block">Seluruh siswa telah menyelesaikan pembinaan dan menyerahkan surat bukti secara lengkap.</span>
+                    <span className="font-black text-[#0F172A] block text-base" >Tidak Ada Tagihan Aktif!</span>
+                    <span className="text-xs text-[#334155] mt-1 block">Seluruh siswa telah menyelesaikan pembinaan dan menyerahkan surat bukti secara lengkap.</span>
                   </td>
                 </tr>
               ) : (
@@ -480,15 +480,15 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                   const isWaitingLetter = rec.coachingStatus === 'Sudah' && !hasLetter;
 
                   return (
-                    <tr key={rec.id} className="hover:bg-purple-50/40 transition-colors">
-                      <td className="py-4 px-4 text-center text-[#49454F] font-bold">{idx + 1}</td>
-                      <td className="py-4 px-4 text-[#1C1B1F] whitespace-nowrap">
-                        <div className="font-extrabold text-[#1C1B1F]" >{rec.date}</div>
-                        <div className="text-[11px] text-[#49454F]">{formatDateIndonesian(rec.date)}</div>
+                    <tr key={rec.id} className="hover:bg-sky-50/40 transition-colors">
+                      <td className="py-4 px-4 text-center text-[#334155] font-bold">{idx + 1}</td>
+                      <td className="py-4 px-4 text-[#0F172A] whitespace-nowrap">
+                        <div className="font-extrabold text-[#0F172A]" >{rec.date}</div>
+                        <div className="text-[11px] text-[#334155]">{formatDateIndonesian(rec.date)}</div>
                       </td>
                       <td className="py-4 px-5">
-                        <div className="font-black text-[#1C1B1F] text-sm" >{rec.studentName}</div>
-                        <div className="text-xs text-[#49454F] mt-0.5 flex items-center gap-1.5">
+                        <div className="font-black text-[#0F172A] text-sm" >{rec.studentName}</div>
+                        <div className="text-xs text-[#334155] mt-0.5 flex items-center gap-1.5">
                           <span className="font-extrabold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-lg border border-rose-200 shadow-2xs">
                             Kelas {rec.className}
                           </span>
@@ -497,8 +497,8 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                         </div>
                       </td>
                       <td className="py-4 px-5">
-                        <div className="font-bold text-[#1C1B1F]">{rec.violationName}</div>
-                        <div className="text-[11px] text-[#49454F] mt-0.5">Pelapor: {rec.reportedBy}</div>
+                        <div className="font-bold text-[#0F172A]">{rec.violationName}</div>
+                        <div className="text-[11px] text-[#334155] mt-0.5">Pelapor: {rec.reportedBy}</div>
                       </td>
                       <td className="py-4 px-4 text-center">
                         {isCoachingBelum ? (
@@ -540,7 +540,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                             <span className="text-[10px] text-amber-700 font-semibold">Perlu TTD beberapa orang</span>
                           </div>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-bold bg-[#E7E0EC] text-[#49454F] shadow-none">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-bold bg-[#E2F1FD] text-[#334155] shadow-none">
                             Belum Ada
                           </span>
                         )}
@@ -575,7 +575,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                           <button
                             type="button"
                             onClick={() => setCallingLetterRecord(rec)}
-                            className="p-2 rounded-2xl bg-white/80 text-[#49454F] hover:text-[#1C1B1F] shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none transition-all cursor-pointer"
+                            className="p-2 rounded-2xl bg-white/80 text-[#334155] hover:text-[#0F172A] shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none transition-all cursor-pointer"
                             title="Cetak Surat Panggilan / Tagihan"
                           >
                             <Printer className="w-4 h-4" />
@@ -593,7 +593,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
 
       {/* MODAL: Selesaikan Tagihan Pembinaan */}
       {resolvingRecord && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#1C1B1F]/60 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
             <div className="p-6 bg-gradient-to-br from-emerald-600 to-teal-700 text-white flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -618,10 +618,10 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
 
             <form onSubmit={handleSaveResolve} className="p-6 sm:p-8 space-y-5 text-xs">
               {/* Info Banner */}
-              <div className="p-4 bg-[#E7E0EC] rounded-2xl shadow-none space-y-1">
-                <div className="text-[#49454F] text-[10px] uppercase font-black" >Siswa & Pelanggaran</div>
-                <div className="font-black text-[#1C1B1F] text-sm" >{resolvingRecord.studentName}</div>
-                <div className="text-[#49454F] text-xs">
+              <div className="p-4 bg-[#E2F1FD] rounded-2xl shadow-none space-y-1">
+                <div className="text-[#334155] text-[10px] uppercase font-black" >Siswa & Pelanggaran</div>
+                <div className="font-black text-[#0F172A] text-sm" >{resolvingRecord.studentName}</div>
+                <div className="text-[#334155] text-xs">
                   Kelas {resolvingRecord.className} • NISN: {resolvingRecord.nisn}
                 </div>
                 <div className="text-rose-700 font-bold pt-1.5 border-t border-slate-300/40 mt-1.5">
@@ -636,7 +636,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
 
               {/* Tanggal Pembinaan */}
               <div>
-                <label className="block font-black text-[#1C1B1F] mb-1.5 flex items-center gap-1.5" >
+                <label className="block font-black text-[#0F172A] mb-1.5 flex items-center gap-1.5" >
                   <Calendar className="w-4 h-4 text-emerald-600" />
                   <span>Tanggal Pembinaan</span>
                   <span className="text-rose-500">*</span>
@@ -646,13 +646,13 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                   required
                   value={coachingDate}
                   onChange={(e) => setCoachingDate(e.target.value)}
-                  className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-bold shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-emerald-500/20 transition-all"
+                  className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl text-[#0F172A] font-bold shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-emerald-500/20 transition-all"
                 />
               </div>
 
               {/* Foto Pembinaan */}
               <div>
-                <label className="block font-black text-[#1C1B1F] mb-1.5 flex items-center justify-between" >
+                <label className="block font-black text-[#0F172A] mb-1.5 flex items-center justify-between" >
                   <span className="flex items-center gap-1.5">
                     <ImageIcon className="w-4 h-4 text-emerald-600" />
                     <span>Foto Pembinaan</span>
@@ -695,7 +695,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                       onClick={() => setPreviewPhoto({ url: coachingPhoto, title: `Foto Pembinaan: ${resolvingRecord.studentName}` })}
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="font-extrabold text-[#1C1B1F] truncate text-xs">{coachingPhotoName || 'Foto_Pembinaan.jpg'}</p>
+                      <p className="font-extrabold text-[#0F172A] truncate text-xs">{coachingPhotoName || 'Foto_Pembinaan.jpg'}</p>
                       <div className="flex items-center gap-1 mt-0.5">
                         {coachingPhoto.includes('drive.google.com') || coachingPhoto.includes('googleusercontent.com') ? (
                           <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg font-bold border border-emerald-200">
@@ -718,10 +718,10 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                 ) : (
                   <div
                     onClick={() => photoInputRef.current?.click()}
-                    className="border-2 border-dashed border-rose-300 hover:border-emerald-500 rounded-2xl p-5 text-center cursor-pointer bg-[#E7E0EC] shadow-none hover:bg-white transition-colors flex flex-col items-center justify-center gap-1.5"
+                    className="border-2 border-dashed border-rose-300 hover:border-emerald-500 rounded-2xl p-5 text-center cursor-pointer bg-[#E2F1FD] shadow-none hover:bg-white transition-colors flex flex-col items-center justify-center gap-1.5"
                   >
                     <Upload className="w-6 h-6 text-emerald-600" />
-                    <span className="font-extrabold text-[#1C1B1F] text-xs">Pilih atau Seret Foto Pembinaan</span>
+                    <span className="font-extrabold text-[#0F172A] text-xs">Pilih atau Seret Foto Pembinaan</span>
                     <span className="text-[11px] text-rose-500 font-bold">* Wajib melampirkan foto pelaksanaan pembinaan</span>
                   </div>
                 )}
@@ -729,7 +729,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
 
               {/* Bukti Pembinaan (File Surat Pembinaan) */}
               <div>
-                <label className="block font-black text-[#1C1B1F] mb-1.5 flex items-center justify-between" >
+                <label className="block font-black text-[#0F172A] mb-1.5 flex items-center justify-between" >
                   <span className="flex items-center gap-1.5">
                     <Paperclip className="w-4 h-4 text-emerald-600" />
                     <span>Bukti Surat Pembinaan (File Surat)</span>
@@ -769,7 +769,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                       <FileText className="w-5 h-5" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-extrabold text-[#1C1B1F] truncate text-xs">{coachingEvidenceFileName}</p>
+                      <p className="font-extrabold text-[#0F172A] truncate text-xs">{coachingEvidenceFileName}</p>
                       <div className="flex items-center gap-1 mt-0.5">
                         {coachingEvidenceFile && (coachingEvidenceFile.includes('drive.google.com') || coachingEvidenceFile.includes('googleusercontent.com')) ? (
                           <span className="inline-flex items-center gap-1 text-[10px] text-sky-700 bg-sky-50 px-2 py-0.5 rounded-lg font-bold border border-sky-200">
@@ -792,11 +792,11 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                 ) : (
                   <div
                     onClick={() => docInputRef.current?.click()}
-                    className="border-2 border-dashed border-slate-300 hover:border-emerald-500 rounded-2xl p-5 text-center cursor-pointer bg-[#E7E0EC] shadow-none hover:bg-white transition-colors flex flex-col items-center justify-center gap-1.5"
+                    className="border-2 border-dashed border-slate-300 hover:border-emerald-500 rounded-2xl p-5 text-center cursor-pointer bg-[#E2F1FD] shadow-none hover:bg-white transition-colors flex flex-col items-center justify-center gap-1.5"
                   >
-                    <Upload className="w-6 h-6 text-[#49454F]" />
-                    <span className="font-extrabold text-[#1C1B1F] text-xs">Unggah Surat Pembinaan (Opsional / Bisa Menyusul)</span>
-                    <span className="text-[11px] text-[#49454F]">Bisa diunggah menyusul setelah tanda tangan lengkap</span>
+                    <Upload className="w-6 h-6 text-[#334155]" />
+                    <span className="font-extrabold text-[#0F172A] text-xs">Unggah Surat Pembinaan (Opsional / Bisa Menyusul)</span>
+                    <span className="text-[11px] text-[#334155]">Bisa diunggah menyusul setelah tanda tangan lengkap</span>
                   </div>
                 )}
               </div>
@@ -806,7 +806,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setResolvingRecord(null)}
-                  className="px-5 py-2.5 rounded-2xl bg-[#E7E0EC] hover:bg-white text-[#49454F] font-black transition-all shadow-xs active:scale-[0.92] active:shadow-none cursor-pointer"
+                  className="px-5 py-2.5 rounded-2xl bg-[#E2F1FD] hover:bg-white text-[#334155] font-black transition-all shadow-xs active:scale-[0.92] active:shadow-none cursor-pointer"
                   
                 >
                   Batal
@@ -827,7 +827,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
 
       {/* MODAL: Khusus Unggah Surat Bukti Pembinaan Menyusul */}
       {letterUploadRecord && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#1C1B1F]/60 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
             <div className="p-6 bg-gradient-to-br from-amber-500 to-orange-600 text-white flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -851,12 +851,12 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
             </div>
 
             <form onSubmit={handleSaveFollowUpLetter} className="p-6 sm:p-8 space-y-5 text-xs">
-              <div className="p-4 bg-[#E7E0EC] rounded-2xl shadow-none space-y-1">
-                <div className="font-black text-[#1C1B1F] text-sm" >{letterUploadRecord.studentName}</div>
-                <div className="text-[#49454F] text-xs">
+              <div className="p-4 bg-[#E2F1FD] rounded-2xl shadow-none space-y-1">
+                <div className="font-black text-[#0F172A] text-sm" >{letterUploadRecord.studentName}</div>
+                <div className="text-[#334155] text-xs">
                   Kelas {letterUploadRecord.className} • NISN: {letterUploadRecord.nisn}
                 </div>
-                <div className="text-[#1C1B1F] font-bold pt-1.5 border-t border-slate-300/40 mt-1.5">
+                <div className="text-[#0F172A] font-bold pt-1.5 border-t border-slate-300/40 mt-1.5">
                   Pelanggaran: {letterUploadRecord.violationName}
                 </div>
                 <div className="text-xs text-emerald-700 font-bold flex items-center gap-1.5 pt-1">
@@ -866,7 +866,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
               </div>
 
               <div>
-                <label className="block font-black text-[#1C1B1F] mb-1.5 flex items-center justify-between" >
+                <label className="block font-black text-[#0F172A] mb-1.5 flex items-center justify-between" >
                   <span className="flex items-center gap-1.5">
                     <FileText className="w-4 h-4 text-amber-700" />
                     <span>Dokumen Surat Bukti Pembinaan (Telah Ditandatangani)</span>
@@ -893,7 +893,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                         <FileText className="w-5 h-5" />
                       </div>
                       <div className="min-w-0">
-                        <div className="text-xs font-black text-[#1C1B1F] truncate" >
+                        <div className="text-xs font-black text-[#0F172A] truncate" >
                           {followUpDocFileName || 'Surat_Pembinaan_Bertandatangan.pdf'}
                         </div>
                         <div className="flex items-center gap-1 mt-0.5">
@@ -910,7 +910,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                     <button
                       type="button"
                       onClick={() => followUpDocInputRef.current?.click()}
-                      className="px-3 py-1.5 bg-[#E7E0EC] hover:bg-white text-[#49454F] font-black rounded-xl text-xs shadow-xs active:scale-[0.92] cursor-pointer"
+                      className="px-3 py-1.5 bg-[#E2F1FD] hover:bg-white text-[#334155] font-black rounded-xl text-xs shadow-xs active:scale-[0.92] cursor-pointer"
                       
                     >
                       Ganti
@@ -920,11 +920,11 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                   <button
                     type="button"
                     onClick={() => followUpDocInputRef.current?.click()}
-                    className="w-full p-5 border-2 border-dashed border-amber-300 hover:border-amber-500 bg-[#E7E0EC] rounded-2xl shadow-none hover:bg-white transition-all flex flex-col items-center justify-center gap-2 text-[#49454F] cursor-pointer"
+                    className="w-full p-5 border-2 border-dashed border-amber-300 hover:border-amber-500 bg-[#E2F1FD] rounded-2xl shadow-none hover:bg-white transition-all flex flex-col items-center justify-center gap-2 text-[#334155] cursor-pointer"
                   >
                     <Upload className="w-7 h-7 text-amber-600" />
-                    <span className="font-black text-xs text-[#1C1B1F]" >Pilih Berkas Surat Bukti Pembinaan</span>
-                    <span className="text-[11px] text-[#49454F]">Format: PDF, DOC, DOCX, atau Foto/Scan Surat bertanda tangan</span>
+                    <span className="font-black text-xs text-[#0F172A]" >Pilih Berkas Surat Bukti Pembinaan</span>
+                    <span className="text-[11px] text-[#334155]">Format: PDF, DOC, DOCX, atau Foto/Scan Surat bertanda tangan</span>
                   </button>
                 )}
               </div>
@@ -933,7 +933,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setLetterUploadRecord(null)}
-                  className="px-5 py-2.5 rounded-2xl bg-[#E7E0EC] hover:bg-white text-[#49454F] font-black transition-all shadow-xs active:scale-[0.92] active:shadow-none cursor-pointer"
+                  className="px-5 py-2.5 rounded-2xl bg-[#E2F1FD] hover:bg-white text-[#334155] font-black transition-all shadow-xs active:scale-[0.92] active:shadow-none cursor-pointer"
                   
                 >
                   Batal
@@ -955,7 +955,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
       {/* MODAL: Preview Foto */}
       {previewPhoto && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="max-w-2xl w-full bg-[#1C1B1F] rounded-[32px] overflow-hidden border border-white/20 shadow-sm">
+          <div className="max-w-2xl w-full bg-[#0F172A] rounded-[32px] overflow-hidden border border-white/20 shadow-sm">
             <div className="p-4 bg-slate-800 text-white flex items-center justify-between text-xs font-extrabold" >
               <span>{previewPhoto.title}</span>
               <div className="flex items-center gap-2">
@@ -992,7 +992,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
 
       {/* MODAL: Surat Pemanggilan Siswa / Notifikasi Tagihan */}
       {callingLetterRecord && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#1C1B1F]/60 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-xl w-full border border-white/60 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
             <div className="p-5 bg-gradient-to-br from-slate-800 to-slate-900 text-white flex items-center justify-between">
               <div className="flex items-center gap-2.5">
@@ -1066,11 +1066,11 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
               </div>
             </div>
 
-            <div className="p-4 bg-[#E7E0EC] border-t border-slate-200/60 flex items-center justify-end gap-3">
+            <div className="p-4 bg-[#E2F1FD] border-t border-slate-200/60 flex items-center justify-end gap-3">
               <button
                 type="button"
                 onClick={() => setCallingLetterRecord(null)}
-                className="px-5 py-2.5 rounded-2xl bg-white hover:bg-slate-100 text-[#49454F] font-black text-xs shadow-xs active:scale-[0.92] cursor-pointer"
+                className="px-5 py-2.5 rounded-2xl bg-white hover:bg-slate-100 text-[#334155] font-black text-xs shadow-xs active:scale-[0.92] cursor-pointer"
                 
               >
                 Tutup

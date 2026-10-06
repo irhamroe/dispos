@@ -95,10 +95,10 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
   const isConfigured = isGoogleDriveConfigured();
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-[#1C1B1F]/40 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/40 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200">
       <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[32px] max-w-2xl w-full border border-white/80 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
         {/* Modal Header */}
-        <div className="p-6 sm:p-7 bg-gradient-to-r from-emerald-600 via-teal-600 to-[#6750A4] text-white flex items-center justify-between shadow-sm">
+        <div className="p-6 sm:p-7 bg-gradient-to-r from-emerald-600 via-teal-600 to-[#0284C7] text-white flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-3.5">
             <div className="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-xs">
               <Cloud className="w-6 h-6 text-emerald-200" />
@@ -130,14 +130,14 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-purple-100/50 bg-[#FFFBFE] px-6 sm:px-8 pt-3 gap-2.5 text-xs font-black" >
+        <div className="flex border-b border-sky-100/50 bg-[#F8FAFC] px-6 sm:px-8 pt-3 gap-2.5 text-xs font-black" >
           <button
             type="button"
             onClick={() => setActiveTab('settings')}
             className={`pb-3 px-4 rounded-t-2xl transition-all cursor-pointer flex items-center gap-2 ${
               activeTab === 'settings'
                 ? 'bg-white text-emerald-700 shadow-xs border-b-2 border-emerald-600'
-                : 'text-[#49454F] hover:text-[#1C1B1F]'
+                : 'text-[#334155] hover:text-[#0F172A]'
             }`}
           >
             <HardDrive className="w-4 h-4" />
@@ -149,7 +149,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
             className={`pb-3 px-4 rounded-t-2xl transition-all cursor-pointer flex items-center gap-2 ${
               activeTab === 'tutorial'
                 ? 'bg-white text-emerald-700 shadow-xs border-b-2 border-emerald-600'
-                : 'text-[#49454F] hover:text-[#1C1B1F]'
+                : 'text-[#334155] hover:text-[#0F172A]'
             }`}
           >
             <HelpCircle className="w-4 h-4" />
@@ -169,7 +169,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
 
             {/* Script URL Input */}
             <div>
-              <label className="block font-extrabold text-[#1C1B1F] mb-1.5 text-xs flex items-center justify-between" >
+              <label className="block font-extrabold text-[#0F172A] mb-1.5 text-xs flex items-center justify-between" >
                 <span>URL Web App Google Apps Script</span>
                 <span className="text-emerald-700 font-bold">Format: https://script.google.com/.../exec</span>
               </label>
@@ -179,9 +179,9 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                 placeholder="https://script.google.com/macros/s/AKfycb.../exec"
                 value={config.scriptUrl}
                 onChange={(e) => setConfig({ ...config, scriptUrl: e.target.value })}
-                className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-mono text-xs font-semibold shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-emerald-500/20 transition-all duration-200"
+                className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl text-[#0F172A] font-mono text-xs font-semibold shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-emerald-500/20 transition-all duration-200"
               />
-              <p className="text-[11px] text-[#49454F] mt-1.5">
+              <p className="text-[11px] text-[#334155] mt-1.5">
                 Dapatkan URL ini dari deploy Web App Google Apps Script Anda (lihat tab Panduan).
               </p>
             </div>
@@ -189,9 +189,9 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
             {/* 3 Folders Configuration */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-1">
               {/* 1. Folder Foto Siswa */}
-              <div className="p-4 bg-[#FFFBFE] rounded-[24px] border border-white/80 shadow-sm space-y-2">
-                <label className="block font-black text-[#1C1B1F] text-xs flex items-center gap-1.5" >
-                  <FolderOpen className="w-4 h-4 text-purple-600" />
+              <div className="p-4 bg-[#F8FAFC] rounded-[24px] border border-white/80 shadow-sm space-y-2">
+                <label className="block font-black text-[#0F172A] text-xs flex items-center gap-1.5" >
+                  <FolderOpen className="w-4 h-4 text-sky-600" />
                   <span>Folder Foto Siswa</span>
                 </label>
                 <input
@@ -199,7 +199,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                   placeholder="Foto Siswa"
                   value={config.studentPhotoFolderName || 'Foto Siswa'}
                   onChange={(e) => setConfig({ ...config, studentPhotoFolderName: e.target.value })}
-                  className="w-full px-3 py-2 bg-white border border-white/80 rounded-xl text-xs font-extrabold text-[#1C1B1F] shadow-xs"
+                  className="w-full px-3 py-2 bg-white border border-white/80 rounded-xl text-xs font-extrabold text-[#0F172A] shadow-xs"
                   
                 />
                 <input
@@ -207,14 +207,14 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                   placeholder="ID / Link Folder"
                   value={config.studentPhotoFolderId || ''}
                   onChange={(e) => setConfig({ ...config, studentPhotoFolderId: extractGoogleDriveFolderId(e.target.value) })}
-                  className="w-full px-3 py-2 bg-[#E7E0EC] rounded-xl text-[11px] font-mono font-semibold text-[#1C1B1F] shadow-none focus:bg-white focus:outline-hidden"
+                  className="w-full px-3 py-2 bg-[#E2F1FD] rounded-xl text-[11px] font-mono font-semibold text-[#0F172A] shadow-none focus:bg-white focus:outline-hidden"
                 />
-                <p className="text-[10px] text-[#49454F]">ID atau URL link folder profil siswa.</p>
+                <p className="text-[10px] text-[#334155]">ID atau URL link folder profil siswa.</p>
               </div>
 
               {/* 2. Folder Foto Bukti Pembinaan */}
-              <div className="p-4 bg-[#FFFBFE] rounded-[24px] border border-white/80 shadow-sm space-y-2">
-                <label className="block font-black text-[#1C1B1F] text-xs flex items-center gap-1.5" >
+              <div className="p-4 bg-[#F8FAFC] rounded-[24px] border border-white/80 shadow-sm space-y-2">
+                <label className="block font-black text-[#0F172A] text-xs flex items-center gap-1.5" >
                   <FolderOpen className="w-4 h-4 text-emerald-600" />
                   <span>Folder Foto Bukti</span>
                 </label>
@@ -223,7 +223,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                   placeholder="Foto Bukti Pembinaan"
                   value={config.photoFolderName || 'Foto Bukti Pembinaan'}
                   onChange={(e) => setConfig({ ...config, photoFolderName: e.target.value })}
-                  className="w-full px-3 py-2 bg-white border border-white/80 rounded-xl text-xs font-extrabold text-[#1C1B1F] shadow-xs"
+                  className="w-full px-3 py-2 bg-white border border-white/80 rounded-xl text-xs font-extrabold text-[#0F172A] shadow-xs"
                   
                 />
                 <input
@@ -231,14 +231,14 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                   placeholder="ID / Link Folder"
                   value={config.photoFolderId || ''}
                   onChange={(e) => setConfig({ ...config, photoFolderId: extractGoogleDriveFolderId(e.target.value) })}
-                  className="w-full px-3 py-2 bg-[#E7E0EC] rounded-xl text-[11px] font-mono font-semibold text-[#1C1B1F] shadow-none focus:bg-white focus:outline-hidden"
+                  className="w-full px-3 py-2 bg-[#E2F1FD] rounded-xl text-[11px] font-mono font-semibold text-[#0F172A] shadow-none focus:bg-white focus:outline-hidden"
                 />
-                <p className="text-[10px] text-[#49454F]">ID atau URL link folder bukti pembinaan.</p>
+                <p className="text-[10px] text-[#334155]">ID atau URL link folder bukti pembinaan.</p>
               </div>
 
               {/* 3. Folder Surat Bukti Pembinaan */}
-              <div className="p-4 bg-[#FFFBFE] rounded-[24px] border border-white/80 shadow-sm space-y-2">
-                <label className="block font-black text-[#1C1B1F] text-xs flex items-center gap-1.5" >
+              <div className="p-4 bg-[#F8FAFC] rounded-[24px] border border-white/80 shadow-sm space-y-2">
+                <label className="block font-black text-[#0F172A] text-xs flex items-center gap-1.5" >
                   <FolderOpen className="w-4 h-4 text-blue-600" />
                   <span>Folder Surat Bukti</span>
                 </label>
@@ -247,7 +247,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                   placeholder="Surat Bukti Pembinaan"
                   value={config.evidenceFolderName || 'Surat Bukti Pembinaan'}
                   onChange={(e) => setConfig({ ...config, evidenceFolderName: e.target.value })}
-                  className="w-full px-3 py-2 bg-white border border-white/80 rounded-xl text-xs font-extrabold text-[#1C1B1F] shadow-xs"
+                  className="w-full px-3 py-2 bg-white border border-white/80 rounded-xl text-xs font-extrabold text-[#0F172A] shadow-xs"
                   
                 />
                 <input
@@ -255,9 +255,9 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                   placeholder="ID / Link Folder"
                   value={config.evidenceFolderId || ''}
                   onChange={(e) => setConfig({ ...config, evidenceFolderId: extractGoogleDriveFolderId(e.target.value) })}
-                  className="w-full px-3 py-2 bg-[#E7E0EC] rounded-xl text-[11px] font-mono font-semibold text-[#1C1B1F] shadow-none focus:bg-white focus:outline-hidden"
+                  className="w-full px-3 py-2 bg-[#E2F1FD] rounded-xl text-[11px] font-mono font-semibold text-[#0F172A] shadow-none focus:bg-white focus:outline-hidden"
                 />
-                <p className="text-[10px] text-[#49454F]">ID atau URL link folder surat bertandatangan.</p>
+                <p className="text-[10px] text-[#334155]">ID atau URL link folder surat bertandatangan.</p>
               </div>
             </div>
 
@@ -268,7 +268,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                   type="button"
                   onClick={handleTestConnection}
                   disabled={testing || !config.scriptUrl}
-                  className="px-4 py-2.5 bg-white hover:bg-slate-50 disabled:opacity-50 text-[#1C1B1F] font-black text-xs rounded-2xl transition-all shadow-xs hover:-translate-y-0.5 active:scale-95 flex items-center gap-2 border border-white/60 cursor-pointer"
+                  className="px-4 py-2.5 bg-white hover:bg-slate-50 disabled:opacity-50 text-[#0F172A] font-black text-xs rounded-2xl transition-all shadow-xs hover:-translate-y-0.5 active:scale-95 flex items-center gap-2 border border-white/60 cursor-pointer"
                   
                 >
                   <RefreshCw className={`w-4 h-4 ${testing ? 'animate-spin text-emerald-600' : ''}`} />
@@ -295,7 +295,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
             </div>
 
             {/* Modal Footer */}
-            <div className="pt-4 border-t border-purple-100/50 flex items-center justify-between">
+            <div className="pt-4 border-t border-sky-100/50 flex items-center justify-between">
               <div>
                 {saveSuccess && (
                   <span className="text-xs font-black text-emerald-600 flex items-center gap-1.5" >
@@ -307,7 +307,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-5 py-2.5 bg-white hover:bg-slate-50 text-[#49454F] rounded-2xl font-extrabold text-xs shadow-xs hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all border border-white/60"
+                  className="px-5 py-2.5 bg-white hover:bg-slate-50 text-[#334155] rounded-2xl font-extrabold text-xs shadow-xs hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all border border-white/60"
                   
                 >
                   Batal
@@ -329,8 +329,8 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
           <div className="p-6 sm:p-8 space-y-4 max-h-[65vh] overflow-y-auto">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="font-black text-base text-[#1C1B1F]" >Panduan Pemasangan Google Apps Script (1 Menit)</h4>
-                <p className="text-xs text-[#49454F]">Gunakan akun Google Anda secara gratis tanpa batasan waktu.</p>
+                <h4 className="font-black text-base text-[#0F172A]" >Panduan Pemasangan Google Apps Script (1 Menit)</h4>
+                <p className="text-xs text-[#334155]">Gunakan akun Google Anda secara gratis tanpa batasan waktu.</p>
               </div>
               <button
                 type="button"
@@ -344,7 +344,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
             </div>
 
             {/* Step list */}
-            <ol className="space-y-3 text-xs text-[#1C1B1F] list-decimal list-inside bg-[#FFFBFE] p-5 rounded-[28px] border border-white/80 shadow-none font-medium leading-relaxed">
+            <ol className="space-y-3 text-xs text-[#0F172A] list-decimal list-inside bg-[#F8FAFC] p-5 rounded-[28px] border border-white/80 shadow-none font-medium leading-relaxed">
               <li>
                 Buka{' '}
                 <a
@@ -369,7 +369,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
               </li>
               <li>
                 Atur pengaturan berikut:
-                <ul className="list-disc list-inside pl-4 mt-1.5 space-y-1 text-[#49454F]">
+                <ul className="list-disc list-inside pl-4 mt-1.5 space-y-1 text-[#334155]">
                   <li><strong>Execute as:</strong> Me (Email Google Anda)</li>
                   <li><strong>Who has access:</strong> <span className="text-rose-600 font-black">Anyone (Siapa saja)</span> <em>(Penting agar aplikasi dapat mengirim foto/surat tanpa popup login)</em></li>
                 </ul>
@@ -385,10 +385,10 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
             {/* Code Box */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[11px] font-extrabold text-[#1C1B1F]" >Pratinjau Kode Google Apps Script (Code.gs):</span>
-                <span className="text-[10px] text-[#49454F]">Siap pakai &amp; otomatis membuat 3 folder</span>
+                <span className="text-[11px] font-extrabold text-[#0F172A]" >Pratinjau Kode Google Apps Script (Code.gs):</span>
+                <span className="text-[10px] text-[#334155]">Siap pakai &amp; otomatis membuat 3 folder</span>
               </div>
-              <pre className="p-4 bg-[#1C1B1F] text-emerald-300 font-mono text-[11px] rounded-[24px] overflow-x-auto max-h-56 leading-relaxed shadow-inner">
+              <pre className="p-4 bg-[#0F172A] text-emerald-300 font-mono text-[11px] rounded-[24px] overflow-x-auto max-h-56 leading-relaxed shadow-inner">
                 {GOOGLE_APPS_SCRIPT_CODE}
               </pre>
             </div>
