@@ -354,35 +354,32 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               const isGradeXI = item.grade === 'XI' || item.name.startsWith('XI-');
               const isGradeXII = item.grade === 'XII' || item.name.startsWith('XII-');
 
-              // Visual styling per grade
+              // Visual styling: X = Hijau, XI = Kuning, XII = Merah
               let theme = {
-                cardBg: 'bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE]/70 to-[#BAE6FD]/40 border-[#BAE6FD]/80 hover:border-[#38BDF8]',
-                iconBg: 'bg-gradient-to-tr from-[#0284C7] to-[#38BDF8] text-white',
-                nameColor: 'text-[#0369A1]',
-                watermarkColor: 'text-[#0284C7]/10',
-                progressTrack: 'bg-[#0284C7]/15',
-                progressFill: 'bg-gradient-to-r from-[#0284C7] to-[#38BDF8]',
+                cardBg: 'bg-gradient-to-br from-[#F0FDF4] via-[#DCFCE7]/70 to-[#BBF7D0]/40 border-[#BBF7D0]/80 hover:border-[#34D399]',
+                iconBg: 'bg-gradient-to-tr from-[#059669] to-[#10B981] text-white',
+                nameColor: 'text-[#047857]',
+                progressTrack: 'bg-[#059669]/15',
+                progressFill: 'bg-gradient-to-r from-[#059669] to-[#10B981]',
                 IconComponent: GraduationCap,
               };
 
               if (isGradeXI) {
                 theme = {
-                  cardBg: 'bg-gradient-to-br from-[#FAF5FF] via-[#F3E8FF]/70 to-[#DDD6FE]/40 border-[#DDD6FE]/80 hover:border-[#A855F7]',
-                  iconBg: 'bg-gradient-to-tr from-[#7C3AED] to-[#A855F7] text-white',
-                  nameColor: 'text-[#6D28D9]',
-                  watermarkColor: 'text-[#7C3AED]/10',
-                  progressTrack: 'bg-[#7C3AED]/15',
-                  progressFill: 'bg-gradient-to-r from-[#7C3AED] to-[#A855F7]',
+                  cardBg: 'bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7]/70 to-[#FDE68A]/40 border-[#FDE68A]/80 hover:border-[#F59E0B]',
+                  iconBg: 'bg-gradient-to-tr from-[#D97706] to-[#F59E0B] text-white',
+                  nameColor: 'text-[#B45309]',
+                  progressTrack: 'bg-[#D97706]/15',
+                  progressFill: 'bg-gradient-to-r from-[#D97706] to-[#F59E0B]',
                   IconComponent: BookOpen,
                 };
               } else if (isGradeXII) {
                 theme = {
-                  cardBg: 'bg-gradient-to-br from-[#F0FDF4] via-[#DCFCE7]/70 to-[#BBF7D0]/40 border-[#BBF7D0]/80 hover:border-[#34D399]',
-                  iconBg: 'bg-gradient-to-tr from-[#059669] to-[#10B981] text-white',
-                  nameColor: 'text-[#047857]',
-                  watermarkColor: 'text-[#059669]/10',
-                  progressTrack: 'bg-[#059669]/15',
-                  progressFill: 'bg-gradient-to-r from-[#059669] to-[#10B981]',
+                  cardBg: 'bg-gradient-to-br from-[#FFF1F2] via-[#FFE4E6]/70 to-[#FECDD3]/40 border-[#FECDD3]/80 hover:border-[#F43F5E]',
+                  iconBg: 'bg-gradient-to-tr from-[#E11D48] to-[#F43F5E] text-white',
+                  nameColor: 'text-[#BE123C]',
+                  progressTrack: 'bg-[#E11D48]/15',
+                  progressFill: 'bg-gradient-to-r from-[#E11D48] to-[#F43F5E]',
                   IconComponent: Award,
                 };
               }
@@ -398,8 +395,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   }}
                   className={`p-3.5 rounded-2xl border ${theme.cardBg} hover:shadow-md cursor-pointer transition-all duration-300 relative overflow-hidden group active:scale-[0.98]`}
                 >
-                  <CardIcon className={`w-16 h-16 absolute -right-2 -bottom-2 ${theme.watermarkColor} pointer-events-none group-hover:scale-115 transition-transform duration-300`} />
-
                   <div className="flex items-center justify-between text-xs mb-2 relative z-10">
                     <div className="flex items-center gap-2">
                       <div className={`w-7 h-7 rounded-xl ${theme.iconBg} flex items-center justify-center font-bold text-xs shadow-xs group-hover:rotate-6 transition-transform`}>
