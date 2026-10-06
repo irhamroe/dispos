@@ -20,7 +20,8 @@ import {
   Sparkles,
   Info,
   CalendarDays,
-  Send
+  Send,
+  UserCheck
 } from 'lucide-react';
 import { 
   Student, 
@@ -81,6 +82,14 @@ export const ParentCallLetterView: React.FC<ParentCallLetterViewProps> = ({
   });
   const [callTime, setCallTime] = useState<string>('Pukul 12.30 WIB – selesai');
   const [callPlace, setCallPlace] = useState<string>('Ruang Disiplin Positif SMA Negeri 1 Batu');
+  const [principalName, setPrincipalName] = useState<string>(() => schoolProfile.principalName || 'Drs. Rr. Wulandari Wahyuningsih, M.Pd.');
+  const [principalNip, setPrincipalNip] = useState<string>(() => schoolProfile.principalNip || '19670815 199412 2 003');
+
+  // Synchronize principal name and NIP if schoolProfile changes
+  React.useEffect(() => {
+    if (schoolProfile.principalName) setPrincipalName(schoolProfile.principalName);
+    if (schoolProfile.principalNip) setPrincipalNip(schoolProfile.principalNip);
+  }, [schoolProfile.principalName, schoolProfile.principalNip]);
 
   // Copy notification alert
   const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
@@ -190,6 +199,8 @@ export const ParentCallLetterView: React.FC<ParentCallLetterViewProps> = ({
       callDate,
       callTime,
       callPlace,
+      principalName,
+      principalNip,
       enablePointsSystem,
     };
     exportParentCallLetterToPdf(letterData);
@@ -231,8 +242,8 @@ Mengingat pentingnya hal tersebut, maka kami mengharapkan Bapak/Ibu untuk datang
 Demikian atas perhatian dan kerjasama yang baik disampaikan terima kasih.
 
 *Kepala ${schoolProfile.name}*
-${schoolProfile.principalName}
-NIP. ${schoolProfile.principalNip}`;
+${principalName}
+NIP. ${principalNip}`;
 
     navigator.clipboard.writeText(text);
     setCopyFeedback('Template pesan WhatsApp berhasil disalin ke clipboard!');
@@ -680,6 +691,31 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-teal-500"
                 />
               </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1">
+                  <UserCheck className="w-3.5 h-3.5 text-teal-600" />
+                  <span>Nama Kepala Sekolah</span>
+                </label>
+                <input
+                  type="text"
+                  value={principalName}
+                  onChange={(e) => setPrincipalName(e.target.value)}
+                  placeholder="Nama Kepala Sekolah beserta gelar"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">NIP Kepala Sekolah</label>
+                <input
+                  type="text"
+                  value={principalNip}
+                  onChange={(e) => setPrincipalNip(e.target.value)}
+                  placeholder="NIP Kepala Sekolah"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -935,8 +971,8 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
               <div className="text-left w-64 space-y-1">
                 <p>Kepala {schoolProfile.name}</p>
                 <div className="h-20" />
-                <p className="font-bold text-slate-900 underline">{schoolProfile.principalName}</p>
-                <p className="text-[10.5px] text-slate-600">NIP. {schoolProfile.principalNip}</p>
+                <p className="font-bold text-slate-900 underline">{principalName}</p>
+                <p className="text-[10.5px] text-slate-600">NIP. {principalNip}</p>
               </div>
             </div>
           </div>

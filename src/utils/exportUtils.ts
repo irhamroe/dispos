@@ -1026,6 +1026,8 @@ export interface ParentCallLetterData {
   notes?: string;
   senderTitle?: string;
   senderName?: string;
+  principalName?: string;
+  principalNip?: string;
   enablePointsSystem?: boolean;
 }
 
@@ -1258,6 +1260,9 @@ export const exportParentCallLetterToPdf = (data: ParentCallLetterData) => {
   }
 
   // 10. Tanda Tangan Kepala Sekolah (Rata Kanan)
+  const finalPrincipalName = data.principalName || schoolProfile.principalName;
+  const finalPrincipalNip = data.principalNip || schoolProfile.principalNip;
+
   const sigX = pageWidth - marginX - 65;
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
@@ -1265,11 +1270,11 @@ export const exportParentCallLetterToPdf = (data: ParentCallLetterData) => {
 
   curY += 22;
   doc.setFont('helvetica', 'bold');
-  doc.text(schoolProfile.principalName, sigX, curY);
+  doc.text(finalPrincipalName, sigX, curY);
 
   curY += 4.5;
   doc.setFont('helvetica', 'normal');
-  doc.text(`NIP. ${schoolProfile.principalNip}`, sigX, curY);
+  doc.text(`NIP. ${finalPrincipalNip}`, sigX, curY);
 
   const cleanStudentName = student.name.replace(/[^a-zA-Z0-9]/g, '_');
   const filename = `Surat_Panggilan_${cleanStudentName}_${callDate}.pdf`;
