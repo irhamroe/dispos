@@ -49,6 +49,7 @@ interface ParentCallLetterViewProps {
   classes: RombelClass[];
   waliKelasList: WaliKelasTeacher[];
   schoolProfile: SchoolProfile;
+  onUpdateSchoolProfile?: (profile: Partial<SchoolProfile>) => void;
   currentUserName: string;
   enablePointsSystem?: boolean;
 }
@@ -59,6 +60,7 @@ export const ParentCallLetterView: React.FC<ParentCallLetterViewProps> = ({
   classes,
   waliKelasList,
   schoolProfile,
+  onUpdateSchoolProfile,
   currentUserName,
   enablePointsSystem = true,
 }) => {
@@ -93,6 +95,22 @@ export const ParentCallLetterView: React.FC<ParentCallLetterViewProps> = ({
     if (schoolProfile.principalRank) setPrincipalRank(schoolProfile.principalRank);
     if (schoolProfile.principalNip) setPrincipalNip(schoolProfile.principalNip);
   }, [schoolProfile.principalName, schoolProfile.principalRank, schoolProfile.principalNip]);
+
+  // Handlers to update & persist Principal info immediately
+  const handlePrincipalNameChange = (val: string) => {
+    setPrincipalName(val);
+    onUpdateSchoolProfile?.({ principalName: val });
+  };
+
+  const handlePrincipalRankChange = (val: string) => {
+    setPrincipalRank(val);
+    onUpdateSchoolProfile?.({ principalRank: val });
+  };
+
+  const handlePrincipalNipChange = (val: string) => {
+    setPrincipalNip(val);
+    onUpdateSchoolProfile?.({ principalNip: val });
+  };
 
   // Copy notification alert
   const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
@@ -704,7 +722,7 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                 <input
                   type="text"
                   value={principalName}
-                  onChange={(e) => setPrincipalName(e.target.value)}
+                  onChange={(e) => handlePrincipalNameChange(e.target.value)}
                   placeholder="Nama Kepala Sekolah beserta gelar"
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-teal-500"
                 />
@@ -718,7 +736,7 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                 <input
                   type="text"
                   value={principalRank}
-                  onChange={(e) => setPrincipalRank(e.target.value)}
+                  onChange={(e) => handlePrincipalRankChange(e.target.value)}
                   placeholder="Contoh: Pembina Utama Muda, IV/c"
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-teal-500"
                 />
@@ -729,7 +747,7 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                 <input
                   type="text"
                   value={principalNip}
-                  onChange={(e) => setPrincipalNip(e.target.value)}
+                  onChange={(e) => handlePrincipalNipChange(e.target.value)}
                   placeholder="NIP Kepala Sekolah"
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-teal-500"
                 />

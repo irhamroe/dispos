@@ -180,6 +180,31 @@ export default function App() {
     }
   });
 
+  // School Profile state with persistent LocalStorage and Cloud sync
+  const [schoolProfile, setSchoolProfile] = useState<SchoolProfile>(() => {
+    try {
+      const saved = localStorage.getItem('app_sman1batu_school_profile_v3');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed?.principalName) return { ...initialSchoolProfile, ...parsed };
+      }
+      return initialSchoolProfile;
+    } catch {
+      return initialSchoolProfile;
+    }
+  });
+
+  const handleUpdateSchoolProfile = (updated: Partial<SchoolProfile>) => {
+    setSchoolProfile((prev) => {
+      const next = { ...prev, ...updated };
+      localStorage.setItem('app_sman1batu_school_profile_v3', JSON.stringify(next));
+      if (isFirebaseConfigured()) {
+        saveDocument(COLLECTIONS.SCHOOL_PROFILE, 'main_profile', next);
+      }
+      return next;
+    });
+  };
+
   // Users state (Multi-Role: Admin + 36 Wali Kelas + Guru Mapel)
   const [users, setUsers] = useState<AdminUser[]>(() => {
     try {
@@ -341,6 +366,14 @@ export default function App() {
       }
     });
 
+    // 8. Realtime School Profile subscription (Principal name, rank, and NIP sync)
+    const unsubSchoolProfile = subscribeToCollection<SchoolProfile>(COLLECTIONS.SCHOOL_PROFILE, (data) => {
+      if (data && data.length > 0 && data[0]?.principalName) {
+        setSchoolProfile((prev) => ({ ...prev, ...data[0] }));
+        localStorage.setItem('app_sman1batu_school_profile_v3', JSON.stringify({ ...initialSchoolProfile, ...data[0] }));
+      }
+    });
+
     return () => {
       if (unsubStudents) unsubStudents();
       if (unsubClasses) unsubClasses();
@@ -349,6 +382,7 @@ export default function App() {
       if (unsubDiscipline) unsubDiscipline();
       if (unsubRules) unsubRules();
       if (unsubUsers) unsubUsers();
+      if (unsubSchoolProfile) unsubSchoolProfile();
     };
   }, []);
 
@@ -594,7 +628,7 @@ export default function App() {
     return (
       <LoginScreen
         onLoginSuccess={handleLoginSuccess}
-        schoolProfile={initialSchoolProfile}
+        schoolProfile={schoolProfile}
         users={users}
       />
     );
@@ -620,7 +654,7 @@ export default function App() {
       {/* Top Navbar */}
       <Navbar
         currentUser={currentUser}
-        schoolProfile={initialSchoolProfile}
+        schoolProfile={schoolProfile}
         onLogout={handleLogout}
         onToggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         todayStr={formatDayAndDateIndonesian(getTodayDateString())}
@@ -678,7 +712,7 @@ export default function App() {
               students={students}
               attendanceRecords={attendanceRecords}
               classes={classes}
-              schoolProfile={initialSchoolProfile}
+              schoolProfile={schoolProfile}
             />
           )}
 
@@ -687,7 +721,7 @@ export default function App() {
               students={students}
               attendanceRecords={attendanceRecords}
               classes={classes}
-              schoolProfile={initialSchoolProfile}
+              schoolProfile={schoolProfile}
               onUpdateAttendance={handleSaveAttendance}
             />
           )}
@@ -700,7 +734,7 @@ export default function App() {
               onUpdateStatus={handleUpdateDisciplineStatus}
               onUpdateRecord={handleUpdateDisciplineRecord}
               onDeleteRecord={handleDeleteDisciplineRecord}
-              schoolProfile={initialSchoolProfile}
+              schoolProfile={schoolProfile}
               currentUserName={currentUser.name}
               initialStudentForModal={initialStudentForDisc}
               initialViolationForModal={initialViolationForDisc}
@@ -717,7 +751,7 @@ export default function App() {
             <DisciplineRecapView
               disciplineRecords={disciplineRecords}
               students={students}
-              schoolProfile={initialSchoolProfile}
+              schoolProfile={schoolProfile}
             />
           )}
 
@@ -725,7 +759,7 @@ export default function App() {
             <DisciplineDebtView
               disciplineRecords={disciplineRecords}
               students={students}
-              schoolProfile={initialSchoolProfile}
+              schoolProfile={schoolProfile}
               onUpdateRecord={handleUpdateDisciplineRecord}
               currentUserName={currentUser.name}
             />
@@ -737,7 +771,8 @@ export default function App() {
               disciplineRecords={disciplineRecords}
               classes={classes}
               waliKelasList={waliKelasList}
-              schoolProfile={initialSchoolProfile}
+              schoolProfile={schoolProfile}
+              onUpdateSchoolProfile={handleUpdateSchoolProfile}
               currentUserName={currentUser.name}
               enablePointsSystem={enablePointsSystem}
             />
