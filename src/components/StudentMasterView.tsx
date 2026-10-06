@@ -24,7 +24,8 @@ import {
   AlertCircle, 
   RefreshCw, 
   Cloud, 
-  Loader2 
+  Loader2,
+  UserCheck
 } from 'lucide-react';
 import { Student, DisciplineRecord, AttendanceRecord } from '../types';
 import { RombelClass } from '../data/initialData';
@@ -380,32 +381,52 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
 
       {/* Quick Summary Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
-        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-sm border border-white/60 hover:-translate-y-1.5 transition-all">
-          <div className="text-[11px] font-black text-[#334155] uppercase tracking-wider" >Total Siswa</div>
-          <div className="text-2xl sm:text-3xl font-black text-[#0F172A] mt-1 tracking-tight" >{stats.total}</div>
-          <div className="text-xs text-[#0284C7] font-bold mt-0.5">36 Rombel Terdaftar</div>
+        <div className="rounded-[32px] bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE] to-[#BAE6FD]/60 p-5 shadow-xs border border-[#7DD3FC]/70 hover:-translate-y-1.5 transition-all group">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-black text-[#0369A1] uppercase tracking-wider">Total Siswa</span>
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#0284C7] to-[#38BDF8] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
+              <Users className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="text-2xl sm:text-3xl font-black text-[#0369A1] mt-2 tracking-tight">{stats.total}</div>
+          <div className="text-[11px] text-[#0369A1]/80 font-bold mt-0.5">36 Rombel Terdaftar</div>
         </div>
 
-        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-sm border border-sky-200/60 hover:-translate-y-1.5 transition-all">
-          <div className="text-[11px] font-black text-sky-700 uppercase tracking-wider" >Foto Profil Siswa</div>
-          <div className="text-2xl sm:text-3xl font-black text-sky-700 mt-1 tracking-tight" >{stats.withPhoto}</div>
-          <div className="text-xs text-[#334155] mt-0.5 font-medium">
+        <div className="rounded-[32px] bg-gradient-to-br from-[#FAF5FF] via-[#F3E8FF] to-[#DDD6FE]/60 p-5 shadow-xs border border-[#DDD6FE]/70 hover:-translate-y-1.5 transition-all group">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-black text-[#6D28D9] uppercase tracking-wider">Foto Profil Siswa</span>
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#7C3AED] to-[#A855F7] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
+              <Camera className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="text-2xl sm:text-3xl font-black text-[#6D28D9] mt-2 tracking-tight">{stats.withPhoto}</div>
+          <div className="text-[11px] text-[#6D28D9]/80 font-medium mt-0.5">
             {stats.total > 0 ? Math.round((stats.withPhoto / stats.total) * 100) : 0}% terisi foto
           </div>
         </div>
 
-        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-sm border border-sky-200/60 hover:-translate-y-1.5 transition-all">
-          <div className="text-[11px] font-black text-sky-700 uppercase tracking-wider" >Alamat Domisili</div>
-          <div className="text-2xl sm:text-3xl font-black text-sky-700 mt-1 tracking-tight" >{stats.withAddress}</div>
-          <div className="text-xs text-[#334155] mt-0.5 font-medium">
+        <div className="rounded-[32px] bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7] to-[#FDE68A]/60 p-5 shadow-xs border border-[#FCD34D]/70 hover:-translate-y-1.5 transition-all group">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-black text-[#B45309] uppercase tracking-wider">Alamat Domisili</span>
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#D97706] to-[#F59E0B] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
+              <MapPin className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="text-2xl sm:text-3xl font-black text-[#B45309] mt-2 tracking-tight">{stats.withAddress}</div>
+          <div className="text-[11px] text-[#B45309]/80 font-medium mt-0.5">
             {stats.total > 0 ? Math.round((stats.withAddress / stats.total) * 100) : 0}% terdata alamat
           </div>
         </div>
 
-        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-sm border border-emerald-200/60 hover:-translate-y-1.5 transition-all">
-          <div className="text-[11px] font-black text-emerald-700 uppercase tracking-wider" >Siswa Aktif</div>
-          <div className="text-2xl sm:text-3xl font-black text-emerald-700 mt-1 tracking-tight" >{stats.active}</div>
-          <div className="text-xs text-emerald-600 font-bold mt-0.5">Status Akademik Aktif</div>
+        <div className="rounded-[32px] bg-gradient-to-br from-[#ECFDF5] via-[#D1FAE5] to-[#A7F3D0]/60 p-5 shadow-xs border border-[#6EE7B7]/70 hover:-translate-y-1.5 transition-all group">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-black text-[#047857] uppercase tracking-wider">Siswa Aktif</span>
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#059669] to-[#10B981] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
+              <UserCheck className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="text-2xl sm:text-3xl font-black text-[#047857] mt-2 tracking-tight">{stats.active}</div>
+          <div className="text-[11px] text-[#047857] font-bold mt-0.5">Status Akademik Aktif</div>
         </div>
       </div>
 

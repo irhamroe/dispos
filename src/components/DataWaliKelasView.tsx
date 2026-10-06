@@ -188,43 +188,43 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
 
       {/* Metric Cards Ringkasan */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-sm border border-white/60 hover:-translate-y-1.5 transition-all flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 text-white flex items-center justify-center shadow-xs shrink-0">
+        <div className="rounded-[32px] bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE] to-[#BAE6FD]/60 p-5 shadow-xs border border-[#7DD3FC]/70 hover:-translate-y-1.5 transition-all flex items-center gap-4 group">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#0284C7] to-[#38BDF8] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform shrink-0">
             <UserCheck className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[11px] font-black text-[#334155] uppercase tracking-wider" >Total Wali Kelas</div>
-            <div className="text-2xl sm:text-3xl font-black text-[#0F172A] mt-0.5" >{waliKelasList.length} Guru</div>
+            <div className="text-[11px] font-black text-[#0369A1] uppercase tracking-wider">Total Wali Kelas</div>
+            <div className="text-2xl sm:text-3xl font-black text-[#0369A1] mt-0.5">{waliKelasList.length} Guru</div>
           </div>
         </div>
 
-        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-sm border border-sky-200/60 hover:-translate-y-1.5 transition-all flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
-            <GraduationCap className="w-6 h-6" />
+        <div className="rounded-[32px] bg-gradient-to-br from-[#FAF5FF] via-[#F3E8FF] to-[#DDD6FE]/60 p-5 shadow-xs border border-[#DDD6FE]/70 hover:-translate-y-1.5 transition-all flex items-center gap-4 group">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#7C3AED] to-[#A855F7] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform shrink-0">
+            <Layers className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[11px] font-black text-sky-700 uppercase tracking-wider" >Rombel Terbina</div>
-            <div className="text-2xl sm:text-3xl font-black text-sky-700 mt-0.5" >36 / 36 Rombel</div>
+            <div className="text-[11px] font-black text-[#6D28D9] uppercase tracking-wider">Rombel Terbina</div>
+            <div className="text-2xl sm:text-3xl font-black text-[#6D28D9] mt-0.5">36 / 36 Rombel</div>
           </div>
         </div>
 
-        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-sm border border-emerald-200/60 hover:-translate-y-1.5 transition-all flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center shadow-xs shrink-0">
+        <div className="rounded-[32px] bg-gradient-to-br from-[#ECFDF5] via-[#D1FAE5] to-[#A7F3D0]/60 p-5 shadow-xs border border-[#6EE7B7]/70 hover:-translate-y-1.5 transition-all flex items-center gap-4 group">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#059669] to-[#10B981] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform shrink-0">
             <Briefcase className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[11px] font-black text-emerald-700 uppercase tracking-wider" >Status PNS</div>
-            <div className="text-2xl sm:text-3xl font-black text-emerald-700 mt-0.5" >{pnsCount} Guru</div>
+            <div className="text-[11px] font-black text-[#047857] uppercase tracking-wider">Status PNS</div>
+            <div className="text-2xl sm:text-3xl font-black text-[#047857] mt-0.5">{pnsCount} Guru</div>
           </div>
         </div>
 
-        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-sm border border-amber-200/60 hover:-translate-y-1.5 transition-all flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center shadow-xs shrink-0">
+        <div className="rounded-[32px] bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7] to-[#FDE68A]/60 p-5 shadow-xs border border-[#FCD34D]/70 hover:-translate-y-1.5 transition-all flex items-center gap-4 group">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#D97706] to-[#F59E0B] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform shrink-0">
             <Award className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[11px] font-black text-amber-700 uppercase tracking-wider" >Status PPPK</div>
-            <div className="text-2xl sm:text-3xl font-black text-amber-700 mt-0.5" >{pppkCount} Guru</div>
+            <div className="text-[11px] font-black text-[#B45309] uppercase tracking-wider">Status PPPK</div>
+            <div className="text-2xl sm:text-3xl font-black text-[#B45309] mt-0.5">{pppkCount} Guru</div>
           </div>
         </div>
       </div>

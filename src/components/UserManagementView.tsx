@@ -541,24 +541,24 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           {/* Card 1: Admin */}
           <div 
             onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Admin' ? 'ALL' : 'Admin')}
-            className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden ${
+            className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden group ${
               selectedRoleFilter === 'Admin'
-                ? 'bg-gradient-to-br from-purple-500/15 to-purple-600/10 border-2 border-[#0284C7] shadow-sm -translate-y-1'
-                : 'bg-white/70 hover:bg-white/90 border border-white/60 shadow-sm hover:-translate-y-1'
+                ? 'bg-gradient-to-br from-[#FAF5FF] via-[#F3E8FF] to-[#DDD6FE] border-2 border-[#7C3AED] shadow-sm -translate-y-1'
+                : 'bg-gradient-to-br from-[#FAF5FF] via-[#F3E8FF]/70 to-[#DDD6FE]/40 border border-[#DDD6FE]/70 hover:border-[#A855F7] shadow-xs hover:-translate-y-1'
             }`}
           >
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 text-white flex items-center justify-center shadow-xs">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#7C3AED] to-[#A855F7] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
                 <ShieldCheck className="w-5 h-5" />
               </div>
-              <span className="text-2xl font-black text-sky-900" >{roleCounts.admin}</span>
+              <span className="text-2xl font-black text-[#6D28D9]">{roleCounts.admin}</span>
             </div>
             <div className="mt-3">
-              <div className="text-xs font-black text-purple-950 flex items-center gap-1.5" >
+              <div className="text-xs font-black text-[#6D28D9] flex items-center gap-1.5">
                 <span>1. Administrator</span>
-                {selectedRoleFilter === 'Admin' && <span className="text-[10px] text-sky-600 font-bold">(Aktif)</span>}
+                {selectedRoleFilter === 'Admin' && <span className="text-[10px] text-[#7C3AED] font-bold">(Aktif)</span>}
               </div>
-              <p className="text-[11px] text-[#334155] mt-1 leading-relaxed">
+              <p className="text-[11px] text-[#6D28D9]/80 mt-1 leading-relaxed">
                 Hak penuh sistem, data master, aturan poin &amp; akun.
               </p>
             </div>
@@ -567,24 +567,24 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           {/* Card 2: Wali Kelas */}
           <div 
             onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Wali Kelas' ? 'ALL' : 'Wali Kelas')}
-            className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden ${
+            className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden group ${
               selectedRoleFilter === 'Wali Kelas'
-                ? 'bg-gradient-to-br from-teal-500/15 to-teal-600/10 border-2 border-teal-500 shadow-sm -translate-y-1'
-                : 'bg-white/70 hover:bg-white/90 border border-white/60 shadow-sm hover:-translate-y-1'
+                ? 'bg-gradient-to-br from-[#ECFDF5] via-[#D1FAE5] to-[#A7F3D0] border-2 border-[#059669] shadow-sm -translate-y-1'
+                : 'bg-gradient-to-br from-[#ECFDF5] via-[#D1FAE5]/70 to-[#A7F3D0]/40 border border-[#6EE7B7]/70 hover:border-[#10B981] shadow-xs hover:-translate-y-1'
             }`}
           >
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-400 to-teal-600 text-white flex items-center justify-center shadow-xs">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#059669] to-[#10B981] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
                 <UserCheck className="w-5 h-5" />
               </div>
-              <span className="text-2xl font-black text-teal-900" >{roleCounts.waliKelas}</span>
+              <span className="text-2xl font-black text-[#047857]">{roleCounts.waliKelas}</span>
             </div>
             <div className="mt-3">
-              <div className="text-xs font-black text-teal-950 flex items-center gap-1.5" >
+              <div className="text-xs font-black text-[#047857] flex items-center gap-1.5">
                 <span>2. Wali Kelas</span>
-                {selectedRoleFilter === 'Wali Kelas' && <span className="text-[10px] text-teal-600 font-bold">(Aktif)</span>}
+                {selectedRoleFilter === 'Wali Kelas' && <span className="text-[10px] text-[#059669] font-bold">(Aktif)</span>}
               </div>
-              <p className="text-[11px] text-[#334155] mt-1 leading-relaxed">
+              <p className="text-[11px] text-[#047857]/80 mt-1 leading-relaxed">
                 Pembina rombel, presensi siswa &amp; surat panggilan ortu.
               </p>
             </div>
@@ -593,24 +593,24 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           {/* Card 3: Guru */}
           <div 
             onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Guru' ? 'ALL' : 'Guru')}
-            className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden ${
+            className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden group ${
               selectedRoleFilter === 'Guru'
-                ? 'bg-gradient-to-br from-sky-500/15 to-sky-600/10 border-2 border-sky-500 shadow-sm -translate-y-1'
-                : 'bg-white/70 hover:bg-white/90 border border-white/60 shadow-sm hover:-translate-y-1'
+                ? 'bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE] to-[#BAE6FD] border-2 border-[#0284C7] shadow-sm -translate-y-1'
+                : 'bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE]/70 to-[#BAE6FD]/40 border border-[#7DD3FC]/70 hover:border-[#38BDF8] shadow-xs hover:-translate-y-1'
             }`}
           >
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-400 to-sky-600 text-white flex items-center justify-center shadow-xs">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#0284C7] to-[#38BDF8] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
                 <GraduationCap className="w-5 h-5" />
               </div>
-              <span className="text-2xl font-black text-sky-900" >{roleCounts.guru}</span>
+              <span className="text-2xl font-black text-[#0369A1]">{roleCounts.guru}</span>
             </div>
             <div className="mt-3">
-              <div className="text-xs font-black text-sky-950 flex items-center gap-1.5" >
+              <div className="text-xs font-black text-[#0369A1] flex items-center gap-1.5">
                 <span>3. Guru</span>
-                {selectedRoleFilter === 'Guru' && <span className="text-[10px] text-sky-600 font-bold">(Aktif)</span>}
+                {selectedRoleFilter === 'Guru' && <span className="text-[10px] text-[#0284C7] font-bold">(Aktif)</span>}
               </div>
-              <p className="text-[11px] text-[#334155] mt-1 leading-relaxed">
+              <p className="text-[11px] text-[#0369A1]/80 mt-1 leading-relaxed">
                 Guru Mapel, Guru Piket gerbang &amp; Guru BK disiplin.
               </p>
             </div>
@@ -619,24 +619,24 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           {/* Card 4: Tendik */}
           <div 
             onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Tendik' ? 'ALL' : 'Tendik')}
-            className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden ${
+            className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden group ${
               selectedRoleFilter === 'Tendik'
-                ? 'bg-gradient-to-br from-amber-500/15 to-amber-600/10 border-2 border-amber-500 shadow-sm -translate-y-1'
-                : 'bg-white/70 hover:bg-white/90 border border-white/60 shadow-sm hover:-translate-y-1'
+                ? 'bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7] to-[#FDE68A] border-2 border-[#D97706] shadow-sm -translate-y-1'
+                : 'bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7]/70 to-[#FDE68A]/40 border border-[#FCD34D]/70 hover:border-[#F59E0B] shadow-xs hover:-translate-y-1'
             }`}
           >
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-white flex items-center justify-center shadow-xs">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#D97706] to-[#F59E0B] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
                 <Briefcase className="w-5 h-5" />
               </div>
-              <span className="text-2xl font-black text-amber-900" >{roleCounts.tendik}</span>
+              <span className="text-2xl font-black text-[#B45309]">{roleCounts.tendik}</span>
             </div>
             <div className="mt-3">
-              <div className="text-xs font-black text-amber-950 flex items-center gap-1.5" >
+              <div className="text-xs font-black text-[#B45309] flex items-center gap-1.5">
                 <span>4. Tendik</span>
-                {selectedRoleFilter === 'Tendik' && <span className="text-[10px] text-amber-600 font-bold">(Aktif)</span>}
+                {selectedRoleFilter === 'Tendik' && <span className="text-[10px] text-[#D97706] font-bold">(Aktif)</span>}
               </div>
-              <p className="text-[11px] text-[#334155] mt-1 leading-relaxed">
+              <p className="text-[11px] text-[#B45309]/80 mt-1 leading-relaxed">
                 Tata Usaha, staf kesiswaan, persuratan &amp; verifikasi arsip.
               </p>
             </div>
