@@ -95,23 +95,23 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
   const isConfigured = isGoogleDriveConfigured();
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-[#332F3A]/40 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200">
-      <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[36px] max-w-2xl w-full border border-white/80 shadow-clay-card overflow-hidden animate-in fade-in zoom-in-95 my-8">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-[#1C1B1F]/40 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200">
+      <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[32px] max-w-2xl w-full border border-white/80 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
         {/* Modal Header */}
-        <div className="p-6 sm:p-7 bg-gradient-to-r from-emerald-600 via-teal-600 to-[#7C3AED] text-white flex items-center justify-between shadow-clay-card">
+        <div className="p-6 sm:p-7 bg-gradient-to-r from-emerald-600 via-teal-600 to-[#6750A4] text-white flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-clay-orb">
+            <div className="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-xs">
               <Cloud className="w-6 h-6 text-emerald-200" />
             </div>
             <div>
-              <h3 className="font-black text-lg text-white flex items-center gap-2.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <h3 className="font-black text-lg text-white flex items-center gap-2.5" >
                 <span>Penyimpanan Google Drive</span>
                 {isConfigured ? (
-                  <span className="px-3 py-0.5 rounded-full text-[10px] font-black bg-emerald-400 text-emerald-950 shadow-clay-pill">
+                  <span className="px-3 py-0.5 rounded-full text-[10px] font-black bg-emerald-400 text-emerald-950 shadow-xs">
                     Aktif
                   </span>
                 ) : (
-                  <span className="px-3 py-0.5 rounded-full text-[10px] font-black bg-amber-400 text-amber-950 shadow-clay-pill">
+                  <span className="px-3 py-0.5 rounded-full text-[10px] font-black bg-amber-400 text-amber-950 shadow-xs">
                     Belum Dikonfigurasi
                   </span>
                 )}
@@ -123,21 +123,21 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-2xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-90 cursor-pointer"
+            className="w-9 h-9 rounded-2xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all shadow-xs hover:-translate-y-0.5 active:scale-90 cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-purple-100/50 bg-[#F4F1FA] px-6 sm:px-8 pt-3 gap-2.5 text-xs font-black" style={{ fontFamily: 'Nunito, sans-serif' }}>
+        <div className="flex border-b border-purple-100/50 bg-[#FFFBFE] px-6 sm:px-8 pt-3 gap-2.5 text-xs font-black" >
           <button
             type="button"
             onClick={() => setActiveTab('settings')}
             className={`pb-3 px-4 rounded-t-2xl transition-all cursor-pointer flex items-center gap-2 ${
               activeTab === 'settings'
-                ? 'bg-white text-emerald-700 shadow-clay-pill border-b-2 border-emerald-600'
-                : 'text-[#635F69] hover:text-[#332F3A]'
+                ? 'bg-white text-emerald-700 shadow-xs border-b-2 border-emerald-600'
+                : 'text-[#49454F] hover:text-[#1C1B1F]'
             }`}
           >
             <HardDrive className="w-4 h-4" />
@@ -148,8 +148,8 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
             onClick={() => setActiveTab('tutorial')}
             className={`pb-3 px-4 rounded-t-2xl transition-all cursor-pointer flex items-center gap-2 ${
               activeTab === 'tutorial'
-                ? 'bg-white text-emerald-700 shadow-clay-pill border-b-2 border-emerald-600'
-                : 'text-[#635F69] hover:text-[#332F3A]'
+                ? 'bg-white text-emerald-700 shadow-xs border-b-2 border-emerald-600'
+                : 'text-[#49454F] hover:text-[#1C1B1F]'
             }`}
           >
             <HelpCircle className="w-4 h-4" />
@@ -160,16 +160,16 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
         {/* Tab Content: Settings */}
         {activeTab === 'settings' && (
           <form onSubmit={handleSave} className="p-6 sm:p-8 space-y-4">
-            <div className="p-4 bg-emerald-50/80 border border-emerald-200 rounded-[24px] text-xs text-emerald-950 flex items-start gap-3 shadow-clay-card">
+            <div className="p-4 bg-emerald-50/80 border border-emerald-200 rounded-[24px] text-xs text-emerald-950 flex items-start gap-3 shadow-sm">
               <Sparkles className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
               <div className="leading-relaxed">
-                <span className="font-black text-sm block mb-0.5" style={{ fontFamily: 'Nunito, sans-serif' }}>Otomatisasi 3 Folder Google Drive:</span> Berkas akan otomatis disimpan di folder terpisah untuk <strong className="font-extrabold text-emerald-900">Foto Siswa</strong>, <strong className="font-extrabold text-emerald-900">Foto Bukti Pembinaan</strong>, dan <strong className="font-extrabold text-emerald-900">Surat Bukti Pembinaan</strong>.
+                <span className="font-black text-sm block mb-0.5" >Otomatisasi 3 Folder Google Drive:</span> Berkas akan otomatis disimpan di folder terpisah untuk <strong className="font-extrabold text-emerald-900">Foto Siswa</strong>, <strong className="font-extrabold text-emerald-900">Foto Bukti Pembinaan</strong>, dan <strong className="font-extrabold text-emerald-900">Surat Bukti Pembinaan</strong>.
               </div>
             </div>
 
             {/* Script URL Input */}
             <div>
-              <label className="block font-extrabold text-[#332F3A] mb-1.5 text-xs flex items-center justify-between" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <label className="block font-extrabold text-[#1C1B1F] mb-1.5 text-xs flex items-center justify-between" >
                 <span>URL Web App Google Apps Script</span>
                 <span className="text-emerald-700 font-bold">Format: https://script.google.com/.../exec</span>
               </label>
@@ -179,9 +179,9 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                 placeholder="https://script.google.com/macros/s/AKfycb.../exec"
                 value={config.scriptUrl}
                 onChange={(e) => setConfig({ ...config, scriptUrl: e.target.value })}
-                className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-mono text-xs font-semibold shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-emerald-500/20 transition-all duration-200"
+                className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-mono text-xs font-semibold shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-emerald-500/20 transition-all duration-200"
               />
-              <p className="text-[11px] text-[#635F69] mt-1.5">
+              <p className="text-[11px] text-[#49454F] mt-1.5">
                 Dapatkan URL ini dari deploy Web App Google Apps Script Anda (lihat tab Panduan).
               </p>
             </div>
@@ -189,8 +189,8 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
             {/* 3 Folders Configuration */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-1">
               {/* 1. Folder Foto Siswa */}
-              <div className="p-4 bg-[#F4F1FA] rounded-[24px] border border-white/80 shadow-clay-card space-y-2">
-                <label className="block font-black text-[#332F3A] text-xs flex items-center gap-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <div className="p-4 bg-[#FFFBFE] rounded-[24px] border border-white/80 shadow-sm space-y-2">
+                <label className="block font-black text-[#1C1B1F] text-xs flex items-center gap-1.5" >
                   <FolderOpen className="w-4 h-4 text-purple-600" />
                   <span>Folder Foto Siswa</span>
                 </label>
@@ -199,22 +199,22 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                   placeholder="Foto Siswa"
                   value={config.studentPhotoFolderName || 'Foto Siswa'}
                   onChange={(e) => setConfig({ ...config, studentPhotoFolderName: e.target.value })}
-                  className="w-full px-3 py-2 bg-white border border-white/80 rounded-xl text-xs font-extrabold text-[#332F3A] shadow-clay-pill"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="w-full px-3 py-2 bg-white border border-white/80 rounded-xl text-xs font-extrabold text-[#1C1B1F] shadow-xs"
+                  
                 />
                 <input
                   type="text"
                   placeholder="ID / Link Folder"
                   value={config.studentPhotoFolderId || ''}
                   onChange={(e) => setConfig({ ...config, studentPhotoFolderId: extractGoogleDriveFolderId(e.target.value) })}
-                  className="w-full px-3 py-2 bg-[#EFEBF5] rounded-xl text-[11px] font-mono font-semibold text-[#332F3A] shadow-clay-pressed focus:bg-white focus:outline-hidden"
+                  className="w-full px-3 py-2 bg-[#E7E0EC] rounded-xl text-[11px] font-mono font-semibold text-[#1C1B1F] shadow-none focus:bg-white focus:outline-hidden"
                 />
-                <p className="text-[10px] text-[#635F69]">ID atau URL link folder profil siswa.</p>
+                <p className="text-[10px] text-[#49454F]">ID atau URL link folder profil siswa.</p>
               </div>
 
               {/* 2. Folder Foto Bukti Pembinaan */}
-              <div className="p-4 bg-[#F4F1FA] rounded-[24px] border border-white/80 shadow-clay-card space-y-2">
-                <label className="block font-black text-[#332F3A] text-xs flex items-center gap-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <div className="p-4 bg-[#FFFBFE] rounded-[24px] border border-white/80 shadow-sm space-y-2">
+                <label className="block font-black text-[#1C1B1F] text-xs flex items-center gap-1.5" >
                   <FolderOpen className="w-4 h-4 text-emerald-600" />
                   <span>Folder Foto Bukti</span>
                 </label>
@@ -223,22 +223,22 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                   placeholder="Foto Bukti Pembinaan"
                   value={config.photoFolderName || 'Foto Bukti Pembinaan'}
                   onChange={(e) => setConfig({ ...config, photoFolderName: e.target.value })}
-                  className="w-full px-3 py-2 bg-white border border-white/80 rounded-xl text-xs font-extrabold text-[#332F3A] shadow-clay-pill"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="w-full px-3 py-2 bg-white border border-white/80 rounded-xl text-xs font-extrabold text-[#1C1B1F] shadow-xs"
+                  
                 />
                 <input
                   type="text"
                   placeholder="ID / Link Folder"
                   value={config.photoFolderId || ''}
                   onChange={(e) => setConfig({ ...config, photoFolderId: extractGoogleDriveFolderId(e.target.value) })}
-                  className="w-full px-3 py-2 bg-[#EFEBF5] rounded-xl text-[11px] font-mono font-semibold text-[#332F3A] shadow-clay-pressed focus:bg-white focus:outline-hidden"
+                  className="w-full px-3 py-2 bg-[#E7E0EC] rounded-xl text-[11px] font-mono font-semibold text-[#1C1B1F] shadow-none focus:bg-white focus:outline-hidden"
                 />
-                <p className="text-[10px] text-[#635F69]">ID atau URL link folder bukti pembinaan.</p>
+                <p className="text-[10px] text-[#49454F]">ID atau URL link folder bukti pembinaan.</p>
               </div>
 
               {/* 3. Folder Surat Bukti Pembinaan */}
-              <div className="p-4 bg-[#F4F1FA] rounded-[24px] border border-white/80 shadow-clay-card space-y-2">
-                <label className="block font-black text-[#332F3A] text-xs flex items-center gap-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <div className="p-4 bg-[#FFFBFE] rounded-[24px] border border-white/80 shadow-sm space-y-2">
+                <label className="block font-black text-[#1C1B1F] text-xs flex items-center gap-1.5" >
                   <FolderOpen className="w-4 h-4 text-blue-600" />
                   <span>Folder Surat Bukti</span>
                 </label>
@@ -247,17 +247,17 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                   placeholder="Surat Bukti Pembinaan"
                   value={config.evidenceFolderName || 'Surat Bukti Pembinaan'}
                   onChange={(e) => setConfig({ ...config, evidenceFolderName: e.target.value })}
-                  className="w-full px-3 py-2 bg-white border border-white/80 rounded-xl text-xs font-extrabold text-[#332F3A] shadow-clay-pill"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="w-full px-3 py-2 bg-white border border-white/80 rounded-xl text-xs font-extrabold text-[#1C1B1F] shadow-xs"
+                  
                 />
                 <input
                   type="text"
                   placeholder="ID / Link Folder"
                   value={config.evidenceFolderId || ''}
                   onChange={(e) => setConfig({ ...config, evidenceFolderId: extractGoogleDriveFolderId(e.target.value) })}
-                  className="w-full px-3 py-2 bg-[#EFEBF5] rounded-xl text-[11px] font-mono font-semibold text-[#332F3A] shadow-clay-pressed focus:bg-white focus:outline-hidden"
+                  className="w-full px-3 py-2 bg-[#E7E0EC] rounded-xl text-[11px] font-mono font-semibold text-[#1C1B1F] shadow-none focus:bg-white focus:outline-hidden"
                 />
-                <p className="text-[10px] text-[#635F69]">ID atau URL link folder surat bertandatangan.</p>
+                <p className="text-[10px] text-[#49454F]">ID atau URL link folder surat bertandatangan.</p>
               </div>
             </div>
 
@@ -268,8 +268,8 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                   type="button"
                   onClick={handleTestConnection}
                   disabled={testing || !config.scriptUrl}
-                  className="px-4 py-2.5 bg-white hover:bg-slate-50 disabled:opacity-50 text-[#332F3A] font-black text-xs rounded-2xl transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-95 flex items-center gap-2 border border-white/60 cursor-pointer"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="px-4 py-2.5 bg-white hover:bg-slate-50 disabled:opacity-50 text-[#1C1B1F] font-black text-xs rounded-2xl transition-all shadow-xs hover:-translate-y-0.5 active:scale-95 flex items-center gap-2 border border-white/60 cursor-pointer"
+                  
                 >
                   <RefreshCw className={`w-4 h-4 ${testing ? 'animate-spin text-emerald-600' : ''}`} />
                   <span>{testing ? 'Menguji Koneksi...' : 'Uji Koneksi Google Drive'}</span>
@@ -278,7 +278,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
 
               {testResult && (
                 <div
-                  className={`mt-3 p-3.5 rounded-2xl text-xs font-bold flex items-start gap-2.5 shadow-clay-pill ${
+                  className={`mt-3 p-3.5 rounded-2xl text-xs font-bold flex items-start gap-2.5 shadow-xs ${
                     testResult.success
                       ? 'bg-emerald-50 text-emerald-950 border border-emerald-300'
                       : 'bg-rose-50 text-rose-950 border border-rose-300'
@@ -298,7 +298,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
             <div className="pt-4 border-t border-purple-100/50 flex items-center justify-between">
               <div>
                 {saveSuccess && (
-                  <span className="text-xs font-black text-emerald-600 flex items-center gap-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <span className="text-xs font-black text-emerald-600 flex items-center gap-1.5" >
                     <Check className="w-4 h-4" /> Pengaturan Tersimpan!
                   </span>
                 )}
@@ -307,15 +307,15 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-5 py-2.5 bg-white hover:bg-slate-50 text-[#635F69] rounded-2xl font-extrabold text-xs shadow-clay-button hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all border border-white/60"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="px-5 py-2.5 bg-white hover:bg-slate-50 text-[#49454F] rounded-2xl font-extrabold text-xs shadow-xs hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all border border-white/60"
+                  
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-gradient-to-br from-emerald-500 to-teal-700 hover:from-emerald-600 hover:to-teal-800 text-white font-black text-xs rounded-2xl shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed transition-all cursor-pointer"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="px-6 py-2.5 bg-gradient-to-br from-emerald-500 to-teal-700 hover:from-emerald-600 hover:to-teal-800 text-white font-black text-xs rounded-2xl shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none transition-all cursor-pointer"
+                  
                 >
                   Simpan Konfigurasi
                 </button>
@@ -329,14 +329,14 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
           <div className="p-6 sm:p-8 space-y-4 max-h-[65vh] overflow-y-auto">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="font-black text-base text-[#332F3A]" style={{ fontFamily: 'Nunito, sans-serif' }}>Panduan Pemasangan Google Apps Script (1 Menit)</h4>
-                <p className="text-xs text-[#635F69]">Gunakan akun Google Anda secara gratis tanpa batasan waktu.</p>
+                <h4 className="font-black text-base text-[#1C1B1F]" >Panduan Pemasangan Google Apps Script (1 Menit)</h4>
+                <p className="text-xs text-[#49454F]">Gunakan akun Google Anda secara gratis tanpa batasan waktu.</p>
               </div>
               <button
                 type="button"
                 onClick={handleCopyCode}
-                className="px-4 py-2 bg-gradient-to-br from-emerald-500 to-teal-700 hover:from-emerald-600 hover:to-teal-800 text-white font-black text-xs rounded-2xl transition-all flex items-center gap-2 shadow-clay-button hover:-translate-y-0.5 active:scale-95 cursor-pointer"
-                style={{ fontFamily: 'Nunito, sans-serif' }}
+                className="px-4 py-2 bg-gradient-to-br from-emerald-500 to-teal-700 hover:from-emerald-600 hover:to-teal-800 text-white font-black text-xs rounded-2xl transition-all flex items-center gap-2 shadow-xs hover:-translate-y-0.5 active:scale-95 cursor-pointer"
+                
               >
                 {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                 <span>{copied ? 'Kode Berhasil Disalin!' : 'Salin Kode Script'}</span>
@@ -344,7 +344,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
             </div>
 
             {/* Step list */}
-            <ol className="space-y-3 text-xs text-[#332F3A] list-decimal list-inside bg-[#F4F1FA] p-5 rounded-[28px] border border-white/80 shadow-clay-pressed font-medium leading-relaxed">
+            <ol className="space-y-3 text-xs text-[#1C1B1F] list-decimal list-inside bg-[#FFFBFE] p-5 rounded-[28px] border border-white/80 shadow-none font-medium leading-relaxed">
               <li>
                 Buka{' '}
                 <a
@@ -352,7 +352,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                   target="_blank"
                   rel="noreferrer"
                   className="font-black text-emerald-700 hover:underline inline-flex items-center gap-1"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  
                 >
                   script.google.com <ExternalLink className="w-3.5 h-3.5" />
                 </a>{' '}
@@ -369,7 +369,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
               </li>
               <li>
                 Atur pengaturan berikut:
-                <ul className="list-disc list-inside pl-4 mt-1.5 space-y-1 text-[#635F69]">
+                <ul className="list-disc list-inside pl-4 mt-1.5 space-y-1 text-[#49454F]">
                   <li><strong>Execute as:</strong> Me (Email Google Anda)</li>
                   <li><strong>Who has access:</strong> <span className="text-rose-600 font-black">Anyone (Siapa saja)</span> <em>(Penting agar aplikasi dapat mengirim foto/surat tanpa popup login)</em></li>
                 </ul>
@@ -385,10 +385,10 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
             {/* Code Box */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[11px] font-extrabold text-[#332F3A]" style={{ fontFamily: 'Nunito, sans-serif' }}>Pratinjau Kode Google Apps Script (Code.gs):</span>
-                <span className="text-[10px] text-[#635F69]">Siap pakai &amp; otomatis membuat 3 folder</span>
+                <span className="text-[11px] font-extrabold text-[#1C1B1F]" >Pratinjau Kode Google Apps Script (Code.gs):</span>
+                <span className="text-[10px] text-[#49454F]">Siap pakai &amp; otomatis membuat 3 folder</span>
               </div>
-              <pre className="p-4 bg-[#332F3A] text-emerald-300 font-mono text-[11px] rounded-[24px] overflow-x-auto max-h-56 leading-relaxed shadow-inner">
+              <pre className="p-4 bg-[#1C1B1F] text-emerald-300 font-mono text-[11px] rounded-[24px] overflow-x-auto max-h-56 leading-relaxed shadow-inner">
                 {GOOGLE_APPS_SCRIPT_CODE}
               </pre>
             </div>
@@ -397,8 +397,8 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTab('settings')}
-                className="px-5 py-2.5 bg-gradient-to-br from-emerald-500 to-teal-700 hover:from-emerald-600 hover:to-teal-800 text-white font-black text-xs rounded-2xl transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-95 cursor-pointer"
-                style={{ fontFamily: 'Nunito, sans-serif' }}
+                className="px-5 py-2.5 bg-gradient-to-br from-emerald-500 to-teal-700 hover:from-emerald-600 hover:to-teal-800 text-white font-black text-xs rounded-2xl transition-all shadow-xs hover:-translate-y-0.5 active:scale-95 cursor-pointer"
+                
               >
                 Saya Sudah Punya URL, Lanjut Pengaturan →
               </button>

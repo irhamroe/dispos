@@ -44,7 +44,7 @@ import {
   deleteDisciplineRecord as deleteDisciplineFromDb,
   COLLECTIONS
 } from './services/firestoreService';
-import { ClayBackgroundBlobs } from './components/clay/ClayBackgroundBlobs';
+import { MdBackgroundBlobs } from './components/md3/MdBackgroundBlobs';
 import { getTodayIndonesian, getTodayDateString, formatDayAndDateIndonesian } from './utils/exportUtils';
 
 export default function App() {
@@ -651,9 +651,9 @@ export default function App() {
   ).length;
 
   return (
-    <div className="min-h-screen bg-clay-bg flex flex-col font-dmsans text-clay-foreground relative overflow-x-hidden">
-      {/* Zero-gravity floating 3D ambient blobs */}
-      <ClayBackgroundBlobs />
+    <div className="min-h-screen bg-[#FFFBFE] flex flex-col font-roboto text-[#1C1B1F] relative overflow-x-hidden">
+      {/* Material You Layered Organic Ambient Blobs */}
+      <MdBackgroundBlobs />
 
       {/* Top Navbar */}
       <Navbar

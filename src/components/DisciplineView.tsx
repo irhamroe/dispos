@@ -860,18 +860,18 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
   return (
     <div className="space-y-6 pb-12">
       {/* Header Banner */}
-      <div className="bg-white/85 backdrop-blur-xl p-6 rounded-[32px] shadow-clay-card border border-white">
+      <div className="bg-white/85 backdrop-blur-xl p-6 rounded-[32px] shadow-sm border border-white">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 text-white flex items-center justify-center shadow-clay-orb">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 text-white flex items-center justify-center shadow-xs">
                 <ShieldAlert className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-xl sm:text-2xl font-nunito font-black text-clay-foreground tracking-tight">
+                <h2 className="text-xl sm:text-2xl  font-black text-[#1C1B1F] tracking-tight">
                   Input Data Pelanggaran
                 </h2>
-                <p className="text-xs text-clay-muted font-medium mt-0.5">
+                <p className="text-xs text-[#49454F] font-medium mt-0.5">
                   Pencatatan data pelanggaran tata tertib dan status pembinaan siswa {schoolProfile.name}
                 </p>
               </div>
@@ -884,7 +884,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
               type="button"
               id="catat-pelanggaran-btn"
               onClick={handleOpenModal}
-              className="px-5 py-3 rounded-2xl bg-gradient-to-r from-violet-600 via-violet-700 to-indigo-700 hover:from-violet-500 hover:to-indigo-600 text-white font-nunito font-extrabold text-xs transition-all shadow-clay-button hover:-translate-y-1 active:scale-[0.92] active:shadow-clay-pressed flex items-center gap-2 cursor-pointer w-full sm:w-auto justify-center"
+              className="px-5 py-3 rounded-2xl bg-gradient-to-r from-violet-600 via-violet-700 to-indigo-700 hover:from-violet-500 hover:to-indigo-600 text-white  font-extrabold text-xs transition-all shadow-xs hover:-translate-y-1 active:scale-[0.92] active:shadow-none flex items-center gap-2 cursor-pointer w-full sm:w-auto justify-center"
             >
               <Plus className="w-4 h-4 stroke-[3]" />
               <span>Catat Pelanggaran</span>
@@ -894,7 +894,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
         {/* Informative notification */}
         {exportNotice && (
-          <div className="mt-4 p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs flex items-center gap-2.5 font-nunito font-bold shadow-clay-pill">
+          <div className="mt-4 p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs flex items-center gap-2.5  font-bold shadow-xs">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
             <span>{exportNotice}</span>
           </div>
@@ -903,76 +903,76 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-white/85 backdrop-blur-xl p-5 rounded-[28px] shadow-clay-card border border-white hover:-translate-y-1 transition-all duration-200">
+        <div className="bg-white/85 backdrop-blur-xl p-5 rounded-[28px] shadow-sm border border-white hover:-translate-y-1 transition-all duration-200">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-nunito font-extrabold text-clay-muted uppercase">Total Pelanggaran</span>
-            <div className="w-8 h-8 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center shadow-clay-orb">
+            <span className="text-xs  font-extrabold text-[#49454F] uppercase">Total Pelanggaran</span>
+            <div className="w-8 h-8 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center shadow-xs">
               <ShieldAlert className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-nunito font-black text-clay-foreground mt-2">{totalRecords}</div>
-          <div className="text-[11px] text-clay-muted font-medium mt-0.5">36 Rombel X, XI, XII</div>
+          <div className="text-3xl  font-black text-[#1C1B1F] mt-2">{totalRecords}</div>
+          <div className="text-[11px] text-[#49454F] font-medium mt-0.5">36 Rombel X, XI, XII</div>
         </div>
 
-        <div className="bg-white/85 backdrop-blur-xl p-5 rounded-[28px] shadow-clay-card border border-white hover:-translate-y-1 transition-all duration-200">
+        <div className="bg-white/85 backdrop-blur-xl p-5 rounded-[28px] shadow-sm border border-white hover:-translate-y-1 transition-all duration-200">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-nunito font-extrabold text-rose-600 uppercase">Belum Dibina</span>
-            <div className="w-8 h-8 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shadow-clay-orb">
+            <span className="text-xs  font-extrabold text-rose-600 uppercase">Belum Dibina</span>
+            <div className="w-8 h-8 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shadow-xs">
               <Clock className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-nunito font-black text-rose-600 mt-2">{belumPembinaanCount}</div>
+          <div className="text-3xl  font-black text-rose-600 mt-2">{belumPembinaanCount}</div>
           <div className="text-[11px] text-rose-500 font-bold mt-0.5">Perlu sesi pembinaan</div>
         </div>
 
-        <div className="bg-white/85 backdrop-blur-xl p-5 rounded-[28px] shadow-clay-card border border-white hover:-translate-y-1 transition-all duration-200">
+        <div className="bg-white/85 backdrop-blur-xl p-5 rounded-[28px] shadow-sm border border-white hover:-translate-y-1 transition-all duration-200">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-nunito font-extrabold text-amber-600 uppercase">Surat Menyusul</span>
-            <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shadow-clay-orb">
+            <span className="text-xs  font-extrabold text-amber-600 uppercase">Surat Menyusul</span>
+            <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shadow-xs">
               <Paperclip className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-nunito font-black text-amber-600 mt-2">{suratMenyusulCount}</div>
+          <div className="text-3xl  font-black text-amber-600 mt-2">{suratMenyusulCount}</div>
           <div className="text-[11px] text-amber-600 font-bold mt-0.5">Foto ada, menunggu TTD</div>
         </div>
 
-        <div className="bg-white/85 backdrop-blur-xl p-5 rounded-[28px] shadow-clay-card border border-white hover:-translate-y-1 transition-all duration-200">
+        <div className="bg-white/85 backdrop-blur-xl p-5 rounded-[28px] shadow-sm border border-white hover:-translate-y-1 transition-all duration-200">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-nunito font-extrabold text-emerald-600 uppercase">Pembinaan Lengkap</span>
-            <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-clay-orb">
+            <span className="text-xs  font-extrabold text-emerald-600 uppercase">Pembinaan Lengkap</span>
+            <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-xs">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-nunito font-black text-emerald-600 mt-2">{tuntasLengkapCount}</div>
+          <div className="text-3xl  font-black text-emerald-600 mt-2">{tuntasLengkapCount}</div>
           <div className="text-[11px] text-emerald-600 font-bold mt-0.5">Foto &amp; surat lengkap</div>
         </div>
       </div>
 
       {/* Main Table Card */}
-      <div className="bg-white/85 backdrop-blur-xl rounded-[32px] shadow-clay-card border border-white overflow-hidden">
+      <div className="bg-white/85 backdrop-blur-xl rounded-[32px] shadow-sm border border-white overflow-hidden">
         {/* Filters Toolbar */}
         <div className="p-5 border-b border-violet-100/60 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
           <div className="relative w-full md:w-80">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-clay-muted" />
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#49454F]" />
             <input
               id="search-violation-input"
               type="text"
               placeholder="Cari nama siswa, NISN, atau jenis pelanggaran..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-[#EFEBF5] rounded-2xl text-xs text-clay-foreground placeholder-clay-muted shadow-clay-pressed focus:outline-hidden border border-white/40"
+              className="w-full pl-10 pr-4 py-2.5 bg-[#E7E0EC] rounded-2xl text-xs text-[#1C1B1F] placeholder-clay-muted shadow-none focus:outline-hidden border border-white/40"
             />
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5">
             {/* Class Filter */}
-            <div className="flex items-center gap-1.5 bg-[#EFEBF5] rounded-2xl px-3.5 py-2 text-xs text-clay-foreground shadow-clay-pressed border border-white/40">
-              <span className="text-clay-muted font-medium">Kelas:</span>
+            <div className="flex items-center gap-1.5 bg-[#E7E0EC] rounded-2xl px-3.5 py-2 text-xs text-[#1C1B1F] shadow-none border border-white/40">
+              <span className="text-[#49454F] font-medium">Kelas:</span>
               <select
                 id="filter-violation-class-select"
                 value={filterClass}
                 onChange={(e) => setFilterClass(e.target.value)}
-                className="bg-transparent font-nunito font-extrabold focus:outline-hidden cursor-pointer text-clay-foreground"
+                className="bg-transparent  font-extrabold focus:outline-hidden cursor-pointer text-[#1C1B1F]"
               >
                 <option value="ALL">Semua Kelas</option>
                 {availableClasses.map((c) => (
@@ -984,13 +984,13 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
             </div>
 
             {/* Coaching Status Filter */}
-            <div className="flex items-center gap-1.5 bg-[#EFEBF5] rounded-2xl px-3.5 py-2 text-xs text-clay-foreground shadow-clay-pressed border border-white/40">
-              <span className="text-clay-muted font-medium">Status Pembinaan:</span>
+            <div className="flex items-center gap-1.5 bg-[#E7E0EC] rounded-2xl px-3.5 py-2 text-xs text-[#1C1B1F] shadow-none border border-white/40">
+              <span className="text-[#49454F] font-medium">Status Pembinaan:</span>
               <select
                 id="filter-coaching-status-select"
                 value={filterCoachingStatus}
                 onChange={(e) => setFilterCoachingStatus(e.target.value)}
-                className="bg-transparent font-nunito font-extrabold focus:outline-hidden cursor-pointer text-clay-foreground"
+                className="bg-transparent  font-extrabold focus:outline-hidden cursor-pointer text-[#1C1B1F]"
               >
                 <option value="ALL">Semua Status</option>
                 <option value="Belum">Belum Pembinaan</option>
@@ -1004,7 +1004,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-[#EFEBF5]/70 text-clay-foreground font-nunito font-black text-[11px] uppercase tracking-wider border-b border-violet-100">
+              <tr className="bg-[#E7E0EC]/70 text-[#1C1B1F]  font-black text-[11px] uppercase tracking-wider border-b border-violet-100">
                 <th className="py-3 px-3 text-center w-12">No</th>
                 <th className="py-3 px-3 w-28">Tanggal Kejadian</th>
                 <th className="py-3 px-4">Nama Siswa & Kelas</th>
@@ -1211,7 +1211,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
       {/* ========================================================= */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-clay-foreground/50 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[36px] max-w-xl w-full border border-white shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 my-8">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-xl w-full border border-white shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 my-8">
             {/* Modal Header */}
             <div className="p-6 bg-gradient-to-r from-violet-700 via-violet-800 to-indigo-800 text-white flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -1219,7 +1219,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                   <ShieldAlert className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-nunito font-black">Catat Pelanggaran</h3>
+                  <h3 className="text-base  font-black">Catat Pelanggaran</h3>
                   <p className="text-xs text-violet-200 font-medium">
                     Formulir pencatatan pelanggaran tata tertib dan data pembinaan siswa
                   </p>
@@ -1239,7 +1239,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
             <form onSubmit={handleSubmitCatatPelanggaran} className="p-6 space-y-4 text-xs">
               {/* 1. Tanggal Kejadian */}
               <div>
-                <label className="block font-nunito font-extrabold text-clay-foreground mb-1.5 flex items-center gap-1.5">
+                <label className="block  font-extrabold text-[#1C1B1F] mb-1.5 flex items-center gap-1.5">
                   <Calendar className="w-4 h-4 text-violet-600" />
                   <span>Tanggal Kejadian</span>
                   <span className="text-rose-500">*</span>
@@ -1250,7 +1250,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                   id="input-tanggal-kejadian"
                   value={incidentDate}
                   onChange={(e) => setIncidentDate(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-[#EFEBF5] rounded-2xl text-clay-foreground shadow-clay-pressed focus:outline-hidden font-nunito font-extrabold border border-white/40"
+                  className="w-full px-4 py-2.5 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] shadow-none focus:outline-hidden  font-extrabold border border-white/40"
                 />
               </div>
 
@@ -1258,7 +1258,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* 2. Pilih Jenjang */}
                 <div>
-                  <label className="block font-nunito font-extrabold text-clay-foreground mb-1.5 flex items-center gap-1.5">
+                  <label className="block  font-extrabold text-[#1C1B1F] mb-1.5 flex items-center gap-1.5">
                     <GraduationCap className="w-4 h-4 text-violet-600" />
                     <span>Pilih Jenjang</span>
                     <span className="text-rose-500">*</span>
@@ -1268,7 +1268,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                     required
                     value={selectedGrade}
                     onChange={(e) => handleGradeChange(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-[#EFEBF5] rounded-2xl text-clay-foreground font-nunito font-extrabold shadow-clay-pressed focus:outline-hidden cursor-pointer border border-white/40"
+                    className="w-full px-4 py-2.5 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F]  font-extrabold shadow-none focus:outline-hidden cursor-pointer border border-white/40"
                   >
                     {availableGrades.map((g) => (
                       <option key={g} value={g}>
@@ -1280,7 +1280,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
                 {/* 3. Pilih Kelas */}
                 <div>
-                  <label className="block font-nunito font-extrabold text-clay-foreground mb-1.5 flex items-center gap-1.5">
+                  <label className="block  font-extrabold text-[#1C1B1F] mb-1.5 flex items-center gap-1.5">
                     <Layers className="w-4 h-4 text-violet-600" />
                     <span>Pilih Kelas</span>
                     <span className="text-rose-500">*</span>
@@ -1290,7 +1290,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                     required
                     value={selectedClass}
                     onChange={(e) => setSelectedClass(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-[#EFEBF5] rounded-2xl text-clay-foreground font-nunito font-extrabold shadow-clay-pressed focus:outline-hidden cursor-pointer border border-white/40"
+                    className="w-full px-4 py-2.5 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F]  font-extrabold shadow-none focus:outline-hidden cursor-pointer border border-white/40"
                   >
                     {availableClassesInGrade.length === 0 ? (
                       <option value="">Tidak ada kelas di jenjang ini</option>
@@ -1307,7 +1307,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
               {/* 4. Nama Siswa */}
               <div>
-                <label className="block font-nunito font-extrabold text-clay-foreground mb-1.5 flex items-center gap-1.5">
+                <label className="block  font-extrabold text-[#1C1B1F] mb-1.5 flex items-center gap-1.5">
                   <User className="w-4 h-4 text-violet-600" />
                   <span>Nama Siswa</span>
                   <span className="text-rose-500">*</span>
@@ -1317,7 +1317,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                   required
                   value={selectedStudentId}
                   onChange={(e) => setSelectedStudentId(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-[#EFEBF5] rounded-2xl text-clay-foreground font-nunito font-extrabold shadow-clay-pressed focus:outline-hidden cursor-pointer border border-white/40"
+                  className="w-full px-4 py-2.5 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F]  font-extrabold shadow-none focus:outline-hidden cursor-pointer border border-white/40"
                 >
                   {studentsInSelectedClass.length === 0 ? (
                     <option value="">Tidak ada siswa di kelas ini</option>
@@ -1333,7 +1333,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
               {/* 5. Jenis Pelanggaran */}
               <div>
-                <label className="block font-nunito font-extrabold text-clay-foreground mb-1.5 flex items-center gap-1.5">
+                <label className="block  font-extrabold text-[#1C1B1F] mb-1.5 flex items-center gap-1.5">
                   <ShieldAlert className="w-4 h-4 text-violet-600" />
                   <span>Jenis Pelanggaran</span>
                   <span className="text-rose-500">*</span>
@@ -1343,7 +1343,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                   required
                   value={violationName}
                   onChange={(e) => handleViolationChange(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-[#EFEBF5] rounded-2xl text-clay-foreground font-medium shadow-clay-pressed focus:outline-hidden border border-white/40"
+                  className="w-full px-4 py-2.5 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-medium shadow-none focus:outline-hidden border border-white/40"
                 >
                   {catalogToUse.map((cat, i) => (
                     <option key={cat.id || i} value={cat.name}>
@@ -1358,7 +1358,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
               {/* 5. Status Pembinaan (sudah/belum) */}
               <div className="pt-1">
-                <label className="block font-nunito font-extrabold text-clay-foreground mb-1.5">
+                <label className="block  font-extrabold text-[#1C1B1F] mb-1.5">
                   Status Pembinaan
                   <span className="text-rose-500 ml-0.5">*</span>
                 </label>
@@ -1367,10 +1367,10 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                     type="button"
                     id="status-pembinaan-belum-btn"
                     onClick={() => setCoachingStatus('Belum')}
-                    className={`py-3 px-3.5 rounded-2xl font-nunito font-extrabold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                    className={`py-3 px-3.5 rounded-2xl  font-extrabold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
                       coachingStatus === 'Belum'
-                        ? 'bg-amber-100 text-amber-900 shadow-clay-button -translate-y-0.5 ring-2 ring-amber-300'
-                        : 'bg-[#EFEBF5] text-clay-muted hover:bg-white shadow-clay-pressed'
+                        ? 'bg-amber-100 text-amber-900 shadow-xs -translate-y-0.5 ring-2 ring-amber-300'
+                        : 'bg-[#E7E0EC] text-[#49454F] hover:bg-white shadow-none'
                     }`}
                   >
                     <Clock className="w-4 h-4 text-amber-600" />
@@ -1381,10 +1381,10 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                     type="button"
                     id="status-pembinaan-sudah-btn"
                     onClick={() => setCoachingStatus('Sudah')}
-                    className={`py-3 px-3.5 rounded-2xl font-nunito font-extrabold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                    className={`py-3 px-3.5 rounded-2xl  font-extrabold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
                       coachingStatus === 'Sudah'
-                        ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-clay-button -translate-y-0.5 ring-2 ring-emerald-300'
-                        : 'bg-[#EFEBF5] text-clay-muted hover:bg-white shadow-clay-pressed'
+                        ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-xs -translate-y-0.5 ring-2 ring-emerald-300'
+                        : 'bg-[#E7E0EC] text-[#49454F] hover:bg-white shadow-none'
                     }`}
                   >
                     <CheckCircle2 className="w-4 h-4 text-white" />
@@ -1398,20 +1398,20 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
               {/* - Foto Pembinaan (Syarat Minimal Selesai) */}
               {/* - Bukti Pembinaan *(File Surat pembinaan - Bisa menyusul) */}
               {coachingStatus === 'Sudah' && (
-                <div className="p-5 rounded-[28px] bg-[#EFEBF5]/80 shadow-clay-pressed border border-white/60 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="p-5 rounded-[28px] bg-[#E7E0EC]/80 shadow-none border border-white/60 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="flex items-center justify-between pb-2 border-b border-violet-200/60">
-                    <div className="flex items-center gap-2 text-clay-foreground font-nunito font-extrabold text-xs">
+                    <div className="flex items-center gap-2 text-[#1C1B1F]  font-extrabold text-xs">
                       <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                       <span>Data Pelaksanaan Pembinaan Siswa</span>
                     </div>
-                    <span className="text-[10px] text-emerald-800 font-nunito font-bold bg-emerald-100 px-2.5 py-0.5 rounded-full shadow-clay-pill">
+                    <span className="text-[10px] text-emerald-800  font-bold bg-emerald-100 px-2.5 py-0.5 rounded-full shadow-xs">
                       Minimal: Foto Pembinaan
                     </span>
                   </div>
 
                   {/* Tanggal Pembinaan */}
                   <div>
-                    <label className="block font-nunito font-extrabold text-clay-foreground mb-1.5 flex items-center gap-1.5">
+                    <label className="block  font-extrabold text-[#1C1B1F] mb-1.5 flex items-center gap-1.5">
                       <Calendar className="w-4 h-4 text-violet-600" />
                       <span>Tanggal Pembinaan</span>
                       <span className="text-rose-500">*</span>
@@ -1422,13 +1422,13 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                       id="input-tanggal-pembinaan"
                       value={coachingDate}
                       onChange={(e) => setCoachingDate(e.target.value)}
-                      className="w-full px-4 py-2.5 bg-white rounded-2xl text-clay-foreground font-nunito font-extrabold shadow-clay-card focus:outline-hidden border border-white"
+                      className="w-full px-4 py-2.5 bg-white rounded-2xl text-[#1C1B1F]  font-extrabold shadow-sm focus:outline-hidden border border-white"
                     />
                   </div>
 
                   {/* Foto Pembinaan */}
                   <div>
-                    <label className="block font-nunito font-extrabold text-clay-foreground mb-1.5 flex items-center justify-between">
+                    <label className="block  font-extrabold text-[#1C1B1F] mb-1.5 flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
                         <ImageIcon className="w-4 h-4 text-violet-600" />
                         <span>Foto Pembinaan</span>
@@ -1459,23 +1459,23 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                     />
 
                     {uploadingPhoto ? (
-                      <div className="p-4 bg-emerald-50/80 border border-emerald-300 rounded-2xl flex items-center justify-center gap-2.5 text-emerald-800 text-xs font-semibold shadow-clay-card">
+                      <div className="p-4 bg-emerald-50/80 border border-emerald-300 rounded-2xl flex items-center justify-center gap-2.5 text-emerald-800 text-xs font-semibold shadow-sm">
                         <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />
                         <span>Sedang mengunggah file...</span>
                       </div>
                     ) : coachingPhoto ? (
-                      <div className="flex items-center gap-3 p-3 bg-white rounded-2xl shadow-clay-card border border-white">
+                      <div className="flex items-center gap-3 p-3 bg-white rounded-2xl shadow-sm border border-white">
                         <img
                           src={getGoogleDriveDirectImageUrl(coachingPhoto)}
                           alt="Foto Pembinaan"
-                          className="w-14 h-14 object-cover rounded-xl shadow-clay-orb border border-white cursor-pointer"
+                          className="w-14 h-14 object-cover rounded-xl shadow-xs border border-white cursor-pointer"
                           onClick={() => setActivePreviewImage({ url: coachingPhoto, title: 'Pratinjau Foto Pembinaan' })}
                         />
                         <div className="flex-1 min-w-0">
-                          <p className="font-nunito font-extrabold text-clay-foreground truncate text-xs">{coachingPhotoName || 'Foto_Pembinaan.jpg'}</p>
+                          <p className=" font-extrabold text-[#1C1B1F] truncate text-xs">{coachingPhotoName || 'Foto_Pembinaan.jpg'}</p>
                           <div className="flex items-center gap-1.5 mt-0.5">
                             {coachingPhoto.includes('drive.google.com') || coachingPhoto.includes('googleusercontent.com') ? (
-                              <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-bold shadow-clay-pill">
+                              <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-bold shadow-xs">
                                 <Cloud className="w-3 h-3 text-emerald-600" /> Google Drive
                               </span>
                             ) : (
@@ -1486,7 +1486,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                         <button
                           type="button"
                           onClick={() => photoInputRef.current?.click()}
-                          className="px-3 py-1.5 text-[11px] font-nunito font-extrabold bg-white text-violet-700 hover:bg-violet-50 rounded-xl shadow-clay-button active:scale-95 transition-all cursor-pointer"
+                          className="px-3 py-1.5 text-[11px]  font-extrabold bg-white text-violet-700 hover:bg-violet-50 rounded-xl shadow-xs active:scale-95 transition-all cursor-pointer"
                         >
                           Ganti
                         </button>
@@ -1494,11 +1494,11 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                     ) : (
                       <div
                         onClick={() => photoInputRef.current?.click()}
-                        className="border-2 border-dashed border-violet-300 hover:border-violet-500 rounded-2xl p-4 text-center cursor-pointer bg-white/80 hover:bg-white shadow-clay-card transition-all flex flex-col items-center justify-center gap-1.5"
+                        className="border-2 border-dashed border-violet-300 hover:border-violet-500 rounded-2xl p-4 text-center cursor-pointer bg-white/80 hover:bg-white shadow-sm transition-all flex flex-col items-center justify-center gap-1.5"
                       >
                         <Upload className="w-5 h-5 text-violet-600" />
-                        <span className="font-nunito font-extrabold text-clay-foreground text-xs">Pilih atau Unggah Foto Kegiatan Pembinaan</span>
-                        <span className="text-[10px] text-clay-muted">
+                        <span className=" font-extrabold text-[#1C1B1F] text-xs">Pilih atau Unggah Foto Kegiatan Pembinaan</span>
+                        <span className="text-[10px] text-[#49454F]">
                           * Wajib diunggah untuk menyelesaikan pembinaan
                         </span>
                       </div>
@@ -1507,11 +1507,11 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
                   {/* Bukti Pembinaan *(File Surat pembinaan) */}
                   <div>
-                    <label className="block font-nunito font-extrabold text-clay-foreground mb-1.5 flex items-center justify-between">
+                    <label className="block  font-extrabold text-[#1C1B1F] mb-1.5 flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
                         <Paperclip className="w-4 h-4 text-violet-600" />
                         <span>Surat Bukti Pembinaan</span>
-                        <span className="text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full text-[10px] font-nunito font-bold shadow-clay-pill">Bisa Menyusul</span>
+                        <span className="text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full text-[10px]  font-bold shadow-xs">Bisa Menyusul</span>
                       </span>
                       {coachingEvidenceFileName && !uploadingEvidence && (
                         <button
@@ -1538,20 +1538,20 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                     />
 
                     {uploadingEvidence ? (
-                      <div className="p-4 bg-sky-50/80 border border-sky-300 rounded-2xl flex items-center justify-center gap-2.5 text-sky-800 text-xs font-semibold shadow-clay-card">
+                      <div className="p-4 bg-sky-50/80 border border-sky-300 rounded-2xl flex items-center justify-center gap-2.5 text-sky-800 text-xs font-semibold shadow-sm">
                         <Loader2 className="w-4 h-4 animate-spin text-sky-600" />
                         <span>Sedang mengunggah file...</span>
                       </div>
                     ) : coachingEvidenceFileName ? (
-                      <div className="flex items-center gap-3 p-3 bg-white rounded-2xl shadow-clay-card border border-white">
-                        <div className="w-10 h-10 rounded-2xl bg-sky-100 text-sky-700 flex items-center justify-center font-bold text-xs shrink-0 shadow-clay-orb">
+                      <div className="flex items-center gap-3 p-3 bg-white rounded-2xl shadow-sm border border-white">
+                        <div className="w-10 h-10 rounded-2xl bg-sky-100 text-sky-700 flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
                           <FileText className="w-5 h-5" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-nunito font-extrabold text-clay-foreground truncate text-xs">{coachingEvidenceFileName}</p>
+                          <p className=" font-extrabold text-[#1C1B1F] truncate text-xs">{coachingEvidenceFileName}</p>
                           <div className="flex items-center gap-1.5 mt-0.5">
                             {coachingEvidenceFile && (coachingEvidenceFile.includes('drive.google.com') || coachingEvidenceFile.includes('googleusercontent.com')) ? (
-                              <span className="inline-flex items-center gap-1 text-[10px] text-sky-700 bg-sky-100 px-2 py-0.5 rounded-full font-bold shadow-clay-pill">
+                              <span className="inline-flex items-center gap-1 text-[10px] text-sky-700 bg-sky-100 px-2 py-0.5 rounded-full font-bold shadow-xs">
                                 <Cloud className="w-3 h-3 text-sky-600" /> Google Drive
                               </span>
                             ) : (
@@ -1562,7 +1562,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                         <button
                           type="button"
                           onClick={() => docInputRef.current?.click()}
-                          className="px-3 py-1.5 text-[11px] font-nunito font-extrabold bg-white text-violet-700 hover:bg-violet-50 rounded-xl shadow-clay-button active:scale-95 transition-all cursor-pointer"
+                          className="px-3 py-1.5 text-[11px]  font-extrabold bg-white text-violet-700 hover:bg-violet-50 rounded-xl shadow-xs active:scale-95 transition-all cursor-pointer"
                         >
                           Ganti
                         </button>
@@ -1570,11 +1570,11 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                     ) : (
                       <div
                         onClick={() => docInputRef.current?.click()}
-                        className="border-2 border-dashed border-violet-200 hover:border-violet-400 rounded-2xl p-4 text-center cursor-pointer bg-white/70 hover:bg-white shadow-clay-card transition-all flex flex-col items-center justify-center gap-1.5"
+                        className="border-2 border-dashed border-violet-200 hover:border-violet-400 rounded-2xl p-4 text-center cursor-pointer bg-white/70 hover:bg-white shadow-sm transition-all flex flex-col items-center justify-center gap-1.5"
                       >
-                        <Upload className="w-5 h-5 text-clay-muted" />
-                        <span className="font-nunito font-extrabold text-clay-foreground text-xs">Unggah Dokumen Surat Pembinaan (Opsional / Menyusul)</span>
-                        <span className="text-[10px] text-clay-muted">
+                        <Upload className="w-5 h-5 text-[#49454F]" />
+                        <span className=" font-extrabold text-[#1C1B1F] text-xs">Unggah Dokumen Surat Pembinaan (Opsional / Menyusul)</span>
+                        <span className="text-[10px] text-[#49454F]">
                           Jika surat masih dalam proses tanda tangan, dapat diunggah menyusul
                         </span>
                       </div>
@@ -1589,14 +1589,14 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                   type="button"
                   id="cancel-catat-pelanggaran-btn"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-5 py-2.5 rounded-2xl bg-white text-clay-muted hover:text-clay-foreground font-nunito font-extrabold shadow-clay-button active:scale-95 transition-all cursor-pointer"
+                  className="px-5 py-2.5 rounded-2xl bg-white text-[#49454F] hover:text-[#1C1B1F]  font-extrabold shadow-xs active:scale-95 transition-all cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   id="submit-catat-pelanggaran-btn"
-                  className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-nunito font-extrabold transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed cursor-pointer flex items-center gap-2"
+                  className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white  font-extrabold transition-all shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none cursor-pointer flex items-center gap-2"
                 >
                   <CheckCircle2 className="w-4 h-4" />
                   <span>Simpan Catatan Pelanggaran</span>

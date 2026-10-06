@@ -228,17 +228,17 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
   return (
     <div className="space-y-6 pb-12">
       {/* Header & Quick Navigation Switcher with Claymorphism */}
-      <div className="relative overflow-hidden rounded-[36px] bg-white/80 p-6 sm:p-8 backdrop-blur-xl shadow-clay-card border border-white/60 space-y-5">
+      <div className="relative overflow-hidden rounded-[32px] bg-white/80 p-6 sm:p-8 backdrop-blur-xl shadow-sm border border-white/60 space-y-5">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center shadow-clay-button shrink-0">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center shadow-xs shrink-0">
               <FileText className="w-7 h-7" />
             </div>
             <div>
-              <h2 className="text-2xl sm:text-3xl font-black text-[#332F3A] tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <h2 className="text-2xl sm:text-3xl font-black text-[#1C1B1F] tracking-tight" >
                 Rekap Surat Izin &amp; Sakit Siswa
               </h2>
-              <p className="text-sm text-[#635F69] mt-1 font-medium">
+              <p className="text-sm text-[#49454F] mt-1 font-medium">
                 Monitoring kepatuhan pengumpulan bukti fisik surat izin dan surat dokter
               </p>
             </div>
@@ -250,8 +250,8 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
               type="button"
               id="export-letters-excel-btn"
               onClick={handleExportExcel}
-              className="flex-1 sm:flex-none px-4 py-3 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold text-xs transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed flex items-center justify-center gap-2 cursor-pointer"
-              style={{ fontFamily: 'Nunito, sans-serif' }}
+              className="flex-1 sm:flex-none px-4 py-3 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold text-xs transition-all shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none flex items-center justify-center gap-2 cursor-pointer"
+              
             >
               <FileSpreadsheet className="w-4 h-4" />
               <span>Ekspor Excel (.xlsx)</span>
@@ -261,8 +261,8 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
               type="button"
               id="export-letters-pdf-btn"
               onClick={handleExportPdf}
-              className="flex-1 sm:flex-none px-4 py-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-extrabold text-xs transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed flex items-center justify-center gap-2 cursor-pointer"
-              style={{ fontFamily: 'Nunito, sans-serif' }}
+              className="flex-1 sm:flex-none px-4 py-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-extrabold text-xs transition-all shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none flex items-center justify-center gap-2 cursor-pointer"
+              
             >
               <FileText className="w-4 h-4" />
               <span>Ekspor PDF (.pdf)</span>
@@ -273,9 +273,9 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
         {/* Date Range & Letter Status Tabs */}
         <div className="pt-4 border-t border-slate-200/60 flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3 text-xs">
-            <div className="flex items-center gap-2 bg-[#EFEBF5] px-4 py-2.5 rounded-2xl shadow-clay-pressed">
-              <Calendar className="w-4 h-4 text-[#7C3AED]" />
-              <span className="font-bold text-[#635F69]">Mulai:</span>
+            <div className="flex items-center gap-2 bg-[#E7E0EC] px-4 py-2.5 rounded-2xl shadow-none">
+              <Calendar className="w-4 h-4 text-[#6750A4]" />
+              <span className="font-bold text-[#49454F]">Mulai:</span>
               <input
                 type="date"
                 value={startDate}
@@ -283,14 +283,14 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                   setStartDate(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="bg-transparent font-extrabold text-[#332F3A] focus:outline-hidden cursor-pointer"
-                style={{ fontFamily: 'Nunito, sans-serif' }}
+                className="bg-transparent font-extrabold text-[#1C1B1F] focus:outline-hidden cursor-pointer"
+                
               />
             </div>
 
-            <div className="flex items-center gap-2 bg-[#EFEBF5] px-4 py-2.5 rounded-2xl shadow-clay-pressed">
-              <Calendar className="w-4 h-4 text-[#7C3AED]" />
-              <span className="font-bold text-[#635F69]">Sampai:</span>
+            <div className="flex items-center gap-2 bg-[#E7E0EC] px-4 py-2.5 rounded-2xl shadow-none">
+              <Calendar className="w-4 h-4 text-[#6750A4]" />
+              <span className="font-bold text-[#49454F]">Sampai:</span>
               <input
                 type="date"
                 value={endDate}
@@ -298,14 +298,14 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                   setEndDate(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="bg-transparent font-extrabold text-[#332F3A] focus:outline-hidden cursor-pointer"
-                style={{ fontFamily: 'Nunito, sans-serif' }}
+                className="bg-transparent font-extrabold text-[#1C1B1F] focus:outline-hidden cursor-pointer"
+                
               />
             </div>
           </div>
 
           {/* Quick Tab: Status Surat Filter */}
-          <div className="flex items-center p-1.5 bg-[#EFEBF5] rounded-2xl shadow-clay-pressed text-xs font-bold gap-1">
+          <div className="flex items-center p-1.5 bg-[#E7E0EC] rounded-2xl shadow-none text-xs font-bold gap-1">
             <button
               type="button"
               onClick={() => {
@@ -314,10 +314,10 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
               }}
               className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
                 letterFilter === 'BELUM'
-                  ? 'bg-gradient-to-br from-rose-500 to-red-600 text-white font-black shadow-clay-button -translate-y-0.5'
-                  : 'text-[#635F69] hover:text-[#332F3A]'
+                  ? 'bg-gradient-to-br from-rose-500 to-red-600 text-white font-black shadow-xs -translate-y-0.5'
+                  : 'text-[#49454F] hover:text-[#1C1B1F]'
               }`}
-              style={{ fontFamily: 'Nunito, sans-serif' }}
+              
             >
               <FileWarning className="w-4 h-4" />
               <span>Belum Kumpul Surat ({metrics.belumKumpul})</span>
@@ -331,10 +331,10 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
               }}
               className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
                 letterFilter === 'SUDAH'
-                  ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-black shadow-clay-button -translate-y-0.5'
-                  : 'text-[#635F69] hover:text-[#332F3A]'
+                  ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-black shadow-xs -translate-y-0.5'
+                  : 'text-[#49454F] hover:text-[#1C1B1F]'
               }`}
-              style={{ fontFamily: 'Nunito, sans-serif' }}
+              
             >
               <FileCheck2 className="w-4 h-4" />
               <span>Sudah Ada Surat ({metrics.sudahKumpul})</span>
@@ -348,10 +348,10 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
               }}
               className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer ${
                 letterFilter === 'ALL'
-                  ? 'bg-white text-[#332F3A] font-black shadow-clay-surface -translate-y-0.5'
-                  : 'text-[#635F69] hover:text-[#332F3A]'
+                  ? 'bg-white text-[#1C1B1F] font-black shadow-xs -translate-y-0.5'
+                  : 'text-[#49454F] hover:text-[#1C1B1F]'
               }`}
-              style={{ fontFamily: 'Nunito, sans-serif' }}
+              
             >
               <span>Semua ({metrics.total})</span>
             </button>
@@ -362,7 +362,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
         <div className="pt-4 border-t border-slate-200/60 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
           {/* Tingkat */}
           <div>
-            <label className="block text-[11px] font-black text-[#635F69] mb-1.5 uppercase" style={{ fontFamily: 'Nunito, sans-serif' }}>Tingkat</label>
+            <label className="block text-[11px] font-black text-[#49454F] mb-1.5 uppercase" >Tingkat</label>
             <select
               value={selectedGrade}
               onChange={(e) => {
@@ -370,8 +370,8 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                 setSelectedClass('ALL');
                 setCurrentPage(1);
               }}
-              className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl font-extrabold text-[#332F3A] shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 cursor-pointer"
-              style={{ fontFamily: 'Nunito, sans-serif' }}
+              className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl font-extrabold text-[#1C1B1F] shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20 cursor-pointer"
+              
             >
               <option value="ALL">Semua Tingkat (X, XI, XII)</option>
               <option value="X">Kelas X</option>
@@ -382,15 +382,15 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
           {/* Rombel / Kelas */}
           <div>
-            <label className="block text-[11px] font-black text-[#635F69] mb-1.5 uppercase" style={{ fontFamily: 'Nunito, sans-serif' }}>Kelas / Rombel</label>
+            <label className="block text-[11px] font-black text-[#49454F] mb-1.5 uppercase" >Kelas / Rombel</label>
             <select
               value={selectedClass}
               onChange={(e) => {
                 setSelectedClass(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl font-extrabold text-[#332F3A] shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 cursor-pointer"
-              style={{ fontFamily: 'Nunito, sans-serif' }}
+              className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl font-extrabold text-[#1C1B1F] shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20 cursor-pointer"
+              
             >
               <option value="ALL">Semua Kelas ({availableClasses.length} Rombel)</option>
               {availableClasses.map((c) => (
@@ -403,15 +403,15 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
           {/* Jenis Presensi: Izin vs Sakit */}
           <div>
-            <label className="block text-[11px] font-black text-[#635F69] mb-1.5 uppercase" style={{ fontFamily: 'Nunito, sans-serif' }}>Jenis Ketidakhadiran</label>
+            <label className="block text-[11px] font-black text-[#49454F] mb-1.5 uppercase" >Jenis Ketidakhadiran</label>
             <select
               value={typeFilter}
               onChange={(e) => {
                 setTypeFilter(e.target.value as any);
                 setCurrentPage(1);
               }}
-              className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl font-extrabold text-[#332F3A] shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 cursor-pointer"
-              style={{ fontFamily: 'Nunito, sans-serif' }}
+              className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl font-extrabold text-[#1C1B1F] shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20 cursor-pointer"
+              
             >
               <option value="ALL">Semua (Izin &amp; Sakit)</option>
               <option value="I">Izin Saja (I)</option>
@@ -421,9 +421,9 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
           {/* Search Box */}
           <div>
-            <label className="block text-[11px] font-black text-[#635F69] mb-1.5 uppercase" style={{ fontFamily: 'Nunito, sans-serif' }}>Cari Siswa</label>
+            <label className="block text-[11px] font-black text-[#49454F] mb-1.5 uppercase" >Cari Siswa</label>
             <div className="relative">
-              <Search className="w-5 h-5 text-[#635F69] absolute left-4 top-1/2 -translate-y-1/2" />
+              <Search className="w-5 h-5 text-[#49454F] absolute left-4 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder="Nama, NISN, atau alasan..."
@@ -432,7 +432,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full pl-11 pr-4 py-3 bg-[#EFEBF5] rounded-2xl font-medium text-xs text-[#332F3A] placeholder-[#635F69] shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20"
+                className="w-full pl-11 pr-4 py-3 bg-[#E7E0EC] rounded-2xl font-medium text-xs text-[#1C1B1F] placeholder-[#49454F] shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20"
               />
             </div>
           </div>
@@ -441,77 +441,77 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-clay-card border border-rose-200/60 hover:-translate-y-1.5 transition-all flex items-center justify-between">
+        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-sm border border-rose-200/60 hover:-translate-y-1.5 transition-all flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-black uppercase tracking-wider text-rose-600" style={{ fontFamily: 'Nunito, sans-serif' }}>
+            <span className="text-[11px] font-black uppercase tracking-wider text-rose-600" >
               Belum Kumpul Surat
             </span>
-            <div className="text-3xl font-black text-rose-700 mt-1" style={{ fontFamily: 'Nunito, sans-serif' }}>{metrics.belumKumpul}</div>
-            <div className="text-[11px] text-[#635F69] mt-0.5 font-medium">Siswa wajib serahkan bukti fisik</div>
+            <div className="text-3xl font-black text-rose-700 mt-1" >{metrics.belumKumpul}</div>
+            <div className="text-[11px] text-[#49454F] mt-0.5 font-medium">Siswa wajib serahkan bukti fisik</div>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center font-bold shadow-clay-button">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center font-bold shadow-xs">
             <FileWarning className="w-6 h-6" />
           </div>
         </div>
 
-        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-clay-card border border-sky-200/60 hover:-translate-y-1.5 transition-all flex items-center justify-between">
+        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-sm border border-sky-200/60 hover:-translate-y-1.5 transition-all flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-black uppercase tracking-wider text-sky-700" style={{ fontFamily: 'Nunito, sans-serif' }}>
+            <span className="text-[11px] font-black uppercase tracking-wider text-sky-700" >
               Izin Tanpa Surat (I)
             </span>
-            <div className="text-3xl font-black text-sky-700 mt-1" style={{ fontFamily: 'Nunito, sans-serif' }}>{metrics.izinBelum}</div>
-            <div className="text-[11px] text-[#635F69] mt-0.5 font-medium">Izin lisan / WA belum ada surat</div>
+            <div className="text-3xl font-black text-sky-700 mt-1" >{metrics.izinBelum}</div>
+            <div className="text-[11px] text-[#49454F] mt-0.5 font-medium">Izin lisan / WA belum ada surat</div>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 text-white flex items-center justify-center font-black text-lg shadow-clay-button" style={{ fontFamily: 'Nunito, sans-serif' }}>
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 text-white flex items-center justify-center font-black text-lg shadow-xs" >
             I
           </div>
         </div>
 
-        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-clay-card border border-amber-200/60 hover:-translate-y-1.5 transition-all flex items-center justify-between">
+        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-sm border border-amber-200/60 hover:-translate-y-1.5 transition-all flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-black uppercase tracking-wider text-amber-700" style={{ fontFamily: 'Nunito, sans-serif' }}>
+            <span className="text-[11px] font-black uppercase tracking-wider text-amber-700" >
               Sakit Tanpa Surat (S)
             </span>
-            <div className="text-3xl font-black text-amber-700 mt-1" style={{ fontFamily: 'Nunito, sans-serif' }}>{metrics.sakitBelum}</div>
-            <div className="text-[11px] text-[#635F69] mt-0.5 font-medium">Belum ada surat dokter / ortu</div>
+            <div className="text-3xl font-black text-amber-700 mt-1" >{metrics.sakitBelum}</div>
+            <div className="text-[11px] text-[#49454F] mt-0.5 font-medium">Belum ada surat dokter / ortu</div>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center font-black text-lg shadow-clay-button" style={{ fontFamily: 'Nunito, sans-serif' }}>
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center font-black text-lg shadow-xs" >
             S
           </div>
         </div>
 
-        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-clay-card border border-emerald-200/60 hover:-translate-y-1.5 transition-all flex items-center justify-between">
+        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-sm border border-emerald-200/60 hover:-translate-y-1.5 transition-all flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-black uppercase tracking-wider text-emerald-700" style={{ fontFamily: 'Nunito, sans-serif' }}>
+            <span className="text-[11px] font-black uppercase tracking-wider text-emerald-700" >
               Surat Terverifikasi
             </span>
-            <div className="text-3xl font-black text-emerald-700 mt-1" style={{ fontFamily: 'Nunito, sans-serif' }}>{metrics.sudahKumpul}</div>
+            <div className="text-3xl font-black text-emerald-700 mt-1" >{metrics.sudahKumpul}</div>
             <div className="text-[11px] text-emerald-600 font-extrabold mt-0.5">
               {metrics.complianceRate}% Pemenuhan surat
             </div>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center font-bold shadow-clay-button">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center font-bold shadow-xs">
             <CheckCircle2 className="w-6 h-6" />
           </div>
         </div>
       </div>
 
       {/* Table Section */}
-      <div className="rounded-[36px] bg-white/80 backdrop-blur-xl shadow-clay-card border border-white/60 overflow-hidden">
+      <div className="rounded-[32px] bg-white/80 backdrop-blur-xl shadow-sm border border-white/60 overflow-hidden">
         {/* Table Top Bar */}
         <div className="p-5 sm:p-6 border-b border-slate-200/60 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3 flex-wrap">
-            <h3 className="font-black text-[#332F3A] text-sm" style={{ fontFamily: 'Nunito, sans-serif' }}>
+            <h3 className="font-black text-[#1C1B1F] text-sm" >
               Daftar Siswa ({filteredRecords.length} Catatan)
             </h3>
             {letterFilter === 'BELUM' && (
-              <span className="px-3 py-1 text-xs font-black rounded-xl bg-rose-100 text-rose-700 border border-rose-200 shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <span className="px-3 py-1 text-xs font-black rounded-xl bg-rose-100 text-rose-700 border border-rose-200 shadow-xs" >
                 Menampilkan yang Belum Mengumpulkan Surat
               </span>
             )}
           </div>
 
-          <div className="text-xs text-[#635F69] font-medium">
+          <div className="text-xs text-[#49454F] font-medium">
             Halaman {currentPage} dari {totalPages}
           </div>
         </div>
@@ -519,7 +519,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-gradient-to-r from-slate-100/80 to-amber-50/50 border-b border-slate-200/80 text-[#635F69] font-black uppercase text-xs" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <tr className="bg-gradient-to-r from-slate-100/80 to-amber-50/50 border-b border-slate-200/80 text-[#49454F] font-black uppercase text-xs" >
                 <th className="py-4 px-4 w-12 text-center">No</th>
                 <th className="py-4 px-4 w-32">Tanggal</th>
                 <th className="py-4 px-4 w-28 text-center">NISN</th>
@@ -533,12 +533,12 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
             <tbody className="divide-y divide-slate-100">
               {paginatedRecords.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-16 text-center text-[#635F69]">
-                    <div className="w-16 h-16 rounded-full bg-[#EFEBF5] text-[#635F69] flex items-center justify-center mx-auto mb-3 shadow-clay-surface">
+                  <td colSpan={8} className="py-16 text-center text-[#49454F]">
+                    <div className="w-16 h-16 rounded-full bg-[#E7E0EC] text-[#49454F] flex items-center justify-center mx-auto mb-3 shadow-xs">
                       <FileCheck2 className="w-8 h-8" />
                     </div>
-                    <p className="font-black text-base text-[#332F3A]" style={{ fontFamily: 'Nunito, sans-serif' }}>Tidak ada data siswa yang cocok dengan filter.</p>
-                    <p className="text-xs text-[#635F69] mt-1">
+                    <p className="font-black text-base text-[#1C1B1F]" >Tidak ada data siswa yang cocok dengan filter.</p>
+                    <p className="text-xs text-[#49454F] mt-1">
                       {letterFilter === 'BELUM'
                         ? 'Semua siswa izin & sakit pada kriteria ini telah mengumpulkan surat.'
                         : 'Coba ubah tanggal atau rentang pencarian.'}
@@ -556,40 +556,40 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                       key={rec.id}
                       className="hover:bg-amber-50/30 transition-colors"
                     >
-                      <td className="py-4 px-4 text-center text-[#635F69] font-bold">{globalIdx}</td>
-                      <td className="py-4 px-4 font-extrabold text-[#332F3A] whitespace-nowrap" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                      <td className="py-4 px-4 text-center text-[#49454F] font-bold">{globalIdx}</td>
+                      <td className="py-4 px-4 font-extrabold text-[#1C1B1F] whitespace-nowrap" >
                         {rec.date}
-                        <div className="text-[11px] text-[#635F69] font-normal">{formatDateIndonesian(rec.date)}</div>
+                        <div className="text-[11px] text-[#49454F] font-normal">{formatDateIndonesian(rec.date)}</div>
                       </td>
-                      <td className="py-4 px-4 text-center font-mono text-xs font-semibold text-[#635F69]">
+                      <td className="py-4 px-4 text-center font-mono text-xs font-semibold text-[#49454F]">
                         {rec.nisn}
                       </td>
                       <td className="py-4 px-4">
-                        <div className="font-black text-sm text-[#332F3A]" style={{ fontFamily: 'Nunito, sans-serif' }}>{rec.studentName}</div>
+                        <div className="font-black text-sm text-[#1C1B1F]" >{rec.studentName}</div>
                         {student && (
-                          <div className="text-[11px] text-[#635F69]">Gender: {student.gender}</div>
+                          <div className="text-[11px] text-[#49454F]">Gender: {student.gender}</div>
                         )}
                       </td>
-                      <td className="py-4 px-4 font-black text-[#332F3A] text-center" style={{ fontFamily: 'Nunito, sans-serif' }}>{rec.className}</td>
+                      <td className="py-4 px-4 font-black text-[#1C1B1F] text-center" >{rec.className}</td>
                       <td className="py-4 px-4 text-center">
                         {rec.status === 'I' ? (
-                          <span className="px-3 py-1 rounded-xl text-xs font-black bg-sky-50 text-sky-700 border border-sky-200 inline-flex items-center gap-1 shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                          <span className="px-3 py-1 rounded-xl text-xs font-black bg-sky-50 text-sky-700 border border-sky-200 inline-flex items-center gap-1 shadow-xs" >
                             <span>Izin (I)</span>
                           </span>
                         ) : (
-                          <span className="px-3 py-1 rounded-xl text-xs font-black bg-amber-50 text-amber-700 border border-amber-200 inline-flex items-center gap-1 shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                          <span className="px-3 py-1 rounded-xl text-xs font-black bg-amber-50 text-amber-700 border border-amber-200 inline-flex items-center gap-1 shadow-xs" >
                             <span>Sakit (S)</span>
                           </span>
                         )}
                       </td>
                       <td className="py-4 px-4 text-center">
                         {isLetterCollected ? (
-                          <span className="px-3 py-1 rounded-xl text-xs font-black bg-emerald-50 text-emerald-700 border border-emerald-200 inline-flex items-center gap-1 shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                          <span className="px-3 py-1 rounded-xl text-xs font-black bg-emerald-50 text-emerald-700 border border-emerald-200 inline-flex items-center gap-1 shadow-xs" >
                             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                             <span>Sudah Ada Surat</span>
                           </span>
                         ) : (
-                          <span className="px-3 py-1 rounded-xl text-xs font-black bg-rose-50 text-rose-700 border border-rose-200 inline-flex items-center gap-1 shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                          <span className="px-3 py-1 rounded-xl text-xs font-black bg-rose-50 text-rose-700 border border-rose-200 inline-flex items-center gap-1 shadow-xs" >
                             <AlertCircle className="w-4 h-4 text-rose-600" />
                             <span>Belum Ada Surat</span>
                           </span>
@@ -602,9 +602,9 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                               <button
                                 type="button"
                                 onClick={() => handleOpenMarkModal(rec)}
-                                className="px-3 py-2 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold text-xs transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed cursor-pointer flex items-center gap-1.5"
+                                className="px-3 py-2 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold text-xs transition-all shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none cursor-pointer flex items-center gap-1.5"
                                 title="Tandai surat sudah diterima oleh sekolah"
-                                style={{ fontFamily: 'Nunito, sans-serif' }}
+                                
                               >
                                 <CheckCircle2 className="w-4 h-4" />
                                 <span>Terima Surat</span>
@@ -613,9 +613,9 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                               <button
                                 type="button"
                                 onClick={() => handleOpenAlpaModal(rec)}
-                                className="px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-600 text-rose-700 hover:text-white border border-rose-200 hover:border-rose-600 font-extrabold text-xs transition-all shadow-clay-surface hover:-translate-y-0.5 active:scale-[0.92] cursor-pointer flex items-center gap-1.5"
+                                className="px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-600 text-rose-700 hover:text-white border border-rose-200 hover:border-rose-600 font-extrabold text-xs transition-all shadow-xs hover:-translate-y-0.5 active:scale-[0.92] cursor-pointer flex items-center gap-1.5"
                                 title="Ubah status presensi menjadi Alpa (A) karena tidak mengumpulkan surat izin/sakit"
-                                style={{ fontFamily: 'Nunito, sans-serif' }}
+                                
                               >
                                 <UserX className="w-4 h-4" />
                                 <span>Ubah ke Alpa</span>
@@ -625,9 +625,9 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                             <button
                               type="button"
                               onClick={() => handleRevertLetterStatus(rec)}
-                              className="px-3 py-1.5 rounded-xl bg-[#EFEBF5] hover:bg-white text-[#635F69] hover:text-rose-700 font-extrabold text-xs shadow-clay-button active:scale-[0.92] transition-all cursor-pointer"
+                              className="px-3 py-1.5 rounded-xl bg-[#E7E0EC] hover:bg-white text-[#49454F] hover:text-rose-700 font-extrabold text-xs shadow-xs active:scale-[0.92] transition-all cursor-pointer"
                               title="Batalkan (Ubah kembali ke Belum Ada Surat)"
-                              style={{ fontFamily: 'Nunito, sans-serif' }}
+                              
                             >
                               Batalkan
                             </button>
@@ -644,7 +644,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
         {/* Pagination Controls */}
         {totalPages > 1 && (
-          <div className="p-5 bg-[#EFEBF5]/40 border-t border-slate-200/60 flex items-center justify-between text-xs text-[#635F69]">
+          <div className="p-5 bg-[#E7E0EC]/40 border-t border-slate-200/60 flex items-center justify-between text-xs text-[#49454F]">
             <div className="font-medium">
               Menampilkan {paginatedRecords.length} dari {filteredRecords.length} catatan
             </div>
@@ -653,19 +653,19 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                 type="button"
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-                className="px-3.5 py-2 rounded-xl bg-white shadow-clay-button disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition-all cursor-pointer font-bold"
+                className="px-3.5 py-2 rounded-xl bg-white shadow-xs disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition-all cursor-pointer font-bold"
               >
                 <ChevronLeft className="w-4 h-4 inline mr-1" />
                 Sebelumnya
               </button>
-              <span className="font-black text-[#332F3A] px-2" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <span className="font-black text-[#1C1B1F] px-2" >
                 {currentPage} / {totalPages}
               </span>
               <button
                 type="button"
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-                className="px-3.5 py-2 rounded-xl bg-white shadow-clay-button disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition-all cursor-pointer font-bold"
+                className="px-3.5 py-2 rounded-xl bg-white shadow-xs disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition-all cursor-pointer font-bold"
               >
                 Selanjutnya
                 <ChevronRight className="w-4 h-4 inline ml-1" />
@@ -677,15 +677,15 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
       {/* MODAL: Verifikasi / Terima Surat Izin */}
       {markingRecord && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#332F3A]/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[36px] max-w-lg w-full border border-white/60 shadow-clay-card overflow-hidden animate-in fade-in zoom-in-95 my-8">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#1C1B1F]/60 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
             <div className="p-6 bg-gradient-to-br from-emerald-600 to-teal-700 text-white flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center shadow-clay-surface">
+                <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center shadow-xs">
                   <CheckCircle2 className="w-6 h-6 text-emerald-200" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-black" style={{ fontFamily: 'Nunito, sans-serif' }}>Verifikasi Surat Izin / Sakit</h3>
+                  <h3 className="text-lg font-black" >Verifikasi Surat Izin / Sakit</h3>
                   <p className="text-xs text-emerald-100 font-medium">
                     Konfirmasi penerimaan surat keterangan fisik dari siswa
                   </p>
@@ -702,16 +702,16 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
             <form onSubmit={handleSaveMarkRecord} className="p-6 sm:p-8 space-y-5 text-xs">
               {/* Info Siswa */}
-              <div className="p-4 bg-[#EFEBF5] rounded-2xl shadow-clay-pressed space-y-1">
-                <div className="font-black text-[#332F3A] text-sm" style={{ fontFamily: 'Nunito, sans-serif' }}>{markingRecord.studentName}</div>
-                <div className="text-[#635F69] text-xs">
+              <div className="p-4 bg-[#E7E0EC] rounded-2xl shadow-none space-y-1">
+                <div className="font-black text-[#1C1B1F] text-sm" >{markingRecord.studentName}</div>
+                <div className="text-[#49454F] text-xs">
                   Kelas {markingRecord.className} • NISN: {markingRecord.nisn}
                 </div>
-                <div className="text-[#332F3A] font-bold pt-1.5 border-t border-slate-300/40 mt-1.5 flex items-center justify-between">
+                <div className="text-[#1C1B1F] font-bold pt-1.5 border-t border-slate-300/40 mt-1.5 flex items-center justify-between">
                   <span>Tanggal Presensi: {formatDateIndonesian(markingRecord.date)}</span>
-                  <span className={`px-2.5 py-0.5 rounded-lg text-xs font-black shadow-clay-surface ${
+                  <span className={`px-2.5 py-0.5 rounded-lg text-xs font-black shadow-xs ${
                     markingRecord.status === 'I' ? 'bg-sky-100 text-sky-800' : 'bg-amber-100 text-amber-800'
-                  }`} style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  }`} >
                     {markingRecord.status === 'I' ? 'Izin (I)' : 'Sakit (S)'}
                   </span>
                 </div>
@@ -719,7 +719,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
               {/* Tanggal Penyerahan Surat */}
               <div>
-                <label className="block font-black text-[#332F3A] mb-1.5 flex items-center gap-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                <label className="block font-black text-[#1C1B1F] mb-1.5 flex items-center gap-1.5" >
                   <Calendar className="w-4 h-4 text-emerald-600" />
                   <span>Tanggal Penyerahan Surat Fisik</span>
                   <span className="text-rose-500">*</span>
@@ -729,13 +729,13 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                   required
                   value={letterReceiptDate}
                   onChange={(e) => setLetterReceiptDate(e.target.value)}
-                  className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-bold shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-emerald-500/20 transition-all"
+                  className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-bold shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-emerald-500/20 transition-all"
                 />
               </div>
 
               {/* Catatan / Keterangan Surat */}
               <div>
-                <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                <label className="block font-black text-[#1C1B1F] mb-1.5" >
                   Catatan Keterangan Surat (Dokter / Orang Tua)
                 </label>
                 <textarea
@@ -743,7 +743,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                   value={letterNotes}
                   onChange={(e) => setLetterNotes(e.target.value)}
                   placeholder="Contoh: Surat dokter RS Karsa Husada Batu, izin istirahat 2 hari."
-                  className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-medium shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-emerald-500/20 transition-all"
+                  className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-medium shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-emerald-500/20 transition-all"
                 />
               </div>
 
@@ -751,15 +751,15 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                 <button
                   type="button"
                   onClick={() => setMarkingRecord(null)}
-                  className="px-5 py-2.5 rounded-2xl bg-[#EFEBF5] hover:bg-white text-[#635F69] font-black transition-all shadow-clay-button active:scale-[0.92] active:shadow-clay-pressed cursor-pointer"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="px-5 py-2.5 rounded-2xl bg-[#E7E0EC] hover:bg-white text-[#49454F] font-black transition-all shadow-xs active:scale-[0.92] active:shadow-none cursor-pointer"
+                  
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed cursor-pointer flex items-center gap-2"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="px-6 py-2.5 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black transition-all shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none cursor-pointer flex items-center gap-2"
+                  
                 >
                   <CheckCircle2 className="w-5 h-5" />
                   <span>Simpan &amp; Tandai Sudah Ada Surat</span>
@@ -772,15 +772,15 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
       {/* MODAL: Konfirmasi Ubah Status ke Alpa (A) */}
       {alpaModalRecord && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#332F3A]/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[36px] max-w-lg w-full border border-white/60 shadow-clay-card overflow-hidden animate-in fade-in zoom-in-95 my-8">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#1C1B1F]/60 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
             <div className="p-6 bg-gradient-to-br from-rose-600 to-red-700 text-white flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center shadow-clay-surface">
+                <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center shadow-xs">
                   <UserX className="w-6 h-6 text-rose-200" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-black" style={{ fontFamily: 'Nunito, sans-serif' }}>Ubah Status Presensi ke Alpa (A)</h3>
+                  <h3 className="text-lg font-black" >Ubah Status Presensi ke Alpa (A)</h3>
                   <p className="text-xs text-rose-100 font-medium">
                     Sanksi/penyesuaian karena tidak menyerahkan surat izin atau sakit
                   </p>
@@ -797,23 +797,23 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
             <form onSubmit={handleConfirmConvertToAlpa} className="p-6 sm:p-8 space-y-5 text-xs">
               {/* Info Siswa */}
-              <div className="p-4 bg-[#EFEBF5] rounded-2xl shadow-clay-pressed space-y-1">
-                <div className="font-black text-[#332F3A] text-sm" style={{ fontFamily: 'Nunito, sans-serif' }}>{alpaModalRecord.studentName}</div>
-                <div className="text-[#635F69] text-xs">
+              <div className="p-4 bg-[#E7E0EC] rounded-2xl shadow-none space-y-1">
+                <div className="font-black text-[#1C1B1F] text-sm" >{alpaModalRecord.studentName}</div>
+                <div className="text-[#49454F] text-xs">
                   Kelas {alpaModalRecord.className} • NISN: {alpaModalRecord.nisn}
                 </div>
-                <div className="text-[#332F3A] font-bold pt-1.5 border-t border-slate-300/40 mt-1.5 flex items-center justify-between">
+                <div className="text-[#1C1B1F] font-bold pt-1.5 border-t border-slate-300/40 mt-1.5 flex items-center justify-between">
                   <span>Tanggal Presensi: {formatDateIndonesian(alpaModalRecord.date)}</span>
-                  <span className={`px-2.5 py-0.5 rounded-lg text-xs font-black shadow-clay-surface ${
+                  <span className={`px-2.5 py-0.5 rounded-lg text-xs font-black shadow-xs ${
                     alpaModalRecord.status === 'I' ? 'bg-sky-100 text-sky-800' : 'bg-amber-100 text-amber-800'
-                  }`} style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  }`} >
                     Status Saat Ini: {alpaModalRecord.status === 'I' ? 'Izin (I)' : 'Sakit (S)'}
                   </span>
                 </div>
               </div>
 
               {/* Alert Peringatan */}
-              <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl flex items-start gap-3 text-rose-800 shadow-clay-surface">
+              <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl flex items-start gap-3 text-rose-800 shadow-xs">
                 <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
                 <div className="text-xs leading-relaxed">
                   <strong>Perhatian:</strong> Mengubah status presensi menjadi <strong>Alpa (A)</strong> akan memperbarui kehadiran siswa pada tanggal tersebut menjadi tanpa keterangan, dan masuk dalam akumulasi rekapitulasi presensi.
@@ -822,7 +822,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
               {/* Alasan Perubahan */}
               <div>
-                <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                <label className="block font-black text-[#1C1B1F] mb-1.5" >
                   Keterangan / Alasan Perubahan ke Alpa
                 </label>
                 <textarea
@@ -830,7 +830,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                   value={alpaReason}
                   onChange={(e) => setAlpaReason(e.target.value)}
                   placeholder="Contoh: Surat izin/sakit belum diterima setelah batas waktu yang ditentukan."
-                  className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-medium shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-rose-500/20"
+                  className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-medium shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-rose-500/20"
                 />
               </div>
 
@@ -838,15 +838,15 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                 <button
                   type="button"
                   onClick={() => setAlpaModalRecord(null)}
-                  className="px-5 py-2.5 rounded-2xl bg-[#EFEBF5] hover:bg-white text-[#635F69] font-black transition-all shadow-clay-button active:scale-[0.92] active:shadow-clay-pressed cursor-pointer"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="px-5 py-2.5 rounded-2xl bg-[#E7E0EC] hover:bg-white text-[#49454F] font-black transition-all shadow-xs active:scale-[0.92] active:shadow-none cursor-pointer"
+                  
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-black transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed cursor-pointer flex items-center gap-2"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="px-6 py-2.5 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-black transition-all shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none cursor-pointer flex items-center gap-2"
+                  
                 >
                   <UserX className="w-5 h-5" />
                   <span>Ya, Ubah Jadi Alpa (A)</span>

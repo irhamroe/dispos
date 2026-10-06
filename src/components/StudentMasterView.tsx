@@ -344,21 +344,21 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
   return (
     <div className="space-y-6 pb-12">
       {/* Top Header with Claymorphism */}
-      <div className="relative overflow-hidden rounded-[36px] bg-white/80 p-6 sm:p-8 backdrop-blur-xl shadow-clay-card border border-white/60 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+      <div className="relative overflow-hidden rounded-[32px] bg-white/80 p-6 sm:p-8 backdrop-blur-xl shadow-sm border border-white/60 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#7C3AED] to-[#9333EA] text-white flex items-center justify-center shadow-clay-button shrink-0">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#6750A4] to-[#9333EA] text-white flex items-center justify-center shadow-xs shrink-0">
             <GraduationCap className="w-7 h-7" />
           </div>
           <div>
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h2 className="text-2xl sm:text-3xl font-black text-[#332F3A] tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <h2 className="text-2xl sm:text-3xl font-black text-[#1C1B1F] tracking-tight" >
                 Data Siswa &amp; 36 Rombel
               </h2>
-              <span className="px-3 py-1 rounded-xl text-xs font-black bg-purple-100 text-[#7C3AED] shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <span className="px-3 py-1 rounded-xl text-xs font-black bg-purple-100 text-[#6750A4] shadow-xs" >
                 Total {students.length} Siswa
               </span>
             </div>
-            <p className="text-sm text-[#635F69] mt-1 font-medium">
+            <p className="text-sm text-[#49454F] mt-1 font-medium">
               Kelola direktori siswa kelas X-1 s/d X-12, XI-1 s/d XI-12, dan XII-1 s/d XII-12 lengkap dengan foto profil &amp; alamat domisili.
             </p>
           </div>
@@ -369,8 +369,8 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
             type="button"
             id="add-student-btn"
             onClick={() => setIsAddModalOpen(true)}
-            className="w-full md:w-auto px-5 py-3 rounded-2xl bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] hover:from-[#9333EA] hover:to-[#6D28D9] text-white font-extrabold text-xs transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed flex items-center justify-center gap-2 cursor-pointer"
-            style={{ fontFamily: 'Nunito, sans-serif' }}
+            className="w-full md:w-auto px-5 py-3 rounded-2xl bg-gradient-to-br from-[#E8DEF8] to-[#6750A4] hover:from-[#9333EA] hover:to-[#6D28D9] text-white font-extrabold text-xs transition-all shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none flex items-center justify-center gap-2 cursor-pointer"
+            
           >
             <UserPlus className="w-4 h-4" />
             <span>Tambah Siswa Baru</span>
@@ -380,41 +380,41 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
 
       {/* Quick Summary Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
-        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-clay-card border border-white/60 hover:-translate-y-1.5 transition-all">
-          <div className="text-[11px] font-black text-[#635F69] uppercase tracking-wider" style={{ fontFamily: 'Nunito, sans-serif' }}>Total Siswa</div>
-          <div className="text-2xl sm:text-3xl font-black text-[#332F3A] mt-1 tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>{stats.total}</div>
-          <div className="text-xs text-[#7C3AED] font-bold mt-0.5">36 Rombel Terdaftar</div>
+        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-sm border border-white/60 hover:-translate-y-1.5 transition-all">
+          <div className="text-[11px] font-black text-[#49454F] uppercase tracking-wider" >Total Siswa</div>
+          <div className="text-2xl sm:text-3xl font-black text-[#1C1B1F] mt-1 tracking-tight" >{stats.total}</div>
+          <div className="text-xs text-[#6750A4] font-bold mt-0.5">36 Rombel Terdaftar</div>
         </div>
 
-        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-clay-card border border-sky-200/60 hover:-translate-y-1.5 transition-all">
-          <div className="text-[11px] font-black text-sky-700 uppercase tracking-wider" style={{ fontFamily: 'Nunito, sans-serif' }}>Foto Profil Siswa</div>
-          <div className="text-2xl sm:text-3xl font-black text-sky-700 mt-1 tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>{stats.withPhoto}</div>
-          <div className="text-xs text-[#635F69] mt-0.5 font-medium">
+        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-sm border border-sky-200/60 hover:-translate-y-1.5 transition-all">
+          <div className="text-[11px] font-black text-sky-700 uppercase tracking-wider" >Foto Profil Siswa</div>
+          <div className="text-2xl sm:text-3xl font-black text-sky-700 mt-1 tracking-tight" >{stats.withPhoto}</div>
+          <div className="text-xs text-[#49454F] mt-0.5 font-medium">
             {stats.total > 0 ? Math.round((stats.withPhoto / stats.total) * 100) : 0}% terisi foto
           </div>
         </div>
 
-        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-clay-card border border-purple-200/60 hover:-translate-y-1.5 transition-all">
-          <div className="text-[11px] font-black text-purple-700 uppercase tracking-wider" style={{ fontFamily: 'Nunito, sans-serif' }}>Alamat Domisili</div>
-          <div className="text-2xl sm:text-3xl font-black text-purple-700 mt-1 tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>{stats.withAddress}</div>
-          <div className="text-xs text-[#635F69] mt-0.5 font-medium">
+        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-sm border border-purple-200/60 hover:-translate-y-1.5 transition-all">
+          <div className="text-[11px] font-black text-purple-700 uppercase tracking-wider" >Alamat Domisili</div>
+          <div className="text-2xl sm:text-3xl font-black text-purple-700 mt-1 tracking-tight" >{stats.withAddress}</div>
+          <div className="text-xs text-[#49454F] mt-0.5 font-medium">
             {stats.total > 0 ? Math.round((stats.withAddress / stats.total) * 100) : 0}% terdata alamat
           </div>
         </div>
 
-        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-clay-card border border-emerald-200/60 hover:-translate-y-1.5 transition-all">
-          <div className="text-[11px] font-black text-emerald-700 uppercase tracking-wider" style={{ fontFamily: 'Nunito, sans-serif' }}>Siswa Aktif</div>
-          <div className="text-2xl sm:text-3xl font-black text-emerald-700 mt-1 tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>{stats.active}</div>
+        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-sm border border-emerald-200/60 hover:-translate-y-1.5 transition-all">
+          <div className="text-[11px] font-black text-emerald-700 uppercase tracking-wider" >Siswa Aktif</div>
+          <div className="text-2xl sm:text-3xl font-black text-emerald-700 mt-1 tracking-tight" >{stats.active}</div>
           <div className="text-xs text-emerald-600 font-bold mt-0.5">Status Akademik Aktif</div>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="rounded-[36px] bg-white/80 backdrop-blur-xl shadow-clay-card border border-white/60 overflow-hidden">
+      <div className="rounded-[32px] bg-white/80 backdrop-blur-xl shadow-sm border border-white/60 overflow-hidden">
         <div className="p-5 sm:p-6 border-b border-slate-200/60 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
           {/* Search */}
           <div className="relative w-full sm:w-80">
-            <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[#635F69]" />
+            <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[#49454F]" />
             <input
               id="search-master-student"
               type="text"
@@ -424,14 +424,14 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                 setSearchQuery(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full pl-11 pr-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs text-[#332F3A] placeholder-[#635F69] shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 transition-all font-medium"
+              className="w-full pl-11 pr-4 py-3 bg-[#E7E0EC] rounded-2xl text-xs text-[#1C1B1F] placeholder-[#49454F] shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20 transition-all font-medium"
             />
           </div>
 
           {/* Filters */}
           <div className="flex flex-wrap items-center gap-3">
             {/* Grade Filter */}
-            <div className="flex bg-[#EFEBF5] p-1.5 rounded-2xl shadow-clay-pressed text-xs gap-1 font-bold">
+            <div className="flex bg-[#E7E0EC] p-1.5 rounded-2xl shadow-none text-xs gap-1 font-bold">
               {(['ALL', 'X', 'XI', 'XII'] as const).map((grade) => (
                 <button
                   key={grade}
@@ -443,10 +443,10 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                   }}
                   className={`px-3 py-1.5 rounded-xl font-black transition-all cursor-pointer ${
                     selectedGrade === grade
-                      ? 'bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] text-white shadow-clay-button -translate-y-0.5'
-                      : 'text-[#635F69] hover:text-[#332F3A]'
+                      ? 'bg-gradient-to-br from-[#E8DEF8] to-[#6750A4] text-white shadow-xs -translate-y-0.5'
+                      : 'text-[#49454F] hover:text-[#1C1B1F]'
                   }`}
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  
                 >
                   {grade === 'ALL' ? 'Semua' : `Kelas ${grade}`}
                 </button>
@@ -454,8 +454,8 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
             </div>
 
             {/* Rombel Select */}
-            <div className="flex items-center gap-2 bg-[#EFEBF5] rounded-2xl px-4 py-2.5 text-xs shadow-clay-pressed">
-              <Layers className="w-4 h-4 text-[#7C3AED] shrink-0" />
+            <div className="flex items-center gap-2 bg-[#E7E0EC] rounded-2xl px-4 py-2.5 text-xs shadow-none">
+              <Layers className="w-4 h-4 text-[#6750A4] shrink-0" />
               <select
                 id="master-class-filter"
                 value={selectedClass}
@@ -463,8 +463,8 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                   setSelectedClass(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="bg-transparent font-extrabold text-[#332F3A] focus:outline-hidden cursor-pointer"
-                style={{ fontFamily: 'Nunito, sans-serif' }}
+                className="bg-transparent font-extrabold text-[#1C1B1F] focus:outline-hidden cursor-pointer"
+                
               >
                 <option value="ALL">Semua Rombel ({filteredStudents.length} Siswa)</option>
                 {availableClasses.map((c) => (
@@ -476,16 +476,16 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
             </div>
 
             {/* Photo Filter */}
-            <div className="flex items-center gap-2 bg-[#EFEBF5] rounded-2xl px-4 py-2.5 text-xs shadow-clay-pressed">
-              <Camera className="w-4 h-4 text-[#7C3AED] shrink-0" />
+            <div className="flex items-center gap-2 bg-[#E7E0EC] rounded-2xl px-4 py-2.5 text-xs shadow-none">
+              <Camera className="w-4 h-4 text-[#6750A4] shrink-0" />
               <select
                 value={photoFilter}
                 onChange={(e) => {
                   setPhotoFilter(e.target.value as any);
                   setCurrentPage(1);
                 }}
-                className="bg-transparent font-bold text-[#332F3A] focus:outline-hidden cursor-pointer"
-                style={{ fontFamily: 'Nunito, sans-serif' }}
+                className="bg-transparent font-bold text-[#1C1B1F] focus:outline-hidden cursor-pointer"
+                
               >
                 <option value="ALL">Semua Foto</option>
                 <option value="WITH_PHOTO">Ada Foto</option>
@@ -499,7 +499,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gradient-to-r from-slate-100/80 to-purple-50/50 border-b border-slate-200 text-xs font-black uppercase tracking-wider text-[#635F69]" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <tr className="bg-gradient-to-r from-slate-100/80 to-purple-50/50 border-b border-slate-200 text-xs font-black uppercase tracking-wider text-[#49454F]" >
                 <th className="py-4 px-4 w-12 text-center">No</th>
                 <th className="py-4 px-5 min-w-[220px]">Profil &amp; Identitas Siswa</th>
                 <th className="py-4 px-4 text-center w-24">Kelas</th>
@@ -512,8 +512,8 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
             <tbody className="divide-y divide-slate-100 text-xs">
               {paginatedStudents.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-16 text-center text-[#635F69]">
-                    <div className="w-16 h-16 rounded-full bg-[#EFEBF5] text-[#635F69] flex items-center justify-center mx-auto mb-3 shadow-clay-surface">
+                  <td colSpan={7} className="py-16 text-center text-[#49454F]">
+                    <div className="w-16 h-16 rounded-full bg-[#E7E0EC] text-[#49454F] flex items-center justify-center mx-auto mb-3 shadow-xs">
                       <AlertCircle className="w-8 h-8" />
                     </div>
                     <span className="font-bold">Tidak ditemukan data siswa sesuai kriteria filter.</span>
@@ -526,7 +526,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                   return (
                     <tr key={s.id} className="hover:bg-purple-50/30 transition-colors">
                       {/* No */}
-                      <td className="py-4 px-4 text-center text-[#635F69] font-bold">
+                      <td className="py-4 px-4 text-center text-[#49454F] font-bold">
                         {globalIdx}
                       </td>
 
@@ -545,7 +545,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                                 <img
                                   src={getGoogleDriveDirectImageUrl(s.photoUrl)}
                                   alt={s.name}
-                                  className="w-11 h-11 rounded-2xl object-cover border border-white/80 shadow-clay-surface group-hover:scale-105 transition-transform"
+                                  className="w-11 h-11 rounded-2xl object-cover border border-white/80 shadow-xs group-hover:scale-105 transition-transform"
                                   onError={(e) => {
                                     const target = e.currentTarget;
                                     if (s.photoUrl && target.src !== s.photoUrl) {
@@ -553,19 +553,19 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                                     }
                                   }}
                                 />
-                                <div className="absolute inset-0 bg-[#332F3A]/40 rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white">
+                                <div className="absolute inset-0 bg-[#1C1B1F]/40 rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white">
                                   <Eye className="w-3.5 h-3.5" />
                                 </div>
                               </button>
                             ) : (
                               <div
-                                className={`w-11 h-11 rounded-2xl flex items-center justify-center font-black text-xs shadow-clay-surface ${
+                                className={`w-11 h-11 rounded-2xl flex items-center justify-center font-black text-xs shadow-xs ${
                                   s.gender === 'L'
                                     ? 'bg-sky-100 text-sky-800'
                                     : 'bg-pink-100 text-pink-800'
                                 }`}
                                 title="Belum ada foto profil"
-                                style={{ fontFamily: 'Nunito, sans-serif' }}
+                                
                               >
                                 {s.name.slice(0, 2).toUpperCase()}
                               </div>
@@ -574,10 +574,10 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
 
                           {/* Nama & Info Detail */}
                           <div className="min-w-0 flex-1">
-                            <div className="font-black text-[#332F3A] text-sm truncate leading-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                            <div className="font-black text-[#1C1B1F] text-sm truncate leading-tight" >
                               {s.name}
                             </div>
-                            <div className="flex items-center gap-1.5 mt-0.5 text-xs text-[#635F69] font-mono">
+                            <div className="flex items-center gap-1.5 mt-0.5 text-xs text-[#49454F] font-mono">
                               <span>NISN: {s.nisn}</span>
                               <span>•</span>
                               <span
@@ -596,24 +596,24 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
 
                       {/* Kelas */}
                       <td className="py-4 px-4 text-center">
-                        <span className="px-3 py-1 rounded-xl text-xs font-black bg-purple-50 text-[#7C3AED] border border-purple-200 shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                        <span className="px-3 py-1 rounded-xl text-xs font-black bg-purple-50 text-[#6750A4] border border-purple-200 shadow-xs" >
                           {s.className}
                         </span>
                       </td>
 
                       {/* Kontak */}
-                      <td className="py-3 px-5 text-[#635F69]">
+                      <td className="py-3 px-5 text-[#49454F]">
                         <div className="space-y-0.5">
                           {s.phone ? (
                             <div className="flex items-center gap-1.5 text-xs">
                               <Phone className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                              <span className="font-bold text-[#332F3A]">{s.phone}</span>
+                              <span className="font-bold text-[#1C1B1F]">{s.phone}</span>
                             </div>
                           ) : (
                             <div className="text-[11px] text-slate-400 italic">No HP -</div>
                           )}
                           {s.parentPhone && (
-                            <div className="text-[11px] text-[#635F69] flex items-center gap-1 font-mono">
+                            <div className="text-[11px] text-[#49454F] flex items-center gap-1 font-mono">
                               <span className="text-slate-400">Ortu:</span>
                               <span>{s.parentPhone}</span>
                             </div>
@@ -622,10 +622,10 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                       </td>
 
                       {/* Alamat Domisili */}
-                      <td className="py-3 px-5 text-[#635F69]">
+                      <td className="py-3 px-5 text-[#49454F]">
                         {s.address ? (
                           <div className="flex items-start gap-1.5 text-xs leading-tight" title={s.address}>
-                            <MapPin className="w-3.5 h-3.5 text-[#7C3AED] shrink-0 mt-0.5" />
+                            <MapPin className="w-3.5 h-3.5 text-[#6750A4] shrink-0 mt-0.5" />
                             <span className="line-clamp-2">{s.address}</span>
                           </div>
                         ) : (
@@ -635,7 +635,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
 
                       {/* Status */}
                       <td className="py-4 px-4 text-center">
-                        <span className="px-3 py-1 rounded-xl text-xs font-black bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                        <span className="px-3 py-1 rounded-xl text-xs font-black bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-xs" >
                           {s.status}
                         </span>
                       </td>
@@ -646,7 +646,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                           <button
                             type="button"
                             onClick={() => setViewingStudent(s)}
-                            className="p-2 rounded-xl bg-white hover:bg-purple-50 text-[#635F69] hover:text-[#7C3AED] shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
+                            className="p-2 rounded-xl bg-white hover:bg-purple-50 text-[#49454F] hover:text-[#6750A4] shadow-xs hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
                             title="Lihat Detail Profil Siswa"
                           >
                             <Eye className="w-4 h-4" />
@@ -654,7 +654,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                           <button
                             type="button"
                             onClick={() => handleOpenEdit(s)}
-                            className="p-2 rounded-xl bg-white hover:bg-amber-50 text-[#635F69] hover:text-amber-700 shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
+                            className="p-2 rounded-xl bg-white hover:bg-amber-50 text-[#49454F] hover:text-amber-700 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
                             title="Edit Data Siswa"
                           >
                             <Edit3 className="w-4 h-4" />
@@ -663,7 +663,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                             <button
                               type="button"
                               onClick={() => handleDeleteStudent(s)}
-                              className="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 shadow-clay-surface hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
+                              className="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
                               title="Hapus Data Siswa"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -681,8 +681,8 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
 
         {/* Pagination Controls */}
         {totalPages > 1 && (
-          <div className="p-5 bg-[#EFEBF5]/40 border-t border-slate-200/60 flex items-center justify-between text-xs">
-            <div className="text-[#635F69] font-medium">
+          <div className="p-5 bg-[#E7E0EC]/40 border-t border-slate-200/60 flex items-center justify-between text-xs">
+            <div className="text-[#49454F] font-medium">
               Menampilkan {paginatedStudents.length} dari total {filteredStudents.length} siswa
             </div>
             <div className="flex items-center gap-2">
@@ -691,11 +691,11 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                 id="master-prev-page-btn"
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                className="p-2 rounded-xl bg-white shadow-clay-button disabled:opacity-40 hover:bg-slate-50 text-[#332F3A] cursor-pointer"
+                className="p-2 rounded-xl bg-white shadow-xs disabled:opacity-40 hover:bg-slate-50 text-[#1C1B1F] cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <span className="font-black text-[#332F3A] px-2" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <span className="font-black text-[#1C1B1F] px-2" >
                 Halaman {currentPage} dari {totalPages}
               </span>
               <button
@@ -703,7 +703,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                 id="master-next-page-btn"
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                className="p-2 rounded-xl bg-white shadow-clay-button disabled:opacity-40 hover:bg-slate-50 text-[#332F3A] cursor-pointer"
+                className="p-2 rounded-xl bg-white shadow-xs disabled:opacity-40 hover:bg-slate-50 text-[#1C1B1F] cursor-pointer"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -714,15 +714,15 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
 
       {/* MODAL: TAMBAH SISWA BARU */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#332F3A]/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[36px] max-w-lg w-full border border-white/60 shadow-clay-card overflow-hidden animate-in fade-in zoom-in-95 my-8">
-            <div className="p-6 bg-gradient-to-br from-[#7C3AED] to-[#9333EA] text-white flex items-center justify-between">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#1C1B1F]/60 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
+            <div className="p-6 bg-gradient-to-br from-[#6750A4] to-[#9333EA] text-white flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center shadow-clay-surface">
+                <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center shadow-xs">
                   <UserPlus className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-black text-base" style={{ fontFamily: 'Nunito, sans-serif' }}>Tambah Data Siswa Baru</h3>
+                  <h3 className="font-black text-base" >Tambah Data Siswa Baru</h3>
                   <p className="text-xs text-purple-100">SMAN 1 Batu • Lengkap dengan Foto &amp; Alamat</p>
                 </div>
               </div>
@@ -739,7 +739,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
               {/* NISN & NAMA */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="block font-black text-[#1C1B1F] mb-1.5" >
                     NISN *
                   </label>
                   <input
@@ -748,12 +748,12 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                     placeholder="Contoh: 0091234567"
                     value={newNisn}
                     onChange={(e) => setNewNisn(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-mono font-bold shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20"
+                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-mono font-bold shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="block font-black text-[#1C1B1F] mb-1.5" >
                     Nama Lengkap Siswa *
                   </label>
                   <input
@@ -762,7 +762,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                     placeholder="Masukkan nama siswa..."
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-bold shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20"
+                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-bold shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20"
                   />
                 </div>
               </div>
@@ -770,14 +770,14 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
               {/* ROMBEL & GENDER */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="block font-black text-[#1C1B1F] mb-1.5" >
                     Pilih Rombel (36 Rombel) *
                   </label>
                   <select
                     value={newClassId}
                     onChange={(e) => setNewClassId(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-extrabold shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 cursor-pointer"
-                    style={{ fontFamily: 'Nunito, sans-serif' }}
+                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-extrabold shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20 cursor-pointer"
+                    
                   >
                     {sortClasses(classes).map((c) => (
                       <option key={c.id} value={c.id}>
@@ -788,14 +788,14 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                 </div>
 
                 <div>
-                  <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="block font-black text-[#1C1B1F] mb-1.5" >
                     Jenis Kelamin *
                   </label>
                   <select
                     value={newGender}
                     onChange={(e) => setNewGender(e.target.value as 'L' | 'P')}
-                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-extrabold shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 cursor-pointer"
-                    style={{ fontFamily: 'Nunito, sans-serif' }}
+                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-extrabold shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20 cursor-pointer"
+                    
                   >
                     <option value="L">Laki-laki (L)</option>
                     <option value="P">Perempuan (P)</option>
@@ -805,8 +805,8 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
 
               {/* ALAMAT SISWA */}
               <div>
-                <label className="block font-black text-[#332F3A] mb-1.5 flex items-center gap-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
-                  <MapPin className="w-4 h-4 text-[#7C3AED]" />
+                <label className="block font-black text-[#1C1B1F] mb-1.5 flex items-center gap-1.5" >
+                  <MapPin className="w-4 h-4 text-[#6750A4]" />
                   <span>Alamat Lengkap Domisili Siswa</span>
                 </label>
                 <textarea
@@ -814,14 +814,14 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                   placeholder="Contoh: Jl. Panglima Sudirman No. 45 RT 03/RW 02, Kel. Sisir, Kec. Batu, Kota Batu"
                   value={newAddress}
                   onChange={(e) => setNewAddress(e.target.value)}
-                  className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-medium shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 leading-relaxed"
+                  className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-medium shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20 leading-relaxed"
                 />
               </div>
 
               {/* TELEPON */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="block font-black text-[#1C1B1F] mb-1.5" >
                     No. Telepon / WhatsApp Siswa
                   </label>
                   <input
@@ -829,12 +829,12 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                     placeholder="08xxxxxxxxxx"
                     value={newPhone}
                     onChange={(e) => setNewPhone(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-medium shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20"
+                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-medium shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="block font-black text-[#1C1B1F] mb-1.5" >
                     No. Telepon Orang Tua / Wali
                   </label>
                   <input
@@ -842,26 +842,26 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                     placeholder="08xxxxxxxxxx"
                     value={newParentPhone}
                     onChange={(e) => setNewParentPhone(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-medium shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20"
+                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-medium shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20"
                   />
                 </div>
               </div>
 
               {/* BAGIAN FOTO SISWA */}
-              <div className="p-5 bg-[#EFEBF5] rounded-2xl shadow-clay-pressed space-y-4">
+              <div className="p-5 bg-[#E7E0EC] rounded-2xl shadow-none space-y-4">
                 <div className="flex items-center justify-between">
-                  <label className="font-black text-[#332F3A] flex items-center gap-2" style={{ fontFamily: 'Nunito, sans-serif' }}>
-                    <Camera className="w-5 h-5 text-[#7C3AED]" />
+                  <label className="font-black text-[#1C1B1F] flex items-center gap-2" >
+                    <Camera className="w-5 h-5 text-[#6750A4]" />
                     <span>Foto Profil Siswa (Opsional)</span>
                   </label>
-                  <div className="flex items-center gap-1 bg-white p-1 rounded-xl shadow-clay-surface text-xs">
+                  <div className="flex items-center gap-1 bg-white p-1 rounded-xl shadow-xs text-xs">
                     <button
                       type="button"
                       onClick={() => setPhotoInputMode('upload')}
                       className={`px-3 py-1 rounded-lg font-black transition-colors cursor-pointer ${
-                        photoInputMode === 'upload' ? 'bg-[#7C3AED] text-white' : 'text-[#635F69]'
+                        photoInputMode === 'upload' ? 'bg-[#6750A4] text-white' : 'text-[#49454F]'
                       }`}
-                      style={{ fontFamily: 'Nunito, sans-serif' }}
+                      
                     >
                       Unggah File
                     </button>
@@ -869,9 +869,9 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                       type="button"
                       onClick={() => setPhotoInputMode('url')}
                       className={`px-3 py-1 rounded-lg font-black transition-colors cursor-pointer ${
-                        photoInputMode === 'url' ? 'bg-[#7C3AED] text-white' : 'text-[#635F69]'
+                        photoInputMode === 'url' ? 'bg-[#6750A4] text-white' : 'text-[#49454F]'
                       }`}
-                      style={{ fontFamily: 'Nunito, sans-serif' }}
+                      
                     >
                       Tautan URL
                     </button>
@@ -881,7 +881,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                 <div className="flex items-center gap-4">
                   <div className="relative group shrink-0">
                     {uploadingNewPhoto ? (
-                      <div className="w-18 h-18 rounded-2xl border-2 border-dashed border-[#7C3AED] bg-purple-50 flex flex-col items-center justify-center text-[#7C3AED] animate-pulse">
+                      <div className="w-18 h-18 rounded-2xl border-2 border-dashed border-[#6750A4] bg-purple-50 flex flex-col items-center justify-center text-[#6750A4] animate-pulse">
                         <Loader2 className="w-6 h-6 animate-spin" />
                         <span className="text-[10px] mt-1 font-black">Upload...</span>
                       </div>
@@ -890,7 +890,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                         <img
                           src={getGoogleDriveDirectImageUrl(newPhotoUrl)}
                           alt="Pratinjau Foto Siswa"
-                          className="w-18 h-18 rounded-2xl object-cover border-2 border-[#7C3AED] shadow-clay-surface"
+                          className="w-18 h-18 rounded-2xl object-cover border-2 border-[#6750A4] shadow-xs"
                         />
                         <button
                           type="button"
@@ -926,19 +926,19 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                         />
                         <label
                           htmlFor="add-student-photo-file"
-                          className={`inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-[#332F3A] rounded-2xl font-black text-xs cursor-pointer shadow-clay-button active:scale-[0.92] ${
+                          className={`inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-[#1C1B1F] rounded-2xl font-black text-xs cursor-pointer shadow-xs active:scale-[0.92] ${
                             uploadingNewPhoto ? 'opacity-50 pointer-events-none' : ''
                           }`}
-                          style={{ fontFamily: 'Nunito, sans-serif' }}
+                          
                         >
                           {uploadingNewPhoto ? (
-                            <Loader2 className="w-4 h-4 text-[#7C3AED] animate-spin" />
+                            <Loader2 className="w-4 h-4 text-[#6750A4] animate-spin" />
                           ) : (
-                            <Upload className="w-4 h-4 text-[#7C3AED]" />
+                            <Upload className="w-4 h-4 text-[#6750A4]" />
                           )}
                           <span>{uploadingNewPhoto ? 'Sedang mengunggah...' : 'Pilih Foto dari Perangkat'}</span>
                         </label>
-                        <p className="text-[11px] text-[#635F69] mt-1.5 font-medium">
+                        <p className="text-[11px] text-[#49454F] mt-1.5 font-medium">
                           Format JPG, PNG, WEBP (maks. 5 MB)
                         </p>
                       </div>
@@ -949,9 +949,9 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                           placeholder="https://example.com/foto-siswa.jpg"
                           value={newPhotoUrl}
                           onChange={(e) => setNewPhotoUrl(e.target.value)}
-                          className="w-full px-4 py-2.5 bg-white rounded-2xl text-[#332F3A] text-xs shadow-clay-surface focus:outline-hidden focus:ring-2 focus:ring-[#7C3AED]"
+                          className="w-full px-4 py-2.5 bg-white rounded-2xl text-[#1C1B1F] text-xs shadow-xs focus:outline-hidden focus:ring-2 focus:ring-[#6750A4]"
                         />
-                        <p className="text-[11px] text-[#635F69] mt-1.5 font-medium">
+                        <p className="text-[11px] text-[#49454F] mt-1.5 font-medium">
                           Masukkan tautan gambar langsung dari web atau Google Drive
                         </p>
                       </div>
@@ -965,16 +965,16 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-5 py-2.5 rounded-2xl bg-[#EFEBF5] hover:bg-white text-[#635F69] font-black transition-all shadow-clay-button active:scale-[0.92] cursor-pointer"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="px-5 py-2.5 rounded-2xl bg-[#E7E0EC] hover:bg-white text-[#49454F] font-black transition-all shadow-xs active:scale-[0.92] cursor-pointer"
+                  
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   id="save-new-student-btn"
-                  className="px-6 py-2.5 rounded-2xl bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] hover:from-[#9333EA] hover:to-[#6D28D9] text-white font-black transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed cursor-pointer"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="px-6 py-2.5 rounded-2xl bg-gradient-to-br from-[#E8DEF8] to-[#6750A4] hover:from-[#9333EA] hover:to-[#6D28D9] text-white font-black transition-all shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none cursor-pointer"
+                  
                 >
                   Simpan Siswa Baru
                 </button>
@@ -986,15 +986,15 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
 
       {/* MODAL: EDIT DATA SISWA */}
       {editingStudent && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#332F3A]/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[36px] max-w-lg w-full border border-white/60 shadow-clay-card overflow-hidden animate-in fade-in zoom-in-95 my-8">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#1C1B1F]/60 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
             <div className="p-6 bg-gradient-to-br from-slate-800 to-slate-900 text-white flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center shadow-clay-surface">
+                <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center shadow-xs">
                   <Edit3 className="w-6 h-6 text-amber-400" />
                 </div>
                 <div>
-                  <h3 className="font-black text-base" style={{ fontFamily: 'Nunito, sans-serif' }}>Edit Data &amp; Foto Siswa</h3>
+                  <h3 className="font-black text-base" >Edit Data &amp; Foto Siswa</h3>
                   <p className="text-xs text-slate-300">NISN: {editingStudent.nisn} • {editingStudent.name}</p>
                 </div>
               </div>
@@ -1010,7 +1010,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
             <form onSubmit={handleSaveEditStudent} className="p-6 sm:p-8 space-y-5 text-xs max-h-[80vh] overflow-y-auto">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="block font-black text-[#1C1B1F] mb-1.5" >
                     NISN *
                   </label>
                   <input
@@ -1018,12 +1018,12 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                     required
                     value={editNisn}
                     onChange={(e) => setEditNisn(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-mono font-bold shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20"
+                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-mono font-bold shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="block font-black text-[#1C1B1F] mb-1.5" >
                     Nama Lengkap Siswa *
                   </label>
                   <input
@@ -1031,21 +1031,21 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                     required
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-bold shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20"
+                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-bold shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#6750A4]/20"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="block font-black text-[#1C1B1F] mb-1.5" >
                     Kelas / Rombel *
                   </label>
                   <select
                     value={editClassId}
                     onChange={(e) => setEditClassId(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-extrabold shadow-clay-pressed focus:outline-hidden focus:bg-white cursor-pointer"
-                    style={{ fontFamily: 'Nunito, sans-serif' }}
+                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-extrabold shadow-none focus:outline-hidden focus:bg-white cursor-pointer"
+                    
                   >
                     {sortClasses(classes).map((c) => (
                       <option key={c.id} value={c.id}>
@@ -1056,14 +1056,14 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                 </div>
 
                 <div>
-                  <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="block font-black text-[#1C1B1F] mb-1.5" >
                     Jenis Kelamin *
                   </label>
                   <select
                     value={editGender}
                     onChange={(e) => setEditGender(e.target.value as 'L' | 'P')}
-                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-extrabold shadow-clay-pressed focus:outline-hidden focus:bg-white cursor-pointer"
-                    style={{ fontFamily: 'Nunito, sans-serif' }}
+                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-extrabold shadow-none focus:outline-hidden focus:bg-white cursor-pointer"
+                    
                   >
                     <option value="L">Laki-laki (L)</option>
                     <option value="P">Perempuan (P)</option>
@@ -1072,53 +1072,53 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
               </div>
 
               <div>
-                <label className="block font-black text-[#332F3A] mb-1.5 flex items-center gap-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
-                  <MapPin className="w-4 h-4 text-[#7C3AED]" />
+                <label className="block font-black text-[#1C1B1F] mb-1.5 flex items-center gap-1.5" >
+                  <MapPin className="w-4 h-4 text-[#6750A4]" />
                   <span>Alamat Lengkap Domisili</span>
                 </label>
                 <textarea
                   rows={2}
                   value={editAddress}
                   onChange={(e) => setEditAddress(e.target.value)}
-                  className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-medium shadow-clay-pressed focus:outline-hidden focus:bg-white leading-relaxed"
+                  className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-medium shadow-none focus:outline-hidden focus:bg-white leading-relaxed"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="block font-black text-[#1C1B1F] mb-1.5" >
                     No. Telepon Siswa
                   </label>
                   <input
                     type="text"
                     value={editPhone}
                     onChange={(e) => setEditPhone(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] shadow-clay-pressed focus:bg-white"
+                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] shadow-none focus:bg-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="block font-black text-[#1C1B1F] mb-1.5" >
                     No. Telepon Orang Tua / Wali
                   </label>
                   <input
                     type="text"
                     value={editParentPhone}
                     onChange={(e) => setEditParentPhone(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] shadow-clay-pressed focus:bg-white"
+                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] shadow-none focus:bg-white"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                <label className="block font-black text-[#1C1B1F] mb-1.5" >
                   Status Siswa
                 </label>
                 <select
                   value={editStatus}
                   onChange={(e) => setEditStatus(e.target.value as 'Aktif' | 'Nonaktif')}
-                  className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-extrabold shadow-clay-pressed focus:bg-white cursor-pointer"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-[#1C1B1F] font-extrabold shadow-none focus:bg-white cursor-pointer"
+                  
                 >
                   <option value="Aktif">Aktif</option>
                   <option value="Nonaktif">Nonaktif</option>
@@ -1126,20 +1126,20 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
               </div>
 
               {/* FOTO EDIT */}
-              <div className="p-5 bg-[#EFEBF5] rounded-2xl shadow-clay-pressed space-y-4">
+              <div className="p-5 bg-[#E7E0EC] rounded-2xl shadow-none space-y-4">
                 <div className="flex items-center justify-between">
-                  <label className="font-black text-[#332F3A] flex items-center gap-2" style={{ fontFamily: 'Nunito, sans-serif' }}>
-                    <Camera className="w-5 h-5 text-[#7C3AED]" />
+                  <label className="font-black text-[#1C1B1F] flex items-center gap-2" >
+                    <Camera className="w-5 h-5 text-[#6750A4]" />
                     <span>Foto Profil Siswa</span>
                   </label>
-                  <div className="flex items-center gap-1 bg-white p-1 rounded-xl shadow-clay-surface text-xs">
+                  <div className="flex items-center gap-1 bg-white p-1 rounded-xl shadow-xs text-xs">
                     <button
                       type="button"
                       onClick={() => setEditPhotoInputMode('upload')}
                       className={`px-3 py-1 rounded-lg font-black transition-colors cursor-pointer ${
-                        editPhotoInputMode === 'upload' ? 'bg-[#7C3AED] text-white' : 'text-[#635F69]'
+                        editPhotoInputMode === 'upload' ? 'bg-[#6750A4] text-white' : 'text-[#49454F]'
                       }`}
-                      style={{ fontFamily: 'Nunito, sans-serif' }}
+                      
                     >
                       Unggah File
                     </button>
@@ -1147,9 +1147,9 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                       type="button"
                       onClick={() => setEditPhotoInputMode('url')}
                       className={`px-3 py-1 rounded-lg font-black transition-colors cursor-pointer ${
-                        editPhotoInputMode === 'url' ? 'bg-[#7C3AED] text-white' : 'text-[#635F69]'
+                        editPhotoInputMode === 'url' ? 'bg-[#6750A4] text-white' : 'text-[#49454F]'
                       }`}
-                      style={{ fontFamily: 'Nunito, sans-serif' }}
+                      
                     >
                       Tautan URL
                     </button>
@@ -1159,7 +1159,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                 <div className="flex items-center gap-4">
                   <div className="relative group shrink-0">
                     {uploadingEditPhoto ? (
-                      <div className="w-18 h-18 rounded-2xl border-2 border-dashed border-[#7C3AED] bg-purple-50 flex flex-col items-center justify-center text-[#7C3AED] animate-pulse">
+                      <div className="w-18 h-18 rounded-2xl border-2 border-dashed border-[#6750A4] bg-purple-50 flex flex-col items-center justify-center text-[#6750A4] animate-pulse">
                         <Loader2 className="w-6 h-6 animate-spin" />
                         <span className="text-[10px] mt-1 font-black">Upload...</span>
                       </div>
@@ -1168,7 +1168,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                         <img
                           src={getGoogleDriveDirectImageUrl(editPhotoUrl)}
                           alt="Pratinjau Foto Siswa"
-                          className="w-18 h-18 rounded-2xl object-cover border-2 border-[#7C3AED] shadow-clay-surface"
+                          className="w-18 h-18 rounded-2xl object-cover border-2 border-[#6750A4] shadow-xs"
                         />
                         <button
                           type="button"
@@ -1204,19 +1204,19 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                         />
                         <label
                           htmlFor="edit-student-photo-file"
-                          className={`inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-[#332F3A] rounded-2xl font-black text-xs cursor-pointer shadow-clay-button active:scale-[0.92] ${
+                          className={`inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-[#1C1B1F] rounded-2xl font-black text-xs cursor-pointer shadow-xs active:scale-[0.92] ${
                             uploadingEditPhoto ? 'opacity-50 pointer-events-none' : ''
                           }`}
-                          style={{ fontFamily: 'Nunito, sans-serif' }}
+                          
                         >
                           {uploadingEditPhoto ? (
-                            <Loader2 className="w-4 h-4 text-[#7C3AED] animate-spin" />
+                            <Loader2 className="w-4 h-4 text-[#6750A4] animate-spin" />
                           ) : (
-                            <Upload className="w-4 h-4 text-[#7C3AED]" />
+                            <Upload className="w-4 h-4 text-[#6750A4]" />
                           )}
                           <span>{uploadingEditPhoto ? 'Sedang mengunggah...' : 'Pilih / Ganti Foto'}</span>
                         </label>
-                        <p className="text-[11px] text-[#635F69] mt-1.5 font-medium">
+                        <p className="text-[11px] text-[#49454F] mt-1.5 font-medium">
                           Format JPG, PNG, WEBP (maks. 5 MB)
                         </p>
                       </div>
@@ -1227,9 +1227,9 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                           placeholder="https://example.com/foto-siswa.jpg"
                           value={editPhotoUrl}
                           onChange={(e) => setEditPhotoUrl(e.target.value)}
-                          className="w-full px-4 py-2.5 bg-white rounded-2xl text-[#332F3A] text-xs shadow-clay-surface focus:outline-hidden focus:ring-2 focus:ring-[#7C3AED]"
+                          className="w-full px-4 py-2.5 bg-white rounded-2xl text-[#1C1B1F] text-xs shadow-xs focus:outline-hidden focus:ring-2 focus:ring-[#6750A4]"
                         />
-                        <p className="text-[11px] text-[#635F69] mt-1.5 font-medium">
+                        <p className="text-[11px] text-[#49454F] mt-1.5 font-medium">
                           Masukkan URL foto profil siswa
                         </p>
                       </div>
@@ -1243,15 +1243,15 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setEditingStudent(null)}
-                  className="px-5 py-2.5 rounded-2xl bg-[#EFEBF5] hover:bg-white text-[#635F69] font-black transition-all shadow-clay-button active:scale-[0.92] cursor-pointer"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="px-5 py-2.5 rounded-2xl bg-[#E7E0EC] hover:bg-white text-[#49454F] font-black transition-all shadow-xs active:scale-[0.92] cursor-pointer"
+                  
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-2xl bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] hover:from-[#9333EA] hover:to-[#6D28D9] text-white font-black transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed cursor-pointer"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="px-6 py-2.5 rounded-2xl bg-gradient-to-br from-[#E8DEF8] to-[#6750A4] hover:from-[#9333EA] hover:to-[#6D28D9] text-white font-black transition-all shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none cursor-pointer"
+                  
                 >
                   Simpan Perubahan
                 </button>
@@ -1263,9 +1263,9 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
 
       {/* MODAL: DETAIL / KARTU PROFIL SISWA */}
       {viewingStudent && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#332F3A]/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[36px] max-w-md w-full border border-white/60 shadow-clay-card overflow-hidden animate-in fade-in zoom-in-95 my-8">
-            <div className="bg-gradient-to-br from-[#7C3AED] via-[#9333EA] to-[#6D28D9] p-6 text-white relative">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#1C1B1F]/60 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-md w-full border border-white/60 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
+            <div className="bg-gradient-to-br from-[#6750A4] via-[#9333EA] to-[#6D28D9] p-6 text-white relative">
               <button
                 type="button"
                 onClick={() => setViewingStudent(null)}
@@ -1280,25 +1280,25 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                     src={getGoogleDriveDirectImageUrl(viewingStudent.photoUrl)}
                     alt={viewingStudent.name}
                     onClick={() => setZoomedPhoto({ url: viewingStudent.photoUrl!, name: viewingStudent.name })}
-                    className="w-20 h-20 rounded-2xl object-cover border-2 border-white/80 shadow-clay-button cursor-pointer hover:scale-105 transition-transform"
+                    className="w-20 h-20 rounded-2xl object-cover border-2 border-white/80 shadow-xs cursor-pointer hover:scale-105 transition-transform"
                     title="Klik untuk melihat foto besar"
                   />
                 ) : (
                   <div
-                    className={`w-20 h-20 rounded-2xl border-2 border-white/60 flex items-center justify-center font-black text-2xl shadow-clay-button ${
+                    className={`w-20 h-20 rounded-2xl border-2 border-white/60 flex items-center justify-center font-black text-2xl shadow-xs ${
                       viewingStudent.gender === 'L' ? 'bg-sky-600 text-white' : 'bg-pink-600 text-white'
                     }`}
-                    style={{ fontFamily: 'Nunito, sans-serif' }}
+                    
                   >
                     {viewingStudent.name.slice(0, 2).toUpperCase()}
                   </div>
                 )}
 
                 <div>
-                  <span className="px-3 py-1 rounded-xl text-xs font-black bg-white/20 text-white shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <span className="px-3 py-1 rounded-xl text-xs font-black bg-white/20 text-white shadow-xs" >
                     Kelas {viewingStudent.className} • {viewingStudent.gender === 'L' ? 'Laki-laki' : 'Perempuan'}
                   </span>
-                  <h3 className="font-black text-lg leading-tight mt-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>{viewingStudent.name}</h3>
+                  <h3 className="font-black text-lg leading-tight mt-1.5" >{viewingStudent.name}</h3>
                   <p className="font-mono text-xs text-purple-200 mt-0.5">NISN: {viewingStudent.nisn}</p>
                   {extractGoogleDriveFileId(viewingStudent.photoUrl) && (
                     <a
@@ -1317,31 +1317,31 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
 
             <div className="p-6 sm:p-8 space-y-4 text-xs">
               {/* Alamat Domisili */}
-              <div className="p-4 bg-[#EFEBF5] rounded-2xl shadow-clay-pressed space-y-1">
-                <span className="text-[10px] font-black text-[#635F69] uppercase tracking-wider flex items-center gap-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
-                  <MapPin className="w-4 h-4 text-[#7C3AED]" />
+              <div className="p-4 bg-[#E7E0EC] rounded-2xl shadow-none space-y-1">
+                <span className="text-[10px] font-black text-[#49454F] uppercase tracking-wider flex items-center gap-1.5" >
+                  <MapPin className="w-4 h-4 text-[#6750A4]" />
                   <span>Alamat Domisili / Tempat Tinggal</span>
                 </span>
-                <p className="text-[#332F3A] font-bold leading-relaxed text-xs">
+                <p className="text-[#1C1B1F] font-bold leading-relaxed text-xs">
                   {viewingStudent.address || 'Belum ada data alamat domisili yang terdaftar.'}
                 </p>
               </div>
 
               {/* Kontak */}
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-4 bg-[#EFEBF5] rounded-2xl shadow-clay-pressed">
-                  <span className="text-[10px] font-black text-[#635F69] uppercase block mb-1" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                <div className="p-4 bg-[#E7E0EC] rounded-2xl shadow-none">
+                  <span className="text-[10px] font-black text-[#49454F] uppercase block mb-1" >
                     Kontak Siswa
                   </span>
-                  <span className="font-extrabold text-[#332F3A] text-xs">
+                  <span className="font-extrabold text-[#1C1B1F] text-xs">
                     {viewingStudent.phone || '-'}
                   </span>
                 </div>
-                <div className="p-4 bg-[#EFEBF5] rounded-2xl shadow-clay-pressed">
-                  <span className="text-[10px] font-black text-[#635F69] uppercase block mb-1" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                <div className="p-4 bg-[#E7E0EC] rounded-2xl shadow-none">
+                  <span className="text-[10px] font-black text-[#49454F] uppercase block mb-1" >
                     Kontak Orang Tua
                   </span>
-                  <span className="font-extrabold text-[#332F3A] text-xs">
+                  <span className="font-extrabold text-[#1C1B1F] text-xs">
                     {viewingStudent.parentPhone || '-'}
                   </span>
                 </div>
@@ -1352,36 +1352,36 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                 const viols = disciplineRecords.filter((d) => d.studentId === viewingStudent.id);
                 const pts = viols.reduce((acc, curr) => acc + (curr.points || 0), 0);
                 return (
-                  <div className="p-4 bg-[#EFEBF5] rounded-2xl shadow-clay-pressed flex items-center justify-between">
+                  <div className="p-4 bg-[#E7E0EC] rounded-2xl shadow-none flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] font-black text-[#635F69] uppercase block" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                      <span className="text-[10px] font-black text-[#49454F] uppercase block" >
                         Akumulasi Disiplin
                       </span>
-                      <span className="font-extrabold text-[#332F3A] text-xs">{viols.length} Catatan Kejadian</span>
+                      <span className="font-extrabold text-[#1C1B1F] text-xs">{viols.length} Catatan Kejadian</span>
                     </div>
                     {enablePointsSystem ? (
                       <span
-                        className={`px-3.5 py-1.5 rounded-xl text-xs font-black shadow-clay-surface ${
+                        className={`px-3.5 py-1.5 rounded-xl text-xs font-black shadow-xs ${
                           pts > 25
                             ? 'bg-rose-100 text-rose-800'
                             : pts > 0
                             ? 'bg-amber-100 text-amber-800'
                             : 'bg-emerald-100 text-emerald-800'
                         }`}
-                        style={{ fontFamily: 'Nunito, sans-serif' }}
+                        
                       >
                         {pts} Poin
                       </span>
                     ) : (
                       <span
-                        className={`px-3.5 py-1.5 rounded-xl text-xs font-black shadow-clay-surface ${
+                        className={`px-3.5 py-1.5 rounded-xl text-xs font-black shadow-xs ${
                           viols.length > 2
                             ? 'bg-rose-100 text-rose-800'
                             : viols.length > 0
                             ? 'bg-amber-100 text-amber-800'
                             : 'bg-emerald-100 text-emerald-800'
                         }`}
-                        style={{ fontFamily: 'Nunito, sans-serif' }}
+                        
                       >
                         {viols.length === 0 ? 'Tertib' : `${viols.length} Kasus`}
                       </span>
@@ -1399,8 +1399,8 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                     setViewingStudent(null);
                     handleOpenEdit(s);
                   }}
-                  className="px-5 py-2.5 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 hover:from-slate-900 hover:to-black text-white font-black text-xs flex items-center gap-2 shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="px-5 py-2.5 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 hover:from-slate-900 hover:to-black text-white font-black text-xs flex items-center gap-2 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
+                  
                 >
                   <Edit3 className="w-4 h-4 text-amber-400" />
                   <span>Edit Data &amp; Foto</span>
@@ -1414,18 +1414,18 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
       {/* MODAL ZOOM FOTO SISWA */}
       {zoomedPhoto && (
         <div
-          className="fixed inset-0 z-50 bg-[#332F3A]/80 backdrop-blur-md flex items-center justify-center p-4 cursor-pointer"
+          className="fixed inset-0 z-50 bg-[#1C1B1F]/80 backdrop-blur-md flex items-center justify-center p-4 cursor-pointer"
           onClick={() => setZoomedPhoto(null)}
         >
           <div
-            className="bg-white/95 backdrop-blur-2xl p-4 rounded-[36px] max-w-sm w-full shadow-clay-card border border-white/60 space-y-4 cursor-default"
+            className="bg-white/95 backdrop-blur-2xl p-4 rounded-[32px] max-w-sm w-full shadow-sm border border-white/60 space-y-4 cursor-default"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative">
               <img
                 src={getGoogleDriveDirectImageUrl(zoomedPhoto.url)}
                 alt={zoomedPhoto.name}
-                className="w-full h-80 object-cover rounded-[28px] border border-slate-200 shadow-clay-surface"
+                className="w-full h-80 object-cover rounded-[28px] border border-slate-200 shadow-xs"
               />
               <button
                 type="button"
@@ -1436,16 +1436,16 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
               </button>
             </div>
             <div className="px-2 pb-2 text-center space-y-1">
-              <div className="font-black text-base text-[#332F3A]" style={{ fontFamily: 'Nunito, sans-serif' }}>{zoomedPhoto.name}</div>
-              <div className="text-xs text-[#635F69] font-medium">Foto Profil Resmi Siswa SMAN 1 Batu</div>
+              <div className="font-black text-base text-[#1C1B1F]" >{zoomedPhoto.name}</div>
+              <div className="text-xs text-[#49454F] font-medium">Foto Profil Resmi Siswa SMAN 1 Batu</div>
               {extractGoogleDriveFileId(zoomedPhoto.url) && (
                 <div className="pt-2">
                   <a
                     href={getGoogleDriveViewUrl(zoomedPhoto.url)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-purple-50 hover:bg-purple-100 text-[#7C3AED] rounded-2xl text-xs font-black transition-all border border-purple-200 shadow-clay-surface"
-                    style={{ fontFamily: 'Nunito, sans-serif' }}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-purple-50 hover:bg-purple-100 text-[#6750A4] rounded-2xl text-xs font-black transition-all border border-purple-200 shadow-xs"
+                    
                   >
                     <ExternalLink className="w-4 h-4" />
                     <span>Buka File Asli di Google Drive</span>

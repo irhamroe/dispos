@@ -4,20 +4,20 @@ import {
   ClipboardCheck, 
   CalendarRange, 
   ShieldAlert, 
-  Users,
-  Clock,
-  Sparkles,
-  Database,
-  Layers,
-  UserCheck,
-  ChevronDown,
-  ChevronRight,
-  FileWarning,
-  SlidersHorizontal,
-  CalendarDays,
-  Mail,
-  ShieldCheck,
-  X
+  Users, 
+  Clock, 
+  Sparkles, 
+  Database, 
+  Layers, 
+  UserCheck, 
+  ChevronDown, 
+  ChevronRight, 
+  FileWarning, 
+  SlidersHorizontal, 
+  CalendarDays, 
+  Mail, 
+  ShieldCheck, 
+  X 
 } from 'lucide-react';
 
 export type NavTab = 
@@ -75,17 +75,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const [isManagementOpen, setIsManagementOpen] = useState(true);
   const [isRecapOpen, setIsRecapOpen] = useState(true);
 
-  // Automatically keep sub-menus open if an internal tab is active
   useEffect(() => {
-    if (isManagementTab) {
-      setIsManagementOpen(true);
-    }
+    if (isManagementTab) setIsManagementOpen(true);
   }, [isManagementTab]);
 
   useEffect(() => {
-    if (isRecapTab) {
-      setIsRecapOpen(true);
-    }
+    if (isRecapTab) setIsRecapOpen(true);
   }, [isRecapTab]);
 
   const primaryAttendanceNavItems = [
@@ -95,7 +90,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       sublabel: 'Pantauan kehadiran hari ini',
       icon: LayoutDashboard,
       badge: null,
-      iconGradient: 'from-violet-500 to-indigo-600',
     },
     {
       id: 'attendance' as NavTab,
@@ -103,8 +97,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       sublabel: 'Input & pembaruan absensi',
       icon: ClipboardCheck,
       badge: `${todayCount.hadir}/${todayCount.total}`,
-      badgeColor: 'bg-emerald-100 text-emerald-800',
-      iconGradient: 'from-emerald-400 to-teal-600',
+      badgeBg: 'bg-[#C8E6C9] text-[#1B5E20]',
     },
   ];
 
@@ -114,8 +107,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Rekap Presensi',
       sublabel: 'Rentang tanggal & ekspor',
       icon: CalendarRange,
-      badge: 'Excel / PDF',
-      badgeColor: 'bg-sky-100 text-sky-800',
+      badge: 'Excel/PDF',
+      badgeBg: 'bg-[#E1F5FE] text-[#0277BD]',
     },
     {
       id: 'rekap-surat-izin' as NavTab,
@@ -123,7 +116,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       sublabel: 'Siswa belum kumpul surat',
       icon: FileWarning,
       badge: totalPendingLetters > 0 ? `${totalPendingLetters} Siswa` : 'Lengkap',
-      badgeColor: totalPendingLetters > 0 ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800',
+      badgeBg: totalPendingLetters > 0 ? 'bg-[#FFDAD6] text-[#410002]' : 'bg-[#C8E6C9] text-[#1B5E20]',
     },
   ];
 
@@ -134,8 +127,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       sublabel: 'Catat pelanggaran & riwayat',
       icon: ShieldAlert,
       badge: `${totalDisciplineCases} Data`,
-      badgeColor: 'bg-amber-100 text-amber-800',
-      iconGradient: 'from-amber-400 to-orange-500',
+      badgeBg: 'bg-[#FFE0B2] text-[#E65100]',
     },
     {
       id: 'rekap-pelanggaran' as NavTab,
@@ -143,8 +135,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       sublabel: 'Rentang tanggal & ekspor',
       icon: CalendarDays,
       badge: 'Laporan',
-      badgeColor: 'bg-teal-100 text-teal-800',
-      iconGradient: 'from-teal-400 to-emerald-600',
+      badgeBg: 'bg-[#E0F2F1] text-[#00695C]',
     },
     {
       id: 'tagihan-pembinaan' as NavTab,
@@ -152,8 +143,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       sublabel: 'Belum selesai pembinaan',
       icon: FileWarning,
       badge: `${totalPendingDebt} Siswa`,
-      badgeColor: totalPendingDebt > 0 ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800',
-      iconGradient: 'from-rose-400 to-pink-600',
+      badgeBg: totalPendingDebt > 0 ? 'bg-[#FFDAD6] text-[#410002]' : 'bg-[#C8E6C9] text-[#1B5E20]',
     },
     {
       id: 'surat-panggilan' as NavTab,
@@ -161,8 +151,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       sublabel: 'Format resmi & rekap kasus',
       icon: Mail,
       badge: 'Resmi',
-      badgeColor: 'bg-indigo-100 text-indigo-800',
-      iconGradient: 'from-indigo-400 to-purple-600',
+      badgeBg: 'bg-[#E8DEF8] text-[#1D192B]',
     },
     {
       id: 'aturan-pelanggaran' as NavTab,
@@ -170,8 +159,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       sublabel: 'Katalog bobot poin & aturan',
       icon: SlidersHorizontal,
       badge: '40 Aturan',
-      badgeColor: 'bg-purple-100 text-purple-800',
-      iconGradient: 'from-purple-400 to-violet-600',
+      badgeBg: 'bg-[#E8DEF8] text-[#1D192B]',
     },
   ];
 
@@ -208,31 +196,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const handleNavClick = (tabId: NavTab) => {
     onSelectTab(tabId);
-    if (isOpenMobile) {
-      onCloseMobile();
-    }
-  };
-
-  const handleToggleRecap = () => {
-    if (!isRecapOpen) {
-      setIsRecapOpen(true);
-      if (!isRecapTab) {
-        handleNavClick('recap');
-      }
-    } else {
-      setIsRecapOpen(!isRecapOpen);
-    }
-  };
-
-  const handleToggleManagement = () => {
-    if (!isManagementOpen) {
-      setIsManagementOpen(true);
-      if (!isManagementTab) {
-        handleNavClick('data-siswa');
-      }
-    } else {
-      setIsManagementOpen(!isManagementOpen);
-    }
+    if (isOpenMobile) onCloseMobile();
   };
 
   const attendancePercent = todayCount.total > 0 
@@ -246,38 +210,38 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div
           id="mobile-sidebar-backdrop"
           onClick={onCloseMobile}
-          className="fixed inset-0 z-40 bg-clay-foreground/40 backdrop-blur-md lg:hidden transition-opacity"
+          className="fixed inset-0 z-40 bg-[#1C1B1F]/40 backdrop-blur-xs lg:hidden transition-opacity"
         />
       )}
 
-      {/* Sidebar container with Claymorphism */}
+      {/* Sidebar container with Material You */}
       <aside
         id="app-sidebar"
-        className={`fixed top-20 bottom-4 left-3 z-40 w-72 bg-white/80 backdrop-blur-2xl rounded-[36px] shadow-clay-card border border-white/80 flex flex-col justify-between transition-transform duration-300 ease-out lg:translate-x-0 ${
-          isOpenMobile ? 'translate-x-0 top-3 bottom-3 left-3 shadow-2xl' : '-translate-x-[110%]'
+        className={`fixed top-20 bottom-4 left-3 z-40 w-72 bg-[#F3EDF7]/95 backdrop-blur-md rounded-[32px] shadow-sm border border-[#E8DEF8] flex flex-col justify-between transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] lg:translate-x-0 ${
+          isOpenMobile ? 'translate-x-0 top-3 bottom-3 left-3 shadow-lg' : '-translate-x-[110%]'
         }`}
       >
         {/* Mobile Close Button Header */}
-        <div className="lg:hidden flex items-center justify-between px-5 pt-4 pb-2 border-b border-violet-100">
-          <span className="font-nunito font-extrabold text-sm text-clay-foreground">Navigasi Menu</span>
+        <div className="lg:hidden flex items-center justify-between px-5 pt-4 pb-2 border-b border-[#E8DEF8]">
+          <span className="font-medium text-sm text-[#1C1B1F]">Navigasi Menu</span>
           <button
             onClick={onCloseMobile}
-            className="p-1.5 rounded-xl bg-white text-clay-muted hover:text-clay-foreground shadow-clay-button active:scale-90 transition-all"
+            className="p-1.5 rounded-full bg-[#E8DEF8] text-[#1D192B] active:scale-95 transition-all"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-3.5 py-4 space-y-4 clay-custom-scrollbar">
+        <div className="flex-1 overflow-y-auto px-3.5 py-4 space-y-4 font-roboto">
           {/* Section 1: Presensi & Kehadiran */}
           <div>
             <div className="mb-2 px-3">
-              <span className="text-[11px] font-nunito font-black uppercase tracking-wider text-violet-400">
+              <span className="text-[11px] font-medium uppercase tracking-wider text-[#6750A4]">
                 Presensi &amp; Kehadiran
               </span>
             </div>
 
-            <nav className="space-y-1.5" aria-label="Presensi Navigation">
+            <nav className="space-y-1" aria-label="Presensi Navigation">
               {primaryAttendanceNavItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = currentTab === item.id;
@@ -286,31 +250,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     key={item.id}
                     id={`nav-btn-${item.id}`}
                     onClick={() => handleNavClick(item.id)}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-[22px] text-left transition-all duration-200 group cursor-pointer ${
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-full text-left transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] group cursor-pointer active:scale-95 ${
                       isActive
-                        ? 'bg-gradient-to-r from-violet-600 via-violet-700 to-indigo-700 text-white shadow-clay-button -translate-y-0.5'
-                        : 'text-clay-foreground hover:bg-white/90 hover:shadow-clay-card hover:-translate-y-0.5 active:scale-[0.95] active:shadow-clay-pressed'
+                        ? 'bg-[#E8DEF8] text-[#1D192B] font-medium shadow-xs'
+                        : 'text-[#49454F] hover:bg-[#6750A4]/10 hover:text-[#1C1B1F]'
                     }`}
                   >
                     <div className="flex items-center space-x-3 min-w-0">
                       <div
-                        className={`w-9 h-9 rounded-2xl flex items-center justify-center transition-all ${
+                        className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
                           isActive
-                            ? 'bg-white/20 text-white shadow-inner'
-                            : `bg-gradient-to-br ${item.iconGradient} text-white shadow-clay-orb group-hover:scale-105`
+                            ? 'bg-[#6750A4] text-white shadow-xs'
+                            : 'bg-[#E7E0EC] text-[#49454F] group-hover:bg-[#6750A4] group-hover:text-white'
                         }`}
                       >
                         <Icon className="w-4 h-4" />
                       </div>
                       <div className="truncate">
-                        <div className="text-xs font-nunito font-extrabold truncate leading-tight">
+                        <div className="text-xs font-medium truncate leading-tight">
                           {item.label}
                         </div>
-                        <div
-                          className={`text-[10px] truncate mt-0.5 font-medium ${
-                            isActive ? 'text-violet-200' : 'text-clay-muted'
-                          }`}
-                        >
+                        <div className="text-[10px] text-[#49454F] truncate mt-0.5">
                           {item.sublabel}
                         </div>
                       </div>
@@ -318,11 +278,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                     {item.badge && (
                       <span
-                        className={`ml-2 px-2.5 py-0.5 text-[10px] font-nunito font-black rounded-full whitespace-nowrap shadow-clay-pill ${
-                          isActive
-                            ? 'bg-white/30 text-white'
-                            : item.badgeColor
-                        }`}
+                        className={`ml-2 px-2.5 py-0.5 text-[10px] font-medium rounded-full whitespace-nowrap ${item.badgeBg}`}
                       >
                         {item.badge}
                       </span>
@@ -336,28 +292,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <button
                   type="button"
                   id="nav-btn-rekap-kehadiran-toggle"
-                  onClick={handleToggleRecap}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-[22px] text-left transition-all duration-200 group cursor-pointer ${
+                  onClick={() => setIsRecapOpen(!isRecapOpen)}
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-full text-left transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] group cursor-pointer active:scale-95 ${
                     isRecapTab && !isRecapOpen
-                      ? 'bg-violet-100/70 text-violet-900 font-bold shadow-clay-pressed'
-                      : 'text-clay-foreground hover:bg-white/90 hover:shadow-clay-card hover:-translate-y-0.5'
+                      ? 'bg-[#E8DEF8] text-[#1D192B] font-medium'
+                      : 'text-[#49454F] hover:bg-[#6750A4]/10 hover:text-[#1C1B1F]'
                   }`}
                 >
                   <div className="flex items-center space-x-3 min-w-0">
-                    <div
-                      className={`w-9 h-9 rounded-2xl flex items-center justify-center transition-all ${
-                        isRecapTab
-                          ? 'bg-gradient-to-br from-sky-400 to-blue-600 text-white shadow-clay-orb'
-                          : 'bg-gradient-to-br from-sky-400 to-blue-600 text-white shadow-clay-orb'
-                      }`}
-                    >
+                    <div className="w-8 h-8 rounded-full bg-[#E7E0EC] text-[#49454F] group-hover:bg-[#6750A4] group-hover:text-white flex items-center justify-center transition-all">
                       <CalendarRange className="w-4 h-4" />
                     </div>
                     <div className="truncate">
-                      <div className="text-xs font-nunito font-extrabold truncate text-clay-foreground">
+                      <div className="text-xs font-medium truncate">
                         Rekap Kehadiran
                       </div>
-                      <div className="text-[10px] text-clay-muted truncate mt-0.5 font-medium">
+                      <div className="text-[10px] text-[#49454F] truncate mt-0.5">
                         Presensi &amp; surat izin
                       </div>
                     </div>
@@ -365,21 +315,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                   <div className="flex items-center space-x-1.5 ml-2">
                     {totalPendingLetters > 0 && (
-                      <span className="px-2 py-0.5 text-[10px] font-nunito font-extrabold rounded-full bg-rose-100 text-rose-700 shadow-clay-pill">
+                      <span className="px-2 py-0.5 text-[10px] font-medium rounded-full bg-[#FFDAD6] text-[#410002]">
                         {totalPendingLetters}
                       </span>
                     )}
                     {isRecapOpen ? (
-                      <ChevronDown className="w-4 h-4 text-violet-400" />
+                      <ChevronDown className="w-4 h-4 text-[#79747E]" />
                     ) : (
-                      <ChevronRight className="w-4 h-4 text-violet-400" />
+                      <ChevronRight className="w-4 h-4 text-[#79747E]" />
                     )}
                   </div>
                 </button>
 
-                {/* Rekap Kehadiran Sub-items in Recessed Box */}
                 {isRecapOpen && (
-                  <div className="mt-1.5 ml-2 p-1.5 bg-[#EFEBF5]/70 rounded-2xl shadow-clay-pressed space-y-1">
+                  <div className="mt-1 ml-3 p-1.5 bg-[#E7E0EC]/60 rounded-2xl space-y-1">
                     {recapSubItems.map((subItem) => {
                       const SubIcon = subItem.icon;
                       const isSubActive = currentTab === subItem.id;
@@ -388,31 +337,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           key={subItem.id}
                           id={`nav-sub-${subItem.id}`}
                           onClick={() => handleNavClick(subItem.id)}
-                          className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-left transition-all cursor-pointer ${
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-full text-left transition-all cursor-pointer active:scale-95 ${
                             isSubActive
-                              ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-clay-button -translate-y-0.5 font-nunito font-extrabold'
-                              : 'text-clay-foreground hover:bg-white hover:shadow-xs font-medium'
+                              ? 'bg-[#6750A4] text-white font-medium shadow-xs'
+                              : 'text-[#49454F] hover:bg-[#6750A4]/10'
                           }`}
                         >
                           <div className="flex items-center space-x-2.5 min-w-0">
                             <SubIcon
                               className={`w-3.5 h-3.5 shrink-0 ${
-                                isSubActive ? 'text-white' : 'text-violet-500'
+                                isSubActive ? 'text-white' : 'text-[#6750A4]'
                               }`}
                             />
-                            <div className="truncate">
-                              <div className="text-xs truncate leading-tight">
-                                {subItem.label}
-                              </div>
+                            <div className="truncate text-xs leading-tight">
+                              {subItem.label}
                             </div>
                           </div>
 
                           {subItem.badge && (
                             <span
-                              className={`ml-1 px-2 py-0.5 text-[9.5px] font-nunito font-extrabold rounded-full shadow-clay-pill ${
-                                isSubActive
-                                  ? 'bg-white/30 text-white'
-                                  : subItem.badgeColor
+                              className={`ml-1 px-2 py-0.5 text-[9.5px] font-medium rounded-full ${
+                                isSubActive ? 'bg-white/20 text-white' : subItem.badgeBg
                               }`}
                             >
                               {subItem.badge}
@@ -430,12 +375,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* Section 2: Disiplin Positif */}
           <div>
             <div className="mb-2 px-3">
-              <span className="text-[11px] font-nunito font-black uppercase tracking-wider text-violet-400">
+              <span className="text-[11px] font-medium uppercase tracking-wider text-[#6750A4]">
                 Disiplin Positif
               </span>
             </div>
 
-            <nav className="space-y-1.5" aria-label="Disiplin Positif Navigation">
+            <nav className="space-y-1" aria-label="Disiplin Positif Navigation">
               {disciplineNavItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = currentTab === item.id;
@@ -444,31 +389,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     key={item.id}
                     id={`nav-btn-${item.id}`}
                     onClick={() => handleNavClick(item.id)}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-[22px] text-left transition-all duration-200 group cursor-pointer ${
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-full text-left transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] group cursor-pointer active:scale-95 ${
                       isActive
-                        ? 'bg-gradient-to-r from-violet-600 via-violet-700 to-indigo-700 text-white shadow-clay-button -translate-y-0.5'
-                        : 'text-clay-foreground hover:bg-white/90 hover:shadow-clay-card hover:-translate-y-0.5 active:scale-[0.95] active:shadow-clay-pressed'
+                        ? 'bg-[#E8DEF8] text-[#1D192B] font-medium shadow-xs'
+                        : 'text-[#49454F] hover:bg-[#6750A4]/10 hover:text-[#1C1B1F]'
                     }`}
                   >
                     <div className="flex items-center space-x-3 min-w-0">
                       <div
-                        className={`w-9 h-9 rounded-2xl flex items-center justify-center transition-all ${
+                        className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
                           isActive
-                            ? 'bg-white/20 text-white shadow-inner'
-                            : `bg-gradient-to-br ${item.iconGradient} text-white shadow-clay-orb group-hover:scale-105`
+                            ? 'bg-[#6750A4] text-white shadow-xs'
+                            : 'bg-[#E7E0EC] text-[#49454F] group-hover:bg-[#6750A4] group-hover:text-white'
                         }`}
                       >
                         <Icon className="w-4 h-4" />
                       </div>
                       <div className="truncate">
-                        <div className="text-xs font-nunito font-extrabold truncate leading-tight">
+                        <div className="text-xs font-medium truncate leading-tight">
                           {item.label}
                         </div>
-                        <div
-                          className={`text-[10px] truncate mt-0.5 font-medium ${
-                            isActive ? 'text-violet-200' : 'text-clay-muted'
-                          }`}
-                        >
+                        <div className="text-[10px] text-[#49454F] truncate mt-0.5">
                           {item.sublabel}
                         </div>
                       </div>
@@ -476,11 +417,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                     {item.badge && (
                       <span
-                        className={`ml-2 px-2.5 py-0.5 text-[10px] font-nunito font-black rounded-full whitespace-nowrap shadow-clay-pill ${
-                          isActive
-                            ? 'bg-white/30 text-white'
-                            : item.badgeColor
-                        }`}
+                        className={`ml-2 px-2.5 py-0.5 text-[10px] font-medium rounded-full whitespace-nowrap ${item.badgeBg}`}
                       >
                         {item.badge}
                       </span>
@@ -491,51 +428,46 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </nav>
           </div>
 
-          {/* Section 3: Master Data dengan Sub Menu */}
+          {/* Section 3: Master Data */}
           <div>
             <div className="mb-2 px-3">
-              <span className="text-[11px] font-nunito font-black uppercase tracking-wider text-violet-400">
+              <span className="text-[11px] font-medium uppercase tracking-wider text-[#6750A4]">
                 Master Data
               </span>
             </div>
 
-            <div className="rounded-2xl overflow-hidden bg-white/70 shadow-clay-card border border-white/80">
-              {/* Parent Accordion Button */}
+            <div className="rounded-2xl overflow-hidden bg-[#E7E0EC]/40 border border-[#E8DEF8]">
               <button
                 type="button"
                 id="nav-btn-manajemen-data"
-                onClick={handleToggleManagement}
+                onClick={() => setIsManagementOpen(!isManagementOpen)}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 text-left transition-colors cursor-pointer ${
                   isManagementTab
-                    ? 'bg-violet-50 text-violet-900 font-nunito font-extrabold border-b border-violet-100'
-                    : 'text-clay-foreground hover:bg-white font-nunito font-extrabold'
+                    ? 'bg-[#E8DEF8] text-[#1D192B] font-medium'
+                    : 'text-[#49454F] hover:bg-[#6750A4]/10 font-medium'
                 }`}
               >
                 <div className="flex items-center space-x-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center shadow-clay-orb">
-                    <Database className="w-4 h-4" />
+                  <div className="w-7 h-7 rounded-full bg-[#6750A4] text-white flex items-center justify-center shadow-xs">
+                    <Database className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <div className="text-xs font-nunito font-extrabold leading-tight">Master Data</div>
-                    <div className="text-[10px] text-clay-muted font-medium">Siswa, Kelas, Wali & User</div>
+                    <div className="text-xs font-medium leading-tight">Master Data</div>
+                    <div className="text-[10px] text-[#49454F]">Siswa, Kelas, Wali & User</div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-1.5">
-                  {isManagementTab && (
-                    <span className="w-2 h-2 rounded-full bg-violet-600" />
-                  )}
                   {isManagementOpen ? (
-                    <ChevronDown className="w-4 h-4 text-violet-400" />
+                    <ChevronDown className="w-4 h-4 text-[#79747E]" />
                   ) : (
-                    <ChevronRight className="w-4 h-4 text-violet-400" />
+                    <ChevronRight className="w-4 h-4 text-[#79747E]" />
                   )}
                 </div>
               </button>
 
-              {/* Sub Menus: Data Siswa, Data Kelas, Data Wali Kelas, User */}
               {isManagementOpen && (
-                <div className="p-1.5 space-y-1 bg-[#EFEBF5]/50">
+                <div className="p-1.5 space-y-1 bg-[#E7E0EC]/60">
                   {managementSubItems.map((sub) => {
                     const SubIcon = sub.icon;
                     const isSubActive =
@@ -546,35 +478,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         key={sub.id}
                         id={`nav-sub-${sub.id}`}
                         onClick={() => handleNavClick(sub.id)}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-left transition-all cursor-pointer ${
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-full text-left transition-all cursor-pointer active:scale-95 ${
                           isSubActive
-                            ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-nunito font-extrabold shadow-clay-button -translate-y-0.5'
-                            : 'text-clay-foreground hover:bg-white hover:shadow-xs font-medium'
+                            ? 'bg-[#6750A4] text-white font-medium shadow-xs'
+                            : 'text-[#49454F] hover:bg-[#6750A4]/10'
                         }`}
                       >
                         <div className="flex items-center space-x-2.5 min-w-0">
                           <SubIcon
-                            className={`w-4 h-4 shrink-0 ${
-                              isSubActive ? 'text-white' : 'text-violet-500'
+                            className={`w-3.5 h-3.5 shrink-0 ${
+                              isSubActive ? 'text-white' : 'text-[#6750A4]'
                             }`}
                           />
                           <div className="truncate">
-                            <div className="text-xs truncate leading-tight font-semibold">{sub.label}</div>
-                            <div
-                              className={`text-[9.5px] truncate font-medium ${
-                                isSubActive ? 'text-violet-200' : 'text-clay-muted'
-                              }`}
-                            >
+                            <div className="text-xs truncate leading-tight font-medium">{sub.label}</div>
+                            <div className={`text-[9.5px] truncate ${isSubActive ? 'text-[#E8DEF8]' : 'text-[#49454F]'}`}>
                               {sub.sublabel}
                             </div>
                           </div>
                         </div>
 
                         <span
-                          className={`text-[10px] px-2 py-0.5 rounded-full font-nunito font-extrabold shadow-clay-pill ${
+                          className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
                             isSubActive
-                              ? 'bg-white/30 text-white'
-                              : 'bg-white text-clay-foreground'
+                              ? 'bg-white/20 text-white'
+                              : 'bg-[#FFFBFE] text-[#49454F]'
                           }`}
                         >
                           {sub.badge}
@@ -588,45 +516,45 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
 
           {/* Quick Attendance Widget in Sidebar */}
-          <div className="p-4 rounded-[26px] bg-white/90 shadow-clay-card border border-white">
+          <div className="p-4 rounded-2xl bg-[#E8DEF8]/60 border border-[#E8DEF8]">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-nunito font-extrabold text-clay-foreground flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-violet-600" />
+              <span className="text-xs font-medium text-[#1C1B1F] flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-[#6750A4]" />
                 Presensi Hari Ini
               </span>
-              <span className="text-xs font-nunito font-black text-violet-600">
+              <span className="text-xs font-bold text-[#6750A4]">
                 {attendancePercent}%
               </span>
             </div>
 
-            {/* Clay Progress Bar (Recessed Track + Convex Fill) */}
-            <div className="w-full bg-[#EFEBF5] rounded-full h-2.5 overflow-hidden mb-3 shadow-clay-pressed p-0.5">
+            {/* Material You Progress Bar */}
+            <div className="w-full bg-[#E7E0EC] rounded-full h-2 overflow-hidden mb-3">
               <div
-                className="bg-gradient-to-r from-emerald-400 to-teal-500 h-full rounded-full transition-all duration-500 shadow-sm"
+                className="bg-[#6750A4] h-full rounded-full transition-all duration-300"
                 style={{ width: `${attendancePercent}%` }}
               />
             </div>
 
             <div className="grid grid-cols-2 gap-2 text-center text-xs">
-              <div className="p-2 rounded-2xl bg-[#EFEBF5]/70 shadow-clay-pressed">
-                <div className="text-[10px] text-clay-muted font-bold">Hadir</div>
-                <div className="text-xs font-nunito font-black text-emerald-600">{todayCount.hadir}</div>
+              <div className="p-2 rounded-xl bg-[#FFFBFE]">
+                <div className="text-[10px] text-[#49454F]">Hadir</div>
+                <div className="text-xs font-bold text-[#1B5E20]">{todayCount.hadir}</div>
               </div>
-              <div className="p-2 rounded-2xl bg-[#EFEBF5]/70 shadow-clay-pressed">
-                <div className="text-[10px] text-clay-muted font-bold">Alpa</div>
-                <div className="text-xs font-nunito font-black text-rose-500">{todayCount.alpa}</div>
+              <div className="p-2 rounded-xl bg-[#FFFBFE]">
+                <div className="text-[10px] text-[#49454F]">Alpa</div>
+                <div className="text-xs font-bold text-[#B71C1C]">{todayCount.alpa}</div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Sidebar Footer: Positif Discipline Motto */}
-        <div className="p-3.5 border-t border-violet-100 bg-white/40 rounded-b-[36px]">
-          <div className="flex items-start space-x-2.5 text-xs text-clay-muted">
-            <Sparkles className="w-4 h-4 text-violet-600 shrink-0 mt-0.5" />
+        {/* Sidebar Footer */}
+        <div className="p-3.5 border-t border-[#E8DEF8] bg-[#E8DEF8]/30 rounded-b-[32px]">
+          <div className="flex items-start space-x-2.5 text-xs text-[#49454F]">
+            <Sparkles className="w-4 h-4 text-[#6750A4] shrink-0 mt-0.5" />
             <div>
-              <p className="font-nunito font-extrabold text-clay-foreground text-[11px]">SMAN 1 Batu • Presensi</p>
-              <p className="text-[10px] text-clay-muted mt-0.5 leading-tight font-medium">
+              <p className="font-medium text-[#1C1B1F] text-[11px]">SMAN 1 Batu • Presensi</p>
+              <p className="text-[10px] text-[#49454F] mt-0.5 leading-tight">
                 36 Rombel dengan integrasi disiplin positif.
               </p>
             </div>

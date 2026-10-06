@@ -469,34 +469,34 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       )}
 
       {/* Header Banner */}
-      <div className="bg-white/85 backdrop-blur-xl rounded-[32px] sm:rounded-[36px] border border-white/60 p-6 sm:p-8 shadow-clay-card transition-all duration-300">
+      <div className="bg-white/85 backdrop-blur-xl rounded-[32px] sm:rounded-[32px] border border-white/60 p-6 sm:p-8 shadow-sm transition-all duration-300">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span 
-                className="px-3 py-1 rounded-full text-[11px] font-black bg-[#8B5CF6]/15 text-[#7C3AED] border border-[#8B5CF6]/20 shadow-clay-pill"
-                style={{ fontFamily: 'Nunito, sans-serif' }}
+                className="px-3 py-1 rounded-full text-[11px] font-black bg-[#6750A4]/15 text-[#6750A4] border border-[#6750A4]/20 shadow-xs"
+                
               >
                 Sistem Pengendalian Akses
               </span>
-              <span className="text-[#635F69]/40 text-xs">•</span>
-              <span className="text-[#635F69] text-xs font-bold" style={{ fontFamily: 'Nunito, sans-serif' }}>SMAN 1 Batu</span>
+              <span className="text-[#49454F]/40 text-xs">•</span>
+              <span className="text-[#49454F] text-xs font-bold" >SMAN 1 Batu</span>
             </div>
             <h1 
-              className="text-2xl sm:text-3xl font-black text-[#332F3A] tracking-tight flex items-center gap-3"
-              style={{ fontFamily: 'Nunito, sans-serif' }}
+              className="text-2xl sm:text-3xl font-black text-[#1C1B1F] tracking-tight flex items-center gap-3"
+              
             >
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] text-white flex items-center justify-center shadow-clay-button">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#E8DEF8] to-[#6750A4] text-white flex items-center justify-center shadow-xs">
                 <Users className="w-5 h-5" />
               </div>
               <span>Manajemen Pengguna &amp; Multi-Role</span>
             </h1>
-            <p className="text-xs sm:text-sm text-[#635F69] mt-2 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#49454F] mt-2 max-w-2xl leading-relaxed">
               Kelola akun seluruh sivitas sekolah berdasarkan 4 peran utama: 
-              <strong className="text-[#332F3A] font-bold"> Admin</strong>, 
-              <strong className="text-[#332F3A] font-bold"> Wali Kelas</strong> (36 Rombel), 
-              <strong className="text-[#332F3A] font-bold"> Guru</strong> (Piket / Mapel / BK), dan 
-              <strong className="text-[#332F3A] font-bold"> Tendik</strong> (Tenaga Kependidikan / Tata Usaha).
+              <strong className="text-[#1C1B1F] font-bold"> Admin</strong>, 
+              <strong className="text-[#1C1B1F] font-bold"> Wali Kelas</strong> (36 Rombel), 
+              <strong className="text-[#1C1B1F] font-bold"> Guru</strong> (Piket / Mapel / BK), dan 
+              <strong className="text-[#1C1B1F] font-bold"> Tendik</strong> (Tenaga Kependidikan / Tata Usaha).
             </p>
           </div>
 
@@ -504,18 +504,18 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
             <button
               type="button"
               onClick={() => setIsMatrixModalOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/90 hover:bg-white text-[#332F3A] font-extrabold text-xs rounded-2xl transition-all duration-200 cursor-pointer border border-white/60 shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed"
-              style={{ fontFamily: 'Nunito, sans-serif' }}
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/90 hover:bg-white text-[#1C1B1F] font-extrabold text-xs rounded-2xl transition-all duration-200 cursor-pointer border border-white/60 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none"
+              
             >
-              <Info className="w-4 h-4 text-[#7C3AED]" />
+              <Info className="w-4 h-4 text-[#6750A4]" />
               <span>Matriks Izin Role</span>
             </button>
 
             <button
               type="button"
               onClick={handleExportCSV}
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/90 hover:bg-white text-[#332F3A] font-extrabold text-xs rounded-2xl transition-all duration-200 cursor-pointer border border-white/60 shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed"
-              style={{ fontFamily: 'Nunito, sans-serif' }}
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/90 hover:bg-white text-[#1C1B1F] font-extrabold text-xs rounded-2xl transition-all duration-200 cursor-pointer border border-white/60 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none"
+              
             >
               <Download className="w-4 h-4 text-[#0EA5E9]" />
               <span>Ekspor Data</span>
@@ -527,8 +527,8 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                 resetAddForm();
                 setIsAddModalOpen(true);
               }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] hover:from-[#9333EA] hover:to-[#6D28D9] text-white font-black text-xs rounded-2xl transition-all duration-200 shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed cursor-pointer"
-              style={{ fontFamily: 'Nunito, sans-serif' }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-br from-[#E8DEF8] to-[#6750A4] hover:from-[#9333EA] hover:to-[#6D28D9] text-white font-black text-xs rounded-2xl transition-all duration-200 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none cursor-pointer"
+              
             >
               <UserPlus className="w-4 h-4" />
               <span>Tambah Pengguna</span>
@@ -543,22 +543,22 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
             onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Admin' ? 'ALL' : 'Admin')}
             className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden ${
               selectedRoleFilter === 'Admin'
-                ? 'bg-gradient-to-br from-purple-500/15 to-purple-600/10 border-2 border-[#7C3AED] shadow-clay-card -translate-y-1'
-                : 'bg-white/70 hover:bg-white/90 border border-white/60 shadow-clay-card hover:-translate-y-1'
+                ? 'bg-gradient-to-br from-purple-500/15 to-purple-600/10 border-2 border-[#6750A4] shadow-sm -translate-y-1'
+                : 'bg-white/70 hover:bg-white/90 border border-white/60 shadow-sm hover:-translate-y-1'
             }`}
           >
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 text-white flex items-center justify-center shadow-clay-orb">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 text-white flex items-center justify-center shadow-xs">
                 <ShieldCheck className="w-5 h-5" />
               </div>
-              <span className="text-2xl font-black text-purple-900" style={{ fontFamily: 'Nunito, sans-serif' }}>{roleCounts.admin}</span>
+              <span className="text-2xl font-black text-purple-900" >{roleCounts.admin}</span>
             </div>
             <div className="mt-3">
-              <div className="text-xs font-black text-purple-950 flex items-center gap-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <div className="text-xs font-black text-purple-950 flex items-center gap-1.5" >
                 <span>1. Administrator</span>
                 {selectedRoleFilter === 'Admin' && <span className="text-[10px] text-purple-600 font-bold">(Aktif)</span>}
               </div>
-              <p className="text-[11px] text-[#635F69] mt-1 leading-relaxed">
+              <p className="text-[11px] text-[#49454F] mt-1 leading-relaxed">
                 Hak penuh sistem, data master, aturan poin &amp; akun.
               </p>
             </div>
@@ -569,22 +569,22 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
             onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Wali Kelas' ? 'ALL' : 'Wali Kelas')}
             className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden ${
               selectedRoleFilter === 'Wali Kelas'
-                ? 'bg-gradient-to-br from-teal-500/15 to-teal-600/10 border-2 border-teal-500 shadow-clay-card -translate-y-1'
-                : 'bg-white/70 hover:bg-white/90 border border-white/60 shadow-clay-card hover:-translate-y-1'
+                ? 'bg-gradient-to-br from-teal-500/15 to-teal-600/10 border-2 border-teal-500 shadow-sm -translate-y-1'
+                : 'bg-white/70 hover:bg-white/90 border border-white/60 shadow-sm hover:-translate-y-1'
             }`}
           >
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-400 to-teal-600 text-white flex items-center justify-center shadow-clay-orb">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-400 to-teal-600 text-white flex items-center justify-center shadow-xs">
                 <UserCheck className="w-5 h-5" />
               </div>
-              <span className="text-2xl font-black text-teal-900" style={{ fontFamily: 'Nunito, sans-serif' }}>{roleCounts.waliKelas}</span>
+              <span className="text-2xl font-black text-teal-900" >{roleCounts.waliKelas}</span>
             </div>
             <div className="mt-3">
-              <div className="text-xs font-black text-teal-950 flex items-center gap-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <div className="text-xs font-black text-teal-950 flex items-center gap-1.5" >
                 <span>2. Wali Kelas</span>
                 {selectedRoleFilter === 'Wali Kelas' && <span className="text-[10px] text-teal-600 font-bold">(Aktif)</span>}
               </div>
-              <p className="text-[11px] text-[#635F69] mt-1 leading-relaxed">
+              <p className="text-[11px] text-[#49454F] mt-1 leading-relaxed">
                 Pembina rombel, presensi siswa &amp; surat panggilan ortu.
               </p>
             </div>
@@ -595,22 +595,22 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
             onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Guru' ? 'ALL' : 'Guru')}
             className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden ${
               selectedRoleFilter === 'Guru'
-                ? 'bg-gradient-to-br from-sky-500/15 to-sky-600/10 border-2 border-sky-500 shadow-clay-card -translate-y-1'
-                : 'bg-white/70 hover:bg-white/90 border border-white/60 shadow-clay-card hover:-translate-y-1'
+                ? 'bg-gradient-to-br from-sky-500/15 to-sky-600/10 border-2 border-sky-500 shadow-sm -translate-y-1'
+                : 'bg-white/70 hover:bg-white/90 border border-white/60 shadow-sm hover:-translate-y-1'
             }`}
           >
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-400 to-sky-600 text-white flex items-center justify-center shadow-clay-orb">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-400 to-sky-600 text-white flex items-center justify-center shadow-xs">
                 <GraduationCap className="w-5 h-5" />
               </div>
-              <span className="text-2xl font-black text-sky-900" style={{ fontFamily: 'Nunito, sans-serif' }}>{roleCounts.guru}</span>
+              <span className="text-2xl font-black text-sky-900" >{roleCounts.guru}</span>
             </div>
             <div className="mt-3">
-              <div className="text-xs font-black text-sky-950 flex items-center gap-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <div className="text-xs font-black text-sky-950 flex items-center gap-1.5" >
                 <span>3. Guru</span>
                 {selectedRoleFilter === 'Guru' && <span className="text-[10px] text-sky-600 font-bold">(Aktif)</span>}
               </div>
-              <p className="text-[11px] text-[#635F69] mt-1 leading-relaxed">
+              <p className="text-[11px] text-[#49454F] mt-1 leading-relaxed">
                 Guru Mapel, Guru Piket gerbang &amp; Guru BK disiplin.
               </p>
             </div>
@@ -621,22 +621,22 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
             onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Tendik' ? 'ALL' : 'Tendik')}
             className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden ${
               selectedRoleFilter === 'Tendik'
-                ? 'bg-gradient-to-br from-amber-500/15 to-amber-600/10 border-2 border-amber-500 shadow-clay-card -translate-y-1'
-                : 'bg-white/70 hover:bg-white/90 border border-white/60 shadow-clay-card hover:-translate-y-1'
+                ? 'bg-gradient-to-br from-amber-500/15 to-amber-600/10 border-2 border-amber-500 shadow-sm -translate-y-1'
+                : 'bg-white/70 hover:bg-white/90 border border-white/60 shadow-sm hover:-translate-y-1'
             }`}
           >
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-white flex items-center justify-center shadow-clay-orb">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-white flex items-center justify-center shadow-xs">
                 <Briefcase className="w-5 h-5" />
               </div>
-              <span className="text-2xl font-black text-amber-900" style={{ fontFamily: 'Nunito, sans-serif' }}>{roleCounts.tendik}</span>
+              <span className="text-2xl font-black text-amber-900" >{roleCounts.tendik}</span>
             </div>
             <div className="mt-3">
-              <div className="text-xs font-black text-amber-950 flex items-center gap-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <div className="text-xs font-black text-amber-950 flex items-center gap-1.5" >
                 <span>4. Tendik</span>
                 {selectedRoleFilter === 'Tendik' && <span className="text-[10px] text-amber-600 font-bold">(Aktif)</span>}
               </div>
-              <p className="text-[11px] text-[#635F69] mt-1 leading-relaxed">
+              <p className="text-[11px] text-[#49454F] mt-1 leading-relaxed">
                 Tata Usaha, staf kesiswaan, persuratan &amp; verifikasi arsip.
               </p>
             </div>
@@ -645,23 +645,23 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       </div>
 
       {/* Filters and Controls */}
-      <div className="bg-white/80 backdrop-blur-xl rounded-[28px] sm:rounded-[32px] border border-white/60 p-4 sm:p-5 shadow-clay-card space-y-4">
+      <div className="bg-white/80 backdrop-blur-xl rounded-[28px] sm:rounded-[32px] border border-white/60 p-4 sm:p-5 shadow-sm space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           {/* Search bar */}
           <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 text-[#635F69]/60 absolute left-4 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#49454F]/60 absolute left-4 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Cari nama pengguna, username, NIP, rombel..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-11 pr-10 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-semibold text-[#332F3A] placeholder-[#635F69]/60 shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#7C3AED]/20 transition-all duration-200"
+              className="w-full pl-11 pr-10 py-3 bg-[#E7E0EC] rounded-2xl text-xs font-semibold text-[#1C1B1F] placeholder-[#49454F]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#6750A4]/20 transition-all duration-200"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#635F69]/60 hover:text-[#332F3A] text-xs font-bold px-1 cursor-pointer"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#49454F]/60 hover:text-[#1C1B1F] text-xs font-bold px-1 cursor-pointer"
               >
                 ✕
               </button>
@@ -671,12 +671,12 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           {/* Role and Status filter dropdowns */}
           <div className="flex flex-wrap items-center gap-3 text-xs">
             <div className="flex items-center gap-2">
-              <span className="text-[#635F69] font-bold" style={{ fontFamily: 'Nunito, sans-serif' }}>Role:</span>
+              <span className="text-[#49454F] font-bold" >Role:</span>
               <select
                 value={selectedRoleFilter}
                 onChange={(e) => setSelectedRoleFilter(e.target.value)}
-                className="px-3.5 py-2.5 bg-[#EFEBF5] rounded-xl text-[#332F3A] font-extrabold shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#7C3AED]/20 cursor-pointer transition-all"
-                style={{ fontFamily: 'Nunito, sans-serif' }}
+                className="px-3.5 py-2.5 bg-[#E7E0EC] rounded-xl text-[#1C1B1F] font-extrabold shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#6750A4]/20 cursor-pointer transition-all"
+                
               >
                 <option value="ALL">Semua Role ({users.length})</option>
                 <option value="Admin">Admin ({roleCounts.admin})</option>
@@ -687,12 +687,12 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-[#635F69] font-bold" style={{ fontFamily: 'Nunito, sans-serif' }}>Status:</span>
+              <span className="text-[#49454F] font-bold" >Status:</span>
               <select
                 value={selectedStatusFilter}
                 onChange={(e) => setSelectedStatusFilter(e.target.value as any)}
-                className="px-3.5 py-2.5 bg-[#EFEBF5] rounded-xl text-[#332F3A] font-extrabold shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#7C3AED]/20 cursor-pointer transition-all"
-                style={{ fontFamily: 'Nunito, sans-serif' }}
+                className="px-3.5 py-2.5 bg-[#E7E0EC] rounded-xl text-[#1C1B1F] font-extrabold shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#6750A4]/20 cursor-pointer transition-all"
+                
               >
                 <option value="ALL">Semua Status</option>
                 <option value="Aktif">Aktif ({roleCounts.aktif})</option>
@@ -708,8 +708,8 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                   setSelectedStatusFilter('ALL');
                   setSearchQuery('');
                 }}
-                className="px-3.5 py-2 bg-purple-50 hover:bg-purple-100 text-[#7C3AED] rounded-xl font-black transition-all shadow-clay-pill cursor-pointer hover:-translate-y-0.5 active:scale-95"
-                style={{ fontFamily: 'Nunito, sans-serif' }}
+                className="px-3.5 py-2 bg-purple-50 hover:bg-purple-100 text-[#6750A4] rounded-xl font-black transition-all shadow-xs cursor-pointer hover:-translate-y-0.5 active:scale-95"
+                
               >
                 Reset Filter
               </button>
@@ -718,16 +718,16 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
         </div>
 
         {/* Results summary bar */}
-        <div className="flex items-center justify-between text-[11px] text-[#635F69] pt-3 border-t border-purple-100/50">
+        <div className="flex items-center justify-between text-[11px] text-[#49454F] pt-3 border-t border-purple-100/50">
           <div>
-            Menampilkan <strong className="text-[#332F3A] font-extrabold">{filteredUsers.length}</strong> dari{' '}
-            <strong className="text-[#332F3A] font-extrabold">{users.length}</strong> total akun terdaftar
+            Menampilkan <strong className="text-[#1C1B1F] font-extrabold">{filteredUsers.length}</strong> dari{' '}
+            <strong className="text-[#1C1B1F] font-extrabold">{users.length}</strong> total akun terdaftar
           </div>
           <div className="flex items-center gap-3 font-semibold">
             <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
               <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-xs" /> Aktif: {roleCounts.aktif}
             </span>
-            <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#EFEBF5] text-[#635F69]">
+            <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#E7E0EC] text-[#49454F]">
               <span className="w-2 h-2 rounded-full bg-slate-400" /> Nonaktif: {users.length - roleCounts.aktif}
             </span>
           </div>
@@ -735,10 +735,10 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       </div>
 
       {/* User Table Card */}
-      <div className="bg-white/85 backdrop-blur-xl rounded-[32px] sm:rounded-[36px] border border-white/60 overflow-hidden shadow-clay-card">
+      <div className="bg-white/85 backdrop-blur-xl rounded-[32px] sm:rounded-[32px] border border-white/60 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-[#F4F1FA]/80 border-b border-purple-100/60 text-[#635F69] font-black uppercase tracking-wider text-[11px]" style={{ fontFamily: 'Nunito, sans-serif' }}>
+            <thead className="bg-[#FFFBFE]/80 border-b border-purple-100/60 text-[#49454F] font-black uppercase tracking-wider text-[11px]" >
               <tr>
                 <th className="py-4 px-4 w-12 text-center">No</th>
                 <th className="py-4 px-4">Pengguna / Nama</th>
@@ -752,12 +752,12 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
             <tbody className="divide-y divide-purple-100/40">
               {filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-16 text-center text-[#635F69]">
-                    <div className="w-16 h-16 mx-auto rounded-3xl bg-purple-50 text-[#7C3AED] flex items-center justify-center shadow-clay-orb mb-3">
+                  <td colSpan={7} className="py-16 text-center text-[#49454F]">
+                    <div className="w-16 h-16 mx-auto rounded-3xl bg-purple-50 text-[#6750A4] flex items-center justify-center shadow-xs mb-3">
                       <Users className="w-8 h-8" />
                     </div>
-                    <p className="font-extrabold text-[#332F3A] text-sm" style={{ fontFamily: 'Nunito, sans-serif' }}>Tidak ada data pengguna yang cocok</p>
-                    <p className="text-xs text-[#635F69] mt-1">Coba sesuaikan kata kunci pencarian atau filter role.</p>
+                    <p className="font-extrabold text-[#1C1B1F] text-sm" >Tidak ada data pengguna yang cocok</p>
+                    <p className="text-xs text-[#49454F] mt-1">Coba sesuaikan kata kunci pencarian atau filter role.</p>
                   </td>
                 </tr>
               ) : (
@@ -770,11 +770,11 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     <tr 
                       key={user.id} 
                       className={`hover:bg-white/60 transition-all duration-200 ${
-                        isCurrent ? 'bg-[#7C3AED]/5' : ''
+                        isCurrent ? 'bg-[#6750A4]/5' : ''
                       }`}
                     >
                       {/* 1. No */}
-                      <td className="py-4 px-4 text-center font-mono text-[#635F69]/60 font-bold text-[11px]">
+                      <td className="py-4 px-4 text-center font-mono text-[#49454F]/60 font-bold text-[11px]">
                         {idx + 1}
                       </td>
 
@@ -785,28 +785,28 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                             <img
                               src={user.photoUrl}
                               alt={user.name}
-                              className="w-11 h-11 rounded-2xl object-cover border-2 border-white shadow-clay-orb shrink-0"
+                              className="w-11 h-11 rounded-2xl object-cover border-2 border-white shadow-xs shrink-0"
                             />
                           ) : (
-                            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] text-white font-black flex items-center justify-center text-xs shadow-clay-orb shrink-0" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#E8DEF8] to-[#6750A4] text-white font-black flex items-center justify-center text-xs shadow-xs shrink-0" >
                               {user.avatar || user.name.slice(0, 2).toUpperCase()}
                             </div>
                           )}
                           <div className="min-w-0">
                             <div className="flex items-center gap-2">
-                              <span className="font-extrabold text-[#332F3A] truncate text-sm" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                              <span className="font-extrabold text-[#1C1B1F] truncate text-sm" >
                                 {user.name}
                               </span>
                               {isCurrent && (
-                                <span className="px-2 py-0.5 rounded-full text-[9.5px] font-black bg-[#7C3AED] text-white shadow-clay-pill" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                                <span className="px-2 py-0.5 rounded-full text-[9.5px] font-black bg-[#6750A4] text-white shadow-xs" >
                                   Akun Anda
                                 </span>
                               )}
                             </div>
-                            <div className="text-[11px] text-[#635F69] font-mono flex items-center gap-1.5 mt-0.5">
-                              <span className="font-semibold text-[#7C3AED]">@{user.username}</span>
+                            <div className="text-[11px] text-[#49454F] font-mono flex items-center gap-1.5 mt-0.5">
+                              <span className="font-semibold text-[#6750A4]">@{user.username}</span>
                               {user.password && (
-                                <span className="text-[10px] text-[#635F69]/70">• pass: {user.password}</span>
+                                <span className="text-[10px] text-[#49454F]/70">• pass: {user.password}</span>
                               )}
                             </div>
                           </div>
@@ -815,13 +815,13 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
 
                       {/* 3. Role */}
                       <td className="py-4 px-4">
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/80 border border-white/80 shadow-clay-pill">
-                          <RoleIcon className="w-3.5 h-3.5 text-[#7C3AED]" />
-                          <span className="font-black text-[11px] text-[#332F3A]" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/80 border border-white/80 shadow-xs">
+                          <RoleIcon className="w-3.5 h-3.5 text-[#6750A4]" />
+                          <span className="font-black text-[11px] text-[#1C1B1F]" >
                             {roleMeta.label}
                           </span>
                         </div>
-                        <div className="text-[10px] text-[#635F69] mt-1 max-w-[160px] truncate">
+                        <div className="text-[10px] text-[#49454F] mt-1 max-w-[160px] truncate">
                           {roleMeta.desc}
                         </div>
                       </td>
@@ -830,35 +830,35 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                       <td className="py-4 px-4">
                         {user.role === 'Wali Kelas' && user.assignedClass ? (
                           <div className="flex items-center gap-1.5">
-                            <span className="px-2.5 py-1 rounded-xl bg-teal-50 text-teal-800 font-black text-[11px] border border-teal-200 shadow-clay-pill" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                            <span className="px-2.5 py-1 rounded-xl bg-teal-50 text-teal-800 font-black text-[11px] border border-teal-200 shadow-xs" >
                               Kelas {user.assignedClass}
                             </span>
-                            <span className="text-[11px] text-[#635F69]">
+                            <span className="text-[11px] text-[#49454F]">
                               ({user.department || 'Wali Kelas'})
                             </span>
                           </div>
                         ) : user.role === 'Admin' || user.role === 'Administrator' ? (
-                          <span className="text-[#332F3A] font-bold text-[11px] flex items-center gap-1.5">
-                            <ShieldCheck className="w-4 h-4 text-[#7C3AED]" />
+                          <span className="text-[#1C1B1F] font-bold text-[11px] flex items-center gap-1.5">
+                            <ShieldCheck className="w-4 h-4 text-[#6750A4]" />
                             {user.department || 'Manajemen Penuh Sistem'}
                           </span>
                         ) : user.department ? (
-                          <span className="text-[#332F3A] font-semibold text-[11px]">
+                          <span className="text-[#1C1B1F] font-semibold text-[11px]">
                             {user.department}
                           </span>
                         ) : (
-                          <span className="text-[#635F69]/60 italic text-[11px]">- Belum ada penugasan -</span>
+                          <span className="text-[#49454F]/60 italic text-[11px]">- Belum ada penugasan -</span>
                         )}
                       </td>
 
                       {/* 5. NIP / Identitas */}
                       <td className="py-4 px-4">
                         {user.nip ? (
-                          <div className="font-mono text-[#332F3A] text-[11px]">
-                            <span className="font-bold text-[#332F3A] bg-[#EFEBF5] px-2 py-0.5 rounded-lg shadow-clay-pressed">{user.nip}</span>
+                          <div className="font-mono text-[#1C1B1F] text-[11px]">
+                            <span className="font-bold text-[#1C1B1F] bg-[#E7E0EC] px-2 py-0.5 rounded-lg shadow-none">{user.nip}</span>
                           </div>
                         ) : (
-                          <span className="text-[#635F69]/60 italic text-[11px]">-</span>
+                          <span className="text-[#49454F]/60 italic text-[11px]">-</span>
                         )}
                       </td>
 
@@ -868,12 +868,12 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                           type="button"
                           onClick={() => handleToggleStatus(user)}
                           title="Klik untuk ubah status akun"
-                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black cursor-pointer transition-all duration-200 border shadow-clay-pill hover:-translate-y-0.5 active:scale-95 ${
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black cursor-pointer transition-all duration-200 border shadow-xs hover:-translate-y-0.5 active:scale-95 ${
                             user.status === 'Aktif'
                               ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                              : 'bg-[#EFEBF5] text-[#635F69] border-white/60'
+                              : 'bg-[#E7E0EC] text-[#49454F] border-white/60'
                           }`}
-                          style={{ fontFamily: 'Nunito, sans-serif' }}
+                          
                         >
                           <span
                             className={`w-2 h-2 rounded-full ${
@@ -896,7 +896,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                                 showToast(`Berhasil beralih sesi login sebagai ${user.name} (${user.role}).`);
                               }}
                               title={`Uji coba login sebagai ${user.name} (${user.role})`}
-                              className="p-2 text-[#635F69] hover:text-[#7C3AED] bg-white/80 hover:bg-white rounded-xl transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-90 cursor-pointer"
+                              className="p-2 text-[#49454F] hover:text-[#6750A4] bg-white/80 hover:bg-white rounded-xl transition-all shadow-xs hover:-translate-y-0.5 active:scale-90 cursor-pointer"
                             >
                               <ArrowRightLeft className="w-4 h-4" />
                             </button>
@@ -907,7 +907,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                             type="button"
                             onClick={() => setDetailUser(user)}
                             title="Lihat Detail Profil Pengguna"
-                            className="p-2 text-[#635F69] hover:text-teal-600 bg-white/80 hover:bg-white rounded-xl transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-90 cursor-pointer"
+                            className="p-2 text-[#49454F] hover:text-teal-600 bg-white/80 hover:bg-white rounded-xl transition-all shadow-xs hover:-translate-y-0.5 active:scale-90 cursor-pointer"
                           >
                             <Eye className="w-4 h-4" />
                           </button>
@@ -920,7 +920,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                               setNewPasswordVal(user.password || 'sman1batu2026');
                             }}
                             title="Reset Password Pengguna"
-                            className="p-2 text-[#635F69] hover:text-amber-600 bg-white/80 hover:bg-white rounded-xl transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-90 cursor-pointer"
+                            className="p-2 text-[#49454F] hover:text-amber-600 bg-white/80 hover:bg-white rounded-xl transition-all shadow-xs hover:-translate-y-0.5 active:scale-90 cursor-pointer"
                           >
                             <KeyRound className="w-4 h-4" />
                           </button>
@@ -930,7 +930,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                             type="button"
                             onClick={() => handleOpenEdit(user)}
                             title="Edit Data Pengguna"
-                            className="p-2 text-[#635F69] hover:text-blue-600 bg-white/80 hover:bg-white rounded-xl transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-90 cursor-pointer"
+                            className="p-2 text-[#49454F] hover:text-blue-600 bg-white/80 hover:bg-white rounded-xl transition-all shadow-xs hover:-translate-y-0.5 active:scale-90 cursor-pointer"
                           >
                             <Edit3 className="w-4 h-4" />
                           </button>
@@ -950,7 +950,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                             className={`p-2 rounded-xl transition-all ${
                               isCurrent || user.username === 'admin'
                                 ? 'text-slate-300 cursor-not-allowed bg-slate-50'
-                                : 'text-[#635F69] hover:text-rose-600 bg-white/80 hover:bg-white shadow-clay-button hover:-translate-y-0.5 active:scale-90 cursor-pointer'
+                                : 'text-[#49454F] hover:text-rose-600 bg-white/80 hover:bg-white shadow-xs hover:-translate-y-0.5 active:scale-90 cursor-pointer'
                             }`}
                           >
                             <Trash2 className="w-4 h-4" />
@@ -970,12 +970,12 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       {/* MODAL 1: TAMBAH PENGGUNA BARU */}
       {/* ========================================================================= */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#332F3A]/40 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[36px] max-w-xl w-full max-h-[92vh] flex flex-col shadow-clay-card border border-white/80 overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1C1B1F]/40 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[32px] max-w-xl w-full max-h-[92vh] flex flex-col shadow-sm border border-white/80 overflow-hidden">
             {/* Modal Header */}
-            <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-[#A78BFA] to-[#7C3AED] text-white flex items-center justify-between shadow-clay-card">
+            <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-[#E8DEF8] to-[#6750A4] text-white flex items-center justify-between shadow-sm">
               <div>
-                <h3 className="font-black text-lg flex items-center gap-2.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                <h3 className="font-black text-lg flex items-center gap-2.5" >
                   <UserPlus className="w-5 h-5 text-purple-200" />
                   <span>Tambah Pengguna Baru</span>
                 </h3>
@@ -986,7 +986,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               <button
                 type="button"
                 onClick={() => setIsAddModalOpen(false)}
-                className="w-9 h-9 rounded-2xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-90 cursor-pointer"
+                className="w-9 h-9 rounded-2xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all shadow-xs hover:-translate-y-0.5 active:scale-90 cursor-pointer"
               >
                 ✕
               </button>
@@ -995,8 +995,8 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
             {/* Modal Body */}
             <form onSubmit={handleCreateUser} className="p-6 sm:p-8 space-y-4 overflow-y-auto text-xs">
               {/* 1. Pilih Role */}
-              <div className="p-4 bg-[#F4F1FA] border border-white/80 rounded-[24px] shadow-clay-pressed space-y-2.5">
-                <label className="font-extrabold text-[#332F3A] block text-xs" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <div className="p-4 bg-[#FFFBFE] border border-white/80 rounded-[24px] shadow-none space-y-2.5">
+                <label className="font-extrabold text-[#1C1B1F] block text-xs" >
                   Pilih Peran Akun (Role) <span className="text-rose-500">*</span>
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -1015,21 +1015,21 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                         onClick={() => setNewRole(r.id)}
                         className={`flex flex-col items-center justify-center p-3 rounded-2xl border text-center transition-all cursor-pointer ${
                           isSelected
-                            ? 'bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] text-white shadow-clay-button border-transparent font-black -translate-y-0.5'
-                            : 'bg-white/80 border-white/60 text-[#332F3A] hover:bg-white shadow-clay-card font-bold hover:-translate-y-0.5 active:scale-95'
+                            ? 'bg-gradient-to-br from-[#E8DEF8] to-[#6750A4] text-white shadow-xs border-transparent font-black -translate-y-0.5'
+                            : 'bg-white/80 border-white/60 text-[#1C1B1F] hover:bg-white shadow-sm font-bold hover:-translate-y-0.5 active:scale-95'
                         }`}
-                        style={{ fontFamily: 'Nunito, sans-serif' }}
+                        
                       >
-                        <Icon className={`w-5 h-5 mb-1.5 ${isSelected ? 'text-white' : 'text-[#7C3AED]'}`} />
+                        <Icon className={`w-5 h-5 mb-1.5 ${isSelected ? 'text-white' : 'text-[#6750A4]'}`} />
                         <span className="text-[11px] leading-tight">{r.label}</span>
                       </button>
                     );
                   })}
                 </div>
-                <div className="text-[11px] text-[#332F3A] bg-white/90 p-3 rounded-2xl border border-white/80 shadow-clay-pill leading-relaxed">
+                <div className="text-[11px] text-[#1C1B1F] bg-white/90 p-3 rounded-2xl border border-white/80 shadow-xs leading-relaxed">
                   {newRole === 'Admin' && (
                     <>
-                      <strong className="text-[#7C3AED]">Hak Akses Admin:</strong> Kelola akun pengguna, konfigurasi profil sekolah, master data siswa &amp; kelas, katalog poin pelanggaran, serta ekspor seluruh rekapitulasi.
+                      <strong className="text-[#6750A4]">Hak Akses Admin:</strong> Kelola akun pengguna, konfigurasi profil sekolah, master data siswa &amp; kelas, katalog poin pelanggaran, serta ekspor seluruh rekapitulasi.
                     </>
                   )}
                   {newRole === 'Wali Kelas' && (
@@ -1053,7 +1053,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               {/* 2. Nama & NIP */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="font-extrabold text-[#1C1B1F] block mb-1.5" >
                     Nama Lengkap (dengan Gelar) <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -1062,12 +1062,12 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     placeholder="Contoh: Drs. H. Mulyadi, M.Pd."
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-semibold text-[#332F3A] placeholder-[#635F69]/60 shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#7C3AED]/20 transition-all duration-200"
+                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-xs font-semibold text-[#1C1B1F] placeholder-[#49454F]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#6750A4]/20 transition-all duration-200"
                   />
                 </div>
 
                 <div>
-                  <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="font-extrabold text-[#1C1B1F] block mb-1.5" >
                     NIP / NUPTK / NIK
                   </label>
                   <input
@@ -1075,7 +1075,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     placeholder="19750912 200112 1 002"
                     value={newNip}
                     onChange={(e) => setNewNip(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-mono font-semibold text-[#332F3A] placeholder-[#635F69]/60 shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#7C3AED]/20 transition-all duration-200"
+                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-xs font-mono font-semibold text-[#1C1B1F] placeholder-[#49454F]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#6750A4]/20 transition-all duration-200"
                   />
                 </div>
               </div>
@@ -1083,7 +1083,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               {/* 3. Username & Password Awal */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="font-extrabold text-[#1C1B1F] block mb-1.5" >
                     Username Login <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -1092,12 +1092,12 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     placeholder="misal: mulyadi_guru"
                     value={newUsername}
                     onChange={(e) => setNewUsername(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-mono font-semibold text-[#332F3A] placeholder-[#635F69]/60 shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#7C3AED]/20 transition-all duration-200"
+                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-xs font-mono font-semibold text-[#1C1B1F] placeholder-[#49454F]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#6750A4]/20 transition-all duration-200"
                   />
                 </div>
 
                 <div>
-                  <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="font-extrabold text-[#1C1B1F] block mb-1.5" >
                     Password Awal
                   </label>
                   <input
@@ -1105,23 +1105,23 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     placeholder="Default: admin123 / guru123"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-mono font-semibold text-[#332F3A] placeholder-[#635F69]/60 shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#7C3AED]/20 transition-all duration-200"
+                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-xs font-mono font-semibold text-[#1C1B1F] placeholder-[#49454F]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#6750A4]/20 transition-all duration-200"
                   />
                 </div>
               </div>
 
               {/* 4. Role-Specific Field: Kelas Rombel vs Mapel vs Tendik Unit */}
               {newRole === 'Wali Kelas' && (
-                <div className="p-4 bg-teal-50/70 border border-teal-200/80 rounded-[24px] shadow-clay-pressed space-y-2">
-                  <label className="font-extrabold text-teal-900 block text-xs" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                <div className="p-4 bg-teal-50/70 border border-teal-200/80 rounded-[24px] shadow-none space-y-2">
+                  <label className="font-extrabold text-teal-900 block text-xs" >
                     Pilih Rombel Binaan (36 Kelas SMAN 1 Batu) <span className="text-rose-500">*</span>
                   </label>
                   <select
                     value={newAssignedClass}
                     onChange={(e) => setNewAssignedClass(e.target.value)}
                     required
-                    className="w-full px-4 py-3 bg-white border border-teal-200 rounded-2xl text-teal-950 font-black text-xs shadow-clay-pill focus:outline-hidden focus:ring-4 focus:ring-teal-500/20"
-                    style={{ fontFamily: 'Nunito, sans-serif' }}
+                    className="w-full px-4 py-3 bg-white border border-teal-200 rounded-2xl text-teal-950 font-black text-xs shadow-xs focus:outline-hidden focus:ring-4 focus:ring-teal-500/20"
+                    
                   >
                     <option value="">-- Pilih Rombel Kelas --</option>
                     {sortClasses(classes).map((cls) => (
@@ -1135,7 +1135,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
 
               {newRole === 'Guru' && (
                 <div>
-                  <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="font-extrabold text-[#1C1B1F] block mb-1.5" >
                     Mata Pelajaran / Tugas Tambahan
                   </label>
                   <input
@@ -1143,14 +1143,14 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     placeholder="Contoh: Guru Matematika & Piket Harian / Guru BK"
                     value={newDepartment}
                     onChange={(e) => setNewDepartment(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-semibold text-[#332F3A] placeholder-[#635F69]/60 shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#7C3AED]/20 transition-all duration-200"
+                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-xs font-semibold text-[#1C1B1F] placeholder-[#49454F]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#6750A4]/20 transition-all duration-200"
                   />
                 </div>
               )}
 
               {newRole === 'Tendik' && (
                 <div>
-                  <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="font-extrabold text-[#1C1B1F] block mb-1.5" >
                     Unit / Sub-bagian Tenaga Kependidikan
                   </label>
                   <input
@@ -1158,14 +1158,14 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     placeholder="Contoh: Tata Usaha / Kesiswaan / Sarpras / Kepegawaian"
                     value={newDepartment}
                     onChange={(e) => setNewDepartment(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-semibold text-[#332F3A] placeholder-[#635F69]/60 shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#7C3AED]/20 transition-all duration-200"
+                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-xs font-semibold text-[#1C1B1F] placeholder-[#49454F]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#6750A4]/20 transition-all duration-200"
                   />
                 </div>
               )}
 
               {/* Status Akun */}
               <div>
-                <label className="font-extrabold text-[#332F3A] block mb-2" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                <label className="font-extrabold text-[#1C1B1F] block mb-2" >
                   Status Akun
                 </label>
                 <div className="flex items-center gap-6">
@@ -1175,9 +1175,9 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                       name="new_status"
                       checked={newStatus === 'Aktif'}
                       onChange={() => setNewStatus('Aktif')}
-                      className="text-[#7C3AED] focus:ring-[#7C3AED]"
+                      className="text-[#6750A4] focus:ring-[#6750A4]"
                     />
-                    <span className="text-[#332F3A] font-extrabold text-xs" style={{ fontFamily: 'Nunito, sans-serif' }}>Aktif (Dapat Login)</span>
+                    <span className="text-[#1C1B1F] font-extrabold text-xs" >Aktif (Dapat Login)</span>
                   </label>
                   <label className="flex items-center gap-2.5 cursor-pointer">
                     <input
@@ -1185,28 +1185,28 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                       name="new_status"
                       checked={newStatus === 'Nonaktif'}
                       onChange={() => setNewStatus('Nonaktif')}
-                      className="text-[#7C3AED] focus:ring-[#7C3AED]"
+                      className="text-[#6750A4] focus:ring-[#6750A4]"
                     />
-                    <span className="text-[#635F69] font-bold text-xs" style={{ fontFamily: 'Nunito, sans-serif' }}>Nonaktif (Diblokir Sementara)</span>
+                    <span className="text-[#49454F] font-bold text-xs" >Nonaktif (Diblokir Sementara)</span>
                   </label>
                 </div>
               </div>
 
               {/* 7. Foto Profil Pengguna */}
-              <div className="p-4 bg-[#F4F1FA] border border-white/80 rounded-[24px] shadow-clay-pressed space-y-3">
+              <div className="p-4 bg-[#FFFBFE] border border-white/80 rounded-[24px] shadow-none space-y-3">
                 <div className="flex items-center justify-between">
-                  <label className="font-extrabold text-[#332F3A] flex items-center gap-2 text-xs" style={{ fontFamily: 'Nunito, sans-serif' }}>
-                    <Camera className="w-4 h-4 text-[#7C3AED]" />
+                  <label className="font-extrabold text-[#1C1B1F] flex items-center gap-2 text-xs" >
+                    <Camera className="w-4 h-4 text-[#6750A4]" />
                     <span>Foto Profil Pengguna (Opsional)</span>
                   </label>
-                  <div className="flex items-center gap-1 bg-white p-1 rounded-xl shadow-clay-pill text-[10px]">
+                  <div className="flex items-center gap-1 bg-white p-1 rounded-xl shadow-xs text-[10px]">
                     <button
                       type="button"
                       onClick={() => setNewPhotoMode('upload')}
                       className={`px-3 py-1 rounded-lg font-black transition-all cursor-pointer ${
-                        newPhotoMode === 'upload' ? 'bg-[#7C3AED] text-white shadow-xs' : 'text-[#635F69]'
+                        newPhotoMode === 'upload' ? 'bg-[#6750A4] text-white shadow-xs' : 'text-[#49454F]'
                       }`}
-                      style={{ fontFamily: 'Nunito, sans-serif' }}
+                      
                     >
                       Unggah File
                     </button>
@@ -1214,9 +1214,9 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                       type="button"
                       onClick={() => setNewPhotoMode('url')}
                       className={`px-3 py-1 rounded-lg font-black transition-all cursor-pointer ${
-                        newPhotoMode === 'url' ? 'bg-[#7C3AED] text-white shadow-xs' : 'text-[#635F69]'
+                        newPhotoMode === 'url' ? 'bg-[#6750A4] text-white shadow-xs' : 'text-[#49454F]'
                       }`}
-                      style={{ fontFamily: 'Nunito, sans-serif' }}
+                      
                     >
                       Tautan URL
                     </button>
@@ -1230,7 +1230,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                         <img
                           src={newPhotoUrl}
                           alt="Pratinjau Foto"
-                          className="w-16 h-16 rounded-2xl object-cover border-2 border-white shadow-clay-orb"
+                          className="w-16 h-16 rounded-2xl object-cover border-2 border-white shadow-xs"
                         />
                         <button
                           type="button"
@@ -1245,9 +1245,9 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                         </button>
                       </div>
                     ) : (
-                      <div className="w-16 h-16 rounded-2xl border-2 border-dashed border-purple-200 bg-white/80 flex flex-col items-center justify-center text-[#635F69]/60 shadow-clay-pill">
+                      <div className="w-16 h-16 rounded-2xl border-2 border-dashed border-purple-200 bg-white/80 flex flex-col items-center justify-center text-[#49454F]/60 shadow-xs">
                         <Camera className="w-6 h-6 text-purple-300" />
-                        <span className="text-[9px] mt-0.5 font-bold" style={{ fontFamily: 'Nunito, sans-serif' }}>Foto</span>
+                        <span className="text-[9px] mt-0.5 font-bold" >Foto</span>
                       </div>
                     )}
                   </div>
@@ -1265,13 +1265,13 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                         />
                         <label
                           htmlFor="add-user-photo-file"
-                          className="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-white/90 text-[#332F3A] border border-white/60 rounded-2xl font-black text-xs cursor-pointer shadow-clay-button hover:-translate-y-0.5 active:scale-95 transition-all"
-                          style={{ fontFamily: 'Nunito, sans-serif' }}
+                          className="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-white/90 text-[#1C1B1F] border border-white/60 rounded-2xl font-black text-xs cursor-pointer shadow-xs hover:-translate-y-0.5 active:scale-95 transition-all"
+                          
                         >
-                          <Upload className="w-4 h-4 text-[#7C3AED]" />
+                          <Upload className="w-4 h-4 text-[#6750A4]" />
                           <span>Pilih Foto dari Perangkat</span>
                         </label>
-                        <p className="text-[10px] text-[#635F69] mt-1.5">
+                        <p className="text-[10px] text-[#49454F] mt-1.5">
                           Format JPG, PNG, WEBP (maks. 3 MB)
                         </p>
                       </div>
@@ -1282,9 +1282,9 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                           placeholder="https://example.com/foto-profil.jpg"
                           value={newPhotoUrl}
                           onChange={(e) => setNewPhotoUrl(e.target.value)}
-                          className="w-full px-4 py-2.5 bg-[#EFEBF5] rounded-2xl text-xs font-semibold text-[#332F3A] shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#7C3AED]/20 transition-all"
+                          className="w-full px-4 py-2.5 bg-[#E7E0EC] rounded-2xl text-xs font-semibold text-[#1C1B1F] shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#6750A4]/20 transition-all"
                         />
-                        <p className="text-[10px] text-[#635F69] mt-1">
+                        <p className="text-[10px] text-[#49454F] mt-1">
                           Masukkan URL gambar profil
                         </p>
                       </div>
@@ -1298,15 +1298,15 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-5 py-2.5 bg-white hover:bg-slate-50 text-[#635F69] rounded-2xl font-extrabold text-xs shadow-clay-button hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all border border-white/60"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="px-5 py-2.5 bg-white hover:bg-slate-50 text-[#49454F] rounded-2xl font-extrabold text-xs shadow-xs hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all border border-white/60"
+                  
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] hover:from-[#9333EA] hover:to-[#6D28D9] text-white rounded-2xl font-black text-xs shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed cursor-pointer flex items-center gap-2 transition-all"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="px-6 py-2.5 bg-gradient-to-br from-[#E8DEF8] to-[#6750A4] hover:from-[#9333EA] hover:to-[#6D28D9] text-white rounded-2xl font-black text-xs shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none cursor-pointer flex items-center gap-2 transition-all"
+                  
                 >
                   <CheckCircle2 className="w-4 h-4" />
                   <span>Simpan Pengguna</span>
@@ -1321,12 +1321,12 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       {/* MODAL 2: EDIT PENGGUNA */}
       {/* ========================================================================= */}
       {editingUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#332F3A]/40 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[36px] max-w-xl w-full max-h-[92vh] flex flex-col shadow-clay-card border border-white/80 overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1C1B1F]/40 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[32px] max-w-xl w-full max-h-[92vh] flex flex-col shadow-sm border border-white/80 overflow-hidden">
             {/* Modal Header */}
-            <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-blue-600 to-indigo-700 text-white flex items-center justify-between shadow-clay-card">
+            <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-blue-600 to-indigo-700 text-white flex items-center justify-between shadow-sm">
               <div>
-                <h3 className="font-black text-lg flex items-center gap-2.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                <h3 className="font-black text-lg flex items-center gap-2.5" >
                   <Edit3 className="w-5 h-5 text-blue-200" />
                   <span>Edit Data Pengguna: {editingUser.name}</span>
                 </h3>
@@ -1337,7 +1337,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               <button
                 type="button"
                 onClick={() => setEditingUser(null)}
-                className="w-9 h-9 rounded-2xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-90 cursor-pointer"
+                className="w-9 h-9 rounded-2xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all shadow-xs hover:-translate-y-0.5 active:scale-90 cursor-pointer"
               >
                 ✕
               </button>
@@ -1346,8 +1346,8 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
             {/* Modal Body */}
             <form onSubmit={handleSaveEdit} className="p-6 sm:p-8 space-y-4 overflow-y-auto text-xs">
               {/* Role Selection */}
-              <div className="p-4 bg-[#F4F1FA] border border-white/80 rounded-[24px] shadow-clay-pressed space-y-2.5">
-                <label className="font-extrabold text-[#332F3A] block text-xs" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <div className="p-4 bg-[#FFFBFE] border border-white/80 rounded-[24px] shadow-none space-y-2.5">
+                <label className="font-extrabold text-[#1C1B1F] block text-xs" >
                   Peran Akun (Role) <span className="text-rose-500">*</span>
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -1366,10 +1366,10 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                         onClick={() => setEditRole(r.id)}
                         className={`flex flex-col items-center justify-center p-3 rounded-2xl border text-center transition-all cursor-pointer ${
                           isSelected
-                            ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-clay-button border-transparent font-black -translate-y-0.5'
-                            : 'bg-white/80 border-white/60 text-[#332F3A] hover:bg-white shadow-clay-card font-bold hover:-translate-y-0.5 active:scale-95'
+                            ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-xs border-transparent font-black -translate-y-0.5'
+                            : 'bg-white/80 border-white/60 text-[#1C1B1F] hover:bg-white shadow-sm font-bold hover:-translate-y-0.5 active:scale-95'
                         }`}
-                        style={{ fontFamily: 'Nunito, sans-serif' }}
+                        
                       >
                         <Icon className={`w-5 h-5 mb-1.5 ${isSelected ? 'text-white' : 'text-blue-600'}`} />
                         <span className="text-[11px] leading-tight">{r.label}</span>
@@ -1382,7 +1382,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               {/* Nama & NIP */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="font-extrabold text-[#1C1B1F] block mb-1.5" >
                     Nama Lengkap <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -1390,26 +1390,26 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     required
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-semibold text-[#332F3A] shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
+                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-xs font-semibold text-[#1C1B1F] shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
                   />
                 </div>
 
                 <div>
-                  <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="font-extrabold text-[#1C1B1F] block mb-1.5" >
                     NIP / NUPTK / NIK
                   </label>
                   <input
                     type="text"
                     value={editNip}
                     onChange={(e) => setEditNip(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-mono font-semibold text-[#332F3A] shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
+                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-xs font-mono font-semibold text-[#1C1B1F] shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
                   />
                 </div>
               </div>
 
               {/* Username */}
               <div>
-                <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                <label className="font-extrabold text-[#1C1B1F] block mb-1.5" >
                   Username Login <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -1417,22 +1417,22 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                   required
                   value={editUsername}
                   onChange={(e) => setEditUsername(e.target.value)}
-                  className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-mono font-semibold text-[#332F3A] shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
+                  className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-xs font-mono font-semibold text-[#1C1B1F] shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
                 />
               </div>
 
               {/* Role specific assignment */}
               {editRole === 'Wali Kelas' && (
-                <div className="p-4 bg-teal-50/70 border border-teal-200/80 rounded-[24px] shadow-clay-pressed space-y-2">
-                  <label className="font-extrabold text-teal-900 block text-xs" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                <div className="p-4 bg-teal-50/70 border border-teal-200/80 rounded-[24px] shadow-none space-y-2">
+                  <label className="font-extrabold text-teal-900 block text-xs" >
                     Rombel Binaan (36 Kelas SMAN 1 Batu) <span className="text-rose-500">*</span>
                   </label>
                   <select
                     value={editAssignedClass}
                     onChange={(e) => setEditAssignedClass(e.target.value)}
                     required
-                    className="w-full px-4 py-3 bg-white border border-teal-200 rounded-2xl text-teal-950 font-black text-xs shadow-clay-pill focus:outline-hidden focus:ring-4 focus:ring-teal-500/20"
-                    style={{ fontFamily: 'Nunito, sans-serif' }}
+                    className="w-full px-4 py-3 bg-white border border-teal-200 rounded-2xl text-teal-950 font-black text-xs shadow-xs focus:outline-hidden focus:ring-4 focus:ring-teal-500/20"
+                    
                   >
                     <option value="">-- Pilih Rombel Kelas --</option>
                     {sortClasses(classes).map((cls) => (
@@ -1446,7 +1446,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
 
               {(editRole === 'Guru' || editRole === 'Tendik' || editRole === 'Admin') && (
                 <div>
-                  <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="font-extrabold text-[#1C1B1F] block mb-1.5" >
                     {editRole === 'Guru'
                       ? 'Mata Pelajaran / Tugas Piket'
                       : editRole === 'Tendik'
@@ -1458,14 +1458,14 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     value={editDepartment}
                     onChange={(e) => setEditDepartment(e.target.value)}
                     placeholder="Contoh: Guru Matematika / Tata Usaha & Kesiswaan"
-                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-semibold text-[#332F3A] placeholder-[#635F69]/60 shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
+                    className="w-full px-4 py-3 bg-[#E7E0EC] rounded-2xl text-xs font-semibold text-[#1C1B1F] placeholder-[#49454F]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
                   />
                 </div>
               )}
 
               {/* Status */}
               <div>
-                <label className="font-extrabold text-[#332F3A] block mb-2" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                <label className="font-extrabold text-[#1C1B1F] block mb-2" >
                   Status Akun
                 </label>
                 <div className="flex items-center gap-6">
@@ -1477,7 +1477,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                       onChange={() => setEditStatus('Aktif')}
                       className="text-blue-600 focus:ring-blue-500"
                     />
-                    <span className="text-[#332F3A] font-extrabold text-xs" style={{ fontFamily: 'Nunito, sans-serif' }}>Aktif (Dapat Login)</span>
+                    <span className="text-[#1C1B1F] font-extrabold text-xs" >Aktif (Dapat Login)</span>
                   </label>
                   <label className="flex items-center gap-2.5 cursor-pointer">
                     <input
@@ -1487,26 +1487,26 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                       onChange={() => setEditStatus('Nonaktif')}
                       className="text-blue-600 focus:ring-blue-500"
                     />
-                    <span className="text-[#635F69] font-bold text-xs" style={{ fontFamily: 'Nunito, sans-serif' }}>Nonaktif</span>
+                    <span className="text-[#49454F] font-bold text-xs" >Nonaktif</span>
                   </label>
                 </div>
               </div>
 
               {/* Foto Profil Pengguna */}
-              <div className="p-4 bg-[#F4F1FA] border border-white/80 rounded-[24px] shadow-clay-pressed space-y-3">
+              <div className="p-4 bg-[#FFFBFE] border border-white/80 rounded-[24px] shadow-none space-y-3">
                 <div className="flex items-center justify-between">
-                  <label className="font-extrabold text-[#332F3A] flex items-center gap-2 text-xs" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <label className="font-extrabold text-[#1C1B1F] flex items-center gap-2 text-xs" >
                     <Camera className="w-4 h-4 text-blue-600" />
                     <span>Foto Profil Pengguna</span>
                   </label>
-                  <div className="flex items-center gap-1 bg-white p-1 rounded-xl shadow-clay-pill text-[10px]">
+                  <div className="flex items-center gap-1 bg-white p-1 rounded-xl shadow-xs text-[10px]">
                     <button
                       type="button"
                       onClick={() => setEditPhotoMode('upload')}
                       className={`px-3 py-1 rounded-lg font-black transition-all cursor-pointer ${
-                        editPhotoMode === 'upload' ? 'bg-blue-600 text-white shadow-xs' : 'text-[#635F69]'
+                        editPhotoMode === 'upload' ? 'bg-blue-600 text-white shadow-xs' : 'text-[#49454F]'
                       }`}
-                      style={{ fontFamily: 'Nunito, sans-serif' }}
+                      
                     >
                       Unggah File
                     </button>
@@ -1514,9 +1514,9 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                       type="button"
                       onClick={() => setEditPhotoMode('url')}
                       className={`px-3 py-1 rounded-lg font-black transition-all cursor-pointer ${
-                        editPhotoMode === 'url' ? 'bg-blue-600 text-white shadow-xs' : 'text-[#635F69]'
+                        editPhotoMode === 'url' ? 'bg-blue-600 text-white shadow-xs' : 'text-[#49454F]'
                       }`}
-                      style={{ fontFamily: 'Nunito, sans-serif' }}
+                      
                     >
                       Tautan URL
                     </button>
@@ -1530,7 +1530,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                         <img
                           src={editPhotoUrl}
                           alt="Pratinjau Foto"
-                          className="w-16 h-16 rounded-2xl object-cover border-2 border-white shadow-clay-orb"
+                          className="w-16 h-16 rounded-2xl object-cover border-2 border-white shadow-xs"
                         />
                         <button
                           type="button"
@@ -1545,9 +1545,9 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                         </button>
                       </div>
                     ) : (
-                      <div className="w-16 h-16 rounded-2xl border-2 border-dashed border-blue-200 bg-white/80 flex flex-col items-center justify-center text-[#635F69]/60 shadow-clay-pill">
+                      <div className="w-16 h-16 rounded-2xl border-2 border-dashed border-blue-200 bg-white/80 flex flex-col items-center justify-center text-[#49454F]/60 shadow-xs">
                         <Camera className="w-6 h-6 text-blue-300" />
-                        <span className="text-[9px] mt-0.5 font-bold" style={{ fontFamily: 'Nunito, sans-serif' }}>Foto</span>
+                        <span className="text-[9px] mt-0.5 font-bold" >Foto</span>
                       </div>
                     )}
                   </div>
@@ -1565,13 +1565,13 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                         />
                         <label
                           htmlFor="edit-user-photo-file"
-                          className="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-white/90 text-[#332F3A] border border-white/60 rounded-2xl font-black text-xs cursor-pointer shadow-clay-button hover:-translate-y-0.5 active:scale-95 transition-all"
-                          style={{ fontFamily: 'Nunito, sans-serif' }}
+                          className="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-white/90 text-[#1C1B1F] border border-white/60 rounded-2xl font-black text-xs cursor-pointer shadow-xs hover:-translate-y-0.5 active:scale-95 transition-all"
+                          
                         >
                           <Upload className="w-4 h-4 text-blue-600" />
                           <span>Pilih Foto dari Perangkat</span>
                         </label>
-                        <p className="text-[10px] text-[#635F69] mt-1.5">
+                        <p className="text-[10px] text-[#49454F] mt-1.5">
                           Format JPG, PNG, WEBP (maks. 3 MB)
                         </p>
                       </div>
@@ -1582,9 +1582,9 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                           placeholder="https://example.com/foto-profil.jpg"
                           value={editPhotoUrl}
                           onChange={(e) => setEditPhotoUrl(e.target.value)}
-                          className="w-full px-4 py-2.5 bg-[#EFEBF5] rounded-2xl text-xs font-semibold text-[#332F3A] shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-blue-500/20 transition-all"
+                          className="w-full px-4 py-2.5 bg-[#E7E0EC] rounded-2xl text-xs font-semibold text-[#1C1B1F] shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-blue-500/20 transition-all"
                         />
-                        <p className="text-[10px] text-[#635F69] mt-1">
+                        <p className="text-[10px] text-[#49454F] mt-1">
                           Masukkan URL gambar profil
                         </p>
                       </div>
@@ -1598,15 +1598,15 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setEditingUser(null)}
-                  className="px-5 py-2.5 bg-white hover:bg-slate-50 text-[#635F69] rounded-2xl font-extrabold text-xs shadow-clay-button hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all border border-white/60"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="px-5 py-2.5 bg-white hover:bg-slate-50 text-[#49454F] rounded-2xl font-extrabold text-xs shadow-xs hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all border border-white/60"
+                  
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-2xl font-black text-xs shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed cursor-pointer flex items-center gap-2 transition-all"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="px-6 py-2.5 bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-2xl font-black text-xs shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none cursor-pointer flex items-center gap-2 transition-all"
+                  
                 >
                   <CheckCircle2 className="w-4 h-4" />
                   <span>Simpan Perubahan</span>
@@ -1621,11 +1621,11 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       {/* MODAL 3: RESET PASSWORD */}
       {/* ========================================================================= */}
       {resettingUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#332F3A]/40 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[36px] max-w-md w-full shadow-clay-card border border-white/80 overflow-hidden">
-            <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-amber-500 to-orange-600 text-white flex items-center justify-between shadow-clay-card">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1C1B1F]/40 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[32px] max-w-md w-full shadow-sm border border-white/80 overflow-hidden">
+            <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-amber-500 to-orange-600 text-white flex items-center justify-between shadow-sm">
               <div>
-                <h3 className="font-black text-lg flex items-center gap-2.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                <h3 className="font-black text-lg flex items-center gap-2.5" >
                   <KeyRound className="w-5 h-5 text-amber-200" />
                   <span>Reset Password Pengguna</span>
                 </h3>
@@ -1636,22 +1636,22 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               <button
                 type="button"
                 onClick={() => setResettingUser(null)}
-                className="w-9 h-9 rounded-2xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-90 cursor-pointer"
+                className="w-9 h-9 rounded-2xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all shadow-xs hover:-translate-y-0.5 active:scale-90 cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
             <form onSubmit={handleSaveResetPassword} className="p-6 sm:p-8 space-y-4 text-xs">
-              <div className="p-4 bg-amber-50/80 border border-amber-200/80 rounded-[24px] shadow-clay-pill text-amber-950">
-                <div className="font-black text-base" style={{ fontFamily: 'Nunito, sans-serif' }}>{resettingUser.name}</div>
+              <div className="p-4 bg-amber-50/80 border border-amber-200/80 rounded-[24px] shadow-xs text-amber-950">
+                <div className="font-black text-base" >{resettingUser.name}</div>
                 <div className="text-[11px] text-amber-800 mt-1 font-semibold">
                   Role: <strong className="font-black">{resettingUser.role}</strong> • Username: <code className="bg-white/80 px-2 py-0.5 rounded-lg border border-amber-200">{resettingUser.username}</code>
                 </div>
               </div>
 
               <div>
-                <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                <label className="font-extrabold text-[#1C1B1F] block mb-1.5" >
                   Password Baru <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
@@ -1660,12 +1660,12 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     required
                     value={newPasswordVal}
                     onChange={(e) => setNewPasswordVal(e.target.value)}
-                    className="w-full px-4 py-3 pr-12 bg-[#EFEBF5] rounded-2xl text-xs font-mono font-semibold text-[#332F3A] shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-amber-500/20 transition-all duration-200"
+                    className="w-full px-4 py-3 pr-12 bg-[#E7E0EC] rounded-2xl text-xs font-mono font-semibold text-[#1C1B1F] shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-amber-500/20 transition-all duration-200"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#635F69] hover:text-[#332F3A] p-1 cursor-pointer"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#49454F] hover:text-[#1C1B1F] p-1 cursor-pointer"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -1674,14 +1674,14 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
 
               {/* Quick Preset Passwords */}
               <div className="space-y-2">
-                <span className="text-[#635F69] font-bold text-[11px] block" style={{ fontFamily: 'Nunito, sans-serif' }}>Template Cepat:</span>
+                <span className="text-[#49454F] font-bold text-[11px] block" >Template Cepat:</span>
                 <div className="flex flex-wrap gap-2">
                   {['sman1batu2026', 'guru123', 'wali123', 'admin123', 'tendik123'].map((pwd) => (
                     <button
                       key={pwd}
                       type="button"
                       onClick={() => setNewPasswordVal(pwd)}
-                      className="px-3 py-1.5 bg-white hover:bg-slate-50 text-[#332F3A] rounded-xl font-mono text-[11px] font-bold shadow-clay-button hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all border border-white/60"
+                      className="px-3 py-1.5 bg-white hover:bg-slate-50 text-[#1C1B1F] rounded-xl font-mono text-[11px] font-bold shadow-xs hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all border border-white/60"
                     >
                       {pwd}
                     </button>
@@ -1693,15 +1693,15 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setResettingUser(null)}
-                  className="px-5 py-2.5 bg-white hover:bg-slate-50 text-[#635F69] rounded-2xl font-extrabold text-xs shadow-clay-button hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all border border-white/60"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="px-5 py-2.5 bg-white hover:bg-slate-50 text-[#49454F] rounded-2xl font-extrabold text-xs shadow-xs hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all border border-white/60"
+                  
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-2xl font-black text-xs shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed cursor-pointer flex items-center gap-2 transition-all"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="px-6 py-2.5 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-2xl font-black text-xs shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none cursor-pointer flex items-center gap-2 transition-all"
+                  
                 >
                   <CheckCircle2 className="w-4 h-4" />
                   <span>Simpan Password</span>
@@ -1716,18 +1716,18 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       {/* MODAL 4: HAPUS USER KONFIRMASI */}
       {/* ========================================================================= */}
       {deleteConfirmUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#332F3A]/40 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[36px] max-w-md w-full shadow-clay-card border border-white/80 p-6 sm:p-8 space-y-4 text-xs">
-            <div className="w-14 h-14 rounded-3xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto shadow-clay-orb">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1C1B1F]/40 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[32px] max-w-md w-full shadow-sm border border-white/80 p-6 sm:p-8 space-y-4 text-xs">
+            <div className="w-14 h-14 rounded-3xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto shadow-xs">
               <AlertTriangle className="w-7 h-7" />
             </div>
 
             <div className="text-center">
-              <h3 className="font-black text-[#332F3A] text-lg" style={{ fontFamily: 'Nunito, sans-serif' }}>Hapus Akun Pengguna?</h3>
-              <p className="text-[#635F69] mt-2 leading-relaxed">
-                Apakah Anda yakin ingin menghapus akun <strong className="text-[#332F3A] font-extrabold">{deleteConfirmUser.name}</strong> (@{deleteConfirmUser.username}) dengan role <strong className="text-[#332F3A] font-extrabold">{deleteConfirmUser.role}</strong>?
+              <h3 className="font-black text-[#1C1B1F] text-lg" >Hapus Akun Pengguna?</h3>
+              <p className="text-[#49454F] mt-2 leading-relaxed">
+                Apakah Anda yakin ingin menghapus akun <strong className="text-[#1C1B1F] font-extrabold">{deleteConfirmUser.name}</strong> (@{deleteConfirmUser.username}) dengan role <strong className="text-[#1C1B1F] font-extrabold">{deleteConfirmUser.role}</strong>?
               </p>
-              <p className="text-[11px] text-rose-700 bg-rose-50 p-3 rounded-2xl border border-rose-200 mt-4 font-bold leading-relaxed shadow-clay-pill">
+              <p className="text-[11px] text-rose-700 bg-rose-50 p-3 rounded-2xl border border-rose-200 mt-4 font-bold leading-relaxed shadow-xs">
                 Tindakan ini permanen dan pengguna ini tidak akan dapat login lagi ke dalam sistem.
               </p>
             </div>
@@ -1736,16 +1736,16 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               <button
                 type="button"
                 onClick={() => setDeleteConfirmUser(null)}
-                className="px-5 py-2.5 bg-white hover:bg-slate-50 text-[#635F69] rounded-2xl font-extrabold text-xs shadow-clay-button hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all border border-white/60"
-                style={{ fontFamily: 'Nunito, sans-serif' }}
+                className="px-5 py-2.5 bg-white hover:bg-slate-50 text-[#49454F] rounded-2xl font-extrabold text-xs shadow-xs hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all border border-white/60"
+                
               >
                 Batal
               </button>
               <button
                 type="button"
                 onClick={handleConfirmDelete}
-                className="px-6 py-2.5 bg-gradient-to-br from-rose-500 to-rose-700 hover:from-rose-600 hover:to-rose-800 text-white rounded-2xl font-black text-xs shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed cursor-pointer transition-all"
-                style={{ fontFamily: 'Nunito, sans-serif' }}
+                className="px-6 py-2.5 bg-gradient-to-br from-rose-500 to-rose-700 hover:from-rose-600 hover:to-rose-800 text-white rounded-2xl font-black text-xs shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none cursor-pointer transition-all"
+                
               >
                 Ya, Hapus Akun
               </button>
@@ -1758,13 +1758,13 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       {/* MODAL 5: DETAIL PROFIL USER */}
       {/* ========================================================================= */}
       {detailUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#332F3A]/40 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[36px] max-w-lg w-full shadow-clay-card border border-white/80 overflow-hidden">
-            <div className="p-6 sm:p-8 bg-gradient-to-r from-[#7C3AED] to-[#4F46E5] text-white relative shadow-clay-card">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1C1B1F]/40 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[32px] max-w-lg w-full shadow-sm border border-white/80 overflow-hidden">
+            <div className="p-6 sm:p-8 bg-gradient-to-r from-[#6750A4] to-[#4F46E5] text-white relative shadow-sm">
               <button
                 type="button"
                 onClick={() => setDetailUser(null)}
-                className="absolute top-6 right-6 w-9 h-9 rounded-2xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-90 cursor-pointer"
+                className="absolute top-6 right-6 w-9 h-9 rounded-2xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all shadow-xs hover:-translate-y-0.5 active:scale-90 cursor-pointer"
               >
                 ✕
               </button>
@@ -1773,23 +1773,23 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                   <img
                     src={detailUser.photoUrl}
                     alt={detailUser.name}
-                    className="w-18 h-18 rounded-3xl object-cover border-3 border-white shadow-clay-orb shrink-0"
+                    className="w-18 h-18 rounded-3xl object-cover border-3 border-white shadow-xs shrink-0"
                   />
                 ) : (
-                  <div className="w-18 h-18 rounded-3xl bg-white/20 text-white font-black text-2xl flex items-center justify-center border-2 border-white/40 shadow-clay-orb shrink-0" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <div className="w-18 h-18 rounded-3xl bg-white/20 text-white font-black text-2xl flex items-center justify-center border-2 border-white/40 shadow-xs shrink-0" >
                     {detailUser.avatar || detailUser.name.slice(0, 2).toUpperCase()}
                   </div>
                 )}
                 <div className="min-w-0">
-                  <h3 className="font-black text-xl text-white leading-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>{detailUser.name}</h3>
+                  <h3 className="font-black text-xl text-white leading-tight" >{detailUser.name}</h3>
                   <div className="text-xs text-purple-200 font-mono mt-0.5 font-bold">@{detailUser.username}</div>
                   <div className="mt-3 flex items-center gap-2">
-                    <span className="px-3 py-1 rounded-full text-[11px] font-black bg-white/20 text-white border border-white/30 shadow-clay-pill" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                    <span className="px-3 py-1 rounded-full text-[11px] font-black bg-white/20 text-white border border-white/30 shadow-xs" >
                       {detailUser.role}
                     </span>
-                    <span className={`px-3 py-1 rounded-full text-[11px] font-black shadow-clay-pill ${
+                    <span className={`px-3 py-1 rounded-full text-[11px] font-black shadow-xs ${
                       detailUser.status === 'Aktif' ? 'bg-emerald-400 text-emerald-950' : 'bg-rose-400 text-rose-950'
-                    }`} style={{ fontFamily: 'Nunito, sans-serif' }}>
+                    }`} >
                       {detailUser.status || 'Aktif'}
                     </span>
                   </div>
@@ -1798,27 +1798,27 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
             </div>
 
             <div className="p-6 sm:p-8 space-y-4 text-xs">
-              <div className="grid grid-cols-2 gap-4 p-4 bg-[#F4F1FA] rounded-[24px] shadow-clay-pressed">
+              <div className="grid grid-cols-2 gap-4 p-4 bg-[#FFFBFE] rounded-[24px] shadow-none">
                 <div>
-                  <span className="text-[#635F69] block text-[11px] font-bold" style={{ fontFamily: 'Nunito, sans-serif' }}>NIP / Identitas</span>
-                  <span className="font-black text-[#332F3A] font-mono text-sm">{detailUser.nip || '-'}</span>
+                  <span className="text-[#49454F] block text-[11px] font-bold" >NIP / Identitas</span>
+                  <span className="font-black text-[#1C1B1F] font-mono text-sm">{detailUser.nip || '-'}</span>
                 </div>
                 <div>
-                  <span className="text-[#635F69] block text-[11px] font-bold" style={{ fontFamily: 'Nunito, sans-serif' }}>Password Aktif</span>
-                  <span className="font-black text-[#332F3A] font-mono text-sm">{detailUser.password || 'admin123'}</span>
+                  <span className="text-[#49454F] block text-[11px] font-bold" >Password Aktif</span>
+                  <span className="font-black text-[#1C1B1F] font-mono text-sm">{detailUser.password || 'admin123'}</span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 p-4 bg-[#F4F1FA] rounded-[24px] shadow-clay-pressed">
+              <div className="grid grid-cols-2 gap-4 p-4 bg-[#FFFBFE] rounded-[24px] shadow-none">
                 <div>
-                  <span className="text-[#635F69] block text-[11px] font-bold" style={{ fontFamily: 'Nunito, sans-serif' }}>Penugasan / Bidang</span>
-                  <span className="font-extrabold text-[#332F3A] text-xs">
+                  <span className="text-[#49454F] block text-[11px] font-bold" >Penugasan / Bidang</span>
+                  <span className="font-extrabold text-[#1C1B1F] text-xs">
                     {detailUser.assignedClass ? `Wali Kelas ${detailUser.assignedClass}` : detailUser.department || '-'}
                   </span>
                 </div>
                 <div>
-                  <span className="text-[#635F69] block text-[11px] font-bold" style={{ fontFamily: 'Nunito, sans-serif' }}>Terdaftar Sejak</span>
-                  <span className="font-extrabold text-[#332F3A] text-xs">{detailUser.createdAt || '2026-01-10'}</span>
+                  <span className="text-[#49454F] block text-[11px] font-bold" >Terdaftar Sejak</span>
+                  <span className="font-extrabold text-[#1C1B1F] text-xs">{detailUser.createdAt || '2026-01-10'}</span>
                 </div>
               </div>
 
@@ -1826,8 +1826,8 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setDetailUser(null)}
-                  className="px-6 py-2.5 bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] hover:from-[#9333EA] hover:to-[#6D28D9] text-white rounded-2xl font-black text-xs shadow-clay-button hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="px-6 py-2.5 bg-gradient-to-br from-[#E8DEF8] to-[#6750A4] hover:from-[#9333EA] hover:to-[#6D28D9] text-white rounded-2xl font-black text-xs shadow-xs hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all"
+                  
                 >
                   Tutup Profil
                 </button>
@@ -1841,11 +1841,11 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       {/* MODAL 6: MATRIKS HAK AKSES ROLE */}
       {/* ========================================================================= */}
       {isMatrixModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#332F3A]/40 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[36px] max-w-3xl w-full max-h-[90vh] flex flex-col shadow-clay-card border border-white/80 overflow-hidden">
-            <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-[#7C3AED] to-[#4F46E5] text-white flex items-center justify-between shadow-clay-card">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1C1B1F]/40 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[32px] max-w-3xl w-full max-h-[90vh] flex flex-col shadow-sm border border-white/80 overflow-hidden">
+            <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-[#6750A4] to-[#4F46E5] text-white flex items-center justify-between shadow-sm">
               <div>
-                <h3 className="font-black text-lg flex items-center gap-2.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                <h3 className="font-black text-lg flex items-center gap-2.5" >
                   <ShieldCheck className="w-5 h-5 text-purple-200" />
                   <span>Matriks Hak Akses &amp; Kewenangan Multi-Role</span>
                 </h3>
@@ -1856,17 +1856,17 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               <button
                 type="button"
                 onClick={() => setIsMatrixModalOpen(false)}
-                className="w-9 h-9 rounded-2xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-90 cursor-pointer"
+                className="w-9 h-9 rounded-2xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all shadow-xs hover:-translate-y-0.5 active:scale-90 cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
             <div className="p-6 sm:p-8 overflow-y-auto text-xs space-y-4">
-              <div className="rounded-2xl border border-white/80 overflow-hidden shadow-clay-pressed">
+              <div className="rounded-2xl border border-white/80 overflow-hidden shadow-none">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-[#F4F1FA] border-b border-purple-100 text-[#635F69] font-black text-[11px]" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                    <tr className="bg-[#FFFBFE] border-b border-purple-100 text-[#49454F] font-black text-[11px]" >
                       <th className="p-3.5">Fitur / Modul Aplikasi</th>
                       <th className="p-3.5 text-center text-purple-900">1. Admin</th>
                       <th className="p-3.5 text-center text-teal-900">2. Wali Kelas</th>
@@ -1955,24 +1955,24 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                       },
                     ].map((row, idx) => (
                       <tr key={idx} className="hover:bg-purple-50/40">
-                        <td className="p-3.5 font-bold text-[#332F3A]">{row.feature}</td>
+                        <td className="p-3.5 font-bold text-[#1C1B1F]">{row.feature}</td>
                         <td className="p-3.5 text-center">
-                          <span className="px-2.5 py-1 rounded-xl bg-purple-50 text-purple-900 font-extrabold text-[10px] border border-purple-200 shadow-clay-pill" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                          <span className="px-2.5 py-1 rounded-xl bg-purple-50 text-purple-900 font-extrabold text-[10px] border border-purple-200 shadow-xs" >
                             {row.admin}
                           </span>
                         </td>
                         <td className="p-3.5 text-center">
-                          <span className="px-2.5 py-1 rounded-xl bg-teal-50 text-teal-900 font-extrabold text-[10px] border border-teal-200 shadow-clay-pill" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                          <span className="px-2.5 py-1 rounded-xl bg-teal-50 text-teal-900 font-extrabold text-[10px] border border-teal-200 shadow-xs" >
                             {row.wali}
                           </span>
                         </td>
                         <td className="p-3.5 text-center">
-                          <span className="px-2.5 py-1 rounded-xl bg-sky-50 text-sky-900 font-extrabold text-[10px] border border-sky-200 shadow-clay-pill" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                          <span className="px-2.5 py-1 rounded-xl bg-sky-50 text-sky-900 font-extrabold text-[10px] border border-sky-200 shadow-xs" >
                             {row.guru}
                           </span>
                         </td>
                         <td className="p-3.5 text-center">
-                          <span className="px-2.5 py-1 rounded-xl bg-amber-50 text-amber-900 font-extrabold text-[10px] border border-amber-200 shadow-clay-pill" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                          <span className="px-2.5 py-1 rounded-xl bg-amber-50 text-amber-900 font-extrabold text-[10px] border border-amber-200 shadow-xs" >
                             {row.tendik}
                           </span>
                         </td>
@@ -1986,8 +1986,8 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsMatrixModalOpen(false)}
-                  className="px-6 py-2.5 bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] hover:from-[#9333EA] hover:to-[#6D28D9] text-white rounded-2xl font-black cursor-pointer shadow-clay-button hover:-translate-y-0.5 active:scale-95 transition-all"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  className="px-6 py-2.5 bg-gradient-to-br from-[#E8DEF8] to-[#6750A4] hover:from-[#9333EA] hover:to-[#6D28D9] text-white rounded-2xl font-black cursor-pointer shadow-xs hover:-translate-y-0.5 active:scale-95 transition-all"
+                  
                 >
                   Tutup Matriks
                 </button>
