@@ -19,7 +19,8 @@ import {
   RefreshCw,
   Sparkles,
   UserX,
-  AlertTriangle
+  AlertTriangle,
+  HeartPulse
 } from 'lucide-react';
 import { AttendanceRecord, AttendanceStatus, LetterStatus, SchoolProfile, Student } from '../types';
 import { RombelClass } from '../data/initialData';
@@ -441,56 +442,56 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-sm border border-rose-200/60 hover:-translate-y-1.5 transition-all flex items-center justify-between">
+        <div className="rounded-[32px] bg-gradient-to-br from-[#FFF1F2] via-[#FFE4E6] to-[#FECDD3]/60 p-5 shadow-xs border border-[#FDA4AF]/70 hover:-translate-y-1.5 transition-all flex items-center justify-between group">
           <div>
-            <span className="text-[11px] font-black uppercase tracking-wider text-rose-600" >
+            <span className="text-[11px] font-black uppercase tracking-wider text-rose-600">
               Belum Kumpul Surat
             </span>
-            <div className="text-3xl font-black text-rose-700 mt-1" >{metrics.belumKumpul}</div>
+            <div className="text-3xl font-black text-rose-700 mt-1">{metrics.belumKumpul}</div>
             <div className="text-[11px] text-[#334155] mt-0.5 font-medium">Siswa wajib serahkan bukti fisik</div>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center font-bold shadow-xs">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center font-bold shadow-xs group-hover:scale-110 transition-transform">
             <FileWarning className="w-6 h-6" />
           </div>
         </div>
 
-        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-sm border border-sky-200/60 hover:-translate-y-1.5 transition-all flex items-center justify-between">
+        <div className="rounded-[32px] bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE] to-[#BAE6FD]/60 p-5 shadow-xs border border-[#7DD3FC]/70 hover:-translate-y-1.5 transition-all flex items-center justify-between group">
           <div>
-            <span className="text-[11px] font-black uppercase tracking-wider text-sky-700" >
+            <span className="text-[11px] font-black uppercase tracking-wider text-sky-700">
               Izin Tanpa Surat (I)
             </span>
-            <div className="text-3xl font-black text-sky-700 mt-1" >{metrics.izinBelum}</div>
+            <div className="text-3xl font-black text-sky-700 mt-1">{metrics.izinBelum}</div>
             <div className="text-[11px] text-[#334155] mt-0.5 font-medium">Izin lisan / WA belum ada surat</div>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 text-white flex items-center justify-center font-black text-lg shadow-xs" >
-            I
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 text-white flex items-center justify-center font-bold shadow-xs group-hover:scale-110 transition-transform">
+            <Clock className="w-6 h-6" />
           </div>
         </div>
 
-        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-sm border border-amber-200/60 hover:-translate-y-1.5 transition-all flex items-center justify-between">
+        <div className="rounded-[32px] bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7] to-[#FDE68A]/60 p-5 shadow-xs border border-[#FCD34D]/70 hover:-translate-y-1.5 transition-all flex items-center justify-between group">
           <div>
-            <span className="text-[11px] font-black uppercase tracking-wider text-amber-700" >
+            <span className="text-[11px] font-black uppercase tracking-wider text-amber-700">
               Sakit Tanpa Surat (S)
             </span>
-            <div className="text-3xl font-black text-amber-700 mt-1" >{metrics.sakitBelum}</div>
+            <div className="text-3xl font-black text-amber-700 mt-1">{metrics.sakitBelum}</div>
             <div className="text-[11px] text-[#334155] mt-0.5 font-medium">Belum ada surat dokter / ortu</div>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center font-black text-lg shadow-xs" >
-            S
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center font-bold shadow-xs group-hover:scale-110 transition-transform">
+            <HeartPulse className="w-6 h-6" />
           </div>
         </div>
 
-        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-sm border border-emerald-200/60 hover:-translate-y-1.5 transition-all flex items-center justify-between">
+        <div className="rounded-[32px] bg-gradient-to-br from-[#ECFDF5] via-[#D1FAE5] to-[#A7F3D0]/60 p-5 shadow-xs border border-[#6EE7B7]/70 hover:-translate-y-1.5 transition-all flex items-center justify-between group">
           <div>
-            <span className="text-[11px] font-black uppercase tracking-wider text-emerald-700" >
+            <span className="text-[11px] font-black uppercase tracking-wider text-emerald-700">
               Surat Terverifikasi
             </span>
-            <div className="text-3xl font-black text-emerald-700 mt-1" >{metrics.sudahKumpul}</div>
-            <div className="text-[11px] text-emerald-600 font-extrabold mt-0.5">
+            <div className="text-3xl font-black text-emerald-700 mt-1">{metrics.sudahKumpul}</div>
+            <div className="text-[11px] text-emerald-700 font-extrabold mt-0.5">
               {metrics.complianceRate}% Pemenuhan surat
             </div>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center font-bold shadow-xs">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center font-bold shadow-xs group-hover:scale-110 transition-transform">
             <CheckCircle2 className="w-6 h-6" />
           </div>
         </div>
