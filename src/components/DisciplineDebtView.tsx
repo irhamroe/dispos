@@ -332,43 +332,43 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
 
       {/* KPI Cards with Claymorphism */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        <div className="rounded-[32px] bg-white/80 p-6 backdrop-blur-xl shadow-sm border border-white/60 hover:-translate-y-1.5 transition-all">
+        <div className="rounded-[32px] bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE] to-[#BAE6FD]/60 p-6 shadow-xs border border-[#7DD3FC]/70 hover:-translate-y-1.5 transition-all group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black text-[#334155] uppercase tracking-wider" >Total Seluruh Tagihan</span>
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-slate-400 to-slate-600 text-white flex items-center justify-center shadow-xs">
+            <span className="text-xs font-black text-[#0369A1] uppercase tracking-wider">Total Seluruh Tagihan</span>
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#0284C7] to-[#38BDF8] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
               <FileWarning className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl sm:text-4xl font-black text-[#0F172A] mt-2 tracking-tight" >
+          <div className="text-3xl sm:text-4xl font-black text-[#0369A1] mt-2 tracking-tight">
             {totalDebtCount}
           </div>
-          <div className="text-xs text-[#334155] mt-1 font-medium">Siswa dengan kewajiban belum tuntas</div>
+          <div className="text-xs text-[#0369A1]/80 mt-1 font-medium">Siswa dengan kewajiban belum tuntas</div>
         </div>
 
-        <div className="rounded-[32px] bg-white/80 p-6 backdrop-blur-xl shadow-sm border border-rose-200/60 hover:-translate-y-1.5 transition-all">
+        <div className="rounded-[32px] bg-gradient-to-br from-[#FFF1F2] via-[#FFE4E6] to-[#FECDD3]/60 p-6 shadow-xs border border-[#FDA4AF]/70 hover:-translate-y-1.5 transition-all group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black text-rose-700 uppercase tracking-wider" >Belum Pembinaan</span>
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center shadow-xs">
+            <span className="text-xs font-black text-[#E11D48] uppercase tracking-wider">Belum Pembinaan</span>
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#E11D48] to-[#F43F5E] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
               <Clock className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl sm:text-4xl font-black text-rose-700 mt-2 tracking-tight" >
+          <div className="text-3xl sm:text-4xl font-black text-[#E11D48] mt-2 tracking-tight">
             {noCoachingCount}
           </div>
-          <div className="text-xs text-rose-600/90 mt-1 font-semibold">Belum ada sesi bimbingan & foto</div>
+          <div className="text-xs text-[#BE123C] mt-1 font-semibold">Belum ada sesi bimbingan & foto</div>
         </div>
 
-        <div className="rounded-[32px] bg-white/80 p-6 backdrop-blur-xl shadow-sm border border-amber-200/60 hover:-translate-y-1.5 transition-all">
+        <div className="rounded-[32px] bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7] to-[#FDE68A]/60 p-6 shadow-xs border border-[#FCD34D]/70 hover:-translate-y-1.5 transition-all group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black text-amber-700 uppercase tracking-wider" >Surat Menyusul (Proses TTD)</span>
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center shadow-xs">
+            <span className="text-xs font-black text-[#B45309] uppercase tracking-wider">Surat Menyusul (Proses TTD)</span>
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#D97706] to-[#F59E0B] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
               <Paperclip className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl sm:text-4xl font-black text-amber-700 mt-2 tracking-tight" >
+          <div className="text-3xl sm:text-4xl font-black text-[#B45309] mt-2 tracking-tight">
             {waitingLetterCount}
           </div>
-          <div className="text-xs text-amber-600/90 mt-1 font-semibold">Pembinaan sudah, berkas surat menyusul</div>
+          <div className="text-xs text-[#92400E] mt-1 font-semibold">Pembinaan sudah, berkas surat menyusul</div>
         </div>
       </div>
 

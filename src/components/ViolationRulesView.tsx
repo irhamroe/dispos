@@ -228,61 +228,61 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <MdCard variant="filled" hoverable className="p-5">
+        <div className="bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE] to-[#BAE6FD]/60 p-5 rounded-[28px] shadow-xs border border-[#7DD3FC]/70 hover:-translate-y-1 transition-all duration-200 group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-[#334155] uppercase tracking-wider">Total Aturan</span>
-            <div className="w-9 h-9 rounded-full bg-[#E2F1FD] text-[#0F172A] flex items-center justify-center">
+            <span className="text-xs font-extrabold text-[#0369A1] uppercase tracking-wider">Total Aturan</span>
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#0284C7] to-[#38BDF8] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
               <BookOpen className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-bold text-[#0F172A] mt-2 tracking-tight">{totalCount}</div>
-          <div className="text-xs text-[#334155] mt-1">Katalog aktif di sistem</div>
-        </MdCard>
+          <div className="text-3xl font-black text-[#0369A1] mt-2 tracking-tight">{totalCount}</div>
+          <div className="text-xs text-[#0369A1]/80 mt-1 font-medium">Katalog aktif di sistem</div>
+        </div>
 
-        <MdCard variant="filled" hoverable className="p-5">
+        <div className="bg-gradient-to-br from-[#ECFDF5] via-[#D1FAE5] to-[#A7F3D0]/60 p-5 rounded-[28px] shadow-xs border border-[#6EE7B7]/70 hover:-translate-y-1 transition-all duration-200 group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-[#0277BD] uppercase tracking-wider">Pelanggaran Ringan</span>
-            <div className="w-9 h-9 rounded-full bg-[#E1F5FE] text-[#0277BD] flex items-center justify-center">
+            <span className="text-xs font-extrabold text-[#047857] uppercase tracking-wider">Pelanggaran Ringan</span>
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#059669] to-[#10B981] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
               <Scale className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-bold text-[#0277BD] mt-2 tracking-tight">{ringanCount}</div>
+          <div className="text-3xl font-black text-[#047857] mt-2 tracking-tight">{ringanCount}</div>
           {enablePointsSystem && (
-            <div className="text-xs text-[#0277BD] mt-1">
+            <div className="text-xs text-[#065F46] font-semibold mt-1">
               Bobot poin 5 - 10
             </div>
           )}
-        </MdCard>
+        </div>
 
-        <MdCard variant="filled" hoverable className="p-5">
+        <div className="bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7] to-[#FDE68A]/60 p-5 rounded-[28px] shadow-xs border border-[#FCD34D]/70 hover:-translate-y-1 transition-all duration-200 group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-[#E65100] uppercase tracking-wider">Pelanggaran Sedang</span>
-            <div className="w-9 h-9 rounded-full bg-[#FFF3E0] text-[#E65100] flex items-center justify-center">
+            <span className="text-xs font-extrabold text-[#B45309] uppercase tracking-wider">Pelanggaran Sedang</span>
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#D97706] to-[#F59E0B] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
               <AlertTriangle className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-bold text-[#E65100] mt-2 tracking-tight">{sedangCount}</div>
+          <div className="text-3xl font-black text-[#B45309] mt-2 tracking-tight">{sedangCount}</div>
           {enablePointsSystem && (
-            <div className="text-xs text-[#E65100] mt-1">
+            <div className="text-xs text-[#92400E] font-semibold mt-1">
               Bobot poin 15 - 25
             </div>
           )}
-        </MdCard>
+        </div>
 
-        <MdCard variant="filled" hoverable className="p-5">
+        <div className="bg-gradient-to-br from-[#FFF1F2] via-[#FFE4E6] to-[#FECDD3]/60 p-5 rounded-[28px] shadow-xs border border-[#FDA4AF]/70 hover:-translate-y-1 transition-all duration-200 group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-[#BA1A1A] uppercase tracking-wider">Pelanggaran Berat</span>
-            <div className="w-9 h-9 rounded-full bg-[#FFDAD6] text-[#410002] flex items-center justify-center">
+            <span className="text-xs font-extrabold text-[#E11D48] uppercase tracking-wider">Pelanggaran Berat</span>
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#E11D48] to-[#F43F5E] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
               <ShieldAlert className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-bold text-[#BA1A1A] mt-2 tracking-tight">{beratCount}</div>
+          <div className="text-3xl font-black text-[#E11D48] mt-2 tracking-tight">{beratCount}</div>
           {enablePointsSystem && (
-            <div className="text-xs text-[#BA1A1A] mt-1">
+            <div className="text-xs text-[#BE123C] font-semibold mt-1">
               Bobot poin 30 - 50+
             </div>
           )}
-        </MdCard>
+        </div>
       </div>
 
       {/* Filter and Search Bar */}

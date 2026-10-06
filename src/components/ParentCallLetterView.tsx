@@ -349,13 +349,13 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
 
         {/* Quick Stats */}
         <div className="flex items-center gap-3">
-          <div className="px-4 py-2.5 bg-amber-50 rounded-2xl shadow-sm border border-amber-200/60 text-right">
-            <div className="text-[10px]  font-extrabold text-amber-700 uppercase tracking-wider">Total Kasus</div>
-            <div className="text-base  font-black text-amber-900">{disciplineRecords.length} Pelanggaran</div>
+          <div className="px-4 py-2.5 bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7] to-[#FDE68A]/60 rounded-2xl shadow-xs border border-[#FCD34D]/70 text-right">
+            <div className="text-[10px] font-extrabold text-[#B45309] uppercase tracking-wider">Total Kasus</div>
+            <div className="text-base font-black text-[#92400E]">{disciplineRecords.length} Pelanggaran</div>
           </div>
-          <div className="px-4 py-2.5 bg-sky-50 rounded-2xl shadow-sm border border-sky-200/60 text-right">
-            <div className="text-[10px]  font-extrabold text-sky-700 uppercase tracking-wider">Siswa Terdata</div>
-            <div className="text-base  font-black text-sky-900">{studentViolationsMap.size} Siswa</div>
+          <div className="px-4 py-2.5 bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE] to-[#BAE6FD]/60 rounded-2xl shadow-xs border border-[#7DD3FC]/70 text-right">
+            <div className="text-[10px] font-extrabold text-[#0369A1] uppercase tracking-wider">Siswa Terdata</div>
+            <div className="text-base font-black text-[#075985]">{studentViolationsMap.size} Siswa</div>
           </div>
         </div>
       </div>

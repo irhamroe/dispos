@@ -903,48 +903,48 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-white/85 backdrop-blur-xl p-5 rounded-[28px] shadow-sm border border-white hover:-translate-y-1 transition-all duration-200">
+        <div className="bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE] to-[#BAE6FD]/60 p-5 rounded-[28px] shadow-xs border border-[#7DD3FC]/70 hover:-translate-y-1 transition-all duration-200 group">
           <div className="flex items-center justify-between">
-            <span className="text-xs  font-extrabold text-[#334155] uppercase">Total Pelanggaran</span>
-            <div className="w-8 h-8 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shadow-xs">
+            <span className="text-xs font-extrabold text-[#0369A1] uppercase">Total Pelanggaran</span>
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#0284C7] to-[#38BDF8] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
               <ShieldAlert className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl  font-black text-[#0F172A] mt-2">{totalRecords}</div>
-          <div className="text-[11px] text-[#334155] font-medium mt-0.5">36 Rombel X, XI, XII</div>
+          <div className="text-3xl font-black text-[#0369A1] mt-2">{totalRecords}</div>
+          <div className="text-[11px] text-[#0369A1]/80 font-medium mt-0.5">36 Rombel X, XI, XII</div>
         </div>
 
-        <div className="bg-white/85 backdrop-blur-xl p-5 rounded-[28px] shadow-sm border border-white hover:-translate-y-1 transition-all duration-200">
+        <div className="bg-gradient-to-br from-[#FFF1F2] via-[#FFE4E6] to-[#FECDD3]/60 p-5 rounded-[28px] shadow-xs border border-[#FDA4AF]/70 hover:-translate-y-1 transition-all duration-200 group">
           <div className="flex items-center justify-between">
-            <span className="text-xs  font-extrabold text-rose-600 uppercase">Belum Dibina</span>
-            <div className="w-8 h-8 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shadow-xs">
+            <span className="text-xs font-extrabold text-[#E11D48] uppercase">Belum Dibina</span>
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#E11D48] to-[#F43F5E] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
               <Clock className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl  font-black text-rose-600 mt-2">{belumPembinaanCount}</div>
-          <div className="text-[11px] text-rose-500 font-bold mt-0.5">Perlu sesi pembinaan</div>
+          <div className="text-3xl font-black text-[#E11D48] mt-2">{belumPembinaanCount}</div>
+          <div className="text-[11px] text-[#BE123C] font-bold mt-0.5">Perlu sesi pembinaan</div>
         </div>
 
-        <div className="bg-white/85 backdrop-blur-xl p-5 rounded-[28px] shadow-sm border border-white hover:-translate-y-1 transition-all duration-200">
+        <div className="bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7] to-[#FDE68A]/60 p-5 rounded-[28px] shadow-xs border border-[#FCD34D]/70 hover:-translate-y-1 transition-all duration-200 group">
           <div className="flex items-center justify-between">
-            <span className="text-xs  font-extrabold text-amber-600 uppercase">Surat Menyusul</span>
-            <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shadow-xs">
+            <span className="text-xs font-extrabold text-[#B45309] uppercase">Surat Menyusul</span>
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#D97706] to-[#F59E0B] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
               <Paperclip className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl  font-black text-amber-600 mt-2">{suratMenyusulCount}</div>
-          <div className="text-[11px] text-amber-600 font-bold mt-0.5">Foto ada, menunggu TTD</div>
+          <div className="text-3xl font-black text-[#B45309] mt-2">{suratMenyusulCount}</div>
+          <div className="text-[11px] text-[#92400E] font-bold mt-0.5">Foto ada, menunggu TTD</div>
         </div>
 
-        <div className="bg-white/85 backdrop-blur-xl p-5 rounded-[28px] shadow-sm border border-white hover:-translate-y-1 transition-all duration-200">
+        <div className="bg-gradient-to-br from-[#ECFDF5] via-[#D1FAE5] to-[#A7F3D0]/60 p-5 rounded-[28px] shadow-xs border border-[#6EE7B7]/70 hover:-translate-y-1 transition-all duration-200 group">
           <div className="flex items-center justify-between">
-            <span className="text-xs  font-extrabold text-emerald-600 uppercase">Pembinaan Lengkap</span>
-            <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-xs">
+            <span className="text-xs font-extrabold text-[#047857] uppercase">Pembinaan Lengkap</span>
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#059669] to-[#10B981] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl  font-black text-emerald-600 mt-2">{tuntasLengkapCount}</div>
-          <div className="text-[11px] text-emerald-600 font-bold mt-0.5">Foto &amp; surat lengkap</div>
+          <div className="text-3xl font-black text-[#047857] mt-2">{tuntasLengkapCount}</div>
+          <div className="text-[11px] text-[#065F46] font-bold mt-0.5">Foto &amp; surat lengkap</div>
         </div>
       </div>
 
