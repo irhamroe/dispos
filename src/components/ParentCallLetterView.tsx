@@ -32,6 +32,7 @@ import { RombelClass } from '../data/initialData';
 import { 
   formatDateIndonesian, 
   formatDayAndDateIndonesian, 
+  getDayNameIndonesian,
   getTodayDateString, 
   getTodayIndonesian,
   exportParentCallLetterToPdf,
@@ -68,30 +69,18 @@ export const ParentCallLetterView: React.FC<ParentCallLetterViewProps> = ({
   // Selected violations to include in letter
   const [selectedViolationIds, setSelectedViolationIds] = useState<string[]>([]);
 
-  // Letter form parameters
-  const [letterNumber, setLetterNumber] = useState<string>(() => {
-    const currentYear = new Date().getFullYear();
-    const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0');
-    return `421.3/BK-SP/${currentYear}/${currentMonth}/001`;
-  });
-  const [callNumber, setCallNumber] = useState<string>('Panggilan I');
+  // Letter form parameters (Official template as per document)
+  const [letterDate, setLetterDate] = useState<string>(() => getTodayDateString());
+  const [letterNumber, setLetterNumber] = useState<string>('400.3.8/ 1702 /101.6.10.26/2026');
+  const [perihal, setPerihal] = useState<string>('Koordinasi Pembinaan Siswa');
   const [callDate, setCallDate] = useState<string>(() => {
-    // Default: 2 days ahead
+    // Default: 1 day ahead
     const date = new Date();
-    date.setDate(date.getDate() + 2);
+    date.setDate(date.getDate() + 1);
     return date.toISOString().slice(0, 10);
   });
-  const [callTime, setCallTime] = useState<string>('08:30 WIB');
-  const [callPlace, setCallPlace] = useState<string>('Ruang Bimbingan & Konseling (BK) SMAN 1 Batu');
-  const [meetWith, setMeetWith] = useState<string>('Guru BK & Wali Kelas');
-  const [agenda, setAgenda] = useState<string>(
-    'Pembahasan evaluasi ketertiban dan pembinaan kedisiplinan bersama orang tua/wali murid.'
-  );
-  const [notes, setNotes] = useState<string>(
-    'Mohon membawa surat panggilan ini dan hadir tepat waktu. Jika berhalangan hadir, harap menghubungi pihak sekolah terlebih dahulu.'
-  );
-  const [senderTitle, setSenderTitle] = useState<string>('Guru Bimbingan & Konseling (BK)');
-  const [senderName, setSenderName] = useState<string>(currentUserName || 'Tim Bimbingan Konseling');
+  const [callTime, setCallTime] = useState<string>('Pukul 12.30 WIB – selesai');
+  const [callPlace, setCallPlace] = useState<string>('Ruang Disiplin Positif SMA Negeri 1 Batu');
 
   // Copy notification alert
   const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
@@ -152,8 +141,8 @@ export const ParentCallLetterView: React.FC<ParentCallLetterViewProps> = ({
       // Auto personalize letter number with student NISN suffix
       const currentYear = new Date().getFullYear();
       const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0');
-      const suffix = selectedStudent.nisn.slice(-4) || '001';
-      setLetterNumber(`421.3/BK-SP/${currentYear}/${currentMonth}/${suffix}`);
+      const suffix = selectedStudent.nisn.slice(-4) || '1702';
+      setLetterNumber(`400.3.8/${suffix}/101.6.10.26/${currentYear}`);
     }
   }, [selectedStudent?.id, studentViolationsMap]);
 
@@ -197,15 +186,10 @@ export const ParentCallLetterView: React.FC<ParentCallLetterViewProps> = ({
       waliKelas: studentWaliKelas,
       violations: includedViolations,
       letterNumber,
-      callNumber,
+      letterDate,
       callDate,
       callTime,
       callPlace,
-      meetWith,
-      agenda,
-      notes,
-      senderTitle,
-      senderName,
       enablePointsSystem,
     };
     exportParentCallLetterToPdf(letterData);
@@ -219,30 +203,36 @@ export const ParentCallLetterView: React.FC<ParentCallLetterViewProps> = ({
   // Copy WhatsApp message text
   const handleCopyWhatsApp = () => {
     if (!selectedStudent) return;
-    const parentPhone = selectedStudent.parentPhone || selectedStudent.phone || '-';
     const pointsText = enablePointsSystem
       ? ` (${totalPoints} Poin dari ${includedViolations.length} catatan)`
       : ` (${includedViolations.length} catatan pelanggaran)`;
-    const text = `*SURAT PANGGILAN ORANG TUA / WALI SISWA*
+    const text = `*SURAT PANGGILAN ORANG TUA / WALI MURID*
 ${schoolProfile.name}
 ----------------------------------------
-Yth. Bapak/Ibu Wali dari:
-*Nama Siswa:* ${selectedStudent.name}
-*NISN / Kelas:* ${selectedStudent.nisn} / ${selectedStudent.className}
+Nomor: ${letterNumber}
+Perihal: ${perihal}
 
-Sehubungan dengan akumulasi catatan pelanggaran tata tertib sekolah${pointsText}, kami mengharap kehadiran Bapak/Ibu pada:
+Kepada Yth.
+Bapak/Ibu Orang Tua/Wali Murid
+*${selectedStudent.name} (${selectedStudent.className})*
+di Tempat
 
-📅 *Hari/Tanggal:* ${formatDayAndDateIndonesian(callDate)}
-⏰ *Pukul:* ${callTime}
+Sehubungan dengan adanya permasalahan yang harus diselesaikan bersama, maka kami mengharapkan kehadiran Bapak/Ibu Orang Tua/Wali Murid beserta siswa, pada:
+
+📅 *Hari:* ${getDayNameIndonesian(callDate)}
+📆 *Tanggal:* ${formatDateIndonesian(callDate)}
+⏰ *Waktu:* ${callTime}
 📍 *Tempat:* ${callPlace}
-👥 *Menghadap:* ${meetWith}
-📋 *Agenda:* ${agenda}
 
-_Catatan:_ ${notes}
+Adapun rincian pelanggaran tata tertib tercatat${pointsText}.
 
-Nomor Surat Resmi: ${letterNumber}
-Terima kasih atas perhatian dan kerja samanya.
-*Tim BK & Ketertiban ${schoolProfile.name}*`;
+Mengingat pentingnya hal tersebut, maka kami mengharapkan Bapak/Ibu untuk datang tepat pada waktu yang telah ditentukan.
+
+Demikian atas perhatian dan kerjasama yang baik disampaikan terima kasih.
+
+*Kepala ${schoolProfile.name}*
+${schoolProfile.principalName}
+NIP. ${schoolProfile.principalNip}`;
 
     navigator.clipboard.writeText(text);
     setCopyFeedback('Template pesan WhatsApp berhasil disalin ke clipboard!');
@@ -259,21 +249,23 @@ Terima kasih atas perhatian dan kerja samanya.
     }
     const cleanPhone = phone.replace(/[^0-9]/g, '');
     const finalPhone = cleanPhone.startsWith('0') ? `62${cleanPhone.slice(1)}` : cleanPhone;
-    const text = encodeURIComponent(`*SURAT PANGGILAN ORANG TUA / WALI SISWA*
+    const text = encodeURIComponent(`*SURAT PANGGILAN ORANG TUA / WALI MURID*
 ${schoolProfile.name}
 ----------------------------------------
-Yth. Bapak/Ibu Orang Tua dari:
-*Nama Siswa:* ${selectedStudent.name} (Kelas ${selectedStudent.className})
+Nomor: ${letterNumber}
+Perihal: ${perihal}
 
-Sehubungan dengan catatan tata tertib siswa di sekolah, kami mengundang Bapak/Ibu untuk hadir pada:
-📅 *Hari/Tanggal:* ${formatDayAndDateIndonesian(callDate)}
-⏰ *Pukul:* ${callTime}
+Kepada Yth.
+Bapak/Ibu Orang Tua/Wali Murid
+*${selectedStudent.name} (${selectedStudent.className})*
+
+Sehubungan dengan adanya permasalahan yang harus diselesaikan bersama, maka kami mengharapkan kehadiran Bapak/Ibu Orang Tua/Wali Murid beserta siswa, pada:
+📅 *Hari:* ${getDayNameIndonesian(callDate)}
+📆 *Tanggal:* ${formatDateIndonesian(callDate)}
+⏰ *Waktu:* ${callTime}
 📍 *Tempat:* ${callPlace}
-👥 *Menghadap:* ${meetWith}
-📋 *Agenda:* ${agenda}
 
-Nomor Surat: ${letterNumber}
-Terima kasih atas kerja samanya.`);
+Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat waktu. Terima kasih.`);
 
     window.open(`https://wa.me/${finalPhone}?text=${text}`, '_blank');
   };
@@ -318,7 +310,7 @@ Terima kasih atas kerja samanya.`);
             <span>Surat Panggilan Orang Tua / Wali Murid</span>
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Penerbitan surat panggilan resmi lengkap dengan rekapitulasi riwayat pelanggaran tata tertib siswa SMAN 1 Batu.
+            Format resmi sesuai Dinas Pendidikan Provinsi Jawa Timur & SMAN 1 Batu, dilengkapi rincian pelanggaran siswa.
           </p>
         </div>
 
@@ -528,7 +520,7 @@ Terima kasih atas kerja samanya.`);
             </div>
 
             <p className="text-[11px] text-slate-500 leading-normal">
-              Centang pelanggaran yang ingin dimasukkan ke dalam lampiran surat panggilan orang tua. Secara otomatis seluruh riwayat tercentang.
+              Centang pelanggaran yang ingin dimasukkan ke dalam rincian surat panggilan orang tua. Secara otomatis seluruh riwayat tercentang.
             </p>
 
             {studentAllViolations.length === 0 ? (
@@ -536,7 +528,7 @@ Terima kasih atas kerja samanya.`);
                 <CheckCircle2 className="w-6 h-6 text-emerald-600 mx-auto" />
                 <div className="text-xs font-bold text-emerald-900">Siswa Ini Tidak Memiliki Catatan Pelanggaran</div>
                 <p className="text-[11px] text-emerald-700">
-                  Siswa berstatus bersih dan tertib. Surat panggilan tetap dapat diterbitkan untuk agenda bimbingan rutin atau koordinasi orang tua.
+                  Siswa berstatus bersih dan tertib. Surat panggilan tetap dapat diterbitkan untuk agenda koordinasi dan pembinaan preventif.
                 </p>
               </div>
             ) : (
@@ -612,7 +604,7 @@ Terima kasih atas kerja samanya.`);
           <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 space-y-4">
             <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
               <span className="w-6 h-6 rounded-full bg-teal-600 text-white font-bold text-xs flex items-center justify-center">3</span>
-              <h2 className="text-sm font-bold text-slate-800">Detail Surat & Jadwal Panggilan</h2>
+              <h2 className="text-sm font-bold text-slate-800">Detail Surat & Jadwal Pertemuan</h2>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
@@ -627,24 +619,32 @@ Terima kasih atas kerja samanya.`);
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Tingkat Panggilan</label>
-                <select
-                  value={callNumber}
-                  onChange={(e) => setCallNumber(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-bold focus:bg-white focus:ring-2 focus:ring-teal-500 cursor-pointer"
-                >
-                  <option value="Panggilan I">Panggilan I (Pertama)</option>
-                  <option value="Panggilan II">Panggilan II (Kedua)</option>
-                  <option value="Panggilan III">Panggilan III (Peringatan Terakhir)</option>
-                  <option value="Khusus BK">Panggilan Khusus Bimbingan Konseling</option>
-                  <option value="Konferensi Kasus">Konferensi Kasus Tim Ketertiban</option>
-                </select>
+                <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1">
+                  <CalendarDays className="w-3.5 h-3.5 text-teal-600" />
+                  <span>Tanggal Surat</span>
+                </label>
+                <input
+                  type="date"
+                  value={letterDate}
+                  onChange={(e) => setLetterDate(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-semibold focus:bg-white focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="block font-bold text-slate-700 mb-1">Perihal</label>
+                <input
+                  type="text"
+                  value={perihal}
+                  onChange={(e) => setPerihal(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-bold focus:bg-white focus:ring-2 focus:ring-teal-500"
+                />
               </div>
 
               <div>
                 <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1">
                   <Calendar className="w-3.5 h-3.5 text-teal-600" />
-                  <span>Tanggal Panggilan</span>
+                  <span>Tanggal Pertemuan (Hari/Tgl)</span>
                 </label>
                 <input
                   type="date"
@@ -663,7 +663,7 @@ Terima kasih atas kerja samanya.`);
                   type="text"
                   value={callTime}
                   onChange={(e) => setCallTime(e.target.value)}
-                  placeholder="Contoh: 08:30 WIB"
+                  placeholder="Contoh: Pukul 12.30 WIB – selesai"
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-teal-500"
                 />
               </div>
@@ -677,56 +677,6 @@ Terima kasih atas kerja samanya.`);
                   type="text"
                   value={callPlace}
                   onChange={(e) => setCallPlace(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-teal-500"
-                />
-              </div>
-
-              <div className="sm:col-span-2">
-                <label className="block font-bold text-slate-700 mb-1">Menghadap Kepada</label>
-                <input
-                  type="text"
-                  value={meetWith}
-                  onChange={(e) => setMeetWith(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-teal-500"
-                />
-              </div>
-
-              <div className="sm:col-span-2">
-                <label className="block font-bold text-slate-700 mb-1">Keperluan / Agenda</label>
-                <textarea
-                  rows={2}
-                  value={agenda}
-                  onChange={(e) => setAgenda(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-teal-500"
-                />
-              </div>
-
-              <div className="sm:col-span-2">
-                <label className="block font-bold text-slate-700 mb-1">Catatan Tambahan untuk Orang Tua</label>
-                <textarea
-                  rows={2}
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-teal-500"
-                />
-              </div>
-
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">Jabatan Pembuat Surat</label>
-                <input
-                  type="text"
-                  value={senderTitle}
-                  onChange={(e) => setSenderTitle(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-teal-500"
-                />
-              </div>
-
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">Nama Petugas Pembuat</label>
-                <input
-                  type="text"
-                  value={senderName}
-                  onChange={(e) => setSenderName(e.target.value)}
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-teal-500"
                 />
               </div>
@@ -800,20 +750,23 @@ Terima kasih atas kerja samanya.`);
             className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 sm:p-10 font-serif text-slate-900 text-xs leading-relaxed space-y-4"
           >
             {/* KOP SURAT RESMI */}
-            <div className="flex items-center gap-4 pb-3">
+            <div className="flex items-center gap-4 pb-2">
               <img src="/logo.png" alt="Logo SMAN 1 Batu" className="w-16 h-16 object-contain shrink-0" />
-              <div className="text-center flex-1">
-                <h3 className="font-bold text-xs tracking-wider text-slate-800 uppercase font-sans">
-                  Pemerintah Provinsi Jawa Timur
+              <div className="text-center flex-1 font-sans">
+                <h3 className="font-bold text-xs tracking-wider text-slate-800 uppercase">
+                  PEMERINTAH PROVINSI JAWA TIMUR
                 </h3>
-                <h3 className="font-bold text-xs tracking-wider text-slate-800 uppercase font-sans">
-                  Dinas Pendidikan
+                <h3 className="font-bold text-xs tracking-wider text-slate-800 uppercase">
+                  DINAS PENDIDIKAN
                 </h3>
-                <h2 className="font-extrabold text-base tracking-wide text-slate-950 uppercase font-sans mt-0.5">
+                <h2 className="font-extrabold text-base tracking-wide text-slate-950 uppercase mt-0.5">
                   {schoolProfile.name}
                 </h2>
-                <p className="text-[10px] text-slate-600 font-sans mt-0.5">
-                  {schoolProfile.address}, {schoolProfile.city}, Jawa Timur {schoolProfile.postalCode || '65314'} | NPSN: {schoolProfile.npsn}
+                <p className="text-[10px] text-slate-600 mt-0.5">
+                  Jalan KH. Agus Salim Nomor 57, Sisir, Kota Batu Jawa Timur 65314
+                </p>
+                <p className="text-[9.5px] text-slate-600">
+                  Telepon (0341)591310, Laman: www.sman1batu.sch.id, Pos-el: sman1batu@yahoo.com
                 </p>
               </div>
               <div className="w-16 shrink-0 hidden sm:block" />
@@ -825,89 +778,84 @@ Terima kasih atas kerja samanya.`);
               <div className="h-[0.5px] bg-slate-900 w-full" />
             </div>
 
-            {/* Nomor & Tanggal Surat */}
-            <div className="flex justify-between items-start font-sans text-xs">
-              <div className="space-y-1">
-                <div className="grid grid-cols-[80px_10px_auto] gap-x-1">
-                  <span>Nomor</span>
-                  <span>:</span>
-                  <span className="font-semibold text-slate-900">{letterNumber}</span>
-                </div>
-                <div className="grid grid-cols-[80px_10px_auto] gap-x-1">
-                  <span>Sifat</span>
-                  <span>:</span>
-                  <span>Penting / Rahasia</span>
-                </div>
-                <div className="grid grid-cols-[80px_10px_auto] gap-x-1">
-                  <span>Lampiran</span>
-                  <span>:</span>
-                  <span>1 (satu) Berkas Riwayat Pelanggaran</span>
-                </div>
-                <div className="grid grid-cols-[80px_10px_auto] gap-x-1">
-                  <span>Perihal</span>
-                  <span>:</span>
-                  <span className="font-bold text-slate-900">
-                    Surat Panggilan Orang Tua / Wali Murid ({callNumber})
-                  </span>
-                </div>
-              </div>
+            {/* Tempat & Tanggal Surat (Kanan Atas) */}
+            <div className="text-right font-sans text-xs">
+              Batu, {letterDate ? formatDateIndonesian(letterDate) : getTodayIndonesian()}
+            </div>
 
-              <div className="text-right text-xs">
-                Kota Batu, {getTodayIndonesian()}
+            {/* Nomor, Lampiran, Perihal (Kiri Atas) */}
+            <div className="font-sans text-xs space-y-1">
+              <div className="grid grid-cols-[80px_10px_auto] gap-x-1">
+                <span>Nomor</span>
+                <span>:</span>
+                <span className="text-slate-900">{letterNumber}</span>
+              </div>
+              <div className="grid grid-cols-[80px_10px_auto] gap-x-1">
+                <span>Lampiran</span>
+                <span>:</span>
+                <span>-</span>
+              </div>
+              <div className="grid grid-cols-[80px_10px_auto] gap-x-1">
+                <span>Perihal</span>
+                <span>:</span>
+                <span className="font-bold text-slate-900">{perihal}</span>
               </div>
             </div>
 
             {/* Tujuan Surat */}
-            <div className="pt-2 font-sans text-xs space-y-1">
-              <div>Kepada Yth.</div>
-              <div className="font-bold">Bapak / Ibu Orang Tua / Wali Murid dari:</div>
-              <div className="pl-3 space-y-0.5 pt-0.5 text-slate-800">
-                <div className="grid grid-cols-[90px_10px_auto] gap-x-1">
-                  <span className="text-slate-600">Nama Siswa</span>
-                  <span>:</span>
-                  <span className="font-bold text-slate-950 uppercase">{selectedStudent?.name || '-'}</span>
-                </div>
-                <div className="grid grid-cols-[90px_10px_auto] gap-x-1">
-                  <span className="text-slate-600">NISN / Kelas</span>
-                  <span>:</span>
-                  <span>
-                    {selectedStudent?.nisn || '-'} / Kelas {selectedStudent?.className || '-'} ({selectedStudent?.gender === 'L' ? 'Laki-laki' : 'Perempuan'})
-                  </span>
-                </div>
-                {studentWaliKelas && (
-                  <div className="grid grid-cols-[90px_10px_auto] gap-x-1">
-                    <span className="text-slate-600">Wali Kelas</span>
-                    <span>:</span>
-                    <span>{studentWaliKelas.name}</span>
-                  </div>
-                )}
+            <div className="pt-2 font-sans text-xs space-y-0.5">
+              <div>Yth.</div>
+              <div>Bapak/Ibu Orang Tua/Wali Murid</div>
+              <div className="font-bold uppercase text-slate-950">
+                {selectedStudent?.name || '-'} &nbsp;&nbsp; {selectedStudent?.className || '-'}
               </div>
-              <div className="pt-1">di Tempat</div>
+              <div>di</div>
+              <div className="pl-4">Tempat</div>
             </div>
 
             {/* Paragraf Pembuka */}
-            <div className="pt-2 space-y-2">
-              <p>Dengan hormat,</p>
-              <p className="text-justify indent-6">
-                Sehubungan dengan pembinaan tata tertib serta kedisiplinan siswa di lingkungan SMA Negeri 1 Batu, bersama ini kami sampaikan rincian riwayat pelanggaran tata tertib sekolah yang pernah tercatat atas nama putra/putri Bapak/Ibu sebagai berikut:
+            <div className="pt-2 space-y-2 font-serif text-[12px] text-justify leading-relaxed">
+              <p className="indent-8">
+                Sehubungan dengan adanya permasalahan yang harus diselesaikan bersama, maka kami mengharapkan kehadiran Bapak/Ibu Orang Tua/Wali Murid beserta siswa, pada:
               </p>
             </div>
 
-            {/* TABEL DAFTAR PELANGGARAN YANG DILAKUKAN SISWA */}
-            <div className="py-2">
-              <div className="text-[11px] font-sans font-bold text-slate-800 uppercase mb-1.5 flex items-center justify-between">
-                <span>Rincian Catatan Pelanggaran Siswa</span>
-                <span className="text-slate-500 font-normal normal-case">
-                  Total: {includedViolations.length} Catatan Kejadian
-                </span>
+            {/* Detail Jadwal Pertemuan */}
+            <div className="pl-8 font-sans text-xs space-y-1 py-1">
+              <div className="grid grid-cols-[100px_10px_auto] gap-x-1">
+                <span>Hari</span>
+                <span>:</span>
+                <span className="text-slate-900">{getDayNameIndonesian(callDate)}</span>
               </div>
+              <div className="grid grid-cols-[100px_10px_auto] gap-x-1">
+                <span>Tanggal</span>
+                <span>:</span>
+                <span className="text-slate-900">{formatDateIndonesian(callDate)}</span>
+              </div>
+              <div className="grid grid-cols-[100px_10px_auto] gap-x-1">
+                <span>Waktu</span>
+                <span>:</span>
+                <span className="text-slate-900">{callTime}</span>
+              </div>
+              <div className="grid grid-cols-[100px_10px_auto] gap-x-1">
+                <span>Tempat</span>
+                <span>:</span>
+                <span className="text-slate-900">{callPlace}</span>
+              </div>
+            </div>
+
+            {/* TABEL RINCIAN PELANGGARAN YANG DILAKUKAN SISWA */}
+            <div className="py-2 space-y-1.5">
+              <p className="font-serif text-[11.5px] text-slate-800">
+                Adapun rincian pelanggaran tata tertib yang telah dilakukan oleh siswa adalah sebagai berikut:
+              </p>
 
               <table className="w-full border-collapse border border-slate-300 font-sans text-[11px]">
                 <thead>
                   <tr className="bg-slate-100 border-b border-slate-300 text-slate-800 font-bold">
                     <th className="border border-slate-300 py-1.5 px-2 w-8 text-center">No</th>
                     <th className="border border-slate-300 py-1.5 px-2 w-24 text-center">Tanggal</th>
-                    <th className="border border-slate-300 py-1.5 px-2 text-left">Nama / Jenis Pelanggaran</th>
+                    <th className="border border-slate-300 py-1.5 px-2 text-left">Jenis Pelanggaran</th>
                     <th className="border border-slate-300 py-1.5 px-2 w-20 text-center">Kategori</th>
                     {enablePointsSystem && (
                       <th className="border border-slate-300 py-1.5 px-2 w-16 text-center">Poin</th>
@@ -925,23 +873,23 @@ Terima kasih atas kerja samanya.`);
                   ) : (
                     includedViolations.map((v, idx) => (
                       <tr key={v.id} className="border-b border-slate-200">
-                        <td className="border border-slate-300 py-1.5 px-2 text-center text-slate-600">{idx + 1}</td>
-                        <td className="border border-slate-300 py-1.5 px-2 text-center whitespace-nowrap">{v.date}</td>
-                        <td className="border border-slate-300 py-1.5 px-2">
-                          <span className="font-bold text-slate-900">{v.violationName}</span>
+                        <td className="border border-slate-300 py-1 px-2 text-center text-slate-600">{idx + 1}</td>
+                        <td className="border border-slate-300 py-1 px-2 text-center whitespace-nowrap">{v.date}</td>
+                        <td className="border border-slate-300 py-1 px-2">
+                          <span className="font-semibold text-slate-900">{v.violationName}</span>
                           {v.description && (
-                            <div className="text-[10px] text-slate-500 italic mt-0.5 leading-snug">
+                            <div className="text-[10px] text-slate-500 italic">
                               Ket: {v.description}
                             </div>
                           )}
                         </td>
-                        <td className="border border-slate-300 py-1.5 px-2 text-center">{v.category}</td>
+                        <td className="border border-slate-300 py-1 px-2 text-center">{v.category}</td>
                         {enablePointsSystem && (
-                          <td className="border border-slate-300 py-1.5 px-2 text-center font-bold text-rose-700">
+                          <td className="border border-slate-300 py-1 px-2 text-center font-bold text-rose-700">
                             {v.points}
                           </td>
                         )}
-                        <td className="border border-slate-300 py-1.5 px-2 text-center">
+                        <td className="border border-slate-300 py-1 px-2 text-center">
                           {v.coachingStatus === 'Sudah' ? (
                             <span className="text-emerald-700 font-semibold">Sudah Dibina</span>
                           ) : (
@@ -954,95 +902,41 @@ Terima kasih atas kerja samanya.`);
                 </tbody>
                 {includedViolations.length > 0 && (
                   <tfoot>
-                    <tr className="bg-slate-100/80 font-bold border-t-2 border-slate-400">
-                      <td colSpan={4} className="border border-slate-300 py-1.5 px-3 text-right">
-                        {enablePointsSystem ? 'TOTAL AKUMULASI POIN PELANGGARAN:' : 'TOTAL PELANGGARAN TERCATAT:'}
+                    <tr className="bg-slate-50 font-bold border-t border-slate-400">
+                      <td colSpan={4} className="border border-slate-300 py-1 px-3 text-right">
+                        TOTAL POIN:
                       </td>
-                      {enablePointsSystem ? (
-                        <>
-                          <td className="border border-slate-300 py-1.5 px-2 text-center text-rose-700 font-black text-xs">
-                            {totalPoints} Poin
-                          </td>
-                          <td className="border border-slate-300 py-1.5 px-2 text-center text-slate-500 text-[10px]">
-                            {totalPoints >= 50 ? 'Kategori Kritis (BK)' : totalPoints >= 25 ? 'Perhatian Khusus' : 'Tahap Pembinaan'}
-                          </td>
-                        </>
-                      ) : (
-                        <td className="border border-slate-300 py-1.5 px-2 text-center text-slate-900 font-black text-xs">
-                          {includedViolations.length} Kejadian
+                      {enablePointsSystem && (
+                        <td className="border border-slate-300 py-1 px-2 text-center text-rose-700 font-black">
+                          {totalPoints} Poin
                         </td>
                       )}
+                      <td className="border border-slate-300 py-1 px-2 text-center text-slate-600 text-[10px]">
+                        {includedViolations.length} Catatan
+                      </td>
                     </tr>
                   </tfoot>
                 )}
               </table>
             </div>
 
-            {/* Paragraf Undangan & Jadwal Panggilan */}
-            <div className="pt-2 space-y-2">
-              <p className="text-justify indent-6">
-                Guna mencari solusi bersama serta langkah pembinaan terbaik demi kelancaran proses belajar dan masa depan putra/putri Bapak/Ibu, kami sangat mengharap kehadiran Bapak/Ibu pada:
-              </p>
-
-              <div className="pl-6 font-sans text-xs space-y-1.5 py-1">
-                <div className="grid grid-cols-[140px_10px_auto] gap-x-1">
-                  <span className="font-semibold text-slate-700">Hari / Tanggal</span>
-                  <span>:</span>
-                  <span className="font-bold text-slate-900">{formatDayAndDateIndonesian(callDate)}</span>
-                </div>
-                <div className="grid grid-cols-[140px_10px_auto] gap-x-1">
-                  <span className="font-semibold text-slate-700">Waktu / Pukul</span>
-                  <span>:</span>
-                  <span className="font-bold text-slate-900">{callTime}</span>
-                </div>
-                <div className="grid grid-cols-[140px_10px_auto] gap-x-1">
-                  <span className="font-semibold text-slate-700">Tempat Pertemuan</span>
-                  <span>:</span>
-                  <span>{callPlace}</span>
-                </div>
-                <div className="grid grid-cols-[140px_10px_auto] gap-x-1">
-                  <span className="font-semibold text-slate-700">Menghadap Kepada</span>
-                  <span>:</span>
-                  <span className="font-semibold text-slate-900">{meetWith}</span>
-                </div>
-                <div className="grid grid-cols-[140px_10px_auto] gap-x-1">
-                  <span className="font-semibold text-slate-700">Keperluan / Agenda</span>
-                  <span>:</span>
-                  <span>{agenda}</span>
-                </div>
-                {notes && (
-                  <div className="grid grid-cols-[140px_10px_auto] gap-x-1">
-                    <span className="font-semibold text-slate-700">Catatan Khusus</span>
-                    <span>:</span>
-                    <span className="italic text-slate-600">{notes}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-
             {/* Paragraf Penutup */}
-            <div className="pt-2 space-y-2">
-              <p className="text-justify indent-6">
-                Mengingat pentingnya pertemuan ini demi masa depan pendidikan putra/putri Bapak/Ibu, kami sangat mengharapkan kehadiran Bapak/Ibu tepat pada waktu yang ditentukan. Atas perhatian dan kerja samanya, kami ucapkan terima kasih.
+            <div className="pt-2 space-y-2 font-serif text-[12px] text-justify leading-relaxed">
+              <p className="indent-8">
+                Mengingat pentingnya hal tersebut, maka kami mengharapkan Bapak/Ibu untuk datang tepat pada waktu yang telah ditentukan.
+              </p>
+              <p className="indent-8">
+                Demikian atas perhatian dan kerjasama yang baik disampaikan terima kasih.
               </p>
             </div>
 
-            {/* TANDA TANGAN RESMI */}
-            <div className="pt-8 grid grid-cols-2 text-center font-sans text-xs">
-              <div>
-                <p>{senderTitle},</p>
-                <div className="h-16" />
-                <p className="font-bold text-slate-900 underline">
-                  {senderName || '(..................................................)'}
-                </p>
-                <p className="text-[10.5px] text-slate-500">Tim Bimbingan Konseling & Tatib</p>
-              </div>
-
-              <div>
-                <p>Kepala {schoolProfile.name},</p>
-                <div className="h-16" />
+            {/* TANDA TANGAN RESMI KEPALA SEKOLAH (RATA KANAN) */}
+            <div className="pt-8 flex justify-end font-sans text-xs">
+              <div className="text-left w-64 space-y-1">
+                <p>Kepala {schoolProfile.name}</p>
+                <div className="h-20" />
                 <p className="font-bold text-slate-900 underline">{schoolProfile.principalName}</p>
-                <p className="text-[10.5px] text-slate-500">NIP. {schoolProfile.principalNip}</p>
+                <p className="text-[10.5px] text-slate-600">NIP. {schoolProfile.principalNip}</p>
               </div>
             </div>
           </div>
