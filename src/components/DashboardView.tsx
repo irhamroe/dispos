@@ -13,7 +13,12 @@ import {
   CheckCircle2,
   Clock,
   HeartPulse,
-  UserX
+  UserX,
+  GraduationCap,
+  BookOpen,
+  Award,
+  Users,
+  AlertTriangle
 } from 'lucide-react';
 import { AttendanceRecord, DisciplineRecord, Student } from '../types';
 import { RombelClass } from '../data/initialData';
@@ -343,49 +348,121 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           {/* Rombel Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-96 overflow-y-auto pr-1">
-            {classBreakdown.map((item) => (
-              <div
-                key={item.name}
-                onClick={() => {
-                  setSelectedClassFilter(item.name);
-                  onNavigateTab('attendance');
-                }}
-                className="p-3.5 rounded-2xl bg-[#F8FAFC] hover:bg-[#E0F2FE] hover:shadow-xs cursor-pointer transition-all duration-200"
-              >
-                <div className="flex items-center justify-between text-xs mb-1.5">
-                  <span className="font-medium text-[#0F172A]">{item.name}</span>
-                  <span
-                    className={`font-bold text-xs ${
-                      item.rate >= 95 ? 'text-[#1B5E20]' : item.rate >= 85 ? 'text-[#E65100]' : 'text-[#BA1A1A]'
-                    }`}
-                  >
-                    {item.rate}%
-                  </span>
-                </div>
-                
-                <div className="w-full bg-[#E2F1FD] rounded-full h-1.5 overflow-hidden mb-2">
-                  <div
-                    className={`h-full rounded-full transition-all ${
-                      item.rate >= 95 ? 'bg-[#2E7D32]' : item.rate >= 85 ? 'bg-[#EF6C00]' : 'bg-[#C62828]'
-                    }`}
-                    style={{ width: `${item.rate}%` }}
-                  />
-                </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-[460px] overflow-y-auto pr-1">
+            {classBreakdown.map((item) => {
+              const isGradeX = item.grade === 'X' || item.name.startsWith('X-');
+              const isGradeXI = item.grade === 'XI' || item.name.startsWith('XI-');
+              const isGradeXII = item.grade === 'XII' || item.name.startsWith('XII-');
 
-                <div className="flex items-center justify-between text-[10.5px] text-[#334155]">
-                  <span>{item.present}/{item.total} Hadir</span>
-                  {item.alpa > 0 && <span className="font-bold text-[#BA1A1A]">{item.alpa} Alpa</span>}
+              // Visual styling per grade
+              let theme = {
+                cardBg: 'bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE]/70 to-[#BAE6FD]/40 border-[#BAE6FD]/80 hover:border-[#38BDF8]',
+                iconBg: 'bg-gradient-to-tr from-[#0284C7] to-[#38BDF8] text-white',
+                nameColor: 'text-[#0369A1]',
+                watermarkColor: 'text-[#0284C7]/10',
+                progressTrack: 'bg-[#0284C7]/15',
+                progressFill: 'bg-gradient-to-r from-[#0284C7] to-[#38BDF8]',
+                IconComponent: GraduationCap,
+              };
+
+              if (isGradeXI) {
+                theme = {
+                  cardBg: 'bg-gradient-to-br from-[#FAF5FF] via-[#F3E8FF]/70 to-[#DDD6FE]/40 border-[#DDD6FE]/80 hover:border-[#A855F7]',
+                  iconBg: 'bg-gradient-to-tr from-[#7C3AED] to-[#A855F7] text-white',
+                  nameColor: 'text-[#6D28D9]',
+                  watermarkColor: 'text-[#7C3AED]/10',
+                  progressTrack: 'bg-[#7C3AED]/15',
+                  progressFill: 'bg-gradient-to-r from-[#7C3AED] to-[#A855F7]',
+                  IconComponent: BookOpen,
+                };
+              } else if (isGradeXII) {
+                theme = {
+                  cardBg: 'bg-gradient-to-br from-[#F0FDF4] via-[#DCFCE7]/70 to-[#BBF7D0]/40 border-[#BBF7D0]/80 hover:border-[#34D399]',
+                  iconBg: 'bg-gradient-to-tr from-[#059669] to-[#10B981] text-white',
+                  nameColor: 'text-[#047857]',
+                  watermarkColor: 'text-[#059669]/10',
+                  progressTrack: 'bg-[#059669]/15',
+                  progressFill: 'bg-gradient-to-r from-[#059669] to-[#10B981]',
+                  IconComponent: Award,
+                };
+              }
+
+              const CardIcon = theme.IconComponent;
+
+              return (
+                <div
+                  key={item.name}
+                  onClick={() => {
+                    setSelectedClassFilter(item.name);
+                    onNavigateTab('attendance');
+                  }}
+                  className={`p-3.5 rounded-2xl border ${theme.cardBg} hover:shadow-md cursor-pointer transition-all duration-300 relative overflow-hidden group active:scale-[0.98]`}
+                >
+                  <CardIcon className={`w-16 h-16 absolute -right-2 -bottom-2 ${theme.watermarkColor} pointer-events-none group-hover:scale-115 transition-transform duration-300`} />
+
+                  <div className="flex items-center justify-between text-xs mb-2 relative z-10">
+                    <div className="flex items-center gap-2">
+                      <div className={`w-7 h-7 rounded-xl ${theme.iconBg} flex items-center justify-center font-bold text-xs shadow-xs group-hover:rotate-6 transition-transform`}>
+                        <CardIcon className="w-3.5 h-3.5" />
+                      </div>
+                      <span className={`font-bold text-xs ${theme.nameColor}`}>
+                        {item.name}
+                      </span>
+                    </div>
+
+                    <span
+                      className={`font-extrabold text-[11px] px-2 py-0.5 rounded-full border shadow-xs ${
+                        item.rate >= 95
+                          ? 'bg-[#DCFCE7] text-[#15803D] border-[#86EFAC]/70'
+                          : item.rate >= 85
+                          ? 'bg-[#FEF3C7] text-[#B45309] border-[#FDE68A]/70'
+                          : 'bg-[#FFE4E6] text-[#E11D48] border-[#FECDD3]/70'
+                      }`}
+                    >
+                      {item.rate}%
+                    </span>
+                  </div>
+
+                  <div className={`w-full ${theme.progressTrack} rounded-full h-2 overflow-hidden mb-2 relative z-10 p-0.5`}>
+                    <div
+                      className={`h-full rounded-full transition-all duration-500 shadow-xs ${
+                        item.rate >= 95
+                          ? 'bg-gradient-to-r from-[#22c55e] to-[#4ade80]'
+                          : item.rate >= 85
+                          ? 'bg-gradient-to-r from-[#f59e0b] to-[#fbbf24]'
+                          : theme.progressFill
+                      }`}
+                      style={{ width: `${item.rate}%` }}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between text-[10.5px] text-[#334155] relative z-10 font-medium">
+                    <span className="flex items-center gap-1">
+                      <Users className="w-3 h-3 text-[#64748B]" />
+                      <span>{item.present}/{item.total} Hadir</span>
+                    </span>
+                    {item.alpa > 0 ? (
+                      <span className="font-bold text-[#E11D48] px-1.5 py-0.5 rounded-md bg-[#FFE4E6] text-[10px] flex items-center gap-0.5">
+                        <AlertTriangle className="w-2.5 h-2.5" />
+                        {item.alpa} Alpa
+                      </span>
+                    ) : (
+                      <span className="text-[10px] text-[#10B981] font-semibold flex items-center gap-0.5">
+                        <CheckCircle2 className="w-2.5 h-2.5" />
+                        Nihil Alpa
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
         {/* Right Col: Attention List */}
         <div className="space-y-4">
           {/* Siswa Alpa */}
-          <div className="bg-[#F0F9FF] p-5 rounded-[28px] shadow-sm">
+          <div className="bg-gradient-to-br from-[#FFF1F2] via-[#FFE4E6]/50 to-white border border-[#FDA4AF]/60 p-5 rounded-[28px] shadow-sm">
             <div className="flex items-center justify-between mb-2">
               <h4 className="text-xs font-bold uppercase tracking-wider text-[#BA1A1A] flex items-center gap-1.5">
                 <XCircle className="w-4 h-4" />
@@ -397,13 +474,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </p>
 
             {alpaStudents.length === 0 ? (
-              <div className="p-3.5 rounded-xl bg-[#E0F2FE] text-[#0369A1] text-xs text-center font-medium">
+              <div className="p-3.5 rounded-xl bg-[#DCFCE7] text-[#15803D] text-xs text-center font-medium border border-[#86EFAC]/50">
                 Nihil alpa pada rombel terpilih! 🎉
               </div>
             ) : (
               <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                 {alpaStudents.slice(0, 8).map((st) => (
-                  <div key={st.id} className="p-3 rounded-xl bg-[#F8FAFC] text-xs flex items-center justify-between">
+                  <div key={st.id} className="p-3 rounded-xl bg-white border border-[#FECDD3] text-xs flex items-center justify-between shadow-xs">
                     <div>
                       <div className="font-medium text-[#0F172A]">{st.studentName}</div>
                       <div className="text-[10px] text-[#334155]">{st.className} • NISN: {st.nisn}</div>
@@ -418,7 +495,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           {/* Siswa Sakit/Izin Belum Menyerahkan Surat */}
-          <div className="bg-[#F0F9FF] p-5 rounded-[28px] shadow-sm">
+          <div className="bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7]/50 to-white border border-[#FCD34D]/60 p-5 rounded-[28px] shadow-sm">
             <div className="flex items-center justify-between mb-2">
               <h4 className="text-xs font-bold uppercase tracking-wider text-[#E65100] flex items-center gap-1.5">
                 <FileX className="w-4 h-4" />
@@ -438,13 +515,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </p>
 
             {missingLetterStudents.length === 0 ? (
-              <div className="p-3.5 rounded-xl bg-[#E0F2FE] text-[#0369A1] text-xs text-center font-medium">
+              <div className="p-3.5 rounded-xl bg-[#DCFCE7] text-[#15803D] text-xs text-center font-medium border border-[#86EFAC]/50">
                 Seluruh siswa izin &amp; sakit telah menyerahkan surat.
               </div>
             ) : (
               <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                 {missingLetterStudents.slice(0, 8).map((st) => (
-                  <div key={st.id} className="p-3 rounded-xl bg-[#F8FAFC] text-xs flex items-center justify-between">
+                  <div key={st.id} className="p-3 rounded-xl bg-white border border-[#FDE68A] text-xs flex items-center justify-between shadow-xs">
                     <div>
                       <div className="font-medium text-[#0F172A]">{st.studentName}</div>
                       <div className="text-[10px] text-[#334155]">{st.className} • Status: {st.status === 'S' ? 'Sakit' : 'Izin'}</div>
