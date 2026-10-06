@@ -21,7 +21,8 @@ import {
   Info,
   CalendarDays,
   Send,
-  UserCheck
+  UserCheck,
+  Award
 } from 'lucide-react';
 import { 
   Student, 
@@ -83,13 +84,15 @@ export const ParentCallLetterView: React.FC<ParentCallLetterViewProps> = ({
   const [callTime, setCallTime] = useState<string>('Pukul 12.30 WIB – selesai');
   const [callPlace, setCallPlace] = useState<string>('Ruang Disiplin Positif SMA Negeri 1 Batu');
   const [principalName, setPrincipalName] = useState<string>(() => schoolProfile.principalName || 'Drs. Rr. Wulandari Wahyuningsih, M.Pd.');
+  const [principalRank, setPrincipalRank] = useState<string>(() => schoolProfile.principalRank || 'Pembina Utama Muda, IV/c');
   const [principalNip, setPrincipalNip] = useState<string>(() => schoolProfile.principalNip || '19670815 199412 2 003');
 
-  // Synchronize principal name and NIP if schoolProfile changes
+  // Synchronize principal name, rank, and NIP if schoolProfile changes
   React.useEffect(() => {
     if (schoolProfile.principalName) setPrincipalName(schoolProfile.principalName);
+    if (schoolProfile.principalRank) setPrincipalRank(schoolProfile.principalRank);
     if (schoolProfile.principalNip) setPrincipalNip(schoolProfile.principalNip);
-  }, [schoolProfile.principalName, schoolProfile.principalNip]);
+  }, [schoolProfile.principalName, schoolProfile.principalRank, schoolProfile.principalNip]);
 
   // Copy notification alert
   const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
@@ -200,6 +203,7 @@ export const ParentCallLetterView: React.FC<ParentCallLetterViewProps> = ({
       callTime,
       callPlace,
       principalName,
+      principalRank,
       principalNip,
       enablePointsSystem,
     };
@@ -243,7 +247,7 @@ Demikian atas perhatian dan kerjasama yang baik disampaikan terima kasih.
 
 *Kepala ${schoolProfile.name}*
 ${principalName}
-NIP. ${principalNip}`;
+${principalRank ? `${principalRank}\n` : ''}NIP. ${principalNip}`;
 
     navigator.clipboard.writeText(text);
     setCopyFeedback('Template pesan WhatsApp berhasil disalin ke clipboard!');
@@ -692,7 +696,7 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                 />
               </div>
 
-              <div>
+              <div className="sm:col-span-2">
                 <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1">
                   <UserCheck className="w-3.5 h-3.5 text-teal-600" />
                   <span>Nama Kepala Sekolah</span>
@@ -702,6 +706,20 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                   value={principalName}
                   onChange={(e) => setPrincipalName(e.target.value)}
                   placeholder="Nama Kepala Sekolah beserta gelar"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1">
+                  <Award className="w-3.5 h-3.5 text-teal-600" />
+                  <span>Pangkat / Golongan</span>
+                </label>
+                <input
+                  type="text"
+                  value={principalRank}
+                  onChange={(e) => setPrincipalRank(e.target.value)}
+                  placeholder="Contoh: Pembina Utama Muda, IV/c"
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-teal-500"
                 />
               </div>
@@ -968,10 +986,11 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
 
             {/* TANDA TANGAN RESMI KEPALA SEKOLAH (RATA KANAN) */}
             <div className="pt-8 flex justify-end font-sans text-xs">
-              <div className="text-left w-64 space-y-1">
+              <div className="text-left w-64 space-y-0.5">
                 <p>Kepala {schoolProfile.name}</p>
                 <div className="h-20" />
                 <p className="font-bold text-slate-900 underline">{principalName}</p>
+                {principalRank && <p className="text-[10.5px] text-slate-700">{principalRank}</p>}
                 <p className="text-[10.5px] text-slate-600">NIP. {principalNip}</p>
               </div>
             </div>

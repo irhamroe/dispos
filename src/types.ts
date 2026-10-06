@@ -110,6 +110,7 @@ export interface SchoolProfile {
   province: string;
   postalCode: string;
   principalName: string;
+  principalRank?: string;
   principalNip: string;
   academicYear: string;
   semester: 'Ganjil' | 'Genap';

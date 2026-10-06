@@ -8,6 +8,7 @@ export const initialSchoolProfile: SchoolProfile = {
   province: 'Jawa Timur',
   postalCode: '65314',
   principalName: 'Drs. Rr. Wulandari Wahyuningsih, M.Pd.',
+  principalRank: 'Pembina Utama Muda, IV/c',
   principalNip: '19690315 199412 2 002',
   academicYear: '2026/2027',
   semester: 'Ganjil',

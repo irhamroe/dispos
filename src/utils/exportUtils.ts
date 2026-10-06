@@ -1027,6 +1027,7 @@ export interface ParentCallLetterData {
   senderTitle?: string;
   senderName?: string;
   principalName?: string;
+  principalRank?: string;
   principalNip?: string;
   enablePointsSystem?: boolean;
 }
@@ -1261,6 +1262,7 @@ export const exportParentCallLetterToPdf = (data: ParentCallLetterData) => {
 
   // 10. Tanda Tangan Kepala Sekolah (Rata Kanan)
   const finalPrincipalName = data.principalName || schoolProfile.principalName;
+  const finalPrincipalRank = data.principalRank ?? schoolProfile.principalRank ?? '';
   const finalPrincipalNip = data.principalNip || schoolProfile.principalNip;
 
   const sigX = pageWidth - marginX - 65;
@@ -1271,6 +1273,12 @@ export const exportParentCallLetterToPdf = (data: ParentCallLetterData) => {
   curY += 22;
   doc.setFont('helvetica', 'bold');
   doc.text(finalPrincipalName, sigX, curY);
+
+  if (finalPrincipalRank && finalPrincipalRank.trim() !== '') {
+    curY += 4.5;
+    doc.setFont('helvetica', 'normal');
+    doc.text(finalPrincipalRank, sigX, curY);
+  }
 
   curY += 4.5;
   doc.setFont('helvetica', 'normal');
