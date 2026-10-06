@@ -1,1 +1,199 @@
 @import "tailwindcss";
+
+@layer base {
+  :root {
+    --clay-canvas: #F4F1FA;
+    --clay-foreground: #332F3A;
+    --clay-muted: #635F69;
+    --clay-accent: #7C3AED;
+    --clay-accent-pink: #DB2777;
+    --clay-accent-sky: #0EA5E9;
+    --clay-accent-emerald: #10B981;
+    --clay-accent-amber: #F59E0B;
+  }
+
+  body {
+    background-color: var(--clay-canvas);
+    color: var(--clay-foreground);
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Nunito', sans-serif;
+  }
+}
+
+/* ==========================================================================
+   HIGH-FIDELITY CLAYMORPHISM SHADOW STACKS
+   ========================================================================== */
+
+.shadow-clay-card {
+  box-shadow: 
+    16px 16px 32px rgba(160, 150, 180, 0.18),
+    -10px -10px 24px rgba(255, 255, 255, 0.9),
+    inset 6px 6px 12px rgba(139, 92, 246, 0.03),
+    inset -6px -6px 12px rgba(255, 255, 255, 1);
+}
+
+.shadow-clay-card:hover,
+.shadow-clay-card-hover {
+  box-shadow: 
+    20px 20px 40px rgba(140, 125, 170, 0.25),
+    -12px -12px 28px rgba(255, 255, 255, 0.95),
+    inset 6px 6px 12px rgba(139, 92, 246, 0.05),
+    inset -6px -6px 12px #ffffff;
+}
+
+.shadow-clay-surface {
+  box-shadow: 
+    24px 24px 48px #cdc6d9,
+    -24px -24px 48px #ffffff,
+    inset 8px 8px 16px rgba(139, 92, 246, 0.04),
+    inset -8px -8px 16px rgba(255, 255, 255, 0.85);
+}
+
+.shadow-clay-button {
+  box-shadow: 
+    10px 10px 20px rgba(124, 58, 237, 0.28),
+    -6px -6px 14px rgba(255, 255, 255, 0.5),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.35),
+    inset -3px -3px 6px rgba(0, 0, 0, 0.12);
+}
+
+.shadow-clay-button:hover,
+.shadow-clay-button-hover {
+  box-shadow: 
+    14px 14px 28px rgba(124, 58, 237, 0.38),
+    -8px -8px 18px rgba(255, 255, 255, 0.6),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.45),
+    inset -3px -3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.shadow-clay-button-white {
+  box-shadow: 
+    10px 10px 20px rgba(160, 150, 180, 0.22),
+    -6px -6px 14px rgba(255, 255, 255, 0.9),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.9),
+    inset -3px -3px 6px rgba(160, 150, 180, 0.12);
+}
+
+.shadow-clay-button-white:hover {
+  box-shadow: 
+    14px 14px 26px rgba(160, 150, 180, 0.28),
+    -8px -8px 16px rgba(255, 255, 255, 1),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.95),
+    inset -3px -3px 6px rgba(160, 150, 180, 0.15);
+}
+
+.shadow-clay-pressed {
+  box-shadow: 
+    inset 8px 8px 16px #dcd7e8,
+    inset -8px -8px 16px #ffffff;
+}
+
+.shadow-clay-orb {
+  box-shadow: 
+    12px 12px 24px rgba(160, 150, 180, 0.2),
+    -8px -8px 16px rgba(255, 255, 255, 0.9),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.6),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.shadow-clay-pill {
+  box-shadow: 
+    6px 6px 14px rgba(160, 150, 180, 0.18),
+    -4px -4px 10px rgba(255, 255, 255, 0.8),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.5),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
+
+@keyframes clay-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-16px) rotate(2deg); }
+}
+
+@keyframes clay-float-delayed {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(-2deg); }
+}
+
+@keyframes clay-float-slow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-24px) rotate(3deg); }
+}
+
+@keyframes clay-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+.animate-clay-float {
+  animation: clay-float 8s ease-in-out infinite;
+}
+
+.animate-clay-float-delayed {
+  animation: clay-float-delayed 10s ease-in-out infinite 2s;
+}
+
+.animate-clay-float-slow {
+  animation: clay-float-slow 12s ease-in-out infinite 1s;
+}
+
+.animate-clay-breathe {
+  animation: clay-breathe 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-clay-float,
+  .animate-clay-float-delayed,
+  .animate-clay-float-slow,
+  .animate-clay-breathe {
+    animation: none !important;
+  }
+}
+
+/* ==========================================================================
+   CUSTOM UTILITIES
+   ========================================================================== */
+
+.font-nunito {
+  font-family: 'Nunito', sans-serif !important;
+}
+
+.font-dmsans {
+  font-family: 'DM Sans', sans-serif !important;
+}
+
+/* Clay Glassmorphism */
+.clay-glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.clay-glass-solid {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Custom Scrollbar in Clay Lavender */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #EBE5F5;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb {
+  background: #C4B5E0;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9F85D3;
+}

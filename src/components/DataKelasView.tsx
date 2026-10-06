@@ -7,13 +7,13 @@ import {
   UserCheck, 
   GraduationCap, 
   Edit3, 
-  Trash2,
+  Trash2, 
   Plus, 
   Eye, 
   CheckCircle2, 
-  X,
-  DoorOpen,
-  Building2
+  X, 
+  DoorOpen, 
+  Building2 
 } from 'lucide-react';
 import { Student } from '../types';
 import { RombelClass } from '../data/initialData';
@@ -141,20 +141,25 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
 
   return (
     <div className="space-y-6 pb-12">
-      {/* Header View */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-teal-50 text-teal-700 border border-teal-200">
-              Manajemen Data Sekolah
-            </span>
+      {/* Header View with Claymorphism */}
+      <div className="relative overflow-hidden rounded-[36px] bg-white/80 p-6 sm:p-8 backdrop-blur-xl shadow-clay-card border border-white/60 flex flex-col md:flex-row md:items-center justify-between gap-5">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#7C3AED] to-[#9333EA] text-white flex items-center justify-center shadow-clay-button shrink-0">
+            <Layers className="w-7 h-7" />
           </div>
-          <h2 className="text-xl font-bold text-slate-900 tracking-tight">
-            Data Kelas & Rombongan Belajar
-          </h2>
-          <p className="text-xs text-slate-500 mt-1">
-            Daftar 36 rombel aktif SMAN 1 Batu tahun ajaran 2026/2027 beserta wali kelas dan ruang belajar.
-          </p>
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="px-3 py-1 rounded-xl text-xs font-black bg-purple-100 text-[#7C3AED] shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                Manajemen Data Sekolah
+              </span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black text-[#332F3A] tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              Data Kelas &amp; Rombongan Belajar
+            </h2>
+            <p className="text-sm text-[#635F69] mt-1 font-medium">
+              Daftar 36 rombel aktif SMAN 1 Batu tahun ajaran 2026/2027 beserta wali kelas dan ruang belajar.
+            </p>
+          </div>
         </div>
 
         {onAddClass && (
@@ -162,7 +167,8 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
             type="button"
             id="btn-add-class"
             onClick={() => setIsAddModalOpen(true)}
-            className="px-4 py-2.5 bg-teal-600 hover:bg-teal-500 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-2 cursor-pointer self-start md:self-auto"
+            className="px-5 py-3 bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] hover:from-[#9333EA] hover:to-[#6D28D9] text-white rounded-2xl text-xs font-extrabold transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed flex items-center gap-2 cursor-pointer self-start md:self-auto"
+            style={{ fontFamily: 'Nunito, sans-serif' }}
           >
             <Plus className="w-4 h-4" />
             <span>Tambah Rombel</span>
@@ -171,63 +177,64 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
       </div>
 
       {/* Metric Cards Ringkasan */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs flex items-center gap-3">
-          <div className="p-3 bg-teal-50 text-teal-600 rounded-xl">
-            <Layers className="w-5 h-5" />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-clay-card border border-white/60 hover:-translate-y-1.5 transition-all flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 text-white flex items-center justify-center shadow-clay-button shrink-0">
+            <Layers className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[11px] font-medium text-slate-500">Total Rombel</div>
-            <div className="text-lg font-bold text-slate-900">{classes.length} Kelas</div>
+            <div className="text-[11px] font-black text-[#635F69] uppercase tracking-wider" style={{ fontFamily: 'Nunito, sans-serif' }}>Total Rombel</div>
+            <div className="text-2xl sm:text-3xl font-black text-[#332F3A] mt-0.5" style={{ fontFamily: 'Nunito, sans-serif' }}>{classes.length} Kelas</div>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs flex items-center gap-3">
-          <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
-            <GraduationCap className="w-5 h-5" />
+        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-clay-card border border-sky-200/60 hover:-translate-y-1.5 transition-all flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 text-white flex items-center justify-center shadow-clay-button shrink-0">
+            <GraduationCap className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[11px] font-medium text-slate-500">Kelas X</div>
-            <div className="text-lg font-bold text-slate-900">{countGradeX} Rombel</div>
+            <div className="text-[11px] font-black text-sky-700 uppercase tracking-wider" style={{ fontFamily: 'Nunito, sans-serif' }}>Kelas X</div>
+            <div className="text-2xl sm:text-3xl font-black text-sky-700 mt-0.5" style={{ fontFamily: 'Nunito, sans-serif' }}>{countGradeX} Rombel</div>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs flex items-center gap-3">
-          <div className="p-3 bg-indigo-50 text-indigo-600 rounded-xl">
-            <GraduationCap className="w-5 h-5" />
+        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-clay-card border border-indigo-200/60 hover:-translate-y-1.5 transition-all flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center shadow-clay-button shrink-0">
+            <GraduationCap className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[11px] font-medium text-slate-500">Kelas XI</div>
-            <div className="text-lg font-bold text-slate-900">{countGradeXI} Rombel</div>
+            <div className="text-[11px] font-black text-indigo-700 uppercase tracking-wider" style={{ fontFamily: 'Nunito, sans-serif' }}>Kelas XI</div>
+            <div className="text-2xl sm:text-3xl font-black text-indigo-700 mt-0.5" style={{ fontFamily: 'Nunito, sans-serif' }}>{countGradeXI} Rombel</div>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs flex items-center gap-3">
-          <div className="p-3 bg-purple-50 text-purple-600 rounded-xl">
-            <GraduationCap className="w-5 h-5" />
+        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-clay-card border border-purple-200/60 hover:-translate-y-1.5 transition-all flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 text-white flex items-center justify-center shadow-clay-button shrink-0">
+            <GraduationCap className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[11px] font-medium text-slate-500">Kelas XII</div>
-            <div className="text-lg font-bold text-slate-900">{countGradeXII} Rombel</div>
+            <div className="text-[11px] font-black text-purple-700 uppercase tracking-wider" style={{ fontFamily: 'Nunito, sans-serif' }}>Kelas XII</div>
+            <div className="text-2xl sm:text-3xl font-black text-purple-700 mt-0.5" style={{ fontFamily: 'Nunito, sans-serif' }}>{countGradeXII} Rombel</div>
           </div>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row items-center justify-between gap-3">
+      <div className="rounded-[32px] bg-white/80 p-6 backdrop-blur-xl shadow-clay-card border border-white/60 flex flex-col md:flex-row items-center justify-between gap-4">
         {/* Jenjang Filter Tabs */}
-        <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl w-full md:w-auto">
+        <div className="flex items-center gap-2 p-1.5 bg-[#EFEBF5] rounded-2xl shadow-clay-pressed w-full md:w-auto font-bold">
           {(['ALL', 'X', 'XI', 'XII'] as const).map((grade) => (
             <button
               key={grade}
               type="button"
               id={`filter-grade-${grade}`}
               onClick={() => setSelectedGrade(grade)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
                 selectedGrade === grade
-                  ? 'bg-white text-teal-700 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] text-white shadow-clay-button -translate-y-0.5'
+                  : 'text-[#635F69] hover:text-[#332F3A]'
               }`}
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               {grade === 'ALL' ? 'Semua Jenjang' : `Kelas ${grade}`}
             </button>
@@ -235,37 +242,37 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
         </div>
 
         {/* Search */}
-        <div className="relative w-full md:w-72">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+        <div className="relative w-full md:w-80">
+          <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[#635F69]" />
           <input
             id="search-class-input"
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Cari rombel, wali kelas, ruang..."
-            className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-hidden focus:bg-white focus:ring-1 focus:ring-teal-500"
+            className="w-full pl-11 pr-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs text-[#332F3A] placeholder-[#635F69] shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 font-medium"
           />
         </div>
       </div>
 
       {/* Data Table */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+      <div className="rounded-[36px] bg-white/80 backdrop-blur-xl shadow-clay-card border border-white/60 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse border border-slate-300">
+          <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-700 divide-x divide-slate-300 border-b border-slate-300">
-                <th className="py-2.5 px-2 w-10 text-center">No</th>
-                <th className="py-2.5 px-3 min-w-[130px]">Nama Rombel</th>
-                <th className="py-2.5 px-3 min-w-[200px]">Wali Kelas &amp; Ruangan</th>
-                <th className="py-2.5 px-3 text-center min-w-[130px]">Jumlah Siswa &amp; Rasio</th>
-                <th className="py-2.5 px-2 text-center w-20">Status</th>
-                <th className="py-2.5 px-2 w-32 text-center bg-slate-100">Aksi</th>
+              <tr className="bg-gradient-to-r from-slate-100/80 to-purple-50/50 text-[#635F69] font-black text-xs uppercase tracking-wider border-b border-slate-200/60" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                <th className="py-4 px-4 w-12 text-center">No</th>
+                <th className="py-4 px-5 min-w-[140px]">Nama Rombel</th>
+                <th className="py-4 px-5 min-w-[220px]">Wali Kelas &amp; Ruangan</th>
+                <th className="py-4 px-5 text-center min-w-[150px]">Jumlah Siswa &amp; Rasio</th>
+                <th className="py-4 px-4 text-center w-24">Status</th>
+                <th className="py-4 px-4 w-36 text-center">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-300 text-xs">
+            <tbody className="divide-y divide-slate-100 text-xs">
               {filteredClasses.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-slate-400">
+                  <td colSpan={6} className="py-12 text-center text-[#635F69] font-bold">
                     Tidak ada rombel yang cocok dengan kriteria pencarian.
                   </td>
                 </tr>
@@ -275,64 +282,65 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
                   return (
                     <tr
                       key={c.id}
-                      className="divide-x divide-slate-300 hover:bg-slate-50 transition-colors"
+                      className="hover:bg-purple-50/30 transition-colors"
                     >
                       {/* No */}
-                      <td className="py-2.5 px-2 text-center font-semibold text-slate-600">
+                      <td className="py-4 px-4 text-center font-bold text-[#635F69]">
                         {idx + 1}
                       </td>
 
                       {/* Nama Rombel & Tingkat */}
-                      <td className="py-2.5 px-3">
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-slate-900 text-sm">
+                      <td className="py-4 px-5">
+                        <div className="flex items-center gap-2.5">
+                          <span className="font-black text-[#332F3A] text-sm" style={{ fontFamily: 'Nunito, sans-serif' }}>
                             {c.name}
                           </span>
-                          <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700">
+                          <span className="px-2.5 py-0.5 rounded-lg text-[10px] font-black bg-[#EFEBF5] text-[#7C3AED] shadow-2xs">
                             Kelas {c.grade}
                           </span>
                         </div>
                       </td>
 
                       {/* Wali Kelas & Ruang Belajar */}
-                      <td className="py-2.5 px-3">
-                        <div className="font-semibold text-slate-900 leading-tight">
+                      <td className="py-4 px-5">
+                        <div className="font-bold text-[#332F3A] leading-tight">
                           {c.homeroom}
                         </div>
-                        <div className="flex items-center gap-1 text-[11px] text-slate-500 mt-0.5">
-                          <DoorOpen className="w-3 h-3 text-teal-600 shrink-0" />
+                        <div className="flex items-center gap-1.5 text-xs text-[#635F69] mt-0.5">
+                          <DoorOpen className="w-3.5 h-3.5 text-[#7C3AED] shrink-0" />
                           <span>{c.room || `Gedung Kelas ${c.grade}`}</span>
                         </div>
                       </td>
 
                       {/* Jumlah Siswa & Rasio L/P */}
-                      <td className="py-2.5 px-3 text-center">
-                        <div className="font-bold text-teal-700">
+                      <td className="py-4 px-5 text-center">
+                        <div className="font-black text-[#7C3AED] text-sm" style={{ fontFamily: 'Nunito, sans-serif' }}>
                           {stats.total} Siswa
                         </div>
-                        <div className="text-[10.5px] text-slate-500 font-mono">
+                        <div className="text-xs text-[#635F69] font-mono mt-0.5">
                           {stats.l} L / {stats.p} P
                         </div>
                       </td>
 
                       {/* Status */}
-                      <td className="py-2.5 px-2 text-center">
-                        <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                      <td className="py-4 px-4 text-center">
+                        <span className="px-3 py-1 rounded-xl text-xs font-black bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
                           Aktif
                         </span>
                       </td>
 
                       {/* Aksi */}
-                      <td className="py-2 px-2 text-center bg-slate-50/60">
-                        <div className="flex items-center justify-center gap-1.5">
+                      <td className="py-4 px-4 text-center">
+                        <div className="flex items-center justify-center gap-2">
                           <button
                             type="button"
                             id={`btn-view-students-${c.id}`}
                             onClick={() => onViewClassStudents(c.name)}
                             title="Lihat Daftar Siswa"
-                            className="px-2 py-1 bg-white hover:bg-teal-50 text-slate-700 hover:text-teal-700 rounded-md font-semibold text-[11px] flex items-center gap-1 border border-slate-200 shadow-2xs transition-colors cursor-pointer"
+                            className="px-3 py-1.5 bg-white hover:bg-purple-50 text-[#7C3AED] rounded-xl font-black text-xs flex items-center gap-1 shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
+                            style={{ fontFamily: 'Nunito, sans-serif' }}
                           >
-                            <Eye className="w-3 h-3" />
+                            <Eye className="w-3.5 h-3.5" />
                             <span>Siswa</span>
                           </button>
                           <button
@@ -340,9 +348,9 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
                             id={`btn-edit-class-${c.id}`}
                             onClick={() => handleOpenEdit(c)}
                             title="Edit Rombel"
-                            className="p-1 bg-white hover:bg-amber-50 text-slate-600 hover:text-amber-700 rounded-md border border-slate-200 shadow-2xs transition-colors cursor-pointer"
+                            className="p-2 bg-white hover:bg-amber-50 text-[#635F69] hover:text-amber-700 rounded-xl shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
                           >
-                            <Edit3 className="w-3.5 h-3.5" />
+                            <Edit3 className="w-4 h-4" />
                           </button>
                           {onDeleteClass && (
                             <button
@@ -350,9 +358,9 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
                               id={`btn-delete-class-${c.id}`}
                               onClick={() => handleDeleteClass(c)}
                               title="Hapus Rombel"
-                              className="p-1 bg-white hover:bg-rose-50 text-rose-600 hover:text-rose-700 rounded-md border border-rose-200 shadow-2xs transition-colors cursor-pointer"
+                              className="p-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl shadow-clay-surface hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
                             >
-                              <Trash2 className="w-3.5 h-3.5" />
+                              <Trash2 className="w-4 h-4" />
                             </button>
                           )}
                         </div>
@@ -368,36 +376,37 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
 
       {/* Edit Class Modal */}
       {editingClass && (
-        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-xl border border-slate-200">
-            <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
-              <h3 className="text-base font-bold text-slate-900">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#332F3A]/60 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white/95 backdrop-blur-2xl w-full max-w-md rounded-[36px] p-6 sm:p-8 shadow-clay-card border border-white/60 animate-in fade-in zoom-in-95 my-8">
+            <div className="flex items-center justify-between mb-5 border-b border-slate-200/60 pb-4">
+              <h3 className="text-lg font-black text-[#332F3A]" style={{ fontFamily: 'Nunito, sans-serif' }}>
                 Edit Rombel {editingClass.name}
               </h3>
               <button
                 type="button"
                 onClick={() => setEditingClass(null)}
-                className="p-1 text-slate-400 hover:text-slate-600 rounded-lg"
+                className="w-9 h-9 rounded-2xl bg-[#EFEBF5] text-[#635F69] hover:text-[#332F3A] flex items-center justify-center cursor-pointer shadow-clay-surface"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveEdit} className="space-y-4">
+            <form onSubmit={handleSaveEdit} className="space-y-4 text-xs">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                   Nama Rombel
                 </label>
                 <input
                   type="text"
                   disabled
                   value={editingClass.name}
-                  className="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl text-xs text-slate-500 font-semibold"
+                  className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#635F69] font-black shadow-clay-pressed"
+                  style={{ fontFamily: 'Nunito, sans-serif' }}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                   Wali Kelas
                 </label>
                 <input
@@ -405,13 +414,13 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
                   value={editHomeroom}
                   onChange={(e) => setEditHomeroom(e.target.value)}
                   placeholder="Nama Lengkap & Gelar Wali Kelas"
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-hidden focus:bg-white focus:ring-1 focus:ring-teal-500"
+                  className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-bold shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                   Ruang Kelas / Gedung
                 </label>
                 <input
@@ -419,12 +428,12 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
                   value={editRoom}
                   onChange={(e) => setEditRoom(e.target.value)}
                   placeholder="Contoh: Gedung A - R.101"
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-hidden focus:bg-white focus:ring-1 focus:ring-teal-500"
+                  className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-medium shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                   Kapasitas Siswa
                 </label>
                 <input
@@ -433,21 +442,23 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
                   max={50}
                   value={editCapacity}
                   onChange={(e) => setEditCapacity(parseInt(e.target.value) || 36)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-hidden focus:bg-white focus:ring-1 focus:ring-teal-500"
+                  className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-bold shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200/60">
                 <button
                   type="button"
                   onClick={() => setEditingClass(null)}
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold cursor-pointer"
+                  className="px-5 py-2.5 bg-[#EFEBF5] hover:bg-white text-[#635F69] rounded-2xl font-black shadow-clay-button active:scale-[0.92] cursor-pointer"
+                  style={{ fontFamily: 'Nunito, sans-serif' }}
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-xl text-xs font-bold cursor-pointer"
+                  className="px-6 py-2.5 bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] hover:from-[#9333EA] hover:to-[#6D28D9] text-white rounded-2xl font-black shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] cursor-pointer"
+                  style={{ fontFamily: 'Nunito, sans-serif' }}
                 >
                   Simpan Perubahan
                 </button>
@@ -459,31 +470,32 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
 
       {/* Add Class Modal */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-xl border border-slate-200">
-            <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
-              <h3 className="text-base font-bold text-slate-900">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#332F3A]/60 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white/95 backdrop-blur-2xl w-full max-w-md rounded-[36px] p-6 sm:p-8 shadow-clay-card border border-white/60 animate-in fade-in zoom-in-95 my-8">
+            <div className="flex items-center justify-between mb-5 border-b border-slate-200/60 pb-4">
+              <h3 className="text-lg font-black text-[#332F3A]" style={{ fontFamily: 'Nunito, sans-serif' }}>
                 Tambah Rombongan Belajar Baru
               </h3>
               <button
                 type="button"
                 onClick={() => setIsAddModalOpen(false)}
-                className="p-1 text-slate-400 hover:text-slate-600 rounded-lg"
+                className="w-9 h-9 rounded-2xl bg-[#EFEBF5] text-[#635F69] hover:text-[#332F3A] flex items-center justify-center cursor-pointer shadow-clay-surface"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveNew} className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
+            <form onSubmit={handleSaveNew} className="space-y-4 text-xs">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                     Tingkat / Jenjang
                   </label>
                   <select
                     value={newGrade}
                     onChange={(e) => setNewGrade(e.target.value as 'X' | 'XI' | 'XII')}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900"
+                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-extrabold shadow-clay-pressed focus:outline-hidden focus:bg-white cursor-pointer"
+                    style={{ fontFamily: 'Nunito, sans-serif' }}
                   >
                     <option value="X">Kelas X</option>
                     <option value="XI">Kelas XI</option>
@@ -491,7 +503,7 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                     Nama Rombel
                   </label>
                   <input
@@ -499,14 +511,14 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
                     placeholder="Misal: X-13"
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900"
+                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-bold shadow-clay-pressed focus:outline-hidden focus:bg-white"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                   Wali Kelas
                 </label>
                 <input
@@ -514,13 +526,13 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
                   value={newHomeroom}
                   onChange={(e) => setNewHomeroom(e.target.value)}
                   placeholder="Nama Lengkap & Gelar Wali Kelas"
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900"
+                  className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-bold shadow-clay-pressed focus:outline-hidden focus:bg-white"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                   Ruang Kelas / Gedung
                 </label>
                 <input
@@ -528,21 +540,23 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
                   value={newRoom}
                   onChange={(e) => setNewRoom(e.target.value)}
                   placeholder="Contoh: Gedung A - R.113"
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900"
+                  className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-medium shadow-clay-pressed focus:outline-hidden focus:bg-white"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200/60">
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold cursor-pointer"
+                  className="px-5 py-2.5 bg-[#EFEBF5] hover:bg-white text-[#635F69] rounded-2xl font-black shadow-clay-button active:scale-[0.92] cursor-pointer"
+                  style={{ fontFamily: 'Nunito, sans-serif' }}
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-xl text-xs font-bold cursor-pointer"
+                  className="px-6 py-2.5 bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] hover:from-[#9333EA] hover:to-[#6D28D9] text-white rounded-2xl font-black shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] cursor-pointer"
+                  style={{ fontFamily: 'Nunito, sans-serif' }}
                 >
                   Tambahkan Rombel
                 </button>

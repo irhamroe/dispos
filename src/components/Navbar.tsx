@@ -1,12 +1,11 @@
 import React from 'react';
 import { 
-  School, 
-  UserCheck, 
-  LogOut, 
   Menu, 
   ShieldCheck, 
   CalendarDays,
-  Bell
+  LogOut,
+  CloudCheck,
+  CloudOff
 } from 'lucide-react';
 import { AdminUser, SchoolProfile } from '../types';
 
@@ -30,77 +29,108 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenFirebaseModal,
 }) => {
   return (
-    <header id="main-header" className="sticky top-0 z-30 bg-white border-b border-slate-200 shadow-xs">
-      <div className="px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Brand / School Info */}
+    <header 
+      id="main-header" 
+      className="sticky top-0 z-30 px-3 sm:px-6 pt-3 pb-1"
+    >
+      <div className="max-w-7xl mx-auto bg-white/80 backdrop-blur-xl rounded-[28px] sm:rounded-[36px] shadow-clay-card border border-white/80 px-4 sm:px-6 py-2.5 sm:py-3 transition-all">
+        <div className="flex items-center justify-between">
+          {/* Left: Mobile Menu + School Logo & Title */}
           <div className="flex items-center space-x-3">
             <button
               id="mobile-menu-toggle-btn"
               type="button"
               onClick={onToggleMobileMenu}
-              className="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 focus:outline-hidden"
+              className="lg:hidden p-2.5 rounded-2xl bg-white shadow-clay-button text-clay-foreground hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed transition-all duration-200 cursor-pointer"
               aria-label="Toggle menu navigasi"
             >
               <Menu className="w-5 h-5" />
             </button>
 
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-xs ring-2 ring-emerald-500/20 shrink-0">
+              {/* Convex Clay Logo Orb */}
+              <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-white shadow-clay-orb flex items-center justify-center p-1.5 shrink-0 border border-white">
                 <img 
                   src="/logo.png" 
                   alt={schoolProfile.name} 
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-contain drop-shadow-xs"
                 />
               </div>
+
               <div>
                 <div className="flex items-center space-x-2">
-                  <h1 className="text-base font-bold text-slate-900 leading-tight">
+                  <h1 className="text-sm sm:text-base font-nunito font-extrabold text-clay-foreground tracking-tight leading-tight">
                     {schoolProfile.name}
                   </h1>
-                  <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+                  <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-nunito font-extrabold bg-gradient-to-r from-emerald-400 to-teal-500 text-white shadow-clay-pill">
                     NPSN {schoolProfile.npsn}
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 flex items-center gap-1">
-                  <span className="font-medium text-slate-700">T.A. {schoolProfile.academicYear} ({schoolProfile.semester})</span>
-                  <span className="text-slate-300">•</span>
-                  <span className="hidden md:inline">Sistem Presensi & Disiplin Positif</span>
+                <p className="text-xs text-clay-muted flex items-center gap-1.5 mt-0.5">
+                  <span className="font-semibold text-clay-foreground">T.A. {schoolProfile.academicYear} ({schoolProfile.semester})</span>
+                  <span className="text-violet-300">•</span>
+                  <span className="hidden md:inline font-medium">Sistem Presensi & Disiplin Positif</span>
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Right Header Section: Today Info & User Account */}
-          <div className="flex items-center space-x-2.5 sm:space-x-3">
+          {/* Right Header Section: Cloud Sync, Date & User Profile */}
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            {/* Cloud Sync Status Pill */}
+            {onOpenFirebaseModal && (
+              <button
+                type="button"
+                onClick={onOpenFirebaseModal}
+                title={isFirebaseConnected ? 'Cloud Firestore Terhubung' : 'Konfigurasi Cloud Firestore'}
+                className={`hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-2xl text-xs font-nunito font-extrabold transition-all duration-200 cursor-pointer hover:-translate-y-0.5 active:scale-[0.92] ${
+                  isFirebaseConnected
+                    ? 'bg-emerald-50 text-emerald-700 shadow-clay-pill border border-emerald-200/50'
+                    : 'bg-amber-50 text-amber-700 shadow-clay-pill border border-amber-200/50'
+                }`}
+              >
+                {isFirebaseConnected ? (
+                  <>
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>Cloud Sync Aktif</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="w-2 h-2 rounded-full bg-amber-500" />
+                    <span>Offline Mode</span>
+                  </>
+                )}
+              </button>
+            )}
+
             {/* Calendar pill */}
-            <div className="hidden lg:flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-medium">
-              <CalendarDays className="w-4 h-4 text-emerald-600" />
+            <div className="hidden lg:flex items-center space-x-2 px-3.5 py-2 rounded-2xl bg-[#EFEBF5] text-clay-foreground text-xs font-bold shadow-clay-pressed">
+              <CalendarDays className="w-4 h-4 text-violet-600" />
               <span>{todayStr}</span>
             </div>
 
             {/* User Profile Card & Logout */}
             {currentUser ? (
-              <div className="flex items-center space-x-3 pl-2 sm:pl-3 border-l border-slate-200">
-                <div className="flex items-center space-x-2.5">
+              <div className="flex items-center space-x-2.5 sm:space-x-3 pl-2 sm:pl-3 border-l border-violet-100">
+                <div className="flex items-center space-x-2 sm:space-x-2.5">
                   {currentUser.photoUrl ? (
                     <img
                       src={currentUser.photoUrl}
                       alt={currentUser.name}
-                      className="w-9 h-9 rounded-full object-cover ring-2 ring-purple-200 shadow-2xs"
+                      className="w-10 h-10 rounded-2xl object-cover shadow-clay-orb border border-white"
                     />
                   ) : (
-                    <div className="w-9 h-9 rounded-full bg-linear-to-br from-purple-700 to-indigo-800 text-white flex items-center justify-center font-bold text-xs ring-2 ring-purple-100 shadow-2xs">
+                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 text-white flex items-center justify-center font-nunito font-extrabold text-xs shadow-clay-button border border-white/60">
                       {currentUser.avatar || currentUser.name.slice(0, 2).toUpperCase()}
                     </div>
                   )}
                   <div className="hidden sm:block text-left">
-                    <p className="text-xs font-semibold text-slate-800 leading-tight">
+                    <p className="text-xs font-nunito font-extrabold text-clay-foreground leading-tight">
                       {currentUser.name}
                     </p>
-                    <div className="flex items-center space-x-1">
-                      <ShieldCheck className="w-3 h-3 text-purple-600" />
-                      <span className="text-[11px] font-bold text-purple-700">
+                    <div className="flex items-center space-x-1 mt-0.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-violet-600" />
+                      <span className="text-[11px] font-bold text-violet-700">
                         {currentUser.role}
                         {currentUser.role === 'Wali Kelas' && currentUser.assignedClass ? ` (${currentUser.assignedClass})` : ''}
                       </span>
@@ -112,7 +142,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   id="navbar-logout-btn"
                   onClick={onLogout}
                   title="Keluar dari sistem"
-                  className="p-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                  className="p-2.5 rounded-2xl bg-white text-rose-500 hover:text-rose-600 hover:bg-rose-50/80 shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed transition-all duration-200 cursor-pointer"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>

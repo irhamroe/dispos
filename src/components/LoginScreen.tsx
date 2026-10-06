@@ -6,9 +6,14 @@ import {
   EyeOff, 
   ShieldCheck, 
   AlertCircle,
-  KeyRound
+  KeyRound,
+  Sparkles
 } from 'lucide-react';
 import { AdminUser, SchoolProfile } from '../types';
+import { ClayBackgroundBlobs } from './clay/ClayBackgroundBlobs';
+import { ClayCard } from './clay/ClayCard';
+import { ClayButton } from './clay/ClayButton';
+import { ClayBadge } from './clay/ClayBadge';
 
 interface LoginScreenProps {
   onLoginSuccess: (user: AdminUser) => void;
@@ -101,118 +106,131 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Subtle background ambient gradients */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-linear-to-b from-emerald-600/20 via-teal-900/10 to-transparent blur-3xl pointer-events-none" />
+    <div className="min-h-screen bg-[#F4F1FA] flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden font-dmsans">
+      {/* 3D Floating Blobs Background */}
+      <ClayBackgroundBlobs />
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4">
-        {/* School Logo & Title */}
+        {/* School Logo & Header */}
         <div className="flex flex-col items-center text-center">
-          <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-md p-2 flex items-center justify-center shadow-xl shadow-emerald-950/50 ring-2 ring-white/20 mb-4">
+          <div className="w-24 h-24 rounded-[28px] bg-white/90 p-3.5 flex items-center justify-center shadow-clay-orb mb-4 animate-clay-breathe border border-white">
             <img 
               src="/logo.png" 
               alt={schoolProfile.name} 
-              className="w-full h-full object-contain drop-shadow-md"
+              className="w-full h-full object-contain drop-shadow-sm select-none"
             />
           </div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950/80 text-emerald-400 border border-emerald-800/80 mb-2">
-            <ShieldCheck className="w-3.5 h-3.5" /> Portal Autentikasi Tenaga Pendidik
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+
+          <ClayBadge variant="violet" size="md" className="mb-2.5" icon={<ShieldCheck className="w-3.5 h-3.5 text-purple-700" />}>
+            Portal Autentikasi Tenaga Pendidik
+          </ClayBadge>
+
+          <h1 className="text-2xl sm:text-3xl font-black font-nunito text-[#332F3A] tracking-tight">
             {schoolProfile.name}
-          </h2>
-          <p className="mt-1 text-sm text-slate-400">
+          </h1>
+          <p className="mt-1 text-xs sm:text-sm text-[#635F69] font-medium">
             Sistem Informasi Presensi Kehadiran &amp; Disiplin Positif Siswa
           </p>
         </div>
 
-        {/* Login Card */}
-        <div className="mt-8 bg-slate-800/90 backdrop-blur-md border border-slate-700/80 shadow-2xl rounded-2xl p-6 sm:p-8">
-          <form onSubmit={handleLogin} className="space-y-4">
-            {errorMsg && (
-              <div className="p-3.5 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-300 text-xs flex items-start gap-2.5">
-                <AlertCircle className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
-                <span>{errorMsg}</span>
-              </div>
-            )}
-
-            <div>
-              <label htmlFor="username-input" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-                Username / NIP
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                  <User className="w-4 h-4" />
+        {/* Claymorphism Login Card */}
+        <div className="mt-7">
+          <ClayCard radius="36" variant="glass" className="p-7 sm:p-8 space-y-5">
+            <form onSubmit={handleLogin} className="space-y-4">
+              {errorMsg && (
+                <div className="p-3.5 rounded-[18px] bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-start gap-2.5 shadow-clay-pill">
+                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-600 mt-0.5" />
+                  <span>{errorMsg}</span>
                 </div>
-                <input
-                  id="username-input"
-                  type="text"
-                  required
-                  autoFocus
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Masukkan username atau NIP..."
-                  className="block w-full pl-10 pr-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
-                />
-              </div>
-            </div>
+              )}
 
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label htmlFor="password-input" className="block text-xs font-semibold uppercase tracking-wider text-slate-300">
+              {/* Username Input */}
+              <div className="space-y-1.5">
+                <label 
+                  htmlFor="username-input" 
+                  className="block text-xs font-bold text-[#4C4459] font-nunito tracking-wide"
+                >
+                  Username / NIP
+                </label>
+                <div className="relative flex items-center">
+                  <div className="absolute left-4 text-purple-600 pointer-events-none flex items-center">
+                    <User className="w-4 h-4" />
+                  </div>
+                  <input
+                    id="username-input"
+                    type="text"
+                    required
+                    autoFocus
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Masukkan username atau NIP..."
+                    className="w-full bg-[#ECE7F5] border-0 text-[#332F3A] font-semibold text-sm rounded-[18px] shadow-clay-pressed py-3.5 pl-11 pr-4 transition-all duration-200 placeholder:text-[#8E869B] placeholder:font-normal focus:bg-white focus:ring-4 focus:ring-purple-400/25 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Password Input */}
+              <div className="space-y-1.5">
+                <label 
+                  htmlFor="password-input" 
+                  className="block text-xs font-bold text-[#4C4459] font-nunito tracking-wide"
+                >
                   Kata Sandi (Password)
                 </label>
-              </div>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                  <Lock className="w-4 h-4" />
+                <div className="relative flex items-center">
+                  <div className="absolute left-4 text-purple-600 pointer-events-none flex items-center">
+                    <Lock className="w-4 h-4" />
+                  </div>
+                  <input
+                    id="password-input"
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Masukkan kata sandi..."
+                    className="w-full bg-[#ECE7F5] border-0 text-[#332F3A] font-semibold text-sm rounded-[18px] shadow-clay-pressed py-3.5 pl-11 pr-11 transition-all duration-200 placeholder:text-[#8E869B] placeholder:font-normal focus:bg-white focus:ring-4 focus:ring-purple-400/25 focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    id="toggle-password-btn"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 text-[#8E869B] hover:text-purple-700 transition-colors cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 </div>
-                <input
-                  id="password-input"
-                  type={showPassword ? 'text' : 'password'}
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Masukkan kata sandi..."
-                  className="block w-full pl-10 pr-10 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
-                />
-                <button
-                  type="button"
-                  id="toggle-password-btn"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200 cursor-pointer"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
               </div>
-            </div>
 
-            <button
-              type="submit"
-              id="submit-login-btn"
-              disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl shadow-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm transition-all focus:outline-hidden focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:opacity-50 cursor-pointer mt-2"
-            >
-              {isLoading ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Memverifikasi Akses...</span>
-                </>
-              ) : (
-                <>
-                  <KeyRound className="w-4 h-4" />
-                  <span>Masuk ke Sistem</span>
-                </>
-              )}
-            </button>
-          </form>
+              {/* Submit Button */}
+              <div className="pt-2">
+                <ClayButton
+                  type="submit"
+                  id="submit-login-btn"
+                  variant="primary"
+                  size="lg"
+                  disabled={isLoading}
+                  className="w-full"
+                  icon={isLoading ? undefined : <KeyRound className="w-4 h-4" />}
+                >
+                  {isLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                      <span>Memverifikasi Akses...</span>
+                    </div>
+                  ) : (
+                    <span>Masuk ke Sistem</span>
+                  )}
+                </ClayButton>
+              </div>
+            </form>
+          </ClayCard>
         </div>
 
-        {/* Security badge note */}
-        <div className="mt-4 text-center">
-          <p className="text-xs text-slate-500 flex items-center justify-center gap-1.5">
-            <Lock className="w-3.5 h-3.5 text-emerald-600" />
-            Sistem terenkripsi. Catatan kedisiplinan dan absensi terlindungi.
+        {/* Security Note */}
+        <div className="mt-5 text-center">
+          <p className="text-xs text-[#7A7485] font-medium flex items-center justify-center gap-1.5">
+            <Lock className="w-3.5 h-3.5 text-purple-600" />
+            <span>Sistem terenkripsi. Catatan kedisiplinan dan absensi terlindungi.</span>
           </p>
         </div>
       </div>

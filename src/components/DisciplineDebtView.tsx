@@ -91,9 +91,6 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
   }, [students]);
 
   // Filter records that have pending debt
-  // A record has a debt if:
-  // 1. coachingStatus !== 'Sudah' OR no coaching photo (Belum Dibina)
-  // 2. coachingStatus === 'Sudah' AND missing coachingEvidenceFileName (Surat Menyusul / Belum TTD)
   const allDebtRecords = useMemo(() => {
     const list = disciplineRecords.filter((rec) => {
       const isCoachingBelum = rec.coachingStatus !== 'Sudah';
@@ -105,22 +102,17 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
 
   // Sub-counts
   const totalDebtCount = allDebtRecords.length;
-  // Belum Pembinaan: Sesi belum dilaksanakan sama sekali
   const noCoachingCount = allDebtRecords.filter((r) => r.coachingStatus !== 'Sudah').length;
-  // Surat Menyusul: Sudah dibina (ada foto), tetapi surat bukti belum diserahkan/diunggah karena perlu minta TTD ke beberapa orang
   const waitingLetterCount = allDebtRecords.filter((r) => r.coachingStatus === 'Sudah' && !r.coachingEvidenceFileName && !r.coachingEvidenceFile).length;
 
   // Filtered by criteria
   const filteredDebtRecords = useMemo(() => {
     return allDebtRecords.filter((rec) => {
-      // Type filter
       if (debtFilterType === 'NO_COACHING' && rec.coachingStatus === 'Sudah') return false;
       if (debtFilterType === 'WAITING_LETTER' && (rec.coachingStatus !== 'Sudah' || rec.coachingEvidenceFileName || rec.coachingEvidenceFile)) return false;
 
-      // Class filter
       if (selectedClass !== 'ALL' && rec.className !== selectedClass) return false;
 
-      // Search filter
       if (searchQuery.trim() !== '') {
         const query = searchQuery.toLowerCase();
         const matchName = rec.studentName.toLowerCase().includes(query);
@@ -156,7 +148,6 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
     if (!file) return;
     setCoachingPhotoName(file.name);
 
-    // Pratinjau lokal instan
     const reader = new FileReader();
     reader.onload = () => {
       setCoachingPhoto(reader.result as string);
@@ -188,7 +179,6 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
     if (!file) return;
     setCoachingEvidenceFileName(file.name);
 
-    // Pratinjau lokal instan
     const reader = new FileReader();
     reader.onload = () => {
       setCoachingEvidenceFile(reader.result as string);
@@ -220,7 +210,6 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
     if (!file) return;
     setFollowUpDocFileName(file.name);
 
-    // Pratinjau lokal instan
     const reader = new FileReader();
     reader.onload = () => {
       setFollowUpDocFile(reader.result as string);
@@ -252,7 +241,6 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
     e.preventDefault();
     if (!resolvingRecord) return;
 
-    // SYARAT MINIMAL: Foto pembinaan wajib ada
     if (!coachingPhoto) {
       alert('Syarat minimal menyelesaikan pembinaan adalah melampirkan Foto Pembinaan. File surat bukti pembinaan dapat menyusul jika masih dalam proses pengurusan tanda tangan.');
       return;
@@ -309,116 +297,132 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
 
   return (
     <div className="space-y-6 pb-12">
-      {/* Header Banner */}
-      <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-rose-600 text-white flex items-center justify-center shadow-xs">
-              <FileWarning className="w-5 h-5" />
+      {/* Header Banner with Claymorphism */}
+      <div className="relative overflow-hidden rounded-[36px] bg-white/80 p-6 sm:p-8 backdrop-blur-xl shadow-clay-card border border-white/60">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center shadow-clay-button shrink-0">
+              <FileWarning className="w-7 h-7" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-slate-900 tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-black text-[#332F3A] tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>
                 Tagihan Pembinaan & Surat Siswa
               </h2>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-sm text-[#635F69] mt-1 font-medium">
                 Monitoring siswa yang belum menyelesaikan sesi pembinaan atau belum mengumpulkan surat bukti pembinaan
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="px-3 py-1.5 rounded-xl bg-rose-50 text-rose-700 font-extrabold text-xs border border-rose-200 flex items-center gap-1.5">
-              <AlertCircle className="w-4 h-4" />
+            <div className="px-4 py-2 rounded-2xl bg-rose-50 text-rose-700 font-black text-sm border border-rose-200/80 flex items-center gap-2 shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <AlertCircle className="w-4 h-4 text-rose-600" />
               <span>{totalDebtCount} Tagihan Terbuka</span>
-            </span>
+            </div>
           </div>
         </div>
 
         {notice && (
-          <div className="mt-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2 animate-in fade-in">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+          <div className="mt-4 p-4 rounded-2xl bg-emerald-50/90 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2.5 shadow-clay-surface animate-in fade-in">
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
             <span>{notice}</span>
           </div>
         )}
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-2xs">
+      {/* KPI Cards with Claymorphism */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div className="rounded-[32px] bg-white/80 p-6 backdrop-blur-xl shadow-clay-card border border-white/60 hover:-translate-y-1.5 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase">Total Seluruh Tagihan</span>
-            <FileWarning className="w-4 h-4 text-slate-400" />
+            <span className="text-xs font-black text-[#635F69] uppercase tracking-wider" style={{ fontFamily: 'Nunito, sans-serif' }}>Total Seluruh Tagihan</span>
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-slate-400 to-slate-600 text-white flex items-center justify-center shadow-clay-surface">
+              <FileWarning className="w-5 h-5" />
+            </div>
           </div>
-          <div className="text-2xl font-extrabold text-slate-900 mt-1">{totalDebtCount}</div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Siswa dengan kewajiban belum tuntas</div>
+          <div className="text-3xl sm:text-4xl font-black text-[#332F3A] mt-2 tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>
+            {totalDebtCount}
+          </div>
+          <div className="text-xs text-[#635F69] mt-1 font-medium">Siswa dengan kewajiban belum tuntas</div>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-rose-200 shadow-2xs">
+        <div className="rounded-[32px] bg-white/80 p-6 backdrop-blur-xl shadow-clay-card border border-rose-200/60 hover:-translate-y-1.5 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-rose-700 uppercase">Belum Pembinaan</span>
-            <Clock className="w-4 h-4 text-rose-500" />
+            <span className="text-xs font-black text-rose-700 uppercase tracking-wider" style={{ fontFamily: 'Nunito, sans-serif' }}>Belum Pembinaan</span>
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center shadow-clay-surface">
+              <Clock className="w-5 h-5" />
+            </div>
           </div>
-          <div className="text-2xl font-extrabold text-rose-800 mt-1">{noCoachingCount}</div>
-          <div className="text-[11px] text-rose-600/80 mt-0.5 font-medium">Belum ada sesi bimbingan & foto</div>
+          <div className="text-3xl sm:text-4xl font-black text-rose-700 mt-2 tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>
+            {noCoachingCount}
+          </div>
+          <div className="text-xs text-rose-600/90 mt-1 font-semibold">Belum ada sesi bimbingan & foto</div>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-amber-200 shadow-2xs">
+        <div className="rounded-[32px] bg-white/80 p-6 backdrop-blur-xl shadow-clay-card border border-amber-200/60 hover:-translate-y-1.5 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-amber-700 uppercase">Surat Menyusul (Proses TTD)</span>
-            <Paperclip className="w-4 h-4 text-amber-500" />
+            <span className="text-xs font-black text-amber-700 uppercase tracking-wider" style={{ fontFamily: 'Nunito, sans-serif' }}>Surat Menyusul (Proses TTD)</span>
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center shadow-clay-surface">
+              <Paperclip className="w-5 h-5" />
+            </div>
           </div>
-          <div className="text-2xl font-extrabold text-amber-800 mt-1">{waitingLetterCount}</div>
-          <div className="text-[11px] text-amber-600/80 mt-0.5 font-medium">Pembinaan sudah, berkas surat menyusul</div>
+          <div className="text-3xl sm:text-4xl font-black text-amber-700 mt-2 tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>
+            {waitingLetterCount}
+          </div>
+          <div className="text-xs text-amber-600/90 mt-1 font-semibold">Pembinaan sudah, berkas surat menyusul</div>
         </div>
       </div>
 
       {/* Filter and Tab Pills */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs space-y-3">
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+      <div className="rounded-[32px] bg-white/80 p-6 backdrop-blur-xl shadow-clay-card border border-white/60 space-y-4">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
           {/* Tagihan Type Tabs */}
-          <div className="flex flex-wrap items-center gap-1.5">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={() => setDebtFilterType('ALL')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`px-4 py-2.5 rounded-2xl text-xs font-extrabold transition-all cursor-pointer ${
                 debtFilterType === 'ALL'
-                  ? 'bg-rose-600 text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  ? 'bg-gradient-to-br from-rose-500 to-red-600 text-white shadow-clay-button -translate-y-0.5'
+                  : 'bg-[#EFEBF5] text-[#635F69] shadow-clay-pressed hover:bg-white/80'
               }`}
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               Semua Tagihan ({totalDebtCount})
             </button>
             <button
               type="button"
               onClick={() => setDebtFilterType('NO_COACHING')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`px-4 py-2.5 rounded-2xl text-xs font-extrabold transition-all cursor-pointer ${
                 debtFilterType === 'NO_COACHING'
-                  ? 'bg-rose-600 text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  ? 'bg-gradient-to-br from-rose-500 to-red-600 text-white shadow-clay-button -translate-y-0.5'
+                  : 'bg-[#EFEBF5] text-[#635F69] shadow-clay-pressed hover:bg-white/80'
               }`}
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               Belum Pembinaan ({noCoachingCount})
             </button>
             <button
               type="button"
               onClick={() => setDebtFilterType('WAITING_LETTER')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`px-4 py-2.5 rounded-2xl text-xs font-extrabold transition-all cursor-pointer ${
                 debtFilterType === 'WAITING_LETTER'
-                  ? 'bg-amber-600 text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  ? 'bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-clay-button -translate-y-0.5'
+                  : 'bg-[#EFEBF5] text-[#635F69] shadow-clay-pressed hover:bg-white/80'
               }`}
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               Surat Menyusul / Menunggu TTD ({waitingLetterCount})
             </button>
           </div>
 
           {/* Class Filter */}
-          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1 text-xs text-slate-700 shrink-0">
-            <span className="text-slate-400">Kelas:</span>
+          <div className="flex items-center gap-2 bg-[#EFEBF5] rounded-2xl px-4 py-2 shadow-clay-pressed shrink-0">
+            <span className="text-xs font-bold text-[#635F69]">Kelas:</span>
             <select
               value={selectedClass}
               onChange={(e) => setSelectedClass(e.target.value)}
-              className="bg-transparent font-bold focus:outline-hidden cursor-pointer text-slate-800"
+              className="bg-transparent font-extrabold focus:outline-hidden cursor-pointer text-[#332F3A] text-xs"
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               <option value="ALL">Semua Kelas</option>
               {availableClasses.map((c) => (
@@ -430,138 +434,139 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
           </div>
         </div>
 
-        {/* Search */}
+        {/* Search Input */}
         <div className="relative">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[#635F69]" />
           <input
             type="text"
             placeholder="Cari nama siswa, NISN, atau jenis pelanggaran pada daftar tagihan..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-1 focus:ring-rose-500"
+            className="w-full pl-11 pr-4 py-3.5 bg-[#EFEBF5] rounded-2xl text-xs text-[#332F3A] placeholder-[#635F69] shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 transition-all font-medium"
           />
         </div>
       </div>
 
-      {/* Debt Table */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+      {/* Debt Table with Claymorphism */}
+      <div className="rounded-[36px] bg-white/80 backdrop-blur-xl shadow-clay-card border border-white/60 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 text-slate-500 font-bold text-[11px] uppercase tracking-wider border-b border-slate-100">
-                <th className="py-3 px-3 text-center w-12">No</th>
-                <th className="py-3 px-3 w-28">Tgl Kejadian</th>
-                <th className="py-3 px-4">Nama Siswa & Kelas</th>
-                <th className="py-3 px-4 min-w-[200px]">Pelanggaran</th>
-                <th className="py-3 px-3 text-center w-40">Status Pembinaan (Foto)</th>
-                <th className="py-3 px-3 text-center w-44">Status Surat Bukti</th>
-                <th className="py-3 px-3 text-center w-44">Tindakan</th>
+              <tr className="bg-gradient-to-r from-slate-100/80 to-purple-50/50 text-[#635F69] font-black text-xs uppercase tracking-wider border-b border-slate-200/60" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                <th className="py-4 px-4 text-center w-14">No</th>
+                <th className="py-4 px-4 w-32">Tgl Kejadian</th>
+                <th className="py-4 px-5">Nama Siswa & Kelas</th>
+                <th className="py-4 px-5 min-w-[200px]">Pelanggaran</th>
+                <th className="py-4 px-4 text-center w-44">Status Pembinaan (Foto)</th>
+                <th className="py-4 px-4 text-center w-44">Status Surat Bukti</th>
+                <th className="py-4 px-4 text-center w-44">Tindakan</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
               {filteredDebtRecords.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-slate-400">
-                    <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto mb-2" />
-                    <span className="font-bold text-slate-700 block text-sm">Tidak Ada Tagihan Aktif!</span>
-                    Seluruh siswa telah menyelesaikan pembinaan dan menyerahkan surat bukti secara lengkap.
+                  <td colSpan={7} className="py-16 text-center text-[#635F69]">
+                    <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-3 shadow-clay-surface">
+                      <CheckCircle2 className="w-8 h-8" />
+                    </div>
+                    <span className="font-black text-[#332F3A] block text-base" style={{ fontFamily: 'Nunito, sans-serif' }}>Tidak Ada Tagihan Aktif!</span>
+                    <span className="text-xs text-[#635F69] mt-1 block">Seluruh siswa telah menyelesaikan pembinaan dan menyerahkan surat bukti secara lengkap.</span>
                   </td>
                 </tr>
               ) : (
                 filteredDebtRecords.map((rec, idx) => {
                   const isCoachingBelum = rec.coachingStatus !== 'Sudah';
-                  const hasPhoto = Boolean(rec.coachingPhoto);
                   const hasLetter = Boolean(rec.coachingEvidenceFile || rec.coachingEvidenceFileName);
                   const isWaitingLetter = rec.coachingStatus === 'Sudah' && !hasLetter;
 
                   return (
-                    <tr key={rec.id} className="hover:bg-slate-50/70 transition-colors">
-                      <td className="py-3.5 px-3 text-center text-slate-400 font-medium">{idx + 1}</td>
-                      <td className="py-3.5 px-3 text-slate-700 whitespace-nowrap">
-                        <div className="font-semibold text-slate-800">{rec.date}</div>
-                        <div className="text-[10px] text-slate-400">{formatDateIndonesian(rec.date)}</div>
+                    <tr key={rec.id} className="hover:bg-purple-50/40 transition-colors">
+                      <td className="py-4 px-4 text-center text-[#635F69] font-bold">{idx + 1}</td>
+                      <td className="py-4 px-4 text-[#332F3A] whitespace-nowrap">
+                        <div className="font-extrabold text-[#332F3A]" style={{ fontFamily: 'Nunito, sans-serif' }}>{rec.date}</div>
+                        <div className="text-[11px] text-[#635F69]">{formatDateIndonesian(rec.date)}</div>
                       </td>
-                      <td className="py-3.5 px-4">
-                        <div className="font-bold text-slate-900">{rec.studentName}</div>
-                        <div className="text-[11px] text-slate-500 mt-0.5 flex items-center gap-1.5">
-                          <span className="font-semibold text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded-md border border-rose-200">
+                      <td className="py-4 px-5">
+                        <div className="font-black text-[#332F3A] text-sm" style={{ fontFamily: 'Nunito, sans-serif' }}>{rec.studentName}</div>
+                        <div className="text-xs text-[#635F69] mt-0.5 flex items-center gap-1.5">
+                          <span className="font-extrabold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-lg border border-rose-200 shadow-2xs">
                             Kelas {rec.className}
                           </span>
                           <span>•</span>
                           <span>NISN: {rec.nisn}</span>
                         </div>
                       </td>
-                      <td className="py-3.5 px-4">
-                        <div className="font-semibold text-slate-800">{rec.violationName}</div>
-                        <div className="text-[10px] text-slate-400 mt-0.5">Pelapor: {rec.reportedBy}</div>
+                      <td className="py-4 px-5">
+                        <div className="font-bold text-[#332F3A]">{rec.violationName}</div>
+                        <div className="text-[11px] text-[#635F69] mt-0.5">Pelapor: {rec.reportedBy}</div>
                       </td>
-                      <td className="py-3.5 px-3 text-center">
+                      <td className="py-4 px-4 text-center">
                         {isCoachingBelum ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
-                            <Clock className="w-3.5 h-3.5 text-rose-500" />
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-rose-50 text-rose-700 border border-rose-200 shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                            <Clock className="w-4 h-4 text-rose-500" />
                             <span>Belum Pembinaan</span>
                           </span>
                         ) : (
                           <div className="flex flex-col items-center gap-1">
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                               <span>Sudah Dibina</span>
                             </span>
                             {rec.coachingPhoto && (
                               <button
                                 type="button"
                                 onClick={() => setPreviewPhoto({ url: rec.coachingPhoto!, title: `Foto Pembinaan: ${rec.studentName}` })}
-                                className="text-[10px] text-emerald-700 hover:underline flex items-center gap-1"
+                                className="text-[11px] font-bold text-emerald-700 hover:underline flex items-center gap-1 cursor-pointer"
                               >
-                                <ImageIcon className="w-3 h-3" />
+                                <ImageIcon className="w-3.5 h-3.5" />
                                 <span>Lihat Foto</span>
                               </button>
                             )}
                           </div>
                         )}
                       </td>
-                      <td className="py-3.5 px-3 text-center">
+                      <td className="py-4 px-4 text-center">
                         {hasLetter ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                             <span>Surat Lengkap</span>
                           </span>
                         ) : isWaitingLetter ? (
                           <div className="flex flex-col items-center gap-0.5">
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
-                              <Paperclip className="w-3 h-3 text-amber-700" />
+                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-xl text-[11px] font-extrabold bg-amber-50 text-amber-800 border border-amber-300 shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                              <Paperclip className="w-3.5 h-3.5 text-amber-700" />
                               <span>Surat Menyusul</span>
                             </span>
-                            <span className="text-[9px] text-amber-700">Perlu TTD beberapa orang</span>
+                            <span className="text-[10px] text-amber-700 font-semibold">Perlu TTD beberapa orang</span>
                           </div>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-500">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-bold bg-[#EFEBF5] text-[#635F69] shadow-clay-pressed">
                             Belum Ada
                           </span>
                         )}
                       </td>
-                      <td className="py-3.5 px-3 text-center">
-                        <div className="flex items-center justify-center gap-1.5">
+                      <td className="py-4 px-4 text-center">
+                        <div className="flex items-center justify-center gap-2">
                           {isWaitingLetter ? (
-                            /* Selesaikan upload surat menyusul */
                             <button
                               type="button"
                               onClick={() => handleOpenLetterUploadModal(rec)}
-                              className="px-2.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-[11px] transition-all flex items-center gap-1 shadow-2xs cursor-pointer"
+                              className="px-3 py-2 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-extrabold text-xs transition-all flex items-center gap-1.5 shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed cursor-pointer"
                               title="Unggah Surat Bukti Pembinaan yang telah ditandatangani"
+                              style={{ fontFamily: 'Nunito, sans-serif' }}
                             >
-                              <Paperclip className="w-3.5 h-3.5" />
+                              <Paperclip className="w-4 h-4" />
                               <span>Unggah Surat</span>
                             </button>
                           ) : (
-                            /* Selesaikan Sesi Pembinaan (Foto wajib, surat opsional) */
                             <button
                               type="button"
                               onClick={() => handleOpenResolveModal(rec)}
-                              className="px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-all flex items-center gap-1 shadow-2xs cursor-pointer"
+                              className="px-3 py-2 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold text-xs transition-all flex items-center gap-1.5 shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed cursor-pointer"
                               title="Tandai Pembinaan Selesai"
+                              style={{ fontFamily: 'Nunito, sans-serif' }}
                             >
-                              <Upload className="w-3.5 h-3.5" />
+                              <Upload className="w-4 h-4" />
                               <span>Bina Siswa</span>
                             </button>
                           )}
@@ -570,10 +575,10 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                           <button
                             type="button"
                             onClick={() => setCallingLetterRecord(rec)}
-                            className="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+                            className="p-2 rounded-2xl bg-white/80 text-[#635F69] hover:text-[#332F3A] shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed transition-all cursor-pointer"
                             title="Cetak Surat Panggilan / Tagihan"
                           >
-                            <Printer className="w-3.5 h-3.5" />
+                            <Printer className="w-4 h-4" />
                           </button>
                         </div>
                       </td>
@@ -588,14 +593,16 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
 
       {/* MODAL: Selesaikan Tagihan Pembinaan */}
       {resolvingRecord && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 my-8">
-            <div className="p-5 bg-gradient-to-r from-emerald-800 to-slate-900 text-white flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <CheckCircle2 className="w-5 h-5 text-emerald-300" />
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#332F3A]/60 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[36px] max-w-lg w-full border border-white/60 shadow-clay-card overflow-hidden animate-in fade-in zoom-in-95 my-8">
+            <div className="p-6 bg-gradient-to-br from-emerald-600 to-teal-700 text-white flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center shadow-clay-surface">
+                  <CheckCircle2 className="w-6 h-6 text-white" />
+                </div>
                 <div>
-                  <h3 className="text-base font-bold">Selesaikan Tagihan Pembinaan</h3>
-                  <p className="text-xs text-emerald-200">
+                  <h3 className="text-lg font-black" style={{ fontFamily: 'Nunito, sans-serif' }}>Selesaikan Tagihan Pembinaan</h3>
+                  <p className="text-xs text-emerald-100 font-medium">
                     Unggah bukti foto dan file surat pembinaan untuk menuntaskan tagihan
                   </p>
                 </div>
@@ -603,34 +610,34 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
               <button
                 type="button"
                 onClick={() => setResolvingRecord(null)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white"
+                className="w-9 h-9 rounded-2xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveResolve} className="p-6 space-y-4 text-xs">
+            <form onSubmit={handleSaveResolve} className="p-6 sm:p-8 space-y-5 text-xs">
               {/* Info Banner */}
-              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1">
-                <div className="text-slate-400 text-[10px] uppercase font-bold">Siswa & Pelanggaran</div>
-                <div className="font-extrabold text-slate-900 text-sm">{resolvingRecord.studentName}</div>
-                <div className="text-slate-600 text-[11px]">
+              <div className="p-4 bg-[#EFEBF5] rounded-2xl shadow-clay-pressed space-y-1">
+                <div className="text-[#635F69] text-[10px] uppercase font-black" style={{ fontFamily: 'Nunito, sans-serif' }}>Siswa & Pelanggaran</div>
+                <div className="font-black text-[#332F3A] text-sm" style={{ fontFamily: 'Nunito, sans-serif' }}>{resolvingRecord.studentName}</div>
+                <div className="text-[#635F69] text-xs">
                   Kelas {resolvingRecord.className} • NISN: {resolvingRecord.nisn}
                 </div>
-                <div className="text-rose-700 font-semibold pt-1 border-t border-slate-200/60 mt-1">
+                <div className="text-rose-700 font-bold pt-1.5 border-t border-slate-300/40 mt-1.5">
                   Pelanggaran: {resolvingRecord.violationName} ({resolvingRecord.date})
                 </div>
               </div>
 
               {/* Info Syarat Minimal */}
-              <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-[11px] text-emerald-900 leading-relaxed">
-                <span className="font-bold">Ketentuan:</span> Syarat minimal untuk menyelesaikan pembinaan adalah melampirkan <span className="font-semibold underline">Foto Pembinaan</span>. Surat bukti pembinaan dapat <span className="font-semibold text-amber-800">menyusul</span> jika masih memerlukan tanda tangan beberapa pihak.
+              <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 text-xs text-emerald-900 leading-relaxed shadow-clay-surface">
+                <span className="font-black">Ketentuan:</span> Syarat minimal untuk menyelesaikan pembinaan adalah melampirkan <span className="font-extrabold underline">Foto Pembinaan</span>. Surat bukti pembinaan dapat <span className="font-extrabold text-amber-800">menyusul</span> jika masih memerlukan tanda tangan beberapa pihak.
               </div>
 
               {/* Tanggal Pembinaan */}
               <div>
-                <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-emerald-600" />
+                <label className="block font-black text-[#332F3A] mb-1.5 flex items-center gap-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <Calendar className="w-4 h-4 text-emerald-600" />
                   <span>Tanggal Pembinaan</span>
                   <span className="text-rose-500">*</span>
                 </label>
@@ -639,17 +646,17 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                   required
                   value={coachingDate}
                   onChange={(e) => setCoachingDate(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-semibold focus:outline-hidden focus:ring-1 focus:ring-emerald-500"
+                  className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-bold shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-emerald-500/20 transition-all"
                 />
               </div>
 
               {/* Foto Pembinaan */}
               <div>
-                <label className="block font-bold text-slate-700 mb-1 flex items-center justify-between">
+                <label className="block font-black text-[#332F3A] mb-1.5 flex items-center justify-between" style={{ fontFamily: 'Nunito, sans-serif' }}>
                   <span className="flex items-center gap-1.5">
-                    <ImageIcon className="w-3.5 h-3.5 text-emerald-600" />
+                    <ImageIcon className="w-4 h-4 text-emerald-600" />
                     <span>Foto Pembinaan</span>
-                    <span className="text-rose-500 font-bold">* (Syarat Wajib Minimal)</span>
+                    <span className="text-rose-500 font-black">* (Syarat Wajib Minimal)</span>
                   </span>
                   {coachingPhoto && !uploadingPhoto && (
                     <button
@@ -659,7 +666,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                         setCoachingPhotoName('');
                         if (photoInputRef.current) photoInputRef.current.value = '';
                       }}
-                      className="text-[10px] text-rose-600 hover:underline cursor-pointer"
+                      className="text-[11px] font-bold text-rose-600 hover:underline cursor-pointer"
                     >
                       Hapus Foto
                     </button>
@@ -675,34 +682,35 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                 />
 
                 {uploadingPhoto ? (
-                  <div className="p-3.5 bg-emerald-50 border border-emerald-300 rounded-xl flex items-center justify-center gap-2 text-emerald-800 text-xs font-semibold">
+                  <div className="p-4 bg-emerald-50 border border-emerald-300 rounded-2xl flex items-center justify-center gap-2 text-emerald-800 text-xs font-bold shadow-clay-surface">
                     <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />
                     <span>Sedang mengunggah file...</span>
                   </div>
                 ) : coachingPhoto ? (
-                  <div className="flex items-center gap-3 p-2.5 bg-slate-50 border border-emerald-300 rounded-xl">
+                  <div className="flex items-center gap-3 p-3 bg-white rounded-2xl border border-emerald-300 shadow-clay-surface">
                     <img
                       src={getGoogleDriveDirectImageUrl(coachingPhoto)}
                       alt="Foto Pembinaan"
-                      className="w-14 h-14 object-cover rounded-lg border border-slate-200 shadow-2xs cursor-pointer"
+                      className="w-14 h-14 object-cover rounded-xl border border-slate-200 shadow-clay-surface cursor-pointer"
                       onClick={() => setPreviewPhoto({ url: coachingPhoto, title: `Foto Pembinaan: ${resolvingRecord.studentName}` })}
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-slate-800 truncate text-xs">{coachingPhotoName || 'Foto_Pembinaan.jpg'}</p>
+                      <p className="font-extrabold text-[#332F3A] truncate text-xs">{coachingPhotoName || 'Foto_Pembinaan.jpg'}</p>
                       <div className="flex items-center gap-1 mt-0.5">
                         {coachingPhoto.includes('drive.google.com') || coachingPhoto.includes('googleusercontent.com') ? (
-                          <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-bold border border-emerald-200">
+                          <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg font-bold border border-emerald-200">
                             <Cloud className="w-3 h-3 text-emerald-600" /> Google Drive (Folder Foto)
                           </span>
                         ) : (
-                          <p className="text-[10px] text-emerald-700">Foto pembinaan terlampir (syarat minimal terpenuhi)</p>
+                          <p className="text-[11px] text-emerald-700 font-semibold">Foto pembinaan terlampir (syarat minimal terpenuhi)</p>
                         )}
                       </div>
                     </div>
                     <button
                       type="button"
                       onClick={() => photoInputRef.current?.click()}
-                      className="px-2.5 py-1 text-[11px] font-bold text-emerald-700 hover:bg-emerald-100 rounded-lg transition-colors cursor-pointer"
+                      className="px-3 py-1.5 text-xs font-black text-emerald-700 hover:bg-emerald-100 rounded-xl transition-colors cursor-pointer"
+                      style={{ fontFamily: 'Nunito, sans-serif' }}
                     >
                       Ganti
                     </button>
@@ -710,22 +718,22 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                 ) : (
                   <div
                     onClick={() => photoInputRef.current?.click()}
-                    className="border-2 border-dashed border-rose-300 hover:border-emerald-500 rounded-xl p-3.5 text-center cursor-pointer bg-slate-50 transition-colors flex flex-col items-center justify-center gap-1"
+                    className="border-2 border-dashed border-rose-300 hover:border-emerald-500 rounded-2xl p-5 text-center cursor-pointer bg-[#EFEBF5] shadow-clay-pressed hover:bg-white transition-colors flex flex-col items-center justify-center gap-1.5"
                   >
-                    <Upload className="w-5 h-5 text-emerald-600" />
-                    <span className="font-bold text-slate-700 text-xs">Pilih atau Seret Foto Pembinaan</span>
-                    <span className="text-[10px] text-rose-500 font-semibold">* Wajib melampirkan foto pelaksanaan pembinaan</span>
+                    <Upload className="w-6 h-6 text-emerald-600" />
+                    <span className="font-extrabold text-[#332F3A] text-xs">Pilih atau Seret Foto Pembinaan</span>
+                    <span className="text-[11px] text-rose-500 font-bold">* Wajib melampirkan foto pelaksanaan pembinaan</span>
                   </div>
                 )}
               </div>
 
               {/* Bukti Pembinaan (File Surat Pembinaan) */}
               <div>
-                <label className="block font-bold text-slate-700 mb-1 flex items-center justify-between">
+                <label className="block font-black text-[#332F3A] mb-1.5 flex items-center justify-between" style={{ fontFamily: 'Nunito, sans-serif' }}>
                   <span className="flex items-center gap-1.5">
-                    <Paperclip className="w-3.5 h-3.5 text-emerald-600" />
+                    <Paperclip className="w-4 h-4 text-emerald-600" />
                     <span>Bukti Surat Pembinaan (File Surat)</span>
-                    <span className="text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded text-[10px] font-semibold">Bisa Menyusul</span>
+                    <span className="text-amber-800 bg-amber-100 px-2 py-0.5 rounded-lg text-[10px] font-extrabold">Bisa Menyusul</span>
                   </span>
                   {coachingEvidenceFileName && !uploadingEvidence && (
                     <button
@@ -735,7 +743,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                         setCoachingEvidenceFileName('');
                         if (docInputRef.current) docInputRef.current.value = '';
                       }}
-                      className="text-[10px] text-rose-600 hover:underline cursor-pointer"
+                      className="text-[11px] font-bold text-rose-600 hover:underline cursor-pointer"
                     >
                       Hapus File
                     </button>
@@ -751,31 +759,32 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                 />
 
                 {uploadingEvidence ? (
-                  <div className="p-3.5 bg-blue-50 border border-blue-300 rounded-xl flex items-center justify-center gap-2 text-blue-800 text-xs font-semibold">
-                    <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
+                  <div className="p-4 bg-sky-50 border border-sky-300 rounded-2xl flex items-center justify-center gap-2 text-sky-800 text-xs font-bold shadow-clay-surface">
+                    <Loader2 className="w-4 h-4 animate-spin text-sky-600" />
                     <span>Sedang mengunggah file...</span>
                   </div>
                 ) : coachingEvidenceFileName ? (
-                  <div className="flex items-center gap-3 p-2.5 bg-slate-50 border border-emerald-300 rounded-xl">
-                    <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-bold text-xs shrink-0">
+                  <div className="flex items-center gap-3 p-3 bg-white rounded-2xl border border-emerald-300 shadow-clay-surface">
+                    <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center font-bold text-xs shrink-0 shadow-clay-surface">
                       <FileText className="w-5 h-5" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-slate-800 truncate text-xs">{coachingEvidenceFileName}</p>
+                      <p className="font-extrabold text-[#332F3A] truncate text-xs">{coachingEvidenceFileName}</p>
                       <div className="flex items-center gap-1 mt-0.5">
                         {coachingEvidenceFile && (coachingEvidenceFile.includes('drive.google.com') || coachingEvidenceFile.includes('googleusercontent.com')) ? (
-                          <span className="inline-flex items-center gap-1 text-[10px] text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-bold border border-blue-200">
-                            <Cloud className="w-3 h-3 text-blue-600" /> Google Drive (Folder Surat)
+                          <span className="inline-flex items-center gap-1 text-[10px] text-sky-700 bg-sky-50 px-2 py-0.5 rounded-lg font-bold border border-sky-200">
+                            <Cloud className="w-3 h-3 text-sky-600" /> Google Drive (Folder Surat)
                           </span>
                         ) : (
-                          <p className="text-[10px] text-emerald-700">Surat pembinaan resmi terlampir</p>
+                          <p className="text-[11px] text-emerald-700 font-semibold">Surat pembinaan resmi terlampir</p>
                         )}
                       </div>
                     </div>
                     <button
                       type="button"
                       onClick={() => docInputRef.current?.click()}
-                      className="px-2.5 py-1 text-[11px] font-bold text-emerald-700 hover:bg-emerald-100 rounded-lg transition-colors cursor-pointer"
+                      className="px-3 py-1.5 text-xs font-black text-emerald-700 hover:bg-emerald-100 rounded-xl transition-colors cursor-pointer"
+                      style={{ fontFamily: 'Nunito, sans-serif' }}
                     >
                       Ganti
                     </button>
@@ -783,29 +792,31 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                 ) : (
                   <div
                     onClick={() => docInputRef.current?.click()}
-                    className="border-2 border-dashed border-slate-200 hover:border-emerald-500 rounded-xl p-3.5 text-center cursor-pointer bg-slate-50 transition-colors flex flex-col items-center justify-center gap-1"
+                    className="border-2 border-dashed border-slate-300 hover:border-emerald-500 rounded-2xl p-5 text-center cursor-pointer bg-[#EFEBF5] shadow-clay-pressed hover:bg-white transition-colors flex flex-col items-center justify-center gap-1.5"
                   >
-                    <Upload className="w-5 h-5 text-slate-400" />
-                    <span className="font-bold text-slate-700 text-xs">Unggah Surat Pembinaan (Opsional / Bisa Menyusul)</span>
-                    <span className="text-[10px] text-slate-400">Bisa diunggah menyusul setelah tanda tangan lengkap</span>
+                    <Upload className="w-6 h-6 text-[#635F69]" />
+                    <span className="font-extrabold text-[#332F3A] text-xs">Unggah Surat Pembinaan (Opsional / Bisa Menyusul)</span>
+                    <span className="text-[11px] text-[#635F69]">Bisa diunggah menyusul setelah tanda tangan lengkap</span>
                   </div>
                 )}
               </div>
 
               {/* Form Buttons */}
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
+              <div className="pt-4 border-t border-slate-200/60 flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setResolvingRecord(null)}
-                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition-colors cursor-pointer"
+                  className="px-5 py-2.5 rounded-2xl bg-[#EFEBF5] hover:bg-white text-[#635F69] font-black transition-all shadow-clay-button active:scale-[0.92] active:shadow-clay-pressed cursor-pointer"
+                  style={{ fontFamily: 'Nunito, sans-serif' }}
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-colors shadow-xs cursor-pointer flex items-center gap-2"
+                  className="px-6 py-2.5 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed cursor-pointer flex items-center gap-2"
+                  style={{ fontFamily: 'Nunito, sans-serif' }}
                 >
-                  <CheckCircle2 className="w-4 h-4" />
+                  <CheckCircle2 className="w-5 h-5" />
                   <span>Simpan Pembinaan</span>
                 </button>
               </div>
@@ -816,14 +827,16 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
 
       {/* MODAL: Khusus Unggah Surat Bukti Pembinaan Menyusul */}
       {letterUploadRecord && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 my-8">
-            <div className="p-5 bg-amber-700 text-white flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <Paperclip className="w-5 h-5 text-amber-200" />
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#332F3A]/60 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[36px] max-w-lg w-full border border-white/60 shadow-clay-card overflow-hidden animate-in fade-in zoom-in-95 my-8">
+            <div className="p-6 bg-gradient-to-br from-amber-500 to-orange-600 text-white flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center shadow-clay-surface">
+                  <Paperclip className="w-6 h-6 text-white" />
+                </div>
                 <div>
-                  <h3 className="text-base font-bold">Unggah Surat Bukti Pembinaan</h3>
-                  <p className="text-xs text-amber-100">
+                  <h3 className="text-lg font-black" style={{ fontFamily: 'Nunito, sans-serif' }}>Unggah Surat Bukti Pembinaan</h3>
+                  <p className="text-xs text-amber-100 font-medium">
                     Lengkapi surat bukti pembinaan yang telah selesai ditandatangani
                   </p>
                 </div>
@@ -831,33 +844,33 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
               <button
                 type="button"
                 onClick={() => setLetterUploadRecord(null)}
-                className="p-1.5 rounded-lg text-amber-200 hover:text-white"
+                className="w-9 h-9 rounded-2xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveFollowUpLetter} className="p-6 space-y-4 text-xs">
-              <div className="p-3.5 bg-amber-50/70 rounded-xl border border-amber-200/80 space-y-1">
-                <div className="font-extrabold text-slate-900 text-sm">{letterUploadRecord.studentName}</div>
-                <div className="text-slate-600 text-[11px]">
+            <form onSubmit={handleSaveFollowUpLetter} className="p-6 sm:p-8 space-y-5 text-xs">
+              <div className="p-4 bg-[#EFEBF5] rounded-2xl shadow-clay-pressed space-y-1">
+                <div className="font-black text-[#332F3A] text-sm" style={{ fontFamily: 'Nunito, sans-serif' }}>{letterUploadRecord.studentName}</div>
+                <div className="text-[#635F69] text-xs">
                   Kelas {letterUploadRecord.className} • NISN: {letterUploadRecord.nisn}
                 </div>
-                <div className="text-slate-800 font-semibold pt-1 border-t border-amber-200/60 mt-1">
+                <div className="text-[#332F3A] font-bold pt-1.5 border-t border-slate-300/40 mt-1.5">
                   Pelanggaran: {letterUploadRecord.violationName}
                 </div>
-                <div className="text-[11px] text-emerald-700 font-medium flex items-center gap-1 pt-0.5">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
+                <div className="text-xs text-emerald-700 font-bold flex items-center gap-1.5 pt-1">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   <span>Sesi pembinaan telah dilaksanakan (Foto ada). Menunggu tanda tangan surat bukti.</span>
                 </div>
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1 flex items-center justify-between">
+                <label className="block font-black text-[#332F3A] mb-1.5 flex items-center justify-between" style={{ fontFamily: 'Nunito, sans-serif' }}>
                   <span className="flex items-center gap-1.5">
-                    <FileText className="w-3.5 h-3.5 text-amber-700" />
+                    <FileText className="w-4 h-4 text-amber-700" />
                     <span>Dokumen Surat Bukti Pembinaan (Telah Ditandatangani)</span>
-                    <span className="text-rose-500">*</span>
+                    <span className="text-rose-500 font-black">*</span>
                   </span>
                 </label>
                 <input
@@ -869,27 +882,27 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                 />
 
                 {uploadingFollowUpDoc ? (
-                  <div className="p-3.5 bg-amber-50 border border-amber-300 rounded-xl flex items-center justify-center gap-2 text-amber-800 text-xs font-semibold">
+                  <div className="p-4 bg-amber-50 border border-amber-300 rounded-2xl flex items-center justify-center gap-2 text-amber-800 text-xs font-bold shadow-clay-surface">
                     <Loader2 className="w-4 h-4 animate-spin text-amber-600" />
                     <span>Sedang mengunggah file...</span>
                   </div>
                 ) : followUpDocFile || followUpDocFileName ? (
-                  <div className="p-3 bg-white rounded-xl border border-emerald-300 flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-                        <FileText className="w-4 h-4" />
+                  <div className="p-3.5 bg-white rounded-2xl border border-emerald-300 flex items-center justify-between gap-3 shadow-clay-surface">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 shadow-clay-surface">
+                        <FileText className="w-5 h-5" />
                       </div>
                       <div className="min-w-0">
-                        <div className="text-xs font-bold text-slate-800 truncate">
+                        <div className="text-xs font-black text-[#332F3A] truncate" style={{ fontFamily: 'Nunito, sans-serif' }}>
                           {followUpDocFileName || 'Surat_Pembinaan_Bertandatangan.pdf'}
                         </div>
                         <div className="flex items-center gap-1 mt-0.5">
                           {followUpDocFile && (followUpDocFile.includes('drive.google.com') || followUpDocFile.includes('googleusercontent.com')) ? (
-                            <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-bold border border-emerald-200">
+                            <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg font-bold border border-emerald-200">
                               <Cloud className="w-3 h-3 text-emerald-600" /> Google Drive (Folder Surat)
                             </span>
                           ) : (
-                            <div className="text-[10px] text-emerald-600 font-semibold">Dokumen surat siap disimpan</div>
+                            <div className="text-[11px] text-emerald-600 font-bold">Dokumen surat siap disimpan</div>
                           )}
                         </div>
                       </div>
@@ -897,7 +910,8 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                     <button
                       type="button"
                       onClick={() => followUpDocInputRef.current?.click()}
-                      className="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-lg text-[10px] cursor-pointer"
+                      className="px-3 py-1.5 bg-[#EFEBF5] hover:bg-white text-[#635F69] font-black rounded-xl text-xs shadow-clay-button active:scale-[0.92] cursor-pointer"
+                      style={{ fontFamily: 'Nunito, sans-serif' }}
                     >
                       Ganti
                     </button>
@@ -906,28 +920,30 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                   <button
                     type="button"
                     onClick={() => followUpDocInputRef.current?.click()}
-                    className="w-full p-4 border-2 border-dashed border-amber-300 hover:border-amber-500 bg-amber-50/30 rounded-xl transition-all flex flex-col items-center justify-center gap-1.5 text-slate-500 cursor-pointer"
+                    className="w-full p-5 border-2 border-dashed border-amber-300 hover:border-amber-500 bg-[#EFEBF5] rounded-2xl shadow-clay-pressed hover:bg-white transition-all flex flex-col items-center justify-center gap-2 text-[#635F69] cursor-pointer"
                   >
-                    <Upload className="w-6 h-6 text-amber-600" />
-                    <span className="font-bold text-xs text-slate-800">Pilih Berkas Surat Bukti Pembinaan</span>
-                    <span className="text-[10px] text-slate-400">Format: PDF, DOC, DOCX, atau Foto/Scan Surat bertanda tangan</span>
+                    <Upload className="w-7 h-7 text-amber-600" />
+                    <span className="font-black text-xs text-[#332F3A]" style={{ fontFamily: 'Nunito, sans-serif' }}>Pilih Berkas Surat Bukti Pembinaan</span>
+                    <span className="text-[11px] text-[#635F69]">Format: PDF, DOC, DOCX, atau Foto/Scan Surat bertanda tangan</span>
                   </button>
                 )}
               </div>
 
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
+              <div className="pt-4 border-t border-slate-200/60 flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setLetterUploadRecord(null)}
-                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition-colors cursor-pointer"
+                  className="px-5 py-2.5 rounded-2xl bg-[#EFEBF5] hover:bg-white text-[#635F69] font-black transition-all shadow-clay-button active:scale-[0.92] active:shadow-clay-pressed cursor-pointer"
+                  style={{ fontFamily: 'Nunito, sans-serif' }}
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-amber-700 hover:bg-amber-600 text-white font-bold transition-colors shadow-xs cursor-pointer flex items-center gap-1.5"
+                  className="px-6 py-2.5 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-black transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed cursor-pointer flex items-center gap-2"
+                  style={{ fontFamily: 'Nunito, sans-serif' }}
                 >
-                  <CheckCircle2 className="w-4 h-4" />
+                  <CheckCircle2 className="w-5 h-5" />
                   <span>Simpan Surat Pembinaan</span>
                 </button>
               </div>
@@ -938,9 +954,9 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
 
       {/* MODAL: Preview Foto */}
       {previewPhoto && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="max-w-2xl w-full bg-slate-900 rounded-2xl overflow-hidden border border-slate-700">
-            <div className="p-3.5 bg-slate-800 text-white flex items-center justify-between text-xs font-bold">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="max-w-2xl w-full bg-[#332F3A] rounded-[36px] overflow-hidden border border-white/20 shadow-clay-card">
+            <div className="p-4 bg-slate-800 text-white flex items-center justify-between text-xs font-extrabold" style={{ fontFamily: 'Nunito, sans-serif' }}>
               <span>{previewPhoto.title}</span>
               <div className="flex items-center gap-2">
                 {previewPhoto.url.includes('drive.google.com') && (
@@ -948,26 +964,26 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                     href={getGoogleDriveViewUrl(previewPhoto.url)}
                     target="_blank"
                     rel="noreferrer"
-                    className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[10px] font-bold flex items-center gap-1"
+                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-black flex items-center gap-1 shadow-clay-button"
                   >
-                    <ExternalLink className="w-3 h-3" />
+                    <ExternalLink className="w-3.5 h-3.5" />
                     <span>Buka di Google Drive</span>
                   </a>
                 )}
                 <button
                   type="button"
                   onClick={() => setPreviewPhoto(null)}
-                  className="p-1 text-slate-400 hover:text-white"
+                  className="p-1.5 text-slate-400 hover:text-white rounded-lg"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
             </div>
-            <div className="p-4 flex items-center justify-center bg-black/50">
+            <div className="p-6 flex items-center justify-center bg-black/50">
               <img
                 src={getGoogleDriveDirectImageUrl(previewPhoto.url)}
                 alt={previewPhoto.title}
-                className="max-h-[75vh] w-auto max-w-full rounded-lg object-contain"
+                className="max-h-[75vh] w-auto max-w-full rounded-2xl object-contain shadow-2xl"
               />
             </div>
           </div>
@@ -976,24 +992,24 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
 
       {/* MODAL: Surat Pemanggilan Siswa / Notifikasi Tagihan */}
       {callingLetterRecord && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-xl w-full border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 my-8">
-            <div className="p-4 bg-slate-900 text-white flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Printer className="w-4 h-4 text-emerald-400" />
-                <span className="font-bold text-sm">Surat Pemanggilan & Tagihan Pembinaan Siswa</span>
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#332F3A]/60 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[36px] max-w-xl w-full border border-white/60 shadow-clay-card overflow-hidden animate-in fade-in zoom-in-95 my-8">
+            <div className="p-5 bg-gradient-to-br from-slate-800 to-slate-900 text-white flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <Printer className="w-5 h-5 text-emerald-400" />
+                <span className="font-black text-sm" style={{ fontFamily: 'Nunito, sans-serif' }}>Surat Pemanggilan & Tagihan Pembinaan Siswa</span>
               </div>
               <button
                 type="button"
                 onClick={() => setCallingLetterRecord(null)}
-                className="p-1 text-slate-400 hover:text-white"
+                className="p-1.5 text-slate-400 hover:text-white"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Printable Letterhead & Body */}
-            <div className="p-6 space-y-4 text-xs text-slate-800 font-serif leading-relaxed">
+            <div className="p-6 sm:p-8 space-y-4 text-xs text-slate-800 font-serif leading-relaxed bg-white">
               {/* Kop Surat */}
               <div className="flex items-center gap-3 border-b-2 border-slate-900 pb-3">
                 <img src="/logo.png" alt="Logo SMAN 1 Batu" className="w-14 h-14 object-contain shrink-0" />
@@ -1050,20 +1066,22 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
               </div>
             </div>
 
-            <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-end gap-2">
+            <div className="p-4 bg-[#EFEBF5] border-t border-slate-200/60 flex items-center justify-end gap-3">
               <button
                 type="button"
                 onClick={() => setCallingLetterRecord(null)}
-                className="px-4 py-1.5 rounded-xl bg-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-300"
+                className="px-5 py-2.5 rounded-2xl bg-white hover:bg-slate-100 text-[#635F69] font-black text-xs shadow-clay-button active:scale-[0.92] cursor-pointer"
+                style={{ fontFamily: 'Nunito, sans-serif' }}
               >
                 Tutup
               </button>
               <button
                 type="button"
                 onClick={() => window.print()}
-                className="px-4 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-xs flex items-center gap-1.5 hover:bg-slate-800 cursor-pointer"
+                className="px-5 py-2.5 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 text-white font-black text-xs flex items-center gap-2 shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] cursor-pointer"
+                style={{ fontFamily: 'Nunito, sans-serif' }}
               >
-                <Printer className="w-3.5 h-3.5" />
+                <Printer className="w-4 h-4" />
                 <span>Cetak Surat</span>
               </button>
             </div>

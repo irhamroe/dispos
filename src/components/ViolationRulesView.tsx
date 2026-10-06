@@ -126,7 +126,7 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
     }
   };
 
-  // Filtered and Sorted Rules (A1..A19, B1..B5, C1..C5, D1..D12)
+  // Filtered and Sorted Rules
   const filteredRules = useMemo(() => {
     const list = violationRules.filter((rule) => {
       if (selectedCategory !== 'ALL' && rule.category !== selectedCategory) return false;
@@ -150,31 +150,32 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
 
   return (
     <div className="space-y-6 pb-12">
-      {/* Header Banner */}
-      <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-slate-800 text-white flex items-center justify-center shadow-xs">
-              <SlidersHorizontal className="w-5 h-5" />
+      {/* Header Banner with Claymorphism */}
+      <div className="relative overflow-hidden rounded-[36px] bg-white/80 p-6 sm:p-8 backdrop-blur-xl shadow-clay-card border border-white/60">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#7C3AED] to-[#9333EA] text-white flex items-center justify-center shadow-clay-button shrink-0">
+              <SlidersHorizontal className="w-7 h-7" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-slate-900 tracking-tight">
-                Manajemen Aturan Jenis Pelanggaran
+              <h2 className="text-2xl sm:text-3xl font-black text-[#332F3A] tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                Manajemen Aturan Pelanggaran
               </h2>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-sm text-[#635F69] mt-1 font-medium">
                 Kelola katalog tata tertib: input, edit, dan hapus jenis pelanggaran beserta bobot poin dan restitusi
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 w-full sm:w-auto">
+          <div className="flex items-center gap-3 w-full sm:w-auto">
             <button
               type="button"
               onClick={handleReset}
-              className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+              className="px-4 py-3 rounded-2xl bg-white/90 text-[#635F69] hover:text-[#332F3A] font-extrabold text-xs transition-all shadow-clay-button active:scale-[0.92] flex items-center justify-center gap-2 cursor-pointer"
               title="Kembalikan ke aturan standar awal"
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
-              <RotateCcw className="w-3.5 h-3.5" />
+              <RotateCcw className="w-4 h-4" />
               <span>Reset Standar</span>
             </button>
 
@@ -182,7 +183,8 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
               type="button"
               id="add-new-rule-btn"
               onClick={handleOpenCreateModal}
-              className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+              className="px-5 py-3 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold text-xs transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed flex items-center justify-center gap-2 cursor-pointer"
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               <Plus className="w-4 h-4" />
               <span>Tambah Aturan Baru</span>
@@ -191,38 +193,38 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
         </div>
 
         {notice && (
-          <div className="mt-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2 animate-in fade-in">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+          <div className="mt-4 p-4 rounded-2xl bg-emerald-50/90 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2.5 shadow-clay-surface animate-in fade-in">
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
             <span>{notice}</span>
           </div>
         )}
       </div>
 
       {/* Optional Points Mode Toggle Card */}
-      <div className={`p-4 rounded-2xl border transition-all ${
+      <div className={`p-6 rounded-[32px] backdrop-blur-xl border transition-all shadow-clay-card ${
         enablePointsSystem 
-          ? 'bg-gradient-to-r from-teal-500/10 via-emerald-500/10 to-transparent border-emerald-200' 
-          : 'bg-slate-50 border-slate-200'
+          ? 'bg-gradient-to-r from-teal-500/10 via-emerald-500/10 to-white/70 border-emerald-200' 
+          : 'bg-white/80 border-white/60'
       }`}>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-base shadow-2xs shrink-0 ${
-              enablePointsSystem ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-600'
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-base shadow-clay-button shrink-0 ${
+              enablePointsSystem ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white' : 'bg-[#EFEBF5] text-[#635F69]'
             }`}>
-              <Sparkles className="w-5 h-5" />
+              <Sparkles className="w-6 h-6" />
             </div>
             <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="font-bold text-slate-900 text-sm">Mode Sistem Poin Pelanggaran</h3>
-                <span className={`px-2 py-0.5 rounded-full text-[10.5px] font-extrabold border ${
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <h3 className="font-black text-[#332F3A] text-base" style={{ fontFamily: 'Nunito, sans-serif' }}>Mode Sistem Poin Pelanggaran</h3>
+                <span className={`px-3 py-1 rounded-xl text-xs font-black shadow-clay-surface ${
                   enablePointsSystem 
-                    ? 'bg-emerald-100 text-emerald-800 border-emerald-300' 
-                    : 'bg-slate-200 text-slate-700 border-slate-300'
-                }`}>
+                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' 
+                    : 'bg-[#EFEBF5] text-[#635F69]'
+                }`} style={{ fontFamily: 'Nunito, sans-serif' }}>
                   {enablePointsSystem ? 'AKTIF (Mode Poin)' : 'NONAKTIF (Fokus Restoratif)'}
                 </span>
               </div>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-[#635F69] mt-1 font-medium">
                 {enablePointsSystem
                   ? 'Sistem mencatat dan menampilkan angka bobot poin pelanggaran serta akumulasi poin setiap siswa.'
                   : 'Sistem menyembunyikan perhitungan angka poin dan murni berfokus pada pendekatan Disiplin Positif Restoratif, dokumentasi foto & berkas pembinaan.'}
@@ -234,11 +236,12 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
             <button
               type="button"
               onClick={() => onTogglePointsSystem(!enablePointsSystem)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer shadow-xs ${
+              className={`px-5 py-3 rounded-2xl text-xs font-black transition-all flex items-center gap-2 shrink-0 cursor-pointer shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] ${
                 enablePointsSystem
                   ? 'bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200'
-                  : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                  : 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white'
               }`}
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               {enablePointsSystem ? 'Nonaktifkan Sistem Poin' : 'Aktifkan Sistem Poin'}
             </button>
@@ -247,50 +250,58 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-2xs">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
+        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-clay-card border border-white/60 hover:-translate-y-1.5 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase">Total Aturan</span>
-            <BookOpen className="w-4 h-4 text-slate-400" />
+            <span className="text-xs font-black text-[#635F69] uppercase tracking-wider" style={{ fontFamily: 'Nunito, sans-serif' }}>Total Aturan</span>
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-slate-400 to-slate-600 text-white flex items-center justify-center shadow-clay-surface">
+              <BookOpen className="w-5 h-5" />
+            </div>
           </div>
-          <div className="text-2xl font-extrabold text-slate-900 mt-1">{totalCount}</div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Katalog aktif di sistem</div>
+          <div className="text-3xl font-black text-[#332F3A] mt-2 tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>{totalCount}</div>
+          <div className="text-xs text-[#635F69] mt-1 font-medium">Katalog aktif di sistem</div>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-blue-200 shadow-2xs">
+        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-clay-card border border-sky-200/60 hover:-translate-y-1.5 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-blue-700 uppercase">Pelanggaran Ringan</span>
-            <Scale className="w-4 h-4 text-blue-500" />
+            <span className="text-xs font-black text-sky-700 uppercase tracking-wider" style={{ fontFamily: 'Nunito, sans-serif' }}>Pelanggaran Ringan</span>
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 text-white flex items-center justify-center shadow-clay-surface">
+              <Scale className="w-5 h-5" />
+            </div>
           </div>
-          <div className="text-2xl font-extrabold text-blue-800 mt-1">{ringanCount}</div>
+          <div className="text-3xl font-black text-sky-700 mt-2 tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>{ringanCount}</div>
           {enablePointsSystem && (
-            <div className="text-[11px] text-blue-600/80 mt-0.5 font-medium">
+            <div className="text-xs text-sky-600/90 mt-1 font-semibold">
               Bobot poin 5 - 10
             </div>
           )}
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-amber-200 shadow-2xs">
+        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-clay-card border border-amber-200/60 hover:-translate-y-1.5 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-amber-700 uppercase">Pelanggaran Sedang</span>
-            <AlertTriangle className="w-4 h-4 text-amber-500" />
+            <span className="text-xs font-black text-amber-700 uppercase tracking-wider" style={{ fontFamily: 'Nunito, sans-serif' }}>Pelanggaran Sedang</span>
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center shadow-clay-surface">
+              <AlertTriangle className="w-5 h-5" />
+            </div>
           </div>
-          <div className="text-2xl font-extrabold text-amber-800 mt-1">{sedangCount}</div>
+          <div className="text-3xl font-black text-amber-700 mt-2 tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>{sedangCount}</div>
           {enablePointsSystem && (
-            <div className="text-[11px] text-amber-600/80 mt-0.5 font-medium">
+            <div className="text-xs text-amber-600/90 mt-1 font-semibold">
               Bobot poin 15 - 25
             </div>
           )}
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-rose-200 shadow-2xs">
+        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-clay-card border border-rose-200/60 hover:-translate-y-1.5 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-rose-700 uppercase">Pelanggaran Berat</span>
-            <ShieldAlert className="w-4 h-4 text-rose-500" />
+            <span className="text-xs font-black text-rose-700 uppercase tracking-wider" style={{ fontFamily: 'Nunito, sans-serif' }}>Pelanggaran Berat</span>
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center shadow-clay-surface">
+              <ShieldAlert className="w-5 h-5" />
+            </div>
           </div>
-          <div className="text-2xl font-extrabold text-rose-800 mt-1">{beratCount}</div>
+          <div className="text-3xl font-black text-rose-700 mt-2 tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>{beratCount}</div>
           {enablePointsSystem && (
-            <div className="text-[11px] text-rose-600/80 mt-0.5 font-medium">
+            <div className="text-xs text-rose-600/90 mt-1 font-semibold">
               Bobot poin 30 - 50+
             </div>
           )}
@@ -298,51 +309,55 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs space-y-3">
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+      <div className="rounded-[32px] bg-white/80 p-6 backdrop-blur-xl shadow-clay-card border border-white/60 space-y-4">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
           {/* Category Tabs */}
-          <div className="flex items-center gap-1.5 flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap">
             <button
               type="button"
               onClick={() => setSelectedCategory('ALL')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`px-4 py-2.5 rounded-2xl text-xs font-black transition-all cursor-pointer ${
                 selectedCategory === 'ALL'
-                  ? 'bg-slate-900 text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  ? 'bg-gradient-to-br from-slate-800 to-slate-900 text-white shadow-clay-button -translate-y-0.5'
+                  : 'bg-[#EFEBF5] text-[#635F69] shadow-clay-pressed hover:bg-white'
               }`}
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               Semua ({totalCount})
             </button>
             <button
               type="button"
               onClick={() => setSelectedCategory('Ringan')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`px-4 py-2.5 rounded-2xl text-xs font-black transition-all cursor-pointer ${
                 selectedCategory === 'Ringan'
-                  ? 'bg-blue-600 text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  ? 'bg-gradient-to-br from-sky-400 to-blue-600 text-white shadow-clay-button -translate-y-0.5'
+                  : 'bg-[#EFEBF5] text-[#635F69] shadow-clay-pressed hover:bg-white'
               }`}
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               Ringan ({ringanCount})
             </button>
             <button
               type="button"
               onClick={() => setSelectedCategory('Sedang')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`px-4 py-2.5 rounded-2xl text-xs font-black transition-all cursor-pointer ${
                 selectedCategory === 'Sedang'
-                  ? 'bg-amber-600 text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  ? 'bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-clay-button -translate-y-0.5'
+                  : 'bg-[#EFEBF5] text-[#635F69] shadow-clay-pressed hover:bg-white'
               }`}
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               Sedang ({sedangCount})
             </button>
             <button
               type="button"
               onClick={() => setSelectedCategory('Berat')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`px-4 py-2.5 rounded-2xl text-xs font-black transition-all cursor-pointer ${
                 selectedCategory === 'Berat'
-                  ? 'bg-rose-600 text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  ? 'bg-gradient-to-br from-rose-500 to-red-600 text-white shadow-clay-button -translate-y-0.5'
+                  : 'bg-[#EFEBF5] text-[#635F69] shadow-clay-pressed hover:bg-white'
               }`}
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               Berat ({beratCount})
             </button>
@@ -350,45 +365,47 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
 
           {/* Search Box */}
           <div className="relative flex-1 sm:max-w-xs">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[#635F69]" />
             <input
               type="text"
               placeholder="Cari nama jenis pelanggaran..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-1 focus:ring-slate-500"
+              className="w-full pl-11 pr-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs text-[#332F3A] placeholder-[#635F69] shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 font-medium"
             />
           </div>
         </div>
       </div>
 
       {/* Rules Table */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+      <div className="rounded-[36px] bg-white/80 backdrop-blur-xl shadow-clay-card border border-white/60 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 text-slate-500 font-bold text-[11px] uppercase tracking-wider border-b border-slate-100">
-                <th className="py-3 px-3 text-center w-12">No</th>
-                <th className="py-3 px-3 text-center w-20">Kode</th>
-                <th className="py-3 px-4 min-w-[260px]">Jenis Pelanggaran</th>
-                <th className="py-3 px-3 text-center w-28">Kategori</th>
+              <tr className="bg-gradient-to-r from-slate-100/80 to-purple-50/50 text-[#635F69] font-black text-xs uppercase tracking-wider border-b border-slate-200/60" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                <th className="py-4 px-4 text-center w-14">No</th>
+                <th className="py-4 px-4 text-center w-24">Kode</th>
+                <th className="py-4 px-5 min-w-[260px]">Jenis Pelanggaran</th>
+                <th className="py-4 px-4 text-center w-32">Kategori</th>
                 {enablePointsSystem && (
-                  <th className="py-3 px-3 text-center w-24">Poin Standar</th>
+                  <th className="py-4 px-4 text-center w-32">Poin Standar</th>
                 )}
-                <th className="py-3 px-3 text-center w-28">Aksi</th>
+                <th className="py-4 px-4 text-center w-32">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
               {filteredRules.length === 0 ? (
                 <tr>
-                  <td colSpan={enablePointsSystem ? 6 : 5} className="py-12 text-center text-slate-400">
-                    <BookOpen className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-                    Tidak ada aturan jenis pelanggaran yang sesuai filter.
+                  <td colSpan={enablePointsSystem ? 6 : 5} className="py-16 text-center text-[#635F69]">
+                    <div className="w-16 h-16 rounded-full bg-[#EFEBF5] text-[#635F69] flex items-center justify-center mx-auto mb-3 shadow-clay-surface">
+                      <BookOpen className="w-8 h-8" />
+                    </div>
+                    <span className="font-bold">Tidak ada aturan jenis pelanggaran yang sesuai filter.</span>
                   </td>
                 </tr>
               ) : (
                 filteredRules.map((rule, idx) => {
-                  let badgeClass = 'bg-blue-50 text-blue-700 border-blue-200';
+                  let badgeClass = 'bg-sky-50 text-sky-700 border-sky-200';
                   if (rule.category === 'Sedang') {
                     badgeClass = 'bg-amber-50 text-amber-700 border-amber-200';
                   } else if (rule.category === 'Berat') {
@@ -396,43 +413,43 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
                   }
 
                   return (
-                    <tr key={rule.id} className="hover:bg-slate-50/70 transition-colors">
-                      <td className="py-3.5 px-3 text-center text-slate-400 font-medium">{idx + 1}</td>
-                      <td className="py-3.5 px-3 text-center">
-                        <span className="inline-block px-2 py-0.5 rounded-md font-mono text-[11px] font-bold bg-slate-800 text-white shadow-xs">
+                    <tr key={rule.id} className="hover:bg-purple-50/30 transition-colors">
+                      <td className="py-4 px-4 text-center text-[#635F69] font-bold">{idx + 1}</td>
+                      <td className="py-4 px-4 text-center">
+                        <span className="inline-block px-3 py-1 rounded-xl font-mono text-xs font-black bg-slate-800 text-white shadow-clay-surface">
                           {rule.code || `A${idx + 1}`}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 font-bold text-slate-900">{rule.name}</td>
-                      <td className="py-3.5 px-3 text-center">
-                        <span className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${badgeClass}`}>
+                      <td className="py-4 px-5 font-black text-[#332F3A] text-sm" style={{ fontFamily: 'Nunito, sans-serif' }}>{rule.name}</td>
+                      <td className="py-4 px-4 text-center">
+                        <span className={`inline-block px-3 py-1 rounded-xl text-xs font-black border shadow-clay-surface ${badgeClass}`} style={{ fontFamily: 'Nunito, sans-serif' }}>
                           {rule.category}
                         </span>
                       </td>
                       {enablePointsSystem && (
-                        <td className="py-3.5 px-3 text-center">
-                          <span className="font-extrabold text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
+                        <td className="py-4 px-4 text-center">
+                          <span className="font-black text-[#332F3A] bg-[#EFEBF5] px-3 py-1 rounded-xl shadow-clay-pressed" style={{ fontFamily: 'Nunito, sans-serif' }}>
                             {rule.defaultPoints} Poin
                           </span>
                         </td>
                       )}
-                      <td className="py-3.5 px-3 text-center">
-                        <div className="flex items-center justify-center gap-1.5">
+                      <td className="py-4 px-4 text-center">
+                        <div className="flex items-center justify-center gap-2">
                           <button
                             type="button"
                             onClick={() => handleOpenEditModal(rule)}
-                            className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
+                            className="p-2 rounded-xl bg-white/90 hover:bg-white text-[#635F69] hover:text-[#7C3AED] shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
                             title="Edit Aturan"
                           >
-                            <Edit3 className="w-3.5 h-3.5" />
+                            <Edit3 className="w-4 h-4" />
                           </button>
                           <button
                             type="button"
                             onClick={() => handleDelete(rule)}
-                            className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 transition-colors cursor-pointer"
+                            className="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 shadow-clay-surface hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
                             title="Hapus Aturan"
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
                       </td>
@@ -447,29 +464,31 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
 
       {/* MODAL: Input / Edit Aturan */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 my-8">
-            <div className="p-5 bg-slate-900 text-white flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <SlidersHorizontal className="w-5 h-5 text-emerald-400" />
-                <h3 className="text-base font-bold">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#332F3A]/60 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[36px] max-w-lg w-full border border-white/60 shadow-clay-card overflow-hidden animate-in fade-in zoom-in-95 my-8">
+            <div className="p-6 bg-gradient-to-br from-slate-800 to-slate-900 text-white flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center shadow-clay-surface">
+                  <SlidersHorizontal className="w-6 h-6 text-emerald-400" />
+                </div>
+                <h3 className="text-base font-black" style={{ fontFamily: 'Nunito, sans-serif' }}>
                   {editingRule ? 'Edit Aturan Jenis Pelanggaran' : 'Tambah Aturan Jenis Pelanggaran Baru'}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white"
+                className="w-9 h-9 rounded-2xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmitForm} className="p-6 space-y-4 text-xs">
+            <form onSubmit={handleSubmitForm} className="p-6 sm:p-8 space-y-5 text-xs">
               {/* Kode & Nama Jenis Pelanggaran */}
               <div className="grid grid-cols-4 gap-3">
                 <div className="col-span-1">
-                  <label className="block font-bold text-slate-700 mb-1">
+                  <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                     Kode <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -478,11 +497,11 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
                     placeholder="Contoh: A1"
                     value={formCode}
                     onChange={(e) => setFormCode(e.target.value.toUpperCase())}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-mono font-bold focus:outline-hidden focus:ring-1 focus:ring-slate-600 text-xs uppercase"
+                    className="w-full px-3.5 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-mono font-black shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 text-xs uppercase"
                   />
                 </div>
                 <div className="col-span-3">
-                  <label className="block font-bold text-slate-700 mb-1">
+                  <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                     Nama Jenis Pelanggaran <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -491,15 +510,15 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
                     placeholder="Contoh: Terlambat datang ke sekolah..."
                     value={formName}
                     onChange={(e) => setFormName(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:outline-hidden focus:ring-1 focus:ring-slate-600 text-xs"
+                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-bold shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 text-xs"
                   />
                 </div>
               </div>
 
               {/* Kategori & Poin */}
-              <div className={enablePointsSystem ? "grid grid-cols-2 gap-3" : "grid grid-cols-1 gap-3"}>
+              <div className={enablePointsSystem ? "grid grid-cols-2 gap-4" : "grid grid-cols-1 gap-4"}>
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">
+                  <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                     Kategori Pelanggaran <span className="text-rose-500">*</span>
                   </label>
                   <select
@@ -507,14 +526,14 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
                     onChange={(e) => {
                       const cat = e.target.value as ViolationCategory;
                       setFormCategory(cat);
-                      // suggest sensible default points based on category
                       if (!editingRule) {
                         if (cat === 'Ringan') setFormPoints(5);
                         else if (cat === 'Sedang') setFormPoints(15);
                         else if (cat === 'Berat') setFormPoints(35);
                       }
                     }}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-semibold focus:outline-hidden focus:ring-1 focus:ring-slate-600 text-xs cursor-pointer"
+                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-extrabold shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 text-xs cursor-pointer"
+                    style={{ fontFamily: 'Nunito, sans-serif' }}
                   >
                     <option value="Ringan">Ringan</option>
                     <option value="Sedang">Sedang</option>
@@ -524,7 +543,7 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
 
                 {enablePointsSystem && (
                   <div>
-                    <label className="block font-bold text-slate-700 mb-1">
+                    <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                       Bobot Poin Standar <span className="text-rose-500">*</span>
                     </label>
                     <input
@@ -534,26 +553,26 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
                       max={100}
                       value={formPoints}
                       onChange={(e) => setFormPoints(parseInt(e.target.value, 10) || 5)}
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-semibold focus:outline-hidden focus:ring-1 focus:ring-slate-600 text-xs"
+                      className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-black shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 text-xs"
                     />
                   </div>
                 )}
               </div>
 
-
-
               {/* Actions */}
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
+              <div className="pt-4 border-t border-slate-200/60 flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition-colors cursor-pointer"
+                  className="px-5 py-2.5 rounded-2xl bg-[#EFEBF5] hover:bg-white text-[#635F69] font-black transition-all shadow-clay-button active:scale-[0.92] active:shadow-clay-pressed cursor-pointer"
+                  style={{ fontFamily: 'Nunito, sans-serif' }}
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-colors shadow-xs cursor-pointer flex items-center gap-1.5"
+                  className="px-6 py-2.5 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed cursor-pointer flex items-center gap-2"
+                  style={{ fontFamily: 'Nunito, sans-serif' }}
                 >
                   <CheckCircle2 className="w-4 h-4" />
                   <span>{editingRule ? 'Simpan Perubahan' : 'Tambahkan Aturan'}</span>

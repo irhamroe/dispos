@@ -44,6 +44,7 @@ import {
   deleteDisciplineRecord as deleteDisciplineFromDb,
   COLLECTIONS
 } from './services/firestoreService';
+import { ClayBackgroundBlobs } from './components/clay/ClayBackgroundBlobs';
 import { getTodayIndonesian, getTodayDateString, formatDayAndDateIndonesian } from './utils/exportUtils';
 
 export default function App() {
@@ -650,7 +651,10 @@ export default function App() {
   ).length;
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+    <div className="min-h-screen bg-clay-bg flex flex-col font-dmsans text-clay-foreground relative overflow-x-hidden">
+      {/* Zero-gravity floating 3D ambient blobs */}
+      <ClayBackgroundBlobs />
+
       {/* Top Navbar */}
       <Navbar
         currentUser={currentUser}
@@ -662,7 +666,7 @@ export default function App() {
         onOpenFirebaseModal={() => setIsFirebaseModalOpen(true)}
       />
 
-      <div className="flex-1 flex">
+      <div className="flex-1 flex relative z-10">
         {/* Left Sidebar */}
         <Sidebar
           currentTab={currentTab}
@@ -681,7 +685,7 @@ export default function App() {
         />
 
         {/* Main Content Area */}
-        <main className="flex-1 lg:pl-72 pt-6 px-4 sm:px-6 lg:px-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 lg:pl-80 pt-5 pb-10 px-4 sm:px-6 lg:px-8 max-w-7xl w-full mx-auto">
           {currentTab === 'dashboard' && (
             <DashboardView
               students={students}

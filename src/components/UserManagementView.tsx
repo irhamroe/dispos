@@ -469,45 +469,55 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       )}
 
       {/* Header Banner */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white/85 backdrop-blur-xl rounded-[32px] sm:rounded-[36px] border border-white/60 p-6 sm:p-8 shadow-clay-card transition-all duration-300">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-100 text-purple-800 border border-purple-200">
+            <div className="flex items-center gap-2 mb-2">
+              <span 
+                className="px-3 py-1 rounded-full text-[11px] font-black bg-[#8B5CF6]/15 text-[#7C3AED] border border-[#8B5CF6]/20 shadow-clay-pill"
+                style={{ fontFamily: 'Nunito, sans-serif' }}
+              >
                 Sistem Pengendalian Akses
               </span>
-              <span className="text-slate-400 text-xs">•</span>
-              <span className="text-slate-500 text-xs font-medium">SMAN 1 Batu</span>
+              <span className="text-[#635F69]/40 text-xs">•</span>
+              <span className="text-[#635F69] text-xs font-bold" style={{ fontFamily: 'Nunito, sans-serif' }}>SMAN 1 Batu</span>
             </div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
-              <Users className="w-7 h-7 text-purple-600" />
+            <h1 
+              className="text-2xl sm:text-3xl font-black text-[#332F3A] tracking-tight flex items-center gap-3"
+              style={{ fontFamily: 'Nunito, sans-serif' }}
+            >
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] text-white flex items-center justify-center shadow-clay-button">
+                <Users className="w-5 h-5" />
+              </div>
               <span>Manajemen Pengguna &amp; Multi-Role</span>
             </h1>
-            <p className="text-xs text-slate-500 mt-1 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#635F69] mt-2 max-w-2xl leading-relaxed">
               Kelola akun seluruh sivitas sekolah berdasarkan 4 peran utama: 
-              <strong className="text-slate-700"> Admin</strong>, 
-              <strong className="text-slate-700"> Wali Kelas</strong> (36 Rombel), 
-              <strong className="text-slate-700"> Guru</strong> (Piket / Mapel / BK), dan 
-              <strong className="text-slate-700"> Tendik</strong> (Tenaga Kependidikan / Tata Usaha).
+              <strong className="text-[#332F3A] font-bold"> Admin</strong>, 
+              <strong className="text-[#332F3A] font-bold"> Wali Kelas</strong> (36 Rombel), 
+              <strong className="text-[#332F3A] font-bold"> Guru</strong> (Piket / Mapel / BK), dan 
+              <strong className="text-[#332F3A] font-bold"> Tendik</strong> (Tenaga Kependidikan / Tata Usaha).
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-3">
             <button
               type="button"
               onClick={() => setIsMatrixModalOpen(true)}
-              className="inline-flex items-center gap-2 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors cursor-pointer border border-slate-300"
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/90 hover:bg-white text-[#332F3A] font-extrabold text-xs rounded-2xl transition-all duration-200 cursor-pointer border border-white/60 shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed"
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
-              <Info className="w-4 h-4 text-purple-600" />
+              <Info className="w-4 h-4 text-[#7C3AED]" />
               <span>Matriks Izin Role</span>
             </button>
 
             <button
               type="button"
               onClick={handleExportCSV}
-              className="inline-flex items-center gap-2 px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl transition-colors cursor-pointer border border-slate-300 shadow-2xs"
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/90 hover:bg-white text-[#332F3A] font-extrabold text-xs rounded-2xl transition-all duration-200 cursor-pointer border border-white/60 shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed"
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
-              <Download className="w-4 h-4 text-slate-600" />
+              <Download className="w-4 h-4 text-[#0EA5E9]" />
               <span>Ekspor Data</span>
             </button>
 
@@ -517,7 +527,8 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                 resetAddForm();
                 setIsAddModalOpen(true);
               }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl transition-colors shadow-xs cursor-pointer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] hover:from-[#9333EA] hover:to-[#6D28D9] text-white font-black text-xs rounded-2xl transition-all duration-200 shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed cursor-pointer"
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               <UserPlus className="w-4 h-4" />
               <span>Tambah Pengguna</span>
@@ -526,29 +537,29 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
         </div>
 
         {/* 4 Role Summary Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mt-6 pt-6 border-t border-slate-100">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 pt-6 border-t border-purple-100/50">
           {/* Card 1: Admin */}
           <div 
             onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Admin' ? 'ALL' : 'Admin')}
-            className={`p-3.5 rounded-xl border transition-all cursor-pointer ${
+            className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden ${
               selectedRoleFilter === 'Admin'
-                ? 'bg-purple-50/80 border-purple-400 ring-2 ring-purple-200'
-                : 'bg-purple-50/40 border-purple-100 hover:border-purple-300'
+                ? 'bg-gradient-to-br from-purple-500/15 to-purple-600/10 border-2 border-[#7C3AED] shadow-clay-card -translate-y-1'
+                : 'bg-white/70 hover:bg-white/90 border border-white/60 shadow-clay-card hover:-translate-y-1'
             }`}
           >
             <div className="flex items-center justify-between">
-              <div className="w-8 h-8 rounded-lg bg-purple-600 text-white flex items-center justify-center shadow-xs">
-                <ShieldCheck className="w-4 h-4" />
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 text-white flex items-center justify-center shadow-clay-orb">
+                <ShieldCheck className="w-5 h-5" />
               </div>
-              <span className="text-xl font-black text-purple-900">{roleCounts.admin}</span>
+              <span className="text-2xl font-black text-purple-900" style={{ fontFamily: 'Nunito, sans-serif' }}>{roleCounts.admin}</span>
             </div>
-            <div className="mt-2.5">
-              <div className="text-xs font-bold text-purple-950 flex items-center gap-1.5">
+            <div className="mt-3">
+              <div className="text-xs font-black text-purple-950 flex items-center gap-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                 <span>1. Administrator</span>
-                {selectedRoleFilter === 'Admin' && <span className="text-[10px] text-purple-600 font-semibold">(Filter Aktif)</span>}
+                {selectedRoleFilter === 'Admin' && <span className="text-[10px] text-purple-600 font-bold">(Aktif)</span>}
               </div>
-              <p className="text-[10.5px] text-purple-700/80 mt-0.5 leading-tight">
-                Hak penuh sistem, kelola data master, aturan pelanggaran &amp; akun.
+              <p className="text-[11px] text-[#635F69] mt-1 leading-relaxed">
+                Hak penuh sistem, data master, aturan poin &amp; akun.
               </p>
             </div>
           </div>
@@ -556,25 +567,25 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           {/* Card 2: Wali Kelas */}
           <div 
             onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Wali Kelas' ? 'ALL' : 'Wali Kelas')}
-            className={`p-3.5 rounded-xl border transition-all cursor-pointer ${
+            className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden ${
               selectedRoleFilter === 'Wali Kelas'
-                ? 'bg-teal-50/80 border-teal-400 ring-2 ring-teal-200'
-                : 'bg-teal-50/40 border-teal-100 hover:border-teal-300'
+                ? 'bg-gradient-to-br from-teal-500/15 to-teal-600/10 border-2 border-teal-500 shadow-clay-card -translate-y-1'
+                : 'bg-white/70 hover:bg-white/90 border border-white/60 shadow-clay-card hover:-translate-y-1'
             }`}
           >
             <div className="flex items-center justify-between">
-              <div className="w-8 h-8 rounded-lg bg-teal-600 text-white flex items-center justify-center shadow-xs">
-                <UserCheck className="w-4 h-4" />
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-400 to-teal-600 text-white flex items-center justify-center shadow-clay-orb">
+                <UserCheck className="w-5 h-5" />
               </div>
-              <span className="text-xl font-black text-teal-900">{roleCounts.waliKelas}</span>
+              <span className="text-2xl font-black text-teal-900" style={{ fontFamily: 'Nunito, sans-serif' }}>{roleCounts.waliKelas}</span>
             </div>
-            <div className="mt-2.5">
-              <div className="text-xs font-bold text-teal-950 flex items-center gap-1.5">
+            <div className="mt-3">
+              <div className="text-xs font-black text-teal-950 flex items-center gap-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                 <span>2. Wali Kelas</span>
-                {selectedRoleFilter === 'Wali Kelas' && <span className="text-[10px] text-teal-600 font-semibold">(Filter Aktif)</span>}
+                {selectedRoleFilter === 'Wali Kelas' && <span className="text-[10px] text-teal-600 font-bold">(Aktif)</span>}
               </div>
-              <p className="text-[10.5px] text-teal-700/80 mt-0.5 leading-tight">
-                Pembina rombel, monitoring presensi siswa &amp; surat panggilan ortu.
+              <p className="text-[11px] text-[#635F69] mt-1 leading-relaxed">
+                Pembina rombel, presensi siswa &amp; surat panggilan ortu.
               </p>
             </div>
           </div>
@@ -582,25 +593,25 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           {/* Card 3: Guru */}
           <div 
             onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Guru' ? 'ALL' : 'Guru')}
-            className={`p-3.5 rounded-xl border transition-all cursor-pointer ${
+            className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden ${
               selectedRoleFilter === 'Guru'
-                ? 'bg-sky-50/80 border-sky-400 ring-2 ring-sky-200'
-                : 'bg-sky-50/40 border-sky-100 hover:border-sky-300'
+                ? 'bg-gradient-to-br from-sky-500/15 to-sky-600/10 border-2 border-sky-500 shadow-clay-card -translate-y-1'
+                : 'bg-white/70 hover:bg-white/90 border border-white/60 shadow-clay-card hover:-translate-y-1'
             }`}
           >
             <div className="flex items-center justify-between">
-              <div className="w-8 h-8 rounded-lg bg-sky-600 text-white flex items-center justify-center shadow-xs">
-                <GraduationCap className="w-4 h-4" />
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-400 to-sky-600 text-white flex items-center justify-center shadow-clay-orb">
+                <GraduationCap className="w-5 h-5" />
               </div>
-              <span className="text-xl font-black text-sky-900">{roleCounts.guru}</span>
+              <span className="text-2xl font-black text-sky-900" style={{ fontFamily: 'Nunito, sans-serif' }}>{roleCounts.guru}</span>
             </div>
-            <div className="mt-2.5">
-              <div className="text-xs font-bold text-sky-950 flex items-center gap-1.5">
+            <div className="mt-3">
+              <div className="text-xs font-black text-sky-950 flex items-center gap-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                 <span>3. Guru</span>
-                {selectedRoleFilter === 'Guru' && <span className="text-[10px] text-sky-600 font-semibold">(Filter Aktif)</span>}
+                {selectedRoleFilter === 'Guru' && <span className="text-[10px] text-sky-600 font-bold">(Aktif)</span>}
               </div>
-              <p className="text-[10.5px] text-sky-700/80 mt-0.5 leading-tight">
-                Guru Mapel, Guru Piket presensi gerbang, dan Guru BK disiplin positif.
+              <p className="text-[11px] text-[#635F69] mt-1 leading-relaxed">
+                Guru Mapel, Guru Piket gerbang &amp; Guru BK disiplin.
               </p>
             </div>
           </div>
@@ -608,25 +619,25 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           {/* Card 4: Tendik */}
           <div 
             onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Tendik' ? 'ALL' : 'Tendik')}
-            className={`p-3.5 rounded-xl border transition-all cursor-pointer ${
+            className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden ${
               selectedRoleFilter === 'Tendik'
-                ? 'bg-amber-50/80 border-amber-400 ring-2 ring-amber-200'
-                : 'bg-amber-50/40 border-amber-100 hover:border-amber-300'
+                ? 'bg-gradient-to-br from-amber-500/15 to-amber-600/10 border-2 border-amber-500 shadow-clay-card -translate-y-1'
+                : 'bg-white/70 hover:bg-white/90 border border-white/60 shadow-clay-card hover:-translate-y-1'
             }`}
           >
             <div className="flex items-center justify-between">
-              <div className="w-8 h-8 rounded-lg bg-amber-600 text-white flex items-center justify-center shadow-xs">
-                <Briefcase className="w-4 h-4" />
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-white flex items-center justify-center shadow-clay-orb">
+                <Briefcase className="w-5 h-5" />
               </div>
-              <span className="text-xl font-black text-amber-900">{roleCounts.tendik}</span>
+              <span className="text-2xl font-black text-amber-900" style={{ fontFamily: 'Nunito, sans-serif' }}>{roleCounts.tendik}</span>
             </div>
-            <div className="mt-2.5">
-              <div className="text-xs font-bold text-amber-950 flex items-center gap-1.5">
+            <div className="mt-3">
+              <div className="text-xs font-black text-amber-950 flex items-center gap-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                 <span>4. Tendik</span>
-                {selectedRoleFilter === 'Tendik' && <span className="text-[10px] text-amber-600 font-semibold">(Filter Aktif)</span>}
+                {selectedRoleFilter === 'Tendik' && <span className="text-[10px] text-amber-600 font-bold">(Aktif)</span>}
               </div>
-              <p className="text-[10.5px] text-amber-800/80 mt-0.5 leading-tight">
-                Tata Usaha, staf kesiswaan, persuratan &amp; verifikasi administrasi.
+              <p className="text-[11px] text-[#635F69] mt-1 leading-relaxed">
+                Tata Usaha, staf kesiswaan, persuratan &amp; verifikasi arsip.
               </p>
             </div>
           </div>
@@ -634,23 +645,23 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       </div>
 
       {/* Filters and Controls */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-3">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <div className="bg-white/80 backdrop-blur-xl rounded-[28px] sm:rounded-[32px] border border-white/60 p-4 sm:p-5 shadow-clay-card space-y-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           {/* Search bar */}
           <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#635F69]/60 absolute left-4 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Cari nama pengguna, username, NIP, rombel..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all"
+              className="w-full pl-11 pr-10 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-semibold text-[#332F3A] placeholder-[#635F69]/60 shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#7C3AED]/20 transition-all duration-200"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs px-1"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#635F69]/60 hover:text-[#332F3A] text-xs font-bold px-1 cursor-pointer"
               >
                 ✕
               </button>
@@ -658,13 +669,14 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           </div>
 
           {/* Role and Status filter dropdowns */}
-          <div className="flex flex-wrap items-center gap-2 text-xs">
-            <div className="flex items-center gap-1.5">
-              <span className="text-slate-500 font-medium">Filter Role:</span>
+          <div className="flex flex-wrap items-center gap-3 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="text-[#635F69] font-bold" style={{ fontFamily: 'Nunito, sans-serif' }}>Role:</span>
               <select
                 value={selectedRoleFilter}
                 onChange={(e) => setSelectedRoleFilter(e.target.value)}
-                className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-700 font-semibold focus:outline-hidden focus:ring-1 focus:ring-purple-500 cursor-pointer"
+                className="px-3.5 py-2.5 bg-[#EFEBF5] rounded-xl text-[#332F3A] font-extrabold shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#7C3AED]/20 cursor-pointer transition-all"
+                style={{ fontFamily: 'Nunito, sans-serif' }}
               >
                 <option value="ALL">Semua Role ({users.length})</option>
                 <option value="Admin">Admin ({roleCounts.admin})</option>
@@ -674,12 +686,13 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               </select>
             </div>
 
-            <div className="flex items-center gap-1.5">
-              <span className="text-slate-500 font-medium">Status:</span>
+            <div className="flex items-center gap-2">
+              <span className="text-[#635F69] font-bold" style={{ fontFamily: 'Nunito, sans-serif' }}>Status:</span>
               <select
                 value={selectedStatusFilter}
                 onChange={(e) => setSelectedStatusFilter(e.target.value as any)}
-                className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-700 font-semibold focus:outline-hidden focus:ring-1 focus:ring-purple-500 cursor-pointer"
+                className="px-3.5 py-2.5 bg-[#EFEBF5] rounded-xl text-[#332F3A] font-extrabold shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#7C3AED]/20 cursor-pointer transition-all"
+                style={{ fontFamily: 'Nunito, sans-serif' }}
               >
                 <option value="ALL">Semua Status</option>
                 <option value="Aktif">Aktif ({roleCounts.aktif})</option>
@@ -695,7 +708,8 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                   setSelectedStatusFilter('ALL');
                   setSearchQuery('');
                 }}
-                className="px-2.5 py-1.5 text-purple-700 hover:bg-purple-50 rounded-lg font-bold transition-colors cursor-pointer"
+                className="px-3.5 py-2 bg-purple-50 hover:bg-purple-100 text-[#7C3AED] rounded-xl font-black transition-all shadow-clay-pill cursor-pointer hover:-translate-y-0.5 active:scale-95"
+                style={{ fontFamily: 'Nunito, sans-serif' }}
               >
                 Reset Filter
               </button>
@@ -704,44 +718,46 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
         </div>
 
         {/* Results summary bar */}
-        <div className="flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-100">
+        <div className="flex items-center justify-between text-[11px] text-[#635F69] pt-3 border-t border-purple-100/50">
           <div>
-            Menampilkan <strong className="text-slate-800">{filteredUsers.length}</strong> dari{' '}
-            <strong className="text-slate-800">{users.length}</strong> total akun terdaftar
+            Menampilkan <strong className="text-[#332F3A] font-extrabold">{filteredUsers.length}</strong> dari{' '}
+            <strong className="text-[#332F3A] font-extrabold">{users.length}</strong> total akun terdaftar
           </div>
-          <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" /> Aktif: {roleCounts.aktif}
+          <div className="flex items-center gap-3 font-semibold">
+            <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-xs" /> Aktif: {roleCounts.aktif}
             </span>
-            <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-slate-300" /> Nonaktif: {users.length - roleCounts.aktif}
+            <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#EFEBF5] text-[#635F69]">
+              <span className="w-2 h-2 rounded-full bg-slate-400" /> Nonaktif: {users.length - roleCounts.aktif}
             </span>
           </div>
         </div>
       </div>
 
       {/* User Table Card */}
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs">
+      <div className="bg-white/85 backdrop-blur-xl rounded-[32px] sm:rounded-[36px] border border-white/60 overflow-hidden shadow-clay-card">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider text-[10.5px]">
+            <thead className="bg-[#F4F1FA]/80 border-b border-purple-100/60 text-[#635F69] font-black uppercase tracking-wider text-[11px]" style={{ fontFamily: 'Nunito, sans-serif' }}>
               <tr>
-                <th className="py-3.5 px-4 w-12 text-center">No</th>
-                <th className="py-3.5 px-4">Pengguna / Nama</th>
-                <th className="py-3.5 px-4">Role &amp; Akses</th>
-                <th className="py-3.5 px-4">Penugasan / Bidang</th>
-                <th className="py-3.5 px-4">NIP / Identitas</th>
-                <th className="py-3.5 px-4 text-center">Status</th>
-                <th className="py-3.5 px-4 text-right">Aksi</th>
+                <th className="py-4 px-4 w-12 text-center">No</th>
+                <th className="py-4 px-4">Pengguna / Nama</th>
+                <th className="py-4 px-4">Role &amp; Akses</th>
+                <th className="py-4 px-4">Penugasan / Bidang</th>
+                <th className="py-4 px-4">NIP / Identitas</th>
+                <th className="py-4 px-4 text-center">Status</th>
+                <th className="py-4 px-4 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-purple-100/40">
               {filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-slate-400">
-                    <Users className="w-10 h-10 mx-auto text-slate-300 mb-2" />
-                    <p className="font-semibold text-slate-600 text-sm">Tidak ada data pengguna yang cocok</p>
-                    <p className="text-xs text-slate-400 mt-1">Coba sesuaikan kata kunci pencarian atau filter role.</p>
+                  <td colSpan={7} className="py-16 text-center text-[#635F69]">
+                    <div className="w-16 h-16 mx-auto rounded-3xl bg-purple-50 text-[#7C3AED] flex items-center justify-center shadow-clay-orb mb-3">
+                      <Users className="w-8 h-8" />
+                    </div>
+                    <p className="font-extrabold text-[#332F3A] text-sm" style={{ fontFamily: 'Nunito, sans-serif' }}>Tidak ada data pengguna yang cocok</p>
+                    <p className="text-xs text-[#635F69] mt-1">Coba sesuaikan kata kunci pencarian atau filter role.</p>
                   </td>
                 </tr>
               ) : (
@@ -753,44 +769,44 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                   return (
                     <tr 
                       key={user.id} 
-                      className={`hover:bg-slate-50/80 transition-colors ${
-                        isCurrent ? 'bg-purple-50/30' : ''
+                      className={`hover:bg-white/60 transition-all duration-200 ${
+                        isCurrent ? 'bg-[#7C3AED]/5' : ''
                       }`}
                     >
                       {/* 1. No */}
-                      <td className="py-3.5 px-4 text-center font-mono text-slate-400 text-[11px]">
+                      <td className="py-4 px-4 text-center font-mono text-[#635F69]/60 font-bold text-[11px]">
                         {idx + 1}
                       </td>
 
                       {/* 2. Avatar & Name */}
-                      <td className="py-3.5 px-4">
+                      <td className="py-4 px-4">
                         <div className="flex items-center gap-3">
                           {user.photoUrl ? (
                             <img
                               src={user.photoUrl}
                               alt={user.name}
-                              className="w-10 h-10 rounded-xl object-cover border border-slate-200 shadow-2xs shrink-0"
+                              className="w-11 h-11 rounded-2xl object-cover border-2 border-white shadow-clay-orb shrink-0"
                             />
                           ) : (
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-700 to-slate-900 text-white font-bold flex items-center justify-center text-xs shadow-2xs shrink-0 ring-1 ring-slate-200">
+                            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] text-white font-black flex items-center justify-center text-xs shadow-clay-orb shrink-0" style={{ fontFamily: 'Nunito, sans-serif' }}>
                               {user.avatar || user.name.slice(0, 2).toUpperCase()}
                             </div>
                           )}
                           <div className="min-w-0">
-                            <div className="flex items-center gap-1.5">
-                              <span className="font-extrabold text-slate-900 truncate">
+                            <div className="flex items-center gap-2">
+                              <span className="font-extrabold text-[#332F3A] truncate text-sm" style={{ fontFamily: 'Nunito, sans-serif' }}>
                                 {user.name}
                               </span>
                               {isCurrent && (
-                                <span className="px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-purple-600 text-white shadow-2xs">
+                                <span className="px-2 py-0.5 rounded-full text-[9.5px] font-black bg-[#7C3AED] text-white shadow-clay-pill" style={{ fontFamily: 'Nunito, sans-serif' }}>
                                   Akun Anda
                                 </span>
                               )}
                             </div>
-                            <div className="text-[11px] text-slate-500 font-mono flex items-center gap-1 mt-0.5">
-                              <span>@{user.username}</span>
+                            <div className="text-[11px] text-[#635F69] font-mono flex items-center gap-1.5 mt-0.5">
+                              <span className="font-semibold text-[#7C3AED]">@{user.username}</span>
                               {user.password && (
-                                <span className="text-[10px] text-slate-400">• pass: {user.password}</span>
+                                <span className="text-[10px] text-[#635F69]/70">• pass: {user.password}</span>
                               )}
                             </div>
                           </div>
@@ -798,69 +814,70 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                       </td>
 
                       {/* 3. Role */}
-                      <td className="py-3.5 px-4">
-                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border font-bold text-[11px] shadow-2xs">
-                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md border ${roleMeta.badgeClass}`}>
-                            <RoleIcon className="w-3.5 h-3.5" />
-                            <span>{roleMeta.label}</span>
+                      <td className="py-4 px-4">
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/80 border border-white/80 shadow-clay-pill">
+                          <RoleIcon className="w-3.5 h-3.5 text-[#7C3AED]" />
+                          <span className="font-black text-[11px] text-[#332F3A]" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                            {roleMeta.label}
                           </span>
                         </div>
-                        <div className="text-[10px] text-slate-400 mt-1 max-w-[160px] truncate">
+                        <div className="text-[10px] text-[#635F69] mt-1 max-w-[160px] truncate">
                           {roleMeta.desc}
                         </div>
                       </td>
 
                       {/* 4. Assignment / Department */}
-                      <td className="py-3.5 px-4">
+                      <td className="py-4 px-4">
                         {user.role === 'Wali Kelas' && user.assignedClass ? (
                           <div className="flex items-center gap-1.5">
-                            <span className="px-2 py-0.5 rounded-md bg-teal-100 text-teal-800 font-bold text-[11px] border border-teal-200">
+                            <span className="px-2.5 py-1 rounded-xl bg-teal-50 text-teal-800 font-black text-[11px] border border-teal-200 shadow-clay-pill" style={{ fontFamily: 'Nunito, sans-serif' }}>
                               Kelas {user.assignedClass}
                             </span>
-                            <span className="text-[11px] text-slate-500">
+                            <span className="text-[11px] text-[#635F69]">
                               ({user.department || 'Wali Kelas'})
                             </span>
                           </div>
                         ) : user.role === 'Admin' || user.role === 'Administrator' ? (
-                          <span className="text-slate-700 font-medium text-[11px] flex items-center gap-1">
-                            <ShieldCheck className="w-3.5 h-3.5 text-purple-600" />
+                          <span className="text-[#332F3A] font-bold text-[11px] flex items-center gap-1.5">
+                            <ShieldCheck className="w-4 h-4 text-[#7C3AED]" />
                             {user.department || 'Manajemen Penuh Sistem'}
                           </span>
                         ) : user.department ? (
-                          <span className="text-slate-700 font-medium text-[11px]">
+                          <span className="text-[#332F3A] font-semibold text-[11px]">
                             {user.department}
                           </span>
                         ) : (
-                          <span className="text-slate-400 italic text-[11px]">- Belum ada penugasan -</span>
+                          <span className="text-[#635F69]/60 italic text-[11px]">- Belum ada penugasan -</span>
                         )}
                       </td>
 
                       {/* 5. NIP / Identitas */}
-                      <td className="py-3.5 px-4">
+                      <td className="py-4 px-4">
                         {user.nip ? (
-                          <div className="font-mono text-slate-700 text-[11px]">
-                            <span className="font-bold text-slate-800">{user.nip}</span>
+                          <div className="font-mono text-[#332F3A] text-[11px]">
+                            <span className="font-bold text-[#332F3A] bg-[#EFEBF5] px-2 py-0.5 rounded-lg shadow-clay-pressed">{user.nip}</span>
                           </div>
                         ) : (
-                          <span className="text-slate-400 italic text-[11px]">-</span>
+                          <span className="text-[#635F69]/60 italic text-[11px]">-</span>
                         )}
                       </td>
 
                       {/* 6. Status */}
-                      <td className="py-3.5 px-4 text-center">
+                      <td className="py-4 px-4 text-center">
                         <button
                           type="button"
                           onClick={() => handleToggleStatus(user)}
                           title="Klik untuk ubah status akun"
-                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold cursor-pointer transition-colors border ${
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black cursor-pointer transition-all duration-200 border shadow-clay-pill hover:-translate-y-0.5 active:scale-95 ${
                             user.status === 'Aktif'
-                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
-                              : 'bg-slate-100 text-slate-500 border-slate-200 hover:bg-slate-200'
+                              ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                              : 'bg-[#EFEBF5] text-[#635F69] border-white/60'
                           }`}
+                          style={{ fontFamily: 'Nunito, sans-serif' }}
                         >
                           <span
-                            className={`w-1.5 h-1.5 rounded-full ${
-                              user.status === 'Aktif' ? 'bg-emerald-500' : 'bg-slate-400'
+                            className={`w-2 h-2 rounded-full ${
+                              user.status === 'Aktif' ? 'bg-emerald-500 shadow-xs' : 'bg-slate-400'
                             }`}
                           />
                           <span>{user.status || 'Aktif'}</span>
@@ -868,7 +885,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                       </td>
 
                       {/* 7. Actions */}
-                      <td className="py-3.5 px-4 text-right">
+                      <td className="py-4 px-4 text-right">
                         <div className="flex items-center justify-end gap-1.5">
                           {/* Impersonate / Switch User */}
                           {onSwitchUser && !isCurrent && (
@@ -879,7 +896,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                                 showToast(`Berhasil beralih sesi login sebagai ${user.name} (${user.role}).`);
                               }}
                               title={`Uji coba login sebagai ${user.name} (${user.role})`}
-                              className="p-1.5 text-slate-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-purple-200"
+                              className="p-2 text-[#635F69] hover:text-[#7C3AED] bg-white/80 hover:bg-white rounded-xl transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-90 cursor-pointer"
                             >
                               <ArrowRightLeft className="w-4 h-4" />
                             </button>
@@ -890,7 +907,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                             type="button"
                             onClick={() => setDetailUser(user)}
                             title="Lihat Detail Profil Pengguna"
-                            className="p-1.5 text-slate-500 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-teal-200"
+                            className="p-2 text-[#635F69] hover:text-teal-600 bg-white/80 hover:bg-white rounded-xl transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-90 cursor-pointer"
                           >
                             <Eye className="w-4 h-4" />
                           </button>
@@ -903,7 +920,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                               setNewPasswordVal(user.password || 'sman1batu2026');
                             }}
                             title="Reset Password Pengguna"
-                            className="p-1.5 text-slate-500 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-amber-200"
+                            className="p-2 text-[#635F69] hover:text-amber-600 bg-white/80 hover:bg-white rounded-xl transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-90 cursor-pointer"
                           >
                             <KeyRound className="w-4 h-4" />
                           </button>
@@ -913,7 +930,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                             type="button"
                             onClick={() => handleOpenEdit(user)}
                             title="Edit Data Pengguna"
-                            className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-blue-200"
+                            className="p-2 text-[#635F69] hover:text-blue-600 bg-white/80 hover:bg-white rounded-xl transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-90 cursor-pointer"
                           >
                             <Edit3 className="w-4 h-4" />
                           </button>
@@ -930,10 +947,10 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                                 ? 'Admin utama tidak bisa dihapus'
                                 : 'Hapus Pengguna'
                             }
-                            className={`p-1.5 rounded-lg transition-colors ${
+                            className={`p-2 rounded-xl transition-all ${
                               isCurrent || user.username === 'admin'
-                                ? 'text-slate-300 cursor-not-allowed'
-                                : 'text-slate-400 hover:text-rose-600 hover:bg-rose-50 cursor-pointer border border-transparent hover:border-rose-200'
+                                ? 'text-slate-300 cursor-not-allowed bg-slate-50'
+                                : 'text-[#635F69] hover:text-rose-600 bg-white/80 hover:bg-white shadow-clay-button hover:-translate-y-0.5 active:scale-90 cursor-pointer'
                             }`}
                           >
                             <Trash2 className="w-4 h-4" />
@@ -953,41 +970,41 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       {/* MODAL 1: TAMBAH PENGGUNA BARU */}
       {/* ========================================================================= */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-white rounded-2xl max-w-xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#332F3A]/40 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[36px] max-w-xl w-full max-h-[92vh] flex flex-col shadow-clay-card border border-white/80 overflow-hidden">
             {/* Modal Header */}
-            <div className="px-6 py-4.5 bg-gradient-to-r from-purple-700 to-indigo-800 text-white flex items-center justify-between">
+            <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-[#A78BFA] to-[#7C3AED] text-white flex items-center justify-between shadow-clay-card">
               <div>
-                <h3 className="font-extrabold text-base flex items-center gap-2">
+                <h3 className="font-black text-lg flex items-center gap-2.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                   <UserPlus className="w-5 h-5 text-purple-200" />
                   <span>Tambah Pengguna Baru</span>
                 </h3>
-                <p className="text-xs text-purple-100/90 mt-0.5">
+                <p className="text-xs text-purple-100 mt-0.5">
                   Tentukan peran (Admin, Wali Kelas, Guru, Tendik) dan data kredensial akun.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsAddModalOpen(false)}
-                className="p-1 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                className="w-9 h-9 rounded-2xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-90 cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
             {/* Modal Body */}
-            <form onSubmit={handleCreateUser} className="p-6 space-y-4 overflow-y-auto text-xs">
+            <form onSubmit={handleCreateUser} className="p-6 sm:p-8 space-y-4 overflow-y-auto text-xs">
               {/* 1. Pilih Role */}
-              <div className="p-3.5 bg-purple-50/70 border border-purple-200/80 rounded-xl space-y-2">
-                <label className="font-bold text-slate-800 block text-xs">
+              <div className="p-4 bg-[#F4F1FA] border border-white/80 rounded-[24px] shadow-clay-pressed space-y-2.5">
+                <label className="font-extrabold text-[#332F3A] block text-xs" style={{ fontFamily: 'Nunito, sans-serif' }}>
                   Pilih Peran Akun (Role) <span className="text-rose-500">*</span>
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                   {[
-                    { id: 'Admin' as UserRole, label: 'Admin', icon: ShieldCheck, color: 'purple' },
-                    { id: 'Wali Kelas' as UserRole, label: 'Wali Kelas', icon: UserCheck, color: 'teal' },
-                    { id: 'Guru' as UserRole, label: 'Guru', icon: GraduationCap, color: 'sky' },
-                    { id: 'Tendik' as UserRole, label: 'Tendik', icon: Briefcase, color: 'amber' },
+                    { id: 'Admin' as UserRole, label: 'Admin', icon: ShieldCheck },
+                    { id: 'Wali Kelas' as UserRole, label: 'Wali Kelas', icon: UserCheck },
+                    { id: 'Guru' as UserRole, label: 'Guru', icon: GraduationCap },
+                    { id: 'Tendik' as UserRole, label: 'Tendik', icon: Briefcase },
                   ].map((r) => {
                     const Icon = r.icon;
                     const isSelected = newRole === r.id;
@@ -996,46 +1013,47 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                         key={r.id}
                         type="button"
                         onClick={() => setNewRole(r.id)}
-                        className={`flex flex-col items-center justify-center p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
+                        className={`flex flex-col items-center justify-center p-3 rounded-2xl border text-center transition-all cursor-pointer ${
                           isSelected
-                            ? 'bg-white border-purple-600 text-purple-900 shadow-sm ring-2 ring-purple-400/30 font-extrabold'
-                            : 'bg-white/60 border-slate-200 text-slate-600 hover:bg-white font-medium'
+                            ? 'bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] text-white shadow-clay-button border-transparent font-black -translate-y-0.5'
+                            : 'bg-white/80 border-white/60 text-[#332F3A] hover:bg-white shadow-clay-card font-bold hover:-translate-y-0.5 active:scale-95'
                         }`}
+                        style={{ fontFamily: 'Nunito, sans-serif' }}
                       >
-                        <Icon className={`w-5 h-5 mb-1 ${isSelected ? 'text-purple-600' : 'text-slate-400'}`} />
+                        <Icon className={`w-5 h-5 mb-1.5 ${isSelected ? 'text-white' : 'text-[#7C3AED]'}`} />
                         <span className="text-[11px] leading-tight">{r.label}</span>
                       </button>
                     );
                   })}
                 </div>
-                <div className="text-[11px] text-purple-900/80 bg-white p-2.5 rounded-lg border border-purple-200/60 leading-relaxed">
+                <div className="text-[11px] text-[#332F3A] bg-white/90 p-3 rounded-2xl border border-white/80 shadow-clay-pill leading-relaxed">
                   {newRole === 'Admin' && (
                     <>
-                      <strong>Hak Akses Admin:</strong> Kelola akun pengguna, konfigurasi profil sekolah, master data siswa &amp; kelas, katalog poin pelanggaran, serta ekspor seluruh rekapitulasi.
+                      <strong className="text-[#7C3AED]">Hak Akses Admin:</strong> Kelola akun pengguna, konfigurasi profil sekolah, master data siswa &amp; kelas, katalog poin pelanggaran, serta ekspor seluruh rekapitulasi.
                     </>
                   )}
                   {newRole === 'Wali Kelas' && (
                     <>
-                      <strong>Hak Akses Wali Kelas:</strong> Pengawasan absensi rombel binaan, tindak lanjut kasus pelanggaran murid binaan, dan pembuatan surat pemanggilan orang tua siswa binaan.
+                      <strong className="text-teal-700">Hak Akses Wali Kelas:</strong> Pengawasan absensi rombel binaan, tindak lanjut kasus pelanggaran murid binaan, dan pembuatan surat pemanggilan orang tua siswa binaan.
                     </>
                   )}
                   {newRole === 'Guru' && (
                     <>
-                      <strong>Hak Akses Guru:</strong> Input absensi harian / tugas piket gerbang, dan pencatatan pelanggaran disiplin siswa saat jam KBM / lingkungan sekolah.
+                      <strong className="text-sky-700">Hak Akses Guru:</strong> Input absensi harian / tugas piket gerbang, dan pencatatan pelanggaran disiplin siswa saat jam KBM / lingkungan sekolah.
                     </>
                   )}
                   {newRole === 'Tendik' && (
                     <>
-                      <strong>Hak Akses Tendik:</strong> Pelayanan administrasi tata usaha, rekapitulasi izin/sakit, cetak bukti surat resmi kesiswaan, dan verifikasi arsip.
+                      <strong className="text-amber-700">Hak Akses Tendik:</strong> Pelayanan administrasi tata usaha, rekapitulasi izin/sakit, cetak bukti surat resmi kesiswaan, dan verifikasi arsip.
                     </>
                   )}
                 </div>
               </div>
 
               {/* 2. Nama & NIP */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">
+                  <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                     Nama Lengkap (dengan Gelar) <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -1044,12 +1062,12 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     placeholder="Contoh: Drs. H. Mulyadi, M.Pd."
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-semibold focus:bg-white focus:outline-hidden focus:ring-1 focus:ring-purple-500"
+                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-semibold text-[#332F3A] placeholder-[#635F69]/60 shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#7C3AED]/20 transition-all duration-200"
                   />
                 </div>
 
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">
+                  <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                     NIP / NUPTK / NIK
                   </label>
                   <input
@@ -1057,15 +1075,15 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     placeholder="19750912 200112 1 002"
                     value={newNip}
                     onChange={(e) => setNewNip(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-mono focus:bg-white focus:outline-hidden focus:ring-1 focus:ring-purple-500"
+                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-mono font-semibold text-[#332F3A] placeholder-[#635F69]/60 shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#7C3AED]/20 transition-all duration-200"
                   />
                 </div>
               </div>
 
               {/* 3. Username & Password Awal */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">
+                  <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                     Username Login <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -1074,12 +1092,12 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     placeholder="misal: mulyadi_guru"
                     value={newUsername}
                     onChange={(e) => setNewUsername(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-mono text-xs focus:bg-white focus:outline-hidden focus:ring-1 focus:ring-purple-500"
+                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-mono font-semibold text-[#332F3A] placeholder-[#635F69]/60 shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#7C3AED]/20 transition-all duration-200"
                   />
                 </div>
 
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">
+                  <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                     Password Awal
                   </label>
                   <input
@@ -1087,22 +1105,23 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     placeholder="Default: admin123 / guru123"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-mono text-xs focus:bg-white focus:outline-hidden focus:ring-1 focus:ring-purple-500"
+                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-mono font-semibold text-[#332F3A] placeholder-[#635F69]/60 shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#7C3AED]/20 transition-all duration-200"
                   />
                 </div>
               </div>
 
               {/* 4. Role-Specific Field: Kelas Rombel vs Mapel vs Tendik Unit */}
               {newRole === 'Wali Kelas' && (
-                <div className="p-3 bg-teal-50 border border-teal-200 rounded-xl space-y-2">
-                  <label className="font-bold text-teal-900 block">
+                <div className="p-4 bg-teal-50/70 border border-teal-200/80 rounded-[24px] shadow-clay-pressed space-y-2">
+                  <label className="font-extrabold text-teal-900 block text-xs" style={{ fontFamily: 'Nunito, sans-serif' }}>
                     Pilih Rombel Binaan (36 Kelas SMAN 1 Batu) <span className="text-rose-500">*</span>
                   </label>
                   <select
                     value={newAssignedClass}
                     onChange={(e) => setNewAssignedClass(e.target.value)}
                     required
-                    className="w-full px-3 py-2 bg-white border border-teal-300 rounded-xl text-teal-950 font-bold text-xs focus:outline-hidden focus:ring-1 focus:ring-teal-500"
+                    className="w-full px-4 py-3 bg-white border border-teal-200 rounded-2xl text-teal-950 font-black text-xs shadow-clay-pill focus:outline-hidden focus:ring-4 focus:ring-teal-500/20"
+                    style={{ fontFamily: 'Nunito, sans-serif' }}
                   >
                     <option value="">-- Pilih Rombel Kelas --</option>
                     {sortClasses(classes).map((cls) => (
@@ -1116,7 +1135,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
 
               {newRole === 'Guru' && (
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">
+                  <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                     Mata Pelajaran / Tugas Tambahan
                   </label>
                   <input
@@ -1124,14 +1143,14 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     placeholder="Contoh: Guru Matematika & Piket Harian / Guru BK"
                     value={newDepartment}
                     onChange={(e) => setNewDepartment(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-xs focus:bg-white focus:outline-hidden focus:ring-1 focus:ring-purple-500"
+                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-semibold text-[#332F3A] placeholder-[#635F69]/60 shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#7C3AED]/20 transition-all duration-200"
                   />
                 </div>
               )}
 
               {newRole === 'Tendik' && (
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">
+                  <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                     Unit / Sub-bagian Tenaga Kependidikan
                   </label>
                   <input
@@ -1139,63 +1158,65 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     placeholder="Contoh: Tata Usaha / Kesiswaan / Sarpras / Kepegawaian"
                     value={newDepartment}
                     onChange={(e) => setNewDepartment(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-xs focus:bg-white focus:outline-hidden focus:ring-1 focus:ring-purple-500"
+                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-semibold text-[#332F3A] placeholder-[#635F69]/60 shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#7C3AED]/20 transition-all duration-200"
                   />
                 </div>
               )}
 
               {/* Status Akun */}
               <div>
-                <label className="font-bold text-slate-700 block mb-1">
+                <label className="font-extrabold text-[#332F3A] block mb-2" style={{ fontFamily: 'Nunito, sans-serif' }}>
                   Status Akun
                 </label>
-                <div className="flex items-center gap-4">
-                  <label className="flex items-center gap-2 cursor-pointer">
+                <div className="flex items-center gap-6">
+                  <label className="flex items-center gap-2.5 cursor-pointer">
                     <input
                       type="radio"
                       name="new_status"
                       checked={newStatus === 'Aktif'}
                       onChange={() => setNewStatus('Aktif')}
-                      className="text-purple-600 focus:ring-purple-500"
+                      className="text-[#7C3AED] focus:ring-[#7C3AED]"
                     />
-                    <span className="text-slate-800 font-bold">Aktif (Dapat Login)</span>
+                    <span className="text-[#332F3A] font-extrabold text-xs" style={{ fontFamily: 'Nunito, sans-serif' }}>Aktif (Dapat Login)</span>
                   </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
+                  <label className="flex items-center gap-2.5 cursor-pointer">
                     <input
                       type="radio"
                       name="new_status"
                       checked={newStatus === 'Nonaktif'}
                       onChange={() => setNewStatus('Nonaktif')}
-                      className="text-purple-600 focus:ring-purple-500"
+                      className="text-[#7C3AED] focus:ring-[#7C3AED]"
                     />
-                    <span className="text-slate-600">Nonaktif (Diblokir Sementara)</span>
+                    <span className="text-[#635F69] font-bold text-xs" style={{ fontFamily: 'Nunito, sans-serif' }}>Nonaktif (Diblokir Sementara)</span>
                   </label>
                 </div>
               </div>
 
-              {/* 7. Foto Profil Pengguna (Diletakkan di Bagian Bawah) */}
-              <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+              {/* 7. Foto Profil Pengguna */}
+              <div className="p-4 bg-[#F4F1FA] border border-white/80 rounded-[24px] shadow-clay-pressed space-y-3">
                 <div className="flex items-center justify-between">
-                  <label className="font-bold text-slate-800 flex items-center gap-1.5">
-                    <Camera className="w-4 h-4 text-purple-600" />
+                  <label className="font-extrabold text-[#332F3A] flex items-center gap-2 text-xs" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                    <Camera className="w-4 h-4 text-[#7C3AED]" />
                     <span>Foto Profil Pengguna (Opsional)</span>
                   </label>
-                  <div className="flex items-center gap-1 bg-white p-0.5 rounded-lg border border-slate-200 text-[10px]">
+                  <div className="flex items-center gap-1 bg-white p-1 rounded-xl shadow-clay-pill text-[10px]">
                     <button
                       type="button"
                       onClick={() => setNewPhotoMode('upload')}
-                      className={`px-2 py-0.5 rounded font-bold transition-colors ${
-                        newPhotoMode === 'upload' ? 'bg-purple-600 text-white' : 'text-slate-600'
+                      className={`px-3 py-1 rounded-lg font-black transition-all cursor-pointer ${
+                        newPhotoMode === 'upload' ? 'bg-[#7C3AED] text-white shadow-xs' : 'text-[#635F69]'
                       }`}
+                      style={{ fontFamily: 'Nunito, sans-serif' }}
                     >
                       Unggah File
                     </button>
                     <button
                       type="button"
                       onClick={() => setNewPhotoMode('url')}
-                      className={`px-2 py-0.5 rounded font-bold transition-colors ${
-                        newPhotoMode === 'url' ? 'bg-purple-600 text-white' : 'text-slate-600'
+                      className={`px-3 py-1 rounded-lg font-black transition-all cursor-pointer ${
+                        newPhotoMode === 'url' ? 'bg-[#7C3AED] text-white shadow-xs' : 'text-[#635F69]'
                       }`}
+                      style={{ fontFamily: 'Nunito, sans-serif' }}
                     >
                       Tautan URL
                     </button>
@@ -1209,7 +1230,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                         <img
                           src={newPhotoUrl}
                           alt="Pratinjau Foto"
-                          className="w-14 h-14 rounded-xl object-cover border-2 border-purple-500 shadow-2xs"
+                          className="w-16 h-16 rounded-2xl object-cover border-2 border-white shadow-clay-orb"
                         />
                         <button
                           type="button"
@@ -1217,16 +1238,16 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                             setNewPhotoUrl('');
                             if (addFileInputRef.current) addFileInputRef.current.value = '';
                           }}
-                          className="absolute -top-1.5 -right-1.5 bg-rose-600 text-white p-1 rounded-full shadow-xs hover:bg-rose-700"
+                          className="absolute -top-1.5 -right-1.5 bg-rose-600 text-white p-1.5 rounded-full shadow-xs hover:bg-rose-700 cursor-pointer"
                           title="Hapus foto"
                         >
                           ✕
                         </button>
                       </div>
                     ) : (
-                      <div className="w-14 h-14 rounded-xl border-2 border-dashed border-slate-300 bg-white flex flex-col items-center justify-center text-slate-400">
-                        <Camera className="w-5 h-5 text-slate-300" />
-                        <span className="text-[9px] mt-0.5 font-medium">Foto</span>
+                      <div className="w-16 h-16 rounded-2xl border-2 border-dashed border-purple-200 bg-white/80 flex flex-col items-center justify-center text-[#635F69]/60 shadow-clay-pill">
+                        <Camera className="w-6 h-6 text-purple-300" />
+                        <span className="text-[9px] mt-0.5 font-bold" style={{ fontFamily: 'Nunito, sans-serif' }}>Foto</span>
                       </div>
                     )}
                   </div>
@@ -1244,12 +1265,13 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                         />
                         <label
                           htmlFor="add-user-photo-file"
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-xl font-bold text-xs cursor-pointer shadow-2xs"
+                          className="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-white/90 text-[#332F3A] border border-white/60 rounded-2xl font-black text-xs cursor-pointer shadow-clay-button hover:-translate-y-0.5 active:scale-95 transition-all"
+                          style={{ fontFamily: 'Nunito, sans-serif' }}
                         >
-                          <Upload className="w-3.5 h-3.5 text-purple-600" />
+                          <Upload className="w-4 h-4 text-[#7C3AED]" />
                           <span>Pilih Foto dari Perangkat</span>
                         </label>
-                        <p className="text-[10px] text-slate-500 mt-1">
+                        <p className="text-[10px] text-[#635F69] mt-1.5">
                           Format JPG, PNG, WEBP (maks. 3 MB)
                         </p>
                       </div>
@@ -1260,9 +1282,9 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                           placeholder="https://example.com/foto-profil.jpg"
                           value={newPhotoUrl}
                           onChange={(e) => setNewPhotoUrl(e.target.value)}
-                          className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-slate-800 text-xs focus:ring-1 focus:ring-purple-500"
+                          className="w-full px-4 py-2.5 bg-[#EFEBF5] rounded-2xl text-xs font-semibold text-[#332F3A] shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#7C3AED]/20 transition-all"
                         />
-                        <p className="text-[10px] text-slate-500 mt-1">
+                        <p className="text-[10px] text-[#635F69] mt-1">
                           Masukkan URL gambar profil
                         </p>
                       </div>
@@ -1272,17 +1294,19 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               </div>
 
               {/* Form Action Buttons */}
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2.5">
+              <div className="pt-4 border-t border-purple-100/50 flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-4 py-2 border border-slate-300 hover:bg-slate-50 rounded-xl font-bold text-slate-700 cursor-pointer"
+                  className="px-5 py-2.5 bg-white hover:bg-slate-50 text-[#635F69] rounded-2xl font-extrabold text-xs shadow-clay-button hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all border border-white/60"
+                  style={{ fontFamily: 'Nunito, sans-serif' }}
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold shadow-xs cursor-pointer flex items-center gap-2"
+                  className="px-6 py-2.5 bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] hover:from-[#9333EA] hover:to-[#6D28D9] text-white rounded-2xl font-black text-xs shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed cursor-pointer flex items-center gap-2 transition-all"
+                  style={{ fontFamily: 'Nunito, sans-serif' }}
                 >
                   <CheckCircle2 className="w-4 h-4" />
                   <span>Simpan Pengguna</span>
@@ -1297,36 +1321,36 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       {/* MODAL 2: EDIT PENGGUNA */}
       {/* ========================================================================= */}
       {editingUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-white rounded-2xl max-w-xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#332F3A]/40 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[36px] max-w-xl w-full max-h-[92vh] flex flex-col shadow-clay-card border border-white/80 overflow-hidden">
             {/* Modal Header */}
-            <div className="px-6 py-4.5 bg-gradient-to-r from-blue-700 to-indigo-800 text-white flex items-center justify-between">
+            <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-blue-600 to-indigo-700 text-white flex items-center justify-between shadow-clay-card">
               <div>
-                <h3 className="font-extrabold text-base flex items-center gap-2">
+                <h3 className="font-black text-lg flex items-center gap-2.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                   <Edit3 className="w-5 h-5 text-blue-200" />
                   <span>Edit Data Pengguna: {editingUser.name}</span>
                 </h3>
-                <p className="text-xs text-blue-100/90 mt-0.5">
+                <p className="text-xs text-blue-100 mt-0.5">
                   Perbarui profil, hak akses role, penugasan, dan status akun pengguna.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setEditingUser(null)}
-                className="p-1 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                className="w-9 h-9 rounded-2xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-90 cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
             {/* Modal Body */}
-            <form onSubmit={handleSaveEdit} className="p-6 space-y-4 overflow-y-auto text-xs">
+            <form onSubmit={handleSaveEdit} className="p-6 sm:p-8 space-y-4 overflow-y-auto text-xs">
               {/* Role Selection */}
-              <div className="p-3.5 bg-blue-50/70 border border-blue-200/80 rounded-xl space-y-2">
-                <label className="font-bold text-slate-800 block text-xs">
+              <div className="p-4 bg-[#F4F1FA] border border-white/80 rounded-[24px] shadow-clay-pressed space-y-2.5">
+                <label className="font-extrabold text-[#332F3A] block text-xs" style={{ fontFamily: 'Nunito, sans-serif' }}>
                   Peran Akun (Role) <span className="text-rose-500">*</span>
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                   {[
                     { id: 'Admin' as UserRole, label: 'Admin', icon: ShieldCheck },
                     { id: 'Wali Kelas' as UserRole, label: 'Wali Kelas', icon: UserCheck },
@@ -1340,13 +1364,14 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                         key={r.id}
                         type="button"
                         onClick={() => setEditRole(r.id)}
-                        className={`flex flex-col items-center justify-center p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
+                        className={`flex flex-col items-center justify-center p-3 rounded-2xl border text-center transition-all cursor-pointer ${
                           isSelected
-                            ? 'bg-white border-blue-600 text-blue-900 shadow-sm ring-2 ring-blue-400/30 font-extrabold'
-                            : 'bg-white/60 border-slate-200 text-slate-600 hover:bg-white font-medium'
+                            ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-clay-button border-transparent font-black -translate-y-0.5'
+                            : 'bg-white/80 border-white/60 text-[#332F3A] hover:bg-white shadow-clay-card font-bold hover:-translate-y-0.5 active:scale-95'
                         }`}
+                        style={{ fontFamily: 'Nunito, sans-serif' }}
                       >
-                        <Icon className={`w-5 h-5 mb-1 ${isSelected ? 'text-blue-600' : 'text-slate-400'}`} />
+                        <Icon className={`w-5 h-5 mb-1.5 ${isSelected ? 'text-white' : 'text-blue-600'}`} />
                         <span className="text-[11px] leading-tight">{r.label}</span>
                       </button>
                     );
@@ -1355,9 +1380,9 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               </div>
 
               {/* Nama & NIP */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">
+                  <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                     Nama Lengkap <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -1365,26 +1390,26 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     required
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-semibold focus:bg-white focus:outline-hidden focus:ring-1 focus:ring-blue-500"
+                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-semibold text-[#332F3A] shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
                   />
                 </div>
 
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">
+                  <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                     NIP / NUPTK / NIK
                   </label>
                   <input
                     type="text"
                     value={editNip}
                     onChange={(e) => setEditNip(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-mono focus:bg-white focus:outline-hidden focus:ring-1 focus:ring-blue-500"
+                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-mono font-semibold text-[#332F3A] shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
                   />
                 </div>
               </div>
 
               {/* Username */}
               <div>
-                <label className="font-bold text-slate-700 block mb-1">
+                <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                   Username Login <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -1392,21 +1417,22 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                   required
                   value={editUsername}
                   onChange={(e) => setEditUsername(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-mono text-xs focus:bg-white focus:outline-hidden focus:ring-1 focus:ring-blue-500"
+                  className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-mono font-semibold text-[#332F3A] shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
                 />
               </div>
 
               {/* Role specific assignment */}
               {editRole === 'Wali Kelas' && (
-                <div className="p-3 bg-teal-50 border border-teal-200 rounded-xl space-y-2">
-                  <label className="font-bold text-teal-900 block">
+                <div className="p-4 bg-teal-50/70 border border-teal-200/80 rounded-[24px] shadow-clay-pressed space-y-2">
+                  <label className="font-extrabold text-teal-900 block text-xs" style={{ fontFamily: 'Nunito, sans-serif' }}>
                     Rombel Binaan (36 Kelas SMAN 1 Batu) <span className="text-rose-500">*</span>
                   </label>
                   <select
                     value={editAssignedClass}
                     onChange={(e) => setEditAssignedClass(e.target.value)}
                     required
-                    className="w-full px-3 py-2 bg-white border border-teal-300 rounded-xl text-teal-950 font-bold text-xs focus:outline-hidden focus:ring-1 focus:ring-teal-500"
+                    className="w-full px-4 py-3 bg-white border border-teal-200 rounded-2xl text-teal-950 font-black text-xs shadow-clay-pill focus:outline-hidden focus:ring-4 focus:ring-teal-500/20"
+                    style={{ fontFamily: 'Nunito, sans-serif' }}
                   >
                     <option value="">-- Pilih Rombel Kelas --</option>
                     {sortClasses(classes).map((cls) => (
@@ -1420,7 +1446,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
 
               {(editRole === 'Guru' || editRole === 'Tendik' || editRole === 'Admin') && (
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">
+                  <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                     {editRole === 'Guru'
                       ? 'Mata Pelajaran / Tugas Piket'
                       : editRole === 'Tendik'
@@ -1432,18 +1458,18 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     value={editDepartment}
                     onChange={(e) => setEditDepartment(e.target.value)}
                     placeholder="Contoh: Guru Matematika / Tata Usaha & Kesiswaan"
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-xs focus:bg-white focus:outline-hidden focus:ring-1 focus:ring-blue-500"
+                    className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs font-semibold text-[#332F3A] placeholder-[#635F69]/60 shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
                   />
                 </div>
               )}
 
               {/* Status */}
               <div>
-                <label className="font-bold text-slate-700 block mb-1">
+                <label className="font-extrabold text-[#332F3A] block mb-2" style={{ fontFamily: 'Nunito, sans-serif' }}>
                   Status Akun
                 </label>
-                <div className="flex items-center gap-4">
-                  <label className="flex items-center gap-2 cursor-pointer">
+                <div className="flex items-center gap-6">
+                  <label className="flex items-center gap-2.5 cursor-pointer">
                     <input
                       type="radio"
                       name="edit_status"
@@ -1451,9 +1477,9 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                       onChange={() => setEditStatus('Aktif')}
                       className="text-blue-600 focus:ring-blue-500"
                     />
-                    <span className="text-slate-800 font-bold">Aktif (Dapat Login)</span>
+                    <span className="text-[#332F3A] font-extrabold text-xs" style={{ fontFamily: 'Nunito, sans-serif' }}>Aktif (Dapat Login)</span>
                   </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
+                  <label className="flex items-center gap-2.5 cursor-pointer">
                     <input
                       type="radio"
                       name="edit_status"
@@ -1461,34 +1487,36 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                       onChange={() => setEditStatus('Nonaktif')}
                       className="text-blue-600 focus:ring-blue-500"
                     />
-                    <span className="text-slate-600">Nonaktif</span>
+                    <span className="text-[#635F69] font-bold text-xs" style={{ fontFamily: 'Nunito, sans-serif' }}>Nonaktif</span>
                   </label>
                 </div>
               </div>
 
-              {/* Foto Profil Pengguna (Diletakkan di Bagian Bawah) */}
-              <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+              {/* Foto Profil Pengguna */}
+              <div className="p-4 bg-[#F4F1FA] border border-white/80 rounded-[24px] shadow-clay-pressed space-y-3">
                 <div className="flex items-center justify-between">
-                  <label className="font-bold text-slate-800 flex items-center gap-1.5">
+                  <label className="font-extrabold text-[#332F3A] flex items-center gap-2 text-xs" style={{ fontFamily: 'Nunito, sans-serif' }}>
                     <Camera className="w-4 h-4 text-blue-600" />
                     <span>Foto Profil Pengguna</span>
                   </label>
-                  <div className="flex items-center gap-1 bg-white p-0.5 rounded-lg border border-slate-200 text-[10px]">
+                  <div className="flex items-center gap-1 bg-white p-1 rounded-xl shadow-clay-pill text-[10px]">
                     <button
                       type="button"
                       onClick={() => setEditPhotoMode('upload')}
-                      className={`px-2 py-0.5 rounded font-bold transition-colors ${
-                        editPhotoMode === 'upload' ? 'bg-blue-600 text-white' : 'text-slate-600'
+                      className={`px-3 py-1 rounded-lg font-black transition-all cursor-pointer ${
+                        editPhotoMode === 'upload' ? 'bg-blue-600 text-white shadow-xs' : 'text-[#635F69]'
                       }`}
+                      style={{ fontFamily: 'Nunito, sans-serif' }}
                     >
                       Unggah File
                     </button>
                     <button
                       type="button"
                       onClick={() => setEditPhotoMode('url')}
-                      className={`px-2 py-0.5 rounded font-bold transition-colors ${
-                        editPhotoMode === 'url' ? 'bg-blue-600 text-white' : 'text-slate-600'
+                      className={`px-3 py-1 rounded-lg font-black transition-all cursor-pointer ${
+                        editPhotoMode === 'url' ? 'bg-blue-600 text-white shadow-xs' : 'text-[#635F69]'
                       }`}
+                      style={{ fontFamily: 'Nunito, sans-serif' }}
                     >
                       Tautan URL
                     </button>
@@ -1502,7 +1530,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                         <img
                           src={editPhotoUrl}
                           alt="Pratinjau Foto"
-                          className="w-14 h-14 rounded-xl object-cover border-2 border-blue-500 shadow-2xs"
+                          className="w-16 h-16 rounded-2xl object-cover border-2 border-white shadow-clay-orb"
                         />
                         <button
                           type="button"
@@ -1510,16 +1538,16 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                             setEditPhotoUrl('');
                             if (editFileInputRef.current) editFileInputRef.current.value = '';
                           }}
-                          className="absolute -top-1.5 -right-1.5 bg-rose-600 text-white p-1 rounded-full shadow-xs hover:bg-rose-700"
+                          className="absolute -top-1.5 -right-1.5 bg-rose-600 text-white p-1.5 rounded-full shadow-xs hover:bg-rose-700 cursor-pointer"
                           title="Hapus foto"
                         >
                           ✕
                         </button>
                       </div>
                     ) : (
-                      <div className="w-14 h-14 rounded-xl border-2 border-dashed border-slate-300 bg-white flex flex-col items-center justify-center text-slate-400">
-                        <Camera className="w-5 h-5 text-slate-300" />
-                        <span className="text-[9px] mt-0.5 font-medium">Foto</span>
+                      <div className="w-16 h-16 rounded-2xl border-2 border-dashed border-blue-200 bg-white/80 flex flex-col items-center justify-center text-[#635F69]/60 shadow-clay-pill">
+                        <Camera className="w-6 h-6 text-blue-300" />
+                        <span className="text-[9px] mt-0.5 font-bold" style={{ fontFamily: 'Nunito, sans-serif' }}>Foto</span>
                       </div>
                     )}
                   </div>
@@ -1537,12 +1565,13 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                         />
                         <label
                           htmlFor="edit-user-photo-file"
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-xl font-bold text-xs cursor-pointer shadow-2xs"
+                          className="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-white/90 text-[#332F3A] border border-white/60 rounded-2xl font-black text-xs cursor-pointer shadow-clay-button hover:-translate-y-0.5 active:scale-95 transition-all"
+                          style={{ fontFamily: 'Nunito, sans-serif' }}
                         >
-                          <Upload className="w-3.5 h-3.5 text-blue-600" />
+                          <Upload className="w-4 h-4 text-blue-600" />
                           <span>Pilih Foto dari Perangkat</span>
                         </label>
-                        <p className="text-[10px] text-slate-500 mt-1">
+                        <p className="text-[10px] text-[#635F69] mt-1.5">
                           Format JPG, PNG, WEBP (maks. 3 MB)
                         </p>
                       </div>
@@ -1553,9 +1582,9 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                           placeholder="https://example.com/foto-profil.jpg"
                           value={editPhotoUrl}
                           onChange={(e) => setEditPhotoUrl(e.target.value)}
-                          className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-slate-800 text-xs focus:ring-1 focus:ring-blue-500"
+                          className="w-full px-4 py-2.5 bg-[#EFEBF5] rounded-2xl text-xs font-semibold text-[#332F3A] shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-blue-500/20 transition-all"
                         />
-                        <p className="text-[10px] text-slate-500 mt-1">
+                        <p className="text-[10px] text-[#635F69] mt-1">
                           Masukkan URL gambar profil
                         </p>
                       </div>
@@ -1565,17 +1594,19 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               </div>
 
               {/* Buttons */}
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2.5">
+              <div className="pt-4 border-t border-purple-100/50 flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setEditingUser(null)}
-                  className="px-4 py-2 border border-slate-300 hover:bg-slate-50 rounded-xl font-bold text-slate-700 cursor-pointer"
+                  className="px-5 py-2.5 bg-white hover:bg-slate-50 text-[#635F69] rounded-2xl font-extrabold text-xs shadow-clay-button hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all border border-white/60"
+                  style={{ fontFamily: 'Nunito, sans-serif' }}
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-xs cursor-pointer flex items-center gap-2"
+                  className="px-6 py-2.5 bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-2xl font-black text-xs shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed cursor-pointer flex items-center gap-2 transition-all"
+                  style={{ fontFamily: 'Nunito, sans-serif' }}
                 >
                   <CheckCircle2 className="w-4 h-4" />
                   <span>Simpan Perubahan</span>
@@ -1590,11 +1621,11 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       {/* MODAL 3: RESET PASSWORD */}
       {/* ========================================================================= */}
       {resettingUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden">
-            <div className="px-6 py-4.5 bg-gradient-to-r from-amber-600 to-orange-700 text-white flex items-center justify-between">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#332F3A]/40 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[36px] max-w-md w-full shadow-clay-card border border-white/80 overflow-hidden">
+            <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-amber-500 to-orange-600 text-white flex items-center justify-between shadow-clay-card">
               <div>
-                <h3 className="font-extrabold text-base flex items-center gap-2">
+                <h3 className="font-black text-lg flex items-center gap-2.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                   <KeyRound className="w-5 h-5 text-amber-200" />
                   <span>Reset Password Pengguna</span>
                 </h3>
@@ -1605,22 +1636,22 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               <button
                 type="button"
                 onClick={() => setResettingUser(null)}
-                className="p-1 rounded-lg text-white/80 hover:text-white hover:bg-white/10"
+                className="w-9 h-9 rounded-2xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-90 cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleSaveResetPassword} className="p-6 space-y-4 text-xs">
-              <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-900">
-                <div className="font-bold text-sm">{resettingUser.name}</div>
-                <div className="text-[11px] text-amber-700 mt-0.5">
-                  Role: <strong>{resettingUser.role}</strong> • Username: <code>{resettingUser.username}</code>
+            <form onSubmit={handleSaveResetPassword} className="p-6 sm:p-8 space-y-4 text-xs">
+              <div className="p-4 bg-amber-50/80 border border-amber-200/80 rounded-[24px] shadow-clay-pill text-amber-950">
+                <div className="font-black text-base" style={{ fontFamily: 'Nunito, sans-serif' }}>{resettingUser.name}</div>
+                <div className="text-[11px] text-amber-800 mt-1 font-semibold">
+                  Role: <strong className="font-black">{resettingUser.role}</strong> • Username: <code className="bg-white/80 px-2 py-0.5 rounded-lg border border-amber-200">{resettingUser.username}</code>
                 </div>
               </div>
 
               <div>
-                <label className="font-bold text-slate-700 block mb-1">
+                <label className="font-extrabold text-[#332F3A] block mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                   Password Baru <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
@@ -1629,12 +1660,12 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     required
                     value={newPasswordVal}
                     onChange={(e) => setNewPasswordVal(e.target.value)}
-                    className="w-full px-3 py-2 pr-10 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-mono text-xs focus:bg-white focus:outline-hidden focus:ring-1 focus:ring-amber-500"
+                    className="w-full px-4 py-3 pr-12 bg-[#EFEBF5] rounded-2xl text-xs font-mono font-semibold text-[#332F3A] shadow-clay-pressed focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-amber-500/20 transition-all duration-200"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#635F69] hover:text-[#332F3A] p-1 cursor-pointer"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -1642,15 +1673,15 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               </div>
 
               {/* Quick Preset Passwords */}
-              <div className="space-y-1.5">
-                <span className="text-slate-400 text-[11px] block">Template Cepat:</span>
-                <div className="flex flex-wrap gap-1.5">
+              <div className="space-y-2">
+                <span className="text-[#635F69] font-bold text-[11px] block" style={{ fontFamily: 'Nunito, sans-serif' }}>Template Cepat:</span>
+                <div className="flex flex-wrap gap-2">
                   {['sman1batu2026', 'guru123', 'wali123', 'admin123', 'tendik123'].map((pwd) => (
                     <button
                       key={pwd}
                       type="button"
                       onClick={() => setNewPasswordVal(pwd)}
-                      className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md font-mono text-[10.5px] cursor-pointer"
+                      className="px-3 py-1.5 bg-white hover:bg-slate-50 text-[#332F3A] rounded-xl font-mono text-[11px] font-bold shadow-clay-button hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all border border-white/60"
                     >
                       {pwd}
                     </button>
@@ -1658,17 +1689,19 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2.5">
+              <div className="pt-4 border-t border-purple-100/50 flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setResettingUser(null)}
-                  className="px-4 py-2 border border-slate-300 hover:bg-slate-50 rounded-xl font-bold text-slate-700 cursor-pointer"
+                  className="px-5 py-2.5 bg-white hover:bg-slate-50 text-[#635F69] rounded-2xl font-extrabold text-xs shadow-clay-button hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all border border-white/60"
+                  style={{ fontFamily: 'Nunito, sans-serif' }}
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold shadow-xs cursor-pointer flex items-center gap-1.5"
+                  className="px-6 py-2.5 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-2xl font-black text-xs shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed cursor-pointer flex items-center gap-2 transition-all"
+                  style={{ fontFamily: 'Nunito, sans-serif' }}
                 >
                   <CheckCircle2 className="w-4 h-4" />
                   <span>Simpan Password</span>
@@ -1683,34 +1716,36 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       {/* MODAL 4: HAPUS USER KONFIRMASI */}
       {/* ========================================================================= */}
       {deleteConfirmUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 p-6 space-y-4 text-xs">
-            <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mx-auto">
-              <AlertTriangle className="w-6 h-6" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#332F3A]/40 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[36px] max-w-md w-full shadow-clay-card border border-white/80 p-6 sm:p-8 space-y-4 text-xs">
+            <div className="w-14 h-14 rounded-3xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto shadow-clay-orb">
+              <AlertTriangle className="w-7 h-7" />
             </div>
 
             <div className="text-center">
-              <h3 className="font-extrabold text-slate-900 text-base">Hapus Akun Pengguna?</h3>
-              <p className="text-slate-500 mt-1">
-                Apakah Anda yakin ingin menghapus akun <strong className="text-slate-800">{deleteConfirmUser.name}</strong> (@{deleteConfirmUser.username}) dengan role <strong className="text-slate-800">{deleteConfirmUser.role}</strong>?
+              <h3 className="font-black text-[#332F3A] text-lg" style={{ fontFamily: 'Nunito, sans-serif' }}>Hapus Akun Pengguna?</h3>
+              <p className="text-[#635F69] mt-2 leading-relaxed">
+                Apakah Anda yakin ingin menghapus akun <strong className="text-[#332F3A] font-extrabold">{deleteConfirmUser.name}</strong> (@{deleteConfirmUser.username}) dengan role <strong className="text-[#332F3A] font-extrabold">{deleteConfirmUser.role}</strong>?
               </p>
-              <p className="text-[11px] text-rose-600 bg-rose-50 p-2.5 rounded-xl border border-rose-100 mt-3 font-medium">
+              <p className="text-[11px] text-rose-700 bg-rose-50 p-3 rounded-2xl border border-rose-200 mt-4 font-bold leading-relaxed shadow-clay-pill">
                 Tindakan ini permanen dan pengguna ini tidak akan dapat login lagi ke dalam sistem.
               </p>
             </div>
 
-            <div className="pt-2 flex items-center justify-center gap-3">
+            <div className="pt-3 flex items-center justify-center gap-3">
               <button
                 type="button"
                 onClick={() => setDeleteConfirmUser(null)}
-                className="px-4 py-2 border border-slate-300 hover:bg-slate-50 rounded-xl font-bold text-slate-700 cursor-pointer"
+                className="px-5 py-2.5 bg-white hover:bg-slate-50 text-[#635F69] rounded-2xl font-extrabold text-xs shadow-clay-button hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all border border-white/60"
+                style={{ fontFamily: 'Nunito, sans-serif' }}
               >
                 Batal
               </button>
               <button
                 type="button"
                 onClick={handleConfirmDelete}
-                className="px-5 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold shadow-xs cursor-pointer"
+                className="px-6 py-2.5 bg-gradient-to-br from-rose-500 to-rose-700 hover:from-rose-600 hover:to-rose-800 text-white rounded-2xl font-black text-xs shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed cursor-pointer transition-all"
+                style={{ fontFamily: 'Nunito, sans-serif' }}
               >
                 Ya, Hapus Akun
               </button>
@@ -1723,13 +1758,13 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       {/* MODAL 5: DETAIL PROFIL USER */}
       {/* ========================================================================= */}
       {detailUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden">
-            <div className="p-6 bg-gradient-to-r from-slate-900 to-slate-800 text-white relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#332F3A]/40 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[36px] max-w-lg w-full shadow-clay-card border border-white/80 overflow-hidden">
+            <div className="p-6 sm:p-8 bg-gradient-to-r from-[#7C3AED] to-[#4F46E5] text-white relative shadow-clay-card">
               <button
                 type="button"
                 onClick={() => setDetailUser(null)}
-                className="absolute top-4 right-4 p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/10"
+                className="absolute top-6 right-6 w-9 h-9 rounded-2xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-90 cursor-pointer"
               >
                 ✕
               </button>
@@ -1738,23 +1773,23 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                   <img
                     src={detailUser.photoUrl}
                     alt={detailUser.name}
-                    className="w-16 h-16 rounded-2xl object-cover border-2 border-white/40 shadow-md shrink-0"
+                    className="w-18 h-18 rounded-3xl object-cover border-3 border-white shadow-clay-orb shrink-0"
                   />
                 ) : (
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-700 text-white font-black text-xl flex items-center justify-center border-2 border-white/40 shadow-md shrink-0">
+                  <div className="w-18 h-18 rounded-3xl bg-white/20 text-white font-black text-2xl flex items-center justify-center border-2 border-white/40 shadow-clay-orb shrink-0" style={{ fontFamily: 'Nunito, sans-serif' }}>
                     {detailUser.avatar || detailUser.name.slice(0, 2).toUpperCase()}
                   </div>
                 )}
                 <div className="min-w-0">
-                  <h3 className="font-black text-lg text-white leading-tight">{detailUser.name}</h3>
-                  <div className="text-xs text-purple-200 font-mono mt-0.5">@{detailUser.username}</div>
-                  <div className="mt-2 flex items-center gap-2">
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white/20 text-white border border-white/30">
+                  <h3 className="font-black text-xl text-white leading-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>{detailUser.name}</h3>
+                  <div className="text-xs text-purple-200 font-mono mt-0.5 font-bold">@{detailUser.username}</div>
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className="px-3 py-1 rounded-full text-[11px] font-black bg-white/20 text-white border border-white/30 shadow-clay-pill" style={{ fontFamily: 'Nunito, sans-serif' }}>
                       {detailUser.role}
                     </span>
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                      detailUser.status === 'Aktif' ? 'bg-emerald-500/30 text-emerald-200' : 'bg-rose-500/30 text-rose-200'
-                    }`}>
+                    <span className={`px-3 py-1 rounded-full text-[11px] font-black shadow-clay-pill ${
+                      detailUser.status === 'Aktif' ? 'bg-emerald-400 text-emerald-950' : 'bg-rose-400 text-rose-950'
+                    }`} style={{ fontFamily: 'Nunito, sans-serif' }}>
                       {detailUser.status || 'Aktif'}
                     </span>
                   </div>
@@ -1762,38 +1797,39 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               </div>
             </div>
 
-            <div className="p-6 space-y-3 text-xs">
-              <div className="grid grid-cols-2 gap-3 py-2 border-b border-slate-100">
+            <div className="p-6 sm:p-8 space-y-4 text-xs">
+              <div className="grid grid-cols-2 gap-4 p-4 bg-[#F4F1FA] rounded-[24px] shadow-clay-pressed">
                 <div>
-                  <span className="text-slate-400 block text-[10.5px]">NIP / Identitas</span>
-                  <span className="font-bold text-slate-800 font-mono">{detailUser.nip || '-'}</span>
+                  <span className="text-[#635F69] block text-[11px] font-bold" style={{ fontFamily: 'Nunito, sans-serif' }}>NIP / Identitas</span>
+                  <span className="font-black text-[#332F3A] font-mono text-sm">{detailUser.nip || '-'}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[10.5px]">Password Aktif</span>
-                  <span className="font-bold text-slate-800 font-mono">{detailUser.password || 'admin123'}</span>
+                  <span className="text-[#635F69] block text-[11px] font-bold" style={{ fontFamily: 'Nunito, sans-serif' }}>Password Aktif</span>
+                  <span className="font-black text-[#332F3A] font-mono text-sm">{detailUser.password || 'admin123'}</span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 py-2 border-b border-slate-100">
+              <div className="grid grid-cols-2 gap-4 p-4 bg-[#F4F1FA] rounded-[24px] shadow-clay-pressed">
                 <div>
-                  <span className="text-slate-400 block text-[10.5px]">Penugasan / Bidang</span>
-                  <span className="font-bold text-slate-800">
+                  <span className="text-[#635F69] block text-[11px] font-bold" style={{ fontFamily: 'Nunito, sans-serif' }}>Penugasan / Bidang</span>
+                  <span className="font-extrabold text-[#332F3A] text-xs">
                     {detailUser.assignedClass ? `Wali Kelas ${detailUser.assignedClass}` : detailUser.department || '-'}
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[10.5px]">Terdaftar Sejak</span>
-                  <span className="font-bold text-slate-800">{detailUser.createdAt || '2026-01-10'}</span>
+                  <span className="text-[#635F69] block text-[11px] font-bold" style={{ fontFamily: 'Nunito, sans-serif' }}>Terdaftar Sejak</span>
+                  <span className="font-extrabold text-[#332F3A] text-xs">{detailUser.createdAt || '2026-01-10'}</span>
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-2">
+              <div className="pt-3 border-t border-purple-100/50 flex items-center justify-end">
                 <button
                   type="button"
                   onClick={() => setDetailUser(null)}
-                  className="px-4 py-2 border border-slate-300 hover:bg-slate-50 rounded-xl font-bold text-slate-700 cursor-pointer"
+                  className="px-6 py-2.5 bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] hover:from-[#9333EA] hover:to-[#6D28D9] text-white rounded-2xl font-black text-xs shadow-clay-button hover:-translate-y-0.5 active:scale-95 cursor-pointer transition-all"
+                  style={{ fontFamily: 'Nunito, sans-serif' }}
                 >
-                  Tutup
+                  Tutup Profil
                 </button>
               </div>
             </div>
@@ -1805,150 +1841,153 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       {/* MODAL 6: MATRIKS HAK AKSES ROLE */}
       {/* ========================================================================= */}
       {isMatrixModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
-            <div className="px-6 py-4.5 bg-gradient-to-r from-purple-800 to-indigo-900 text-white flex items-center justify-between">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#332F3A]/40 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[36px] max-w-3xl w-full max-h-[90vh] flex flex-col shadow-clay-card border border-white/80 overflow-hidden">
+            <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-[#7C3AED] to-[#4F46E5] text-white flex items-center justify-between shadow-clay-card">
               <div>
-                <h3 className="font-extrabold text-base flex items-center gap-2">
+                <h3 className="font-black text-lg flex items-center gap-2.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
                   <ShieldCheck className="w-5 h-5 text-purple-200" />
                   <span>Matriks Hak Akses &amp; Kewenangan Multi-Role</span>
                 </h3>
-                <p className="text-xs text-purple-100/90 mt-0.5">
+                <p className="text-xs text-purple-100 mt-0.5">
                   Daftar izin operasional berdasarkan 4 tingkatan peran di SMAN 1 Batu.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsMatrixModalOpen(false)}
-                className="p-1 rounded-lg text-white/80 hover:text-white hover:bg-white/10"
+                className="w-9 h-9 rounded-2xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-90 cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
-            <div className="p-6 overflow-y-auto text-xs space-y-4">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold text-[11px]">
-                    <th className="p-3">Fitur / Modul Aplikasi</th>
-                    <th className="p-3 text-center text-purple-800">1. Admin</th>
-                    <th className="p-3 text-center text-teal-800">2. Wali Kelas</th>
-                    <th className="p-3 text-center text-sky-800">3. Guru</th>
-                    <th className="p-3 text-center text-amber-800">4. Tendik</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 text-[11px]">
-                  {[
-                    {
-                      feature: 'Dashboard Statistik & Grafik Kehadiran',
-                      admin: 'Penuh (36 Rombel)',
-                      wali: 'Penuh (36 Rombel)',
-                      guru: 'Penuh (36 Rombel)',
-                      tendik: 'Penuh (36 Rombel)',
-                    },
-                    {
-                      feature: 'Input Presensi Harian (H, I, S, A, D)',
-                      admin: 'Penuh Semua Kelas',
-                      wali: 'Kelas Binaan & Piket',
-                      guru: 'Piket Harian & KBM',
-                      tendik: 'Verifikasi & Monitoring',
-                    },
-                    {
-                      feature: 'Rekap Presensi & Ekspor Excel/PDF',
-                      admin: 'Penuh Semua Kelas',
-                      wali: 'Penuh Rombel Sendiri',
-                      guru: 'Lihat & Filter',
-                      tendik: 'Penuh untuk Arsip TU',
-                    },
-                    {
-                      feature: 'Rekap Surat Izin Sakit / Surat Dokter',
-                      admin: 'Penuh',
-                      wali: 'Penuh Kelas Binaan',
-                      guru: 'Lihat',
-                      tendik: 'Penuh (Pelayanan Surat)',
-                    },
-                    {
-                      feature: 'Pencatatan Pelanggaran Siswa & Poin',
-                      admin: 'Penuh (Tambah/Edit/Hapus)',
-                      wali: 'Penuh (Semua Siswa)',
-                      guru: 'Penuh (Input Pelanggaran)',
-                      tendik: 'Terbatas (Bantu Catat)',
-                    },
-                    {
-                      feature: 'Tagihan Pembinaan / Restitusi Siswa',
-                      admin: 'Penuh & Verifikasi',
-                      wali: 'Penuh Kelas Binaan',
-                      guru: 'Pendampingan Pembinaan',
-                      tendik: 'Arsip Dokumen',
-                    },
-                    {
-                      feature: 'Penerbitan Surat Panggilan Orang Tua',
-                      admin: 'Penuh + TTD Digital',
-                      wali: 'Penuh Buat & TTD Wali',
-                      guru: 'Rekomendasi Kasus',
-                      tendik: 'Distribusi & Arsip',
-                    },
-                    {
-                      feature: 'Katalog Aturan & Bobot Poin Pelanggaran',
-                      admin: 'Penuh (Kelola Aturan)',
-                      wali: 'Lihat Katalog',
-                      guru: 'Lihat Katalog',
-                      tendik: 'Lihat Katalog',
-                    },
-                    {
-                      feature: 'Master Data Siswa (~1.300 Siswa)',
-                      admin: 'Penuh (Tambah/Edit/Hapus)',
-                      wali: 'Lihat & Edit Murid Binaan',
-                      guru: 'Lihat Data Siswa',
-                      tendik: 'Verifikasi Dapodik',
-                    },
-                    {
-                      feature: 'Master Data Kelas (36 Rombel)',
-                      admin: 'Penuh (Kelola Rombel)',
-                      wali: 'Lihat Data Kelas',
-                      guru: 'Lihat Data Kelas',
-                      tendik: 'Lihat Data Kelas',
-                    },
-                    {
-                      feature: 'Manajemen Pengguna & Multi-Role',
-                      admin: 'Penuh (Kelola Semua User)',
-                      wali: 'Nonaktif',
-                      guru: 'Nonaktif',
-                      tendik: 'Nonaktif',
-                    },
-                  ].map((row, idx) => (
-                    <tr key={idx} className="hover:bg-slate-50">
-                      <td className="p-3 font-semibold text-slate-800">{row.feature}</td>
-                      <td className="p-3 text-center">
-                        <span className="px-2 py-0.5 rounded-md bg-purple-100 text-purple-800 font-bold text-[10px]">
-                          {row.admin}
-                        </span>
-                      </td>
-                      <td className="p-3 text-center">
-                        <span className="px-2 py-0.5 rounded-md bg-teal-100 text-teal-800 font-bold text-[10px]">
-                          {row.wali}
-                        </span>
-                      </td>
-                      <td className="p-3 text-center">
-                        <span className="px-2 py-0.5 rounded-md bg-sky-100 text-sky-800 font-bold text-[10px]">
-                          {row.guru}
-                        </span>
-                      </td>
-                      <td className="p-3 text-center">
-                        <span className="px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 font-bold text-[10px]">
-                          {row.tendik}
-                        </span>
-                      </td>
+            <div className="p-6 sm:p-8 overflow-y-auto text-xs space-y-4">
+              <div className="rounded-2xl border border-white/80 overflow-hidden shadow-clay-pressed">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-[#F4F1FA] border-b border-purple-100 text-[#635F69] font-black text-[11px]" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                      <th className="p-3.5">Fitur / Modul Aplikasi</th>
+                      <th className="p-3.5 text-center text-purple-900">1. Admin</th>
+                      <th className="p-3.5 text-center text-teal-900">2. Wali Kelas</th>
+                      <th className="p-3.5 text-center text-sky-900">3. Guru</th>
+                      <th className="p-3.5 text-center text-amber-900">4. Tendik</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-purple-100/40 text-[11px] bg-white/80">
+                    {[
+                      {
+                        feature: 'Dashboard Statistik & Grafik Kehadiran',
+                        admin: 'Penuh (36 Rombel)',
+                        wali: 'Penuh (36 Rombel)',
+                        guru: 'Penuh (36 Rombel)',
+                        tendik: 'Penuh (36 Rombel)',
+                      },
+                      {
+                        feature: 'Input Presensi Harian (H, I, S, A, D)',
+                        admin: 'Penuh Semua Kelas',
+                        wali: 'Kelas Binaan & Piket',
+                        guru: 'Piket Harian & KBM',
+                        tendik: 'Verifikasi & Monitoring',
+                      },
+                      {
+                        feature: 'Rekap Presensi & Ekspor Excel/PDF',
+                        admin: 'Penuh Semua Kelas',
+                        wali: 'Penuh Rombel Sendiri',
+                        guru: 'Lihat & Filter',
+                        tendik: 'Penuh untuk Arsip TU',
+                      },
+                      {
+                        feature: 'Rekap Surat Izin Sakit / Surat Dokter',
+                        admin: 'Penuh',
+                        wali: 'Penuh Kelas Binaan',
+                        guru: 'Lihat',
+                        tendik: 'Penuh (Pelayanan Surat)',
+                      },
+                      {
+                        feature: 'Pencatatan Pelanggaran Siswa & Poin',
+                        admin: 'Penuh (Tambah/Edit/Hapus)',
+                        wali: 'Penuh (Semua Siswa)',
+                        guru: 'Penuh (Input Pelanggaran)',
+                        tendik: 'Terbatas (Bantu Catat)',
+                      },
+                      {
+                        feature: 'Tagihan Pembinaan / Restitusi Siswa',
+                        admin: 'Penuh & Verifikasi',
+                        wali: 'Penuh Kelas Binaan',
+                        guru: 'Pendampingan Pembinaan',
+                        tendik: 'Arsip Dokumen',
+                      },
+                      {
+                        feature: 'Penerbitan Surat Panggilan Orang Tua',
+                        admin: 'Penuh + TTD Digital',
+                        wali: 'Penuh Buat & TTD Wali',
+                        guru: 'Rekomendasi Kasus',
+                        tendik: 'Distribusi & Arsip',
+                      },
+                      {
+                        feature: 'Katalog Aturan & Bobot Poin Pelanggaran',
+                        admin: 'Penuh (Kelola Aturan)',
+                        wali: 'Lihat Katalog',
+                        guru: 'Lihat Katalog',
+                        tendik: 'Lihat Katalog',
+                      },
+                      {
+                        feature: 'Master Data Siswa (~1.300 Siswa)',
+                        admin: 'Penuh (Tambah/Edit/Hapus)',
+                        wali: 'Lihat & Edit Murid Binaan',
+                        guru: 'Lihat Data Siswa',
+                        tendik: 'Verifikasi Dapodik',
+                      },
+                      {
+                        feature: 'Master Data Kelas (36 Rombel)',
+                        admin: 'Penuh (Kelola Rombel)',
+                        wali: 'Lihat Data Kelas',
+                        guru: 'Lihat Data Kelas',
+                        tendik: 'Lihat Data Kelas',
+                      },
+                      {
+                        feature: 'Manajemen Pengguna & Multi-Role',
+                        admin: 'Penuh (Kelola Semua User)',
+                        wali: 'Nonaktif',
+                        guru: 'Nonaktif',
+                        tendik: 'Nonaktif',
+                      },
+                    ].map((row, idx) => (
+                      <tr key={idx} className="hover:bg-purple-50/40">
+                        <td className="p-3.5 font-bold text-[#332F3A]">{row.feature}</td>
+                        <td className="p-3.5 text-center">
+                          <span className="px-2.5 py-1 rounded-xl bg-purple-50 text-purple-900 font-extrabold text-[10px] border border-purple-200 shadow-clay-pill" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                            {row.admin}
+                          </span>
+                        </td>
+                        <td className="p-3.5 text-center">
+                          <span className="px-2.5 py-1 rounded-xl bg-teal-50 text-teal-900 font-extrabold text-[10px] border border-teal-200 shadow-clay-pill" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                            {row.wali}
+                          </span>
+                        </td>
+                        <td className="p-3.5 text-center">
+                          <span className="px-2.5 py-1 rounded-xl bg-sky-50 text-sky-900 font-extrabold text-[10px] border border-sky-200 shadow-clay-pill" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                            {row.guru}
+                          </span>
+                        </td>
+                        <td className="p-3.5 text-center">
+                          <span className="px-2.5 py-1 rounded-xl bg-amber-50 text-amber-900 font-extrabold text-[10px] border border-amber-200 shadow-clay-pill" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                            {row.tendik}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-end">
+              <div className="pt-3 border-t border-purple-100/50 flex items-center justify-end">
                 <button
                   type="button"
                   onClick={() => setIsMatrixModalOpen(false)}
-                  className="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold cursor-pointer"
+                  className="px-6 py-2.5 bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] hover:from-[#9333EA] hover:to-[#6D28D9] text-white rounded-2xl font-black cursor-pointer shadow-clay-button hover:-translate-y-0.5 active:scale-95 transition-all"
+                  style={{ fontFamily: 'Nunito, sans-serif' }}
                 >
                   Tutup Matriks
                 </button>

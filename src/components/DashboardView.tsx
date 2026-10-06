@@ -1,23 +1,15 @@
 import React, { useState, useMemo } from 'react';
 import { 
-  Users, 
-  Clock, 
-  AlertTriangle, 
-  ShieldAlert, 
-  CheckCircle2, 
-  XCircle, 
-  HelpCircle, 
   Calendar, 
   Filter, 
   TrendingUp, 
   ChevronRight,
-  HeartHandshake,
-  FileSpreadsheet,
   FileCheck,
   FileX,
-  Award,
   Layers,
-  ArrowRight
+  ArrowRight,
+  XCircle,
+  Sparkles
 } from 'lucide-react';
 import { AttendanceRecord, DisciplineRecord, Student } from '../types';
 import { RombelClass } from '../data/initialData';
@@ -121,30 +113,38 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   return (
     <div className="space-y-6 pb-12">
       {/* Top Filter Card: Date, Grade & 36 Rombel */}
-      <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+      <div className="bg-white/80 backdrop-blur-xl p-5 rounded-[32px] shadow-clay-card border border-white/80 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900 tracking-tight">
-            Dashboard
-          </h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl sm:text-2xl font-nunito font-black text-clay-foreground tracking-tight">
+              Dashboard Statistik
+            </h2>
+            <span className="p-1 rounded-xl bg-violet-100 text-violet-700 shadow-clay-orb animate-clay-breathe">
+              <Sparkles className="w-4 h-4" />
+            </span>
+          </div>
+          <p className="text-xs text-clay-muted font-medium mt-0.5">
+            Pantau kehadiran siswa &amp; status kedisiplinan secara real-time
+          </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
-          {/* Date Picker */}
-          <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-700">
-            <Calendar className="w-4 h-4 text-teal-600 shrink-0" />
-            <span className="text-slate-400">Tanggal:</span>
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Date Picker (Recessed) */}
+          <div className="flex items-center gap-2 bg-[#EFEBF5] rounded-2xl px-3.5 py-2 text-xs text-clay-foreground shadow-clay-pressed border border-white/40">
+            <Calendar className="w-4 h-4 text-violet-600 shrink-0" />
+            <span className="text-clay-muted font-medium">Tanggal:</span>
             <input
               id="dash-date-picker"
               type="date"
               value={selectedDate}
               onChange={(e) => onDateChange(e.target.value)}
-              className="bg-transparent text-slate-900 font-bold focus:outline-hidden cursor-pointer"
+              className="bg-transparent text-clay-foreground font-nunito font-extrabold focus:outline-hidden cursor-pointer"
             />
           </div>
 
-          {/* Grade filter */}
-          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1 text-xs text-slate-700">
-            <span className="text-slate-400">Jenjang:</span>
+          {/* Grade filter (Recessed) */}
+          <div className="flex items-center gap-1.5 bg-[#EFEBF5] rounded-2xl px-3 py-2 text-xs text-clay-foreground shadow-clay-pressed border border-white/40">
+            <span className="text-clay-muted font-medium">Jenjang:</span>
             <select
               id="dash-grade-filter"
               value={selectedGradeFilter}
@@ -152,7 +152,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 setSelectedGradeFilter(e.target.value as any);
                 setSelectedClassFilter('ALL');
               }}
-              className="bg-transparent font-bold text-slate-900 focus:outline-hidden cursor-pointer"
+              className="bg-transparent font-nunito font-extrabold text-clay-foreground focus:outline-hidden cursor-pointer"
             >
               <option value="ALL">Semua Jenjang</option>
               <option value="X">Kelas X (12 Rombel)</option>
@@ -161,14 +161,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </select>
           </div>
 
-          {/* Rombel Class filter */}
-          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1 text-xs text-slate-700">
-            <Filter className="w-4 h-4 text-teal-600 shrink-0" />
+          {/* Rombel Class filter (Recessed) */}
+          <div className="flex items-center gap-1.5 bg-[#EFEBF5] rounded-2xl px-3 py-2 text-xs text-clay-foreground shadow-clay-pressed border border-white/40">
+            <Filter className="w-4 h-4 text-violet-600 shrink-0" />
             <select
               id="dash-class-filter"
               value={selectedClassFilter}
               onChange={(e) => setSelectedClassFilter(e.target.value)}
-              className="bg-transparent font-bold text-slate-900 focus:outline-hidden cursor-pointer"
+              className="bg-transparent font-nunito font-extrabold text-clay-foreground focus:outline-hidden cursor-pointer"
             >
               <option value="ALL">Semua Rombel ({totalFiltered} Siswa)</option>
               {availableClasses.map((c) => (
@@ -181,126 +181,127 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
       </div>
 
-      {/* Main KPI Stats Cards for H, I, S, A, D and Surat Verification */}
+      {/* Main KPI Bento Grid: Hero Stat + H, I, S, A, D Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-        {/* Attendance Rate (H + D) */}
-        <div className="col-span-2 bg-linear-to-br from-teal-700 to-emerald-800 rounded-2xl p-5 text-white shadow-md shadow-teal-900/10 flex flex-col justify-between">
-          <div>
+        {/* Attendance Rate (Hero Clay Card) */}
+        <div className="col-span-2 bg-gradient-to-br from-[#9333EA] via-[#7C3AED] to-[#6D28D9] rounded-[32px] p-6 text-white shadow-clay-card flex flex-col justify-between relative overflow-hidden transition-all duration-300 hover:-translate-y-1">
+          {/* Decorative ambient glow inside card */}
+          <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-2xl pointer-events-none" />
+          
+          <div className="relative z-10">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium uppercase tracking-wider text-teal-100">
+              <span className="text-xs font-nunito font-extrabold uppercase tracking-wider text-violet-200">
                 Tingkat Kehadiran
               </span>
-              <span className="p-1.5 rounded-lg bg-teal-600/40 text-teal-100">
-                <TrendingUp className="w-4 h-4" />
+              <span className="w-9 h-9 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-inner">
+                <TrendingUp className="w-5 h-5" />
               </span>
             </div>
-            <div className="mt-2 flex items-baseline gap-2">
-              <span className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+            <div className="mt-3 flex items-baseline gap-2">
+              <span className="text-4xl sm:text-5xl font-nunito font-black tracking-tight drop-shadow-sm">
                 {attendancePercentage}%
               </span>
-              <span className="text-xs text-teal-100 font-medium">
+              <span className="text-xs text-violet-200 font-medium">
                 ({hadirCount + dispenCount} dari {totalFiltered} siswa)
               </span>
             </div>
           </div>
 
-          <div className="mt-4">
-            <div className="w-full bg-teal-900/60 rounded-full h-2 overflow-hidden">
+          <div className="mt-5 relative z-10">
+            <div className="w-full bg-black/20 rounded-full h-3 p-0.5 shadow-inner">
               <div
-                className="bg-white h-2 rounded-full transition-all duration-700"
+                className="bg-gradient-to-r from-emerald-300 to-teal-200 h-full rounded-full transition-all duration-700 shadow-sm"
                 style={{ width: `${attendancePercentage}%` }}
               />
             </div>
-            <div className="flex justify-between items-center mt-2 text-[11px] text-teal-100">
+            <div className="flex justify-between items-center mt-2.5 text-[11px] text-violet-200 font-medium">
               <span>{formatDateIndonesian(selectedDate)}</span>
-              <span>{selectedClassFilter === 'ALL' ? `${availableClasses.length} Rombel` : `Rombel ${selectedClassFilter}`}</span>
+              <span className="font-bold">{selectedClassFilter === 'ALL' ? `${availableClasses.length} Rombel` : `Rombel ${selectedClassFilter}`}</span>
             </div>
           </div>
         </div>
 
         {/* H: Hadir */}
-        <div className="bg-white rounded-2xl p-4 border border-emerald-100 shadow-xs">
+        <div className="bg-white/85 backdrop-blur-xl rounded-[28px] p-5 shadow-clay-card border border-white hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase">H (Hadir)</span>
-            <span className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-xs">
+            <span className="text-xs font-nunito font-extrabold text-clay-muted uppercase">Hadir (H)</span>
+            <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 text-white flex items-center justify-center font-nunito font-black text-sm shadow-clay-orb">
               H
-            </span>
+            </div>
           </div>
-          <div className="mt-2 text-2xl font-bold text-emerald-700">{hadirCount}</div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Presensi di kelas</div>
+          <div className="mt-2">
+            <div className="text-3xl font-nunito font-black text-emerald-600">{hadirCount}</div>
+            <div className="text-[11px] text-clay-muted font-medium mt-0.5">Presensi aktif kelas</div>
+          </div>
         </div>
 
         {/* I: Izin */}
-        <div className="bg-white rounded-2xl p-4 border border-blue-100 shadow-xs">
+        <div className="bg-white/85 backdrop-blur-xl rounded-[28px] p-5 shadow-clay-card border border-white hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase">I (Izin)</span>
-            <span className="w-7 h-7 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-bold text-xs">
+            <span className="text-xs font-nunito font-extrabold text-clay-muted uppercase">Izin (I)</span>
+            <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 text-white flex items-center justify-center font-nunito font-black text-sm shadow-clay-orb">
               I
-            </span>
+            </div>
           </div>
-          <div className="mt-2 text-2xl font-bold text-blue-700">{izinCount}</div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Izin orang tua / acara</div>
+          <div className="mt-2">
+            <div className="text-3xl font-nunito font-black text-blue-600">{izinCount}</div>
+            <div className="text-[11px] text-clay-muted font-medium mt-0.5">Izin acara / urusan</div>
+          </div>
         </div>
 
         {/* S: Sakit */}
-        <div className="bg-white rounded-2xl p-4 border border-amber-100 shadow-xs">
+        <div className="bg-white/85 backdrop-blur-xl rounded-[28px] p-5 shadow-clay-card border border-white hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase">S (Sakit)</span>
-            <span className="w-7 h-7 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center font-bold text-xs">
+            <span className="text-xs font-nunito font-extrabold text-clay-muted uppercase">Sakit (S)</span>
+            <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center font-nunito font-black text-sm shadow-clay-orb">
               S
-            </span>
+            </div>
           </div>
-          <div className="mt-2 text-2xl font-bold text-amber-700">{sakitCount}</div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Istirahat / dokter</div>
+          <div className="mt-2">
+            <div className="text-3xl font-nunito font-black text-amber-600">{sakitCount}</div>
+            <div className="text-[11px] text-clay-muted font-medium mt-0.5">Istirahat / rawat</div>
+          </div>
         </div>
 
         {/* A: Alpa */}
-        <div className="bg-white rounded-2xl p-4 border border-rose-100 shadow-xs">
+        <div className="bg-white/85 backdrop-blur-xl rounded-[28px] p-5 shadow-clay-card border border-white hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase">A (Alpa)</span>
-            <span className="w-7 h-7 rounded-lg bg-rose-50 text-rose-700 flex items-center justify-center font-bold text-xs">
+            <span className="text-xs font-nunito font-extrabold text-clay-muted uppercase">Alpa (A)</span>
+            <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center font-nunito font-black text-sm shadow-clay-orb">
               A
-            </span>
+            </div>
           </div>
-          <div className="mt-2 text-2xl font-bold text-rose-700">{alpaCount}</div>
-          <div className="text-[11px] text-rose-500 font-semibold mt-0.5">Tanpa kabar</div>
-        </div>
-
-        {/* D: Dispen */}
-        <div className="bg-white rounded-2xl p-4 border border-indigo-100 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase">D (Dispen)</span>
-            <span className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold text-xs">
-              D
-            </span>
+          <div className="mt-2">
+            <div className="text-3xl font-nunito font-black text-rose-600">{alpaCount}</div>
+            <div className="text-[11px] text-rose-500 font-bold mt-0.5">Tanpa keterangan</div>
           </div>
-          <div className="mt-2 text-2xl font-bold text-indigo-700">{dispenCount}</div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Tugas sekolah / lomba</div>
         </div>
       </div>
 
-      {/* Verification Surat Badge Bar */}
-      <div className="p-4 rounded-2xl bg-slate-900 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-teal-500/20 text-teal-400">
+      {/* Verification Surat Badge Bar (Tactile Clay Panel) */}
+      <div className="p-5 rounded-[30px] bg-white/85 backdrop-blur-xl shadow-clay-card border border-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 text-white flex items-center justify-center shadow-clay-orb">
             <FileCheck className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-sm font-bold">Status Verifikasi Surat Siswa (Sakit & Izin)</h4>
-            <p className="text-xs text-slate-400">
-              Total {sickAndPermitRecords.length} siswa berstatus Izin / Sakit hari ini.
+            <h4 className="text-sm font-nunito font-extrabold text-clay-foreground">
+              Verifikasi Surat Siswa (Sakit &amp; Izin)
+            </h4>
+            <p className="text-xs text-clay-muted font-medium mt-0.5">
+              Total <span className="font-bold text-clay-foreground">{sickAndPermitRecords.length} siswa</span> berstatus Izin / Sakit pada tanggal terpilih.
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="px-3 py-1.5 rounded-xl bg-emerald-950/80 border border-emerald-700 text-emerald-300 text-xs font-bold flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-            <span>{suratAdaCount} Sudah Ada Surat</span>
+        <div className="flex items-center gap-2.5">
+          <span className="px-3.5 py-1.5 rounded-2xl bg-emerald-50 text-emerald-700 text-xs font-nunito font-black shadow-clay-pill border border-emerald-200/60 flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span>{suratAdaCount} Ada Surat</span>
           </span>
 
-          <span className="px-3 py-1.5 rounded-xl bg-rose-950/80 border border-rose-700 text-rose-300 text-xs font-bold flex items-center gap-1.5">
-            <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
+          <span className="px-3.5 py-1.5 rounded-2xl bg-rose-50 text-rose-700 text-xs font-nunito font-black shadow-clay-pill border border-rose-200/60 flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-rose-500" />
             <span>{suratBelumCount} Belum Ada Surat</span>
           </span>
         </div>
@@ -309,29 +310,29 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {/* Grid: 36 Rombel Matrix + Attention List */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left 2 Cols: 36 Rombel Attendance Monitor */}
-        <div className="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
+        <div className="lg:col-span-2 bg-white/85 backdrop-blur-xl p-6 rounded-[32px] shadow-clay-card border border-white/80 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                <Layers className="w-4 h-4 text-teal-600" />
+              <h3 className="text-base font-nunito font-black text-clay-foreground flex items-center gap-2">
+                <Layers className="w-4 h-4 text-violet-600" />
                 <span>Monitoring Kehadiran 36 Rombel</span>
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-clay-muted font-medium mt-0.5">
                 Pencapaian kehadiran per kelas di SMAN 1 Batu (Target disiplin: &ge; 95%)
               </p>
             </div>
             <button
               type="button"
               onClick={() => onNavigateTab('recap')}
-              className="text-xs font-semibold text-teal-700 hover:text-teal-800 flex items-center gap-1 hover:underline"
+              className="px-3.5 py-1.5 rounded-2xl bg-white text-violet-700 text-xs font-nunito font-extrabold shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] transition-all flex items-center gap-1 cursor-pointer"
             >
               <span>Rekap Lengkap</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          {/* Rombel Grid (12 per row or compact responsive cards) */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 max-h-96 overflow-y-auto pr-1">
+          {/* Rombel Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-96 overflow-y-auto pr-1 clay-custom-scrollbar">
             {classBreakdown.map((item) => (
               <div
                 key={item.name}
@@ -339,29 +340,32 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   setSelectedClassFilter(item.name);
                   onNavigateTab('attendance');
                 }}
-                className="p-3 rounded-xl border border-slate-200/80 bg-slate-50 hover:bg-teal-50/60 hover:border-teal-300 cursor-pointer transition-all"
+                className="p-3.5 rounded-[22px] bg-[#EFEBF5]/60 hover:bg-white shadow-clay-card hover:shadow-clay-card-hover hover:-translate-y-1 cursor-pointer transition-all duration-200 border border-white/60"
               >
-                <div className="flex items-center justify-between text-xs mb-1">
-                  <span className="font-extrabold text-slate-800">{item.name}</span>
+                <div className="flex items-center justify-between text-xs mb-1.5">
+                  <span className="font-nunito font-black text-clay-foreground">{item.name}</span>
                   <span
-                    className={`font-bold text-[11px] ${
-                      item.rate >= 95 ? 'text-emerald-700' : item.rate >= 85 ? 'text-amber-700' : 'text-rose-700'
+                    className={`font-nunito font-black text-xs ${
+                      item.rate >= 95 ? 'text-emerald-600' : item.rate >= 85 ? 'text-amber-600' : 'text-rose-600'
                     }`}
                   >
                     {item.rate}%
                   </span>
                 </div>
-                <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden mb-1.5">
+                
+                {/* Mini clay progress bar */}
+                <div className="w-full bg-[#E0DBEC] rounded-full h-2 overflow-hidden mb-2 shadow-inner">
                   <div
-                    className={`h-1.5 rounded-full ${
-                      item.rate >= 95 ? 'bg-emerald-500' : item.rate >= 85 ? 'bg-amber-500' : 'bg-rose-500'
+                    className={`h-full rounded-full transition-all ${
+                      item.rate >= 95 ? 'bg-gradient-to-r from-emerald-400 to-teal-500' : item.rate >= 85 ? 'bg-gradient-to-r from-amber-400 to-orange-500' : 'bg-gradient-to-r from-rose-400 to-red-500'
                     }`}
                     style={{ width: `${item.rate}%` }}
                   />
                 </div>
-                <div className="flex items-center justify-between text-[10px] text-slate-400">
+
+                <div className="flex items-center justify-between text-[10.5px] text-clay-muted font-medium">
                   <span>{item.present}/{item.total} Hadir</span>
-                  {item.alpa > 0 && <span className="font-bold text-rose-600">{item.alpa} Alpa</span>}
+                  {item.alpa > 0 && <span className="font-bold text-rose-500">{item.alpa} Alpa</span>}
                 </div>
               </div>
             ))}
@@ -371,30 +375,30 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {/* Right Col: Attention List (Alpa & Missing Letter) */}
         <div className="space-y-4">
           {/* Siswa Alpa (Tanpa Keterangan) */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+          <div className="bg-white/85 backdrop-blur-xl p-5 rounded-[32px] shadow-clay-card border border-white">
             <div className="flex items-center justify-between mb-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-rose-700 flex items-center gap-1.5">
+              <h4 className="text-xs font-nunito font-black uppercase tracking-wider text-rose-600 flex items-center gap-1.5">
                 <XCircle className="w-4 h-4" />
                 <span>Alpa Hari Ini ({alpaStudents.length})</span>
               </h4>
             </div>
-            <p className="text-[11px] text-slate-500 mb-3">
+            <p className="text-[11px] text-clay-muted font-medium mb-3">
               Siswa tidak hadir tanpa kabar; segera hubungi wali murid.
             </p>
 
             {alpaStudents.length === 0 ? (
-              <div className="p-3 rounded-xl bg-emerald-50 text-emerald-800 text-xs text-center font-medium">
-                Nihil alpa pada rombel terpilih!
+              <div className="p-3.5 rounded-2xl bg-[#EFEBF5] text-emerald-700 text-xs text-center font-nunito font-extrabold shadow-clay-pressed">
+                Nihil alpa pada rombel terpilih! 🎉
               </div>
             ) : (
-              <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+              <div className="space-y-2 max-h-48 overflow-y-auto pr-1 clay-custom-scrollbar">
                 {alpaStudents.slice(0, 8).map((st) => (
-                  <div key={st.id} className="p-2.5 rounded-xl bg-rose-50/50 border border-rose-200/60 text-xs flex items-center justify-between">
+                  <div key={st.id} className="p-3 rounded-2xl bg-[#EFEBF5]/70 shadow-clay-pressed text-xs flex items-center justify-between">
                     <div>
-                      <div className="font-bold text-slate-900">{st.studentName}</div>
-                      <div className="text-[10px] text-slate-500">{st.className} • NISN: {st.nisn}</div>
+                      <div className="font-nunito font-extrabold text-clay-foreground">{st.studentName}</div>
+                      <div className="text-[10px] text-clay-muted font-medium">{st.className} • NISN: {st.nisn}</div>
                     </div>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-nunito font-black bg-rose-100 text-rose-700 shadow-clay-pill">
                       Alpa
                     </span>
                   </div>
@@ -404,38 +408,38 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           {/* Siswa Sakit/Izin Belum Menyerahkan Surat */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+          <div className="bg-white/85 backdrop-blur-xl p-5 rounded-[32px] shadow-clay-card border border-white">
             <div className="flex items-center justify-between mb-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-amber-700 flex items-center gap-1.5">
+              <h4 className="text-xs font-nunito font-black uppercase tracking-wider text-amber-600 flex items-center gap-1.5">
                 <FileX className="w-4 h-4" />
                 <span>Belum Ada Surat ({missingLetterStudents.length})</span>
               </h4>
               <button
                 type="button"
                 onClick={() => onNavigateTab('rekap-surat-izin')}
-                className="text-[11px] font-bold text-amber-700 hover:text-amber-800 hover:underline cursor-pointer flex items-center gap-1"
+                className="text-[11px] font-nunito font-extrabold text-violet-700 hover:underline cursor-pointer flex items-center gap-1"
               >
                 <span>Kelola Surat</span>
                 <ArrowRight className="w-3 h-3" />
               </button>
             </div>
-            <p className="text-[11px] text-slate-500 mb-3">
+            <p className="text-[11px] text-clay-muted font-medium mb-3">
               Daftar izin / sakit yang belum mengumpulkan surat keterangan fisik.
             </p>
 
             {missingLetterStudents.length === 0 ? (
-              <div className="p-3 rounded-xl bg-teal-50 text-teal-800 text-xs text-center font-medium">
-                Seluruh siswa izin & sakit telah menyerahkan surat.
+              <div className="p-3.5 rounded-2xl bg-[#EFEBF5] text-emerald-700 text-xs text-center font-nunito font-extrabold shadow-clay-pressed">
+                Seluruh siswa izin &amp; sakit telah menyerahkan surat.
               </div>
             ) : (
-              <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+              <div className="space-y-2 max-h-48 overflow-y-auto pr-1 clay-custom-scrollbar">
                 {missingLetterStudents.slice(0, 8).map((st) => (
-                  <div key={st.id} className="p-2.5 rounded-xl bg-amber-50/50 border border-amber-200/60 text-xs flex items-center justify-between">
+                  <div key={st.id} className="p-3 rounded-2xl bg-[#EFEBF5]/70 shadow-clay-pressed text-xs flex items-center justify-between">
                     <div>
-                      <div className="font-bold text-slate-900">{st.studentName}</div>
-                      <div className="text-[10px] text-slate-500">{st.className} • Status: {st.status === 'S' ? 'Sakit' : 'Izin'}</div>
+                      <div className="font-nunito font-extrabold text-clay-foreground">{st.studentName}</div>
+                      <div className="text-[10px] text-clay-muted font-medium">{st.className} • Status: {st.status === 'S' ? 'Sakit' : 'Izin'}</div>
                     </div>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-nunito font-black bg-amber-100 text-amber-800 shadow-clay-pill">
                       Surat Belum Ada
                     </span>
                   </div>

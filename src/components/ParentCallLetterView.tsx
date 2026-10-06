@@ -329,40 +329,40 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
       `}</style>
 
       {/* Header Banner */}
-      <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white/85 backdrop-blur-xl p-6 rounded-[32px] shadow-clay-card border border-white flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-semibold text-teal-700 uppercase tracking-wider mb-1">
+          <div className="flex items-center gap-2 text-xs font-nunito font-extrabold text-violet-700 uppercase tracking-wider mb-1">
             <span>Disiplin Positif</span>
-            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-            <span className="text-slate-600 font-bold">Surat Panggilan Orang Tua</span>
+            <ChevronRight className="w-3.5 h-3.5 text-violet-400" />
+            <span className="text-clay-foreground font-black">Surat Panggilan Orang Tua</span>
           </div>
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5">
-            <div className="p-2 bg-teal-50 text-teal-700 rounded-xl">
+          <h1 className="text-xl sm:text-2xl font-nunito font-black text-clay-foreground tracking-tight flex items-center gap-3">
+            <div className="w-11 h-11 bg-gradient-to-br from-violet-500 to-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-clay-orb">
               <Mail className="w-5 h-5" />
             </div>
             <span>Surat Panggilan Orang Tua / Wali Murid</span>
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
-            Format resmi sesuai Dinas Pendidikan Provinsi Jawa Timur & SMAN 1 Batu, dilengkapi rincian pelanggaran siswa.
+          <p className="text-xs text-clay-muted font-medium mt-1">
+            Format resmi sesuai Dinas Pendidikan Provinsi Jawa Timur &amp; SMAN 1 Batu, dilengkapi rincian pelanggaran siswa.
           </p>
         </div>
 
         {/* Quick Stats */}
         <div className="flex items-center gap-3">
-          <div className="px-3 py-2 bg-amber-50 rounded-xl border border-amber-200/60 text-right">
-            <div className="text-[10px] font-bold text-amber-700 uppercase tracking-wider">Total Kasus</div>
-            <div className="text-base font-extrabold text-amber-900">{disciplineRecords.length} Pelanggaran</div>
+          <div className="px-4 py-2.5 bg-amber-50 rounded-2xl shadow-clay-card border border-amber-200/60 text-right">
+            <div className="text-[10px] font-nunito font-extrabold text-amber-700 uppercase tracking-wider">Total Kasus</div>
+            <div className="text-base font-nunito font-black text-amber-900">{disciplineRecords.length} Pelanggaran</div>
           </div>
-          <div className="px-3 py-2 bg-teal-50 rounded-xl border border-teal-200/60 text-right">
-            <div className="text-[10px] font-bold text-teal-700 uppercase tracking-wider">Siswa Terdata</div>
-            <div className="text-base font-extrabold text-teal-900">{studentViolationsMap.size} Siswa</div>
+          <div className="px-4 py-2.5 bg-violet-50 rounded-2xl shadow-clay-card border border-violet-200/60 text-right">
+            <div className="text-[10px] font-nunito font-extrabold text-violet-700 uppercase tracking-wider">Siswa Terdata</div>
+            <div className="text-base font-nunito font-black text-violet-900">{studentViolationsMap.size} Siswa</div>
           </div>
         </div>
       </div>
 
       {/* Feedback Toast */}
       {copyFeedback && (
-        <div className="p-3 bg-emerald-600 text-white rounded-xl shadow-md text-xs font-semibold flex items-center gap-2 animate-in fade-in">
+        <div className="p-4 bg-emerald-500 text-white rounded-2xl shadow-clay-card text-xs font-nunito font-extrabold flex items-center gap-2.5 animate-in fade-in">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{copyFeedback}</span>
         </div>
@@ -373,28 +373,28 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
         {/* LEFT COLUMN: Controls & Form (5 Cols) */}
         <div className="xl:col-span-5 space-y-6">
           {/* STEP 1: PILIH KELAS & SISWA */}
-          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-teal-600 text-white font-bold text-xs flex items-center justify-center">1</span>
-                <h2 className="text-sm font-bold text-slate-800">Pilih Kelas & Siswa</h2>
+          <div className="bg-white/85 backdrop-blur-xl rounded-[32px] shadow-clay-card border border-white p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-violet-100 pb-3">
+              <div className="flex items-center gap-2.5">
+                <span className="w-7 h-7 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 text-white font-nunito font-black text-xs flex items-center justify-center shadow-clay-orb">1</span>
+                <h2 className="text-sm font-nunito font-black text-clay-foreground">Pilih Kelas &amp; Siswa</h2>
               </div>
-              <span className="text-[11px] font-medium text-slate-400">
+              <span className="text-[11px] font-medium text-clay-muted">
                 {filteredStudents.length} siswa ditemukan
               </span>
             </div>
 
             {/* Filter Kelas */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
-                <Layers className="w-3.5 h-3.5 text-teal-600" />
+              <label className="block text-xs font-nunito font-extrabold text-clay-foreground mb-1.5 flex items-center gap-1.5">
+                <Layers className="w-3.5 h-3.5 text-violet-600" />
                 <span>Pilih Kelas Siswa</span>
               </label>
               <select
                 id="select-call-class"
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:bg-white focus:ring-2 focus:ring-teal-500 cursor-pointer"
+                className="w-full px-4 py-2.5 bg-[#EFEBF5] rounded-2xl text-xs font-nunito font-extrabold text-clay-foreground shadow-clay-pressed focus:outline-hidden cursor-pointer border border-white/40"
               >
                 <option value="ALL">Semua Kelas (36 Rombel X, XI, XII)</option>
                 {sortClasses(classes).map((cls) => (
@@ -406,24 +406,24 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
             </div>
 
             {/* Search and Toggle Filter */}
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
+                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-clay-muted" />
                 <input
                   type="text"
                   placeholder="Cari nama siswa atau NISN..."
                   value={studentSearchQuery}
                   onChange={(e) => setStudentSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:bg-white focus:ring-2 focus:ring-teal-500"
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#EFEBF5] rounded-2xl text-xs text-clay-foreground placeholder-clay-muted shadow-clay-pressed focus:outline-hidden border border-white/40"
                 />
               </div>
 
-              <label className="flex items-center gap-2 text-xs font-medium text-slate-600 cursor-pointer select-none">
+              <label className="flex items-center gap-2 text-xs font-medium text-clay-muted cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={onlyWithViolations}
                   onChange={(e) => setOnlyWithViolations(e.target.checked)}
-                  className="rounded text-teal-600 focus:ring-teal-500 cursor-pointer"
+                  className="rounded text-violet-600 focus:ring-violet-500 cursor-pointer"
                 />
                 <span>Hanya tampilkan siswa yang memiliki catatan pelanggaran</span>
               </label>
@@ -431,20 +431,20 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
 
             {/* Select Student Dropdown */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1.5 flex items-center justify-between">
+              <label className="block text-xs font-nunito font-extrabold text-clay-foreground mb-1.5 flex items-center justify-between">
                 <span className="flex items-center gap-1.5">
-                  <User className="w-3.5 h-3.5 text-teal-600" />
+                  <User className="w-3.5 h-3.5 text-violet-600" />
                   <span>Pilih Nama Siswa</span>
                 </span>
                 {selectedStudent && (
-                  <span className="text-[10px] text-teal-700 font-bold bg-teal-50 px-2 py-0.5 rounded-md">
+                  <span className="text-[10px] text-violet-700 font-nunito font-extrabold bg-violet-100 px-2.5 py-0.5 rounded-full shadow-clay-pill">
                     NISN: {selectedStudent.nisn}
                   </span>
                 )}
               </label>
               
               {filteredStudents.length === 0 ? (
-                <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-500 text-center">
+                <div className="p-3.5 bg-[#EFEBF5] rounded-2xl text-xs text-clay-muted text-center shadow-clay-pressed font-medium">
                   Tidak ada siswa yang sesuai kriteria pencarian di kelas ini.
                 </div>
               ) : (
@@ -452,14 +452,14 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                   id="select-call-student"
                   value={selectedStudent?.id || ''}
                   onChange={(e) => setSelectedStudentId(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:bg-white focus:ring-2 focus:ring-teal-500 cursor-pointer"
+                  className="w-full px-4 py-2.5 bg-[#EFEBF5] rounded-2xl text-xs font-nunito font-extrabold text-clay-foreground shadow-clay-pressed focus:outline-hidden cursor-pointer border border-white/40"
                 >
                   {filteredStudents.map((s) => {
                     const viols = studentViolationsMap.get(s.id) || [];
                     const pts = viols.reduce((acc, v) => acc + (v.points || 0), 0);
                     return (
                       <option key={s.id} value={s.id}>
-                        {s.name} ({s.className}) — {viols.length} Pelanggaran ({pts} Poin)
+                        {s.name} ({s.className}) — {viols.length} Kasus ({pts} Poin)
                       </option>
                     );
                   })}
@@ -469,61 +469,67 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
 
             {/* Student Info Card */}
             {selectedStudent && (
-              <div className="p-3.5 bg-slate-50 border border-slate-200/80 rounded-xl space-y-2 text-xs">
+              <div className="p-4 bg-[#EFEBF5]/70 shadow-clay-pressed rounded-2xl space-y-2.5 text-xs">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
                     {selectedStudent.photoUrl ? (
                       <img
                         src={getGoogleDriveDirectImageUrl(selectedStudent.photoUrl)}
                         alt={selectedStudent.name}
-                        className="w-12 h-12 rounded-xl object-cover border border-slate-200 shadow-2xs shrink-0"
+                        className="w-12 h-12 rounded-2xl object-cover shadow-clay-orb border border-white shrink-0"
                       />
                     ) : (
-                      <div className={`w-12 h-12 rounded-xl border flex items-center justify-center font-bold text-xs shrink-0 ${
-                        selectedStudent.gender === 'L' ? 'bg-sky-100 text-sky-700 border-sky-200' : 'bg-rose-100 text-rose-700 border-rose-200'
-                      }`}>
+                      <div 
+                        className={`w-12 h-12 rounded-2xl shadow-clay-orb flex items-center justify-center font-extrabold text-xs shrink-0 ${
+                          selectedStudent.gender === 'L' ? 'bg-sky-100 text-sky-700' : 'bg-pink-100 text-pink-700'
+                        }`}
+                        style={{ fontFamily: 'Nunito, sans-serif' }}
+                      >
                         {selectedStudent.name.slice(0, 2).toUpperCase()}
                       </div>
                     )}
                     <div>
-                      <div className="font-extrabold text-slate-900 text-sm leading-tight">{selectedStudent.name}</div>
-                      <div className="text-slate-500 text-[11px] font-medium mt-0.5">
+                      <div className="font-extrabold text-[#332F3A] text-sm leading-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>{selectedStudent.name}</div>
+                      <div className="text-[#635F69] text-[11px] font-medium mt-0.5">
                         NISN: {selectedStudent.nisn} • {selectedStudent.gender === 'L' ? 'Laki-laki' : 'Perempuan'}
                       </div>
                     </div>
                   </div>
-                  <span className="px-2.5 py-1 bg-teal-600 text-white font-bold rounded-lg text-[11px] shrink-0">
+                  <span 
+                    className="px-3 py-1 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-extrabold rounded-full text-[11px] shadow-clay-pill shrink-0"
+                    style={{ fontFamily: 'Nunito, sans-serif' }}
+                  >
                     Kelas {selectedStudent.className}
                   </span>
                 </div>
 
                 {selectedStudent.address && (
-                  <div className="pt-2 border-t border-slate-200/70 text-[11px] flex items-start gap-1.5 text-slate-600">
-                    <MapPin className="w-3.5 h-3.5 text-teal-600 shrink-0 mt-0.5" />
+                  <div className="pt-2 border-t border-violet-100/60 text-[11px] flex items-start gap-1.5 text-clay-muted">
+                    <MapPin className="w-3.5 h-3.5 text-violet-600 shrink-0 mt-0.5" />
                     <span>{selectedStudent.address}</span>
                   </div>
                 )}
 
-                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200/70 text-[11px]">
+                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-violet-100/60 text-[11px]">
                   <div>
-                    <span className="text-slate-400 block text-[10px]">Wali Kelas:</span>
-                    <span className="font-semibold text-slate-700">{studentWaliKelas?.name || 'Belum diatur'}</span>
+                    <span className="text-clay-muted block text-[10px]">Wali Kelas:</span>
+                    <span className="font-nunito font-extrabold text-clay-foreground">{studentWaliKelas?.name || 'Belum diatur'}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 block text-[10px]">Kontak Orang Tua:</span>
-                    <span className="font-semibold text-slate-700">
+                    <span className="text-clay-muted block text-[10px]">Kontak Orang Tua:</span>
+                    <span className="font-nunito font-extrabold text-clay-foreground">
                       {selectedStudent.parentPhone || selectedStudent.phone || 'Belum ada nomor'}
                     </span>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t border-slate-200/70">
-                  <span className="text-slate-600 font-medium">Akumulasi Pelanggaran:</span>
+                <div className="flex items-center justify-between pt-2 border-t border-violet-100/60">
+                  <span className="text-clay-muted font-medium">Akumulasi Pelanggaran:</span>
                   <div className="flex items-center gap-1.5">
-                    <span className="px-2 py-0.5 rounded-full font-bold text-[11px] bg-amber-100 text-amber-800">
+                    <span className="px-2.5 py-0.5 rounded-full font-nunito font-extrabold text-[11px] bg-amber-100 text-amber-800 shadow-clay-pill">
                       {studentAllViolations.length} Kasus
                     </span>
-                    <span className="px-2 py-0.5 rounded-full font-bold text-[11px] bg-rose-100 text-rose-800">
+                    <span className="px-2.5 py-0.5 rounded-full font-nunito font-extrabold text-[11px] bg-rose-100 text-rose-800 shadow-clay-pill">
                       {totalPoints} Poin
                     </span>
                   </div>
@@ -533,17 +539,17 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
           </div>
 
           {/* STEP 2: DAFTAR PELANGGARAN YANG DITAMPILKAN DALAM SURAT */}
-          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-teal-600 text-white font-bold text-xs flex items-center justify-center">2</span>
-                <h2 className="text-sm font-bold text-slate-800">Daftar Pelanggaran Yang Pernah Dilakukan</h2>
+          <div className="bg-white/85 backdrop-blur-xl rounded-[32px] shadow-clay-card border border-white p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-violet-100 pb-3">
+              <div className="flex items-center gap-2.5">
+                <span className="w-7 h-7 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 text-white font-nunito font-black text-xs flex items-center justify-center shadow-clay-orb">2</span>
+                <h2 className="text-sm font-nunito font-black text-clay-foreground">Rincian Pelanggaran</h2>
               </div>
               {studentAllViolations.length > 0 && (
                 <button
                   type="button"
                   onClick={handleSelectAllViolations}
-                  className="text-[11px] font-bold text-teal-700 hover:text-teal-800 hover:underline cursor-pointer"
+                  className="text-[11px] font-nunito font-extrabold text-violet-700 hover:underline cursor-pointer"
                 >
                   {selectedViolationIds.length === studentAllViolations.length
                     ? 'Batal Pilih Semua'
@@ -552,20 +558,20 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
               )}
             </div>
 
-            <p className="text-[11px] text-slate-500 leading-normal">
-              Centang pelanggaran yang ingin dimasukkan ke dalam rincian surat panggilan orang tua. Secara otomatis seluruh riwayat tercentang.
+            <p className="text-[11px] text-clay-muted leading-relaxed font-medium">
+              Centang pelanggaran yang ingin dimasukkan ke dalam rincian surat panggilan orang tua.
             </p>
 
             {studentAllViolations.length === 0 ? (
-              <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-xl text-center space-y-1">
+              <div className="p-4 bg-emerald-50 rounded-2xl text-center space-y-1 shadow-clay-card border border-emerald-200">
                 <CheckCircle2 className="w-6 h-6 text-emerald-600 mx-auto" />
-                <div className="text-xs font-bold text-emerald-900">Siswa Ini Tidak Memiliki Catatan Pelanggaran</div>
-                <p className="text-[11px] text-emerald-700">
-                  Siswa berstatus bersih dan tertib. Surat panggilan tetap dapat diterbitkan untuk agenda koordinasi dan pembinaan preventif.
+                <div className="text-xs font-nunito font-extrabold text-emerald-900">Siswa Ini Tidak Memiliki Catatan Pelanggaran</div>
+                <p className="text-[11px] text-emerald-700 font-medium">
+                  Siswa berstatus tertib. Surat panggilan tetap dapat diterbitkan untuk koordinasi preventif.
                 </p>
               </div>
             ) : (
-              <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
+              <div className="space-y-2.5 max-h-80 overflow-y-auto pr-1 clay-custom-scrollbar">
                 {studentAllViolations.map((rec) => {
                   const isChecked = selectedViolationIds.includes(rec.id);
                   const isCoached = rec.coachingStatus === 'Sudah';
@@ -573,44 +579,44 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                     <div
                       key={rec.id}
                       onClick={() => handleToggleViolation(rec.id)}
-                      className={`p-3 rounded-xl border text-xs transition-all cursor-pointer flex items-start gap-2.5 ${
+                      className={`p-3.5 rounded-2xl transition-all cursor-pointer flex items-start gap-3 ${
                         isChecked
-                          ? 'bg-amber-50/60 border-amber-300 ring-1 ring-amber-300/40'
-                          : 'bg-slate-50 border-slate-200 hover:bg-slate-100 opacity-70'
+                          ? 'bg-white shadow-clay-card border border-violet-200/80 -translate-y-0.5'
+                          : 'bg-[#EFEBF5]/60 shadow-clay-pressed opacity-70 hover:opacity-100'
                       }`}
                     >
                       <input
                         type="checkbox"
                         checked={isChecked}
-                        onChange={() => {}} // handled by parent onClick
-                        className="mt-0.5 rounded text-teal-600 focus:ring-teal-500 cursor-pointer"
+                        onChange={() => {}}
+                        className="mt-1 rounded text-violet-600 focus:ring-violet-500 cursor-pointer"
                       />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-1">
-                          <span className="font-bold text-slate-900 truncate">{rec.violationName}</span>
+                          <span className="font-nunito font-extrabold text-clay-foreground truncate">{rec.violationName}</span>
                           {enablePointsSystem ? (
-                            <span className="px-1.5 py-0.5 bg-rose-100 text-rose-800 rounded font-bold text-[10px] shrink-0">
+                            <span className="px-2 py-0.5 bg-rose-100 text-rose-800 rounded-full font-nunito font-black text-[10px] shadow-clay-pill shrink-0">
                               +{rec.points} Poin
                             </span>
                           ) : (
-                            <span className="px-1.5 py-0.5 bg-slate-100 text-slate-700 rounded font-bold text-[10px] shrink-0">
+                            <span className="px-2 py-0.5 bg-violet-100 text-violet-800 rounded-full font-nunito font-bold text-[10px] shadow-clay-pill shrink-0">
                               {rec.category}
                             </span>
                           )}
                         </div>
 
-                        <div className="flex items-center gap-2 text-[10.5px] text-slate-500 mt-0.5">
+                        <div className="flex items-center gap-2 text-[10.5px] text-clay-muted mt-1 font-medium">
                           <span>{formatDateIndonesian(rec.date)}</span>
                           <span>•</span>
-                          <span className="font-medium text-slate-600">{rec.category}</span>
+                          <span className="font-semibold text-clay-foreground">{rec.category}</span>
                           <span>•</span>
-                          <span className={isCoached ? 'text-emerald-700 font-semibold' : 'text-rose-700 font-semibold'}>
+                          <span className={isCoached ? 'text-emerald-700 font-bold' : 'text-rose-700 font-bold'}>
                             {isCoached ? 'Sudah Dibina' : 'Belum Pembinaan'}
                           </span>
                         </div>
 
                         {rec.description && (
-                          <p className="text-[10.5px] text-slate-600 italic mt-1 bg-white/70 p-1.5 rounded border border-slate-200/50">
+                          <p className="text-[10.5px] text-clay-muted italic mt-1.5 bg-[#EFEBF5] p-2 rounded-xl shadow-inner">
                             "{rec.description}"
                           </p>
                         )}
@@ -622,9 +628,9 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
             )}
 
             {studentAllViolations.length > 0 && (
-              <div className="p-3 bg-slate-900 text-white rounded-xl flex items-center justify-between text-xs">
-                <span className="text-slate-300">Total Pelanggaran Terpilih:</span>
-                <span className="font-bold text-amber-300 text-sm">
+              <div className="p-3.5 bg-gradient-to-r from-violet-700 to-indigo-800 text-white rounded-2xl shadow-clay-card flex items-center justify-between text-xs">
+                <span className="text-violet-200 font-medium">Total Pelanggaran Terpilih:</span>
+                <span className="font-nunito font-black text-amber-300 text-sm">
                   {enablePointsSystem 
                     ? `${includedViolations.length} Kasus • ${totalPoints} Poin`
                     : `${includedViolations.length} Kasus Kejadian`}
@@ -634,89 +640,89 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
           </div>
 
           {/* STEP 3: FORM DETAIL SURAT PANGGILAN */}
-          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 space-y-4">
-            <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
-              <span className="w-6 h-6 rounded-full bg-teal-600 text-white font-bold text-xs flex items-center justify-center">3</span>
-              <h2 className="text-sm font-bold text-slate-800">Detail Surat & Jadwal Pertemuan</h2>
+          <div className="bg-white/85 backdrop-blur-xl rounded-[32px] shadow-clay-card border border-white p-6 space-y-4">
+            <div className="flex items-center gap-2.5 border-b border-violet-100 pb-3">
+              <span className="w-7 h-7 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 text-white font-nunito font-black text-xs flex items-center justify-center shadow-clay-orb">3</span>
+              <h2 className="text-sm font-nunito font-black text-clay-foreground">Detail Surat &amp; Jadwal Pertemuan</h2>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Nomor Surat</label>
+                <label className="block font-nunito font-extrabold text-clay-foreground mb-1">Nomor Surat</label>
                 <input
                   type="text"
                   value={letterNumber}
                   onChange={(e) => setLetterNumber(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-4 py-2 bg-[#EFEBF5] rounded-2xl text-clay-foreground font-medium shadow-clay-pressed focus:outline-hidden border border-white/40"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1">
-                  <CalendarDays className="w-3.5 h-3.5 text-teal-600" />
+                <label className="block font-nunito font-extrabold text-clay-foreground mb-1 flex items-center gap-1">
+                  <CalendarDays className="w-3.5 h-3.5 text-violet-600" />
                   <span>Tanggal Surat</span>
                 </label>
                 <input
                   type="date"
                   value={letterDate}
                   onChange={(e) => setLetterDate(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-semibold focus:bg-white focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-4 py-2 bg-[#EFEBF5] rounded-2xl text-clay-foreground font-nunito font-extrabold shadow-clay-pressed focus:outline-hidden border border-white/40"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block font-bold text-slate-700 mb-1">Perihal</label>
+                <label className="block font-nunito font-extrabold text-clay-foreground mb-1">Perihal</label>
                 <input
                   type="text"
                   value={perihal}
                   onChange={(e) => setPerihal(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-bold focus:bg-white focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-4 py-2 bg-[#EFEBF5] rounded-2xl text-clay-foreground font-nunito font-extrabold shadow-clay-pressed focus:outline-hidden border border-white/40"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1">
-                  <Calendar className="w-3.5 h-3.5 text-teal-600" />
-                  <span>Tanggal Pertemuan (Hari/Tgl)</span>
+                <label className="block font-nunito font-extrabold text-clay-foreground mb-1 flex items-center gap-1">
+                  <Calendar className="w-3.5 h-3.5 text-violet-600" />
+                  <span>Tanggal Pertemuan</span>
                 </label>
                 <input
                   type="date"
                   value={callDate}
                   onChange={(e) => setCallDate(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-semibold focus:bg-white focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-4 py-2 bg-[#EFEBF5] rounded-2xl text-clay-foreground font-nunito font-extrabold shadow-clay-pressed focus:outline-hidden border border-white/40"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1">
-                  <Clock className="w-3.5 h-3.5 text-teal-600" />
-                  <span>Waktu / Pukul</span>
+                <label className="block font-nunito font-extrabold text-clay-foreground mb-1 flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5 text-violet-600" />
+                  <span>Waktu Pertemuan</span>
                 </label>
                 <input
                   type="text"
                   value={callTime}
                   onChange={(e) => setCallTime(e.target.value)}
                   placeholder="Contoh: Pukul 12.30 WIB – selesai"
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-4 py-2 bg-[#EFEBF5] rounded-2xl text-clay-foreground font-medium shadow-clay-pressed focus:outline-hidden border border-white/40"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-teal-600" />
+                <label className="block font-nunito font-extrabold text-clay-foreground mb-1 flex items-center gap-1">
+                  <MapPin className="w-3.5 h-3.5 text-violet-600" />
                   <span>Tempat Pertemuan</span>
                 </label>
                 <input
                   type="text"
                   value={callPlace}
                   onChange={(e) => setCallPlace(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-4 py-2 bg-[#EFEBF5] rounded-2xl text-clay-foreground font-medium shadow-clay-pressed focus:outline-hidden border border-white/40"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1">
-                  <UserCheck className="w-3.5 h-3.5 text-teal-600" />
+                <label className="block font-nunito font-extrabold text-clay-foreground mb-1 flex items-center gap-1">
+                  <UserCheck className="w-3.5 h-3.5 text-violet-600" />
                   <span>Nama Kepala Sekolah</span>
                 </label>
                 <input
@@ -724,13 +730,13 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                   value={principalName}
                   onChange={(e) => handlePrincipalNameChange(e.target.value)}
                   placeholder="Nama Kepala Sekolah beserta gelar"
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-4 py-2 bg-[#EFEBF5] rounded-2xl text-clay-foreground font-medium shadow-clay-pressed focus:outline-hidden border border-white/40"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1">
-                  <Award className="w-3.5 h-3.5 text-teal-600" />
+                <label className="block font-nunito font-extrabold text-clay-foreground mb-1 flex items-center gap-1">
+                  <Award className="w-3.5 h-3.5 text-violet-600" />
                   <span>Pangkat / Golongan</span>
                 </label>
                 <input
@@ -738,18 +744,18 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                   value={principalRank}
                   onChange={(e) => handlePrincipalRankChange(e.target.value)}
                   placeholder="Contoh: Pembina Utama Muda, IV/c"
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-4 py-2 bg-[#EFEBF5] rounded-2xl text-clay-foreground font-medium shadow-clay-pressed focus:outline-hidden border border-white/40"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">NIP Kepala Sekolah</label>
+                <label className="block font-nunito font-extrabold text-clay-foreground mb-1">NIP Kepala Sekolah</label>
                 <input
                   type="text"
                   value={principalNip}
                   onChange={(e) => handlePrincipalNipChange(e.target.value)}
                   placeholder="NIP Kepala Sekolah"
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-medium focus:bg-white focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-4 py-2 bg-[#EFEBF5] rounded-2xl text-clay-foreground font-medium shadow-clay-pressed focus:outline-hidden border border-white/40"
                 />
               </div>
             </div>
@@ -759,10 +765,10 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
         {/* RIGHT COLUMN: PREVIEW DOKUMEN & TOMBOL AKSI (7 Cols) */}
         <div className="xl:col-span-7 space-y-4">
           {/* Action Buttons Toolbar */}
-          <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-2.5">
+          <div className="bg-white/85 backdrop-blur-xl p-4 rounded-[28px] shadow-clay-card border border-white flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-slate-700">Aksi Dokumen:</span>
-              <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-medium">
+              <span className="text-xs font-nunito font-extrabold text-clay-foreground">Aksi Dokumen:</span>
+              <span className="text-[10px] bg-violet-100 text-violet-800 px-2.5 py-0.5 rounded-full font-bold shadow-clay-pill">
                 Ukuran Cetak A4 Portrait
               </span>
             </div>
@@ -772,10 +778,10 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                 type="button"
                 id="btn-print-call-letter"
                 onClick={handlePrint}
-                className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-colors shadow-xs cursor-pointer flex items-center gap-1.5"
-                title="Cetak surat langsung ke printer atau Save as PDF browser"
+                className="px-4 py-2 rounded-2xl bg-white text-clay-foreground hover:text-violet-700 font-nunito font-extrabold text-xs transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-95 cursor-pointer flex items-center gap-1.5"
+                title="Cetak surat langsung ke printer"
               >
-                <Printer className="w-3.5 h-3.5" />
+                <Printer className="w-3.5 h-3.5 text-violet-600" />
                 <span>Cetak Surat</span>
               </button>
 
@@ -783,7 +789,7 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                 type="button"
                 id="btn-download-pdf-call-letter"
                 onClick={handleExportPdf}
-                className="px-3.5 py-2 rounded-xl bg-teal-700 hover:bg-teal-600 text-white font-bold text-xs transition-colors shadow-xs cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-2 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-nunito font-extrabold text-xs transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-95 cursor-pointer flex items-center gap-1.5"
                 title="Unduh berkas PDF resmi SMAN 1 Batu"
               >
                 <Download className="w-3.5 h-3.5" />
@@ -794,19 +800,19 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                 type="button"
                 id="btn-copy-wa-message"
                 onClick={handleCopyWhatsApp}
-                className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors cursor-pointer flex items-center gap-1.5"
-                title="Salin ringkasan pesan panggilan untuk dikirim ke WhatsApp orang tua"
+                className="px-4 py-2 rounded-2xl bg-white text-clay-foreground hover:text-emerald-700 font-nunito font-extrabold text-xs transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-95 cursor-pointer flex items-center gap-1.5"
+                title="Salin ringkasan pesan panggilan untuk dikirim ke WhatsApp"
               >
-                <Copy className="w-3.5 h-3.5" />
+                <Copy className="w-3.5 h-3.5 text-emerald-600" />
                 <span>Salin WA</span>
               </button>
 
-              {selectedStudent?.parentPhone && (
+              {(selectedStudent?.parentPhone || selectedStudent?.phone) && (
                 <button
                   type="button"
-                  id="btn-open-wa"
+                  id="btn-send-direct-wa"
                   onClick={handleOpenWhatsApp}
-                  className="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors cursor-pointer flex items-center gap-1.5 shadow-2xs"
+                  className="px-4 py-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-nunito font-extrabold text-xs transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-95 cursor-pointer flex items-center gap-1.5"
                   title="Buka WhatsApp Web langsung ke orang tua"
                 >
                   <Send className="w-3.5 h-3.5" />

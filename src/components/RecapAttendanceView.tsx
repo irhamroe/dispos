@@ -85,7 +85,6 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
 
   // Compute student attendance summary across date range
   const studentRecapList: StudentRecapItem[] = useMemo(() => {
-    // 1. Filter students according to grade and class
     const targetStudents = sortStudents(
       students.filter((s) => {
         const matchGrade = selectedGrade === 'ALL' || s.grade === selectedGrade;
@@ -94,16 +93,13 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
       })
     );
 
-    // 2. Filter attendance records within the selected date range
     const filteredRecords = attendanceRecords.filter((rec) => {
       return rec.date >= startDate && rec.date <= endDate;
     });
 
-    // 3. Count days in range with attendance data
     const distinctDates = Array.from(new Set(filteredRecords.map((r) => r.date)));
     const totalDays = distinctDates.length || 1;
 
-    // 4. Map each student to their attendance summary
     return targetStudents.map((st) => {
       const stRecords = filteredRecords.filter((r) => r.studentId === st.id);
 
@@ -129,7 +125,6 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
         else if (r.status === 'D') dispen++;
       });
 
-      // Percentage: (Hadir + Dispen) / total days recorded
       const effectivePresent = hadir + dispen;
       const totalCount = stRecords.length || totalDays;
       const percentage = totalCount > 0 ? Math.round((effectivePresent / totalCount) * 100) : 0;
@@ -221,22 +216,26 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
 
   return (
     <div className="space-y-6 pb-12">
-      {/* Header & Filter Controls */}
-      <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+      {/* Header & Filter Controls with Claymorphism */}
+      <div className="relative overflow-hidden rounded-[36px] bg-white/80 p-6 sm:p-8 backdrop-blur-xl shadow-clay-card border border-white/60 space-y-5">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
           <div>
-            <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-black text-[#332F3A] tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>
               Rekap Presensi
             </h2>
+            <p className="text-sm text-[#635F69] mt-1 font-medium">
+              Laporan akumulasi kehadiran siswa per rentang tanggal dan kelas
+            </p>
           </div>
 
           {/* Action & Export Buttons */}
-          <div className="flex items-center gap-2.5 w-full sm:w-auto flex-wrap">
+          <div className="flex items-center gap-3 w-full sm:w-auto flex-wrap">
             <button
               type="button"
               id="export-excel-btn"
               onClick={handleExportExcel}
-              className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+              className="flex-1 sm:flex-none px-4 py-3 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold text-xs transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed flex items-center justify-center gap-2 cursor-pointer"
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               <FileSpreadsheet className="w-4 h-4" />
               <span>Ekspor Excel (.xlsx)</span>
@@ -246,7 +245,8 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
               type="button"
               id="export-pdf-btn"
               onClick={handleExportPdf}
-              className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-600 text-white font-bold text-xs transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+              className="flex-1 sm:flex-none px-4 py-3 rounded-2xl bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] hover:from-[#9333EA] hover:to-[#6D28D9] text-white font-extrabold text-xs transition-all shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed flex items-center justify-center gap-2 cursor-pointer"
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               <FileText className="w-4 h-4" />
               <span>Ekspor PDF (.pdf)</span>
@@ -255,11 +255,11 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
         </div>
 
         {/* Date Range Selection */}
-        <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center gap-3">
+        <div className="pt-4 border-t border-slate-200/60 flex flex-wrap items-center gap-4">
           {/* Start Date */}
-          <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
-            <Calendar className="w-4 h-4 text-teal-600 shrink-0" />
-            <span className="text-slate-500 font-medium">Tanggal Awal:</span>
+          <div className="flex items-center gap-2.5 bg-[#EFEBF5] rounded-2xl px-4 py-2.5 shadow-clay-pressed text-xs">
+            <Calendar className="w-4 h-4 text-[#7C3AED] shrink-0" />
+            <span className="text-[#635F69] font-bold">Tanggal Awal:</span>
             <input
               id="recap-start-date"
               type="date"
@@ -268,14 +268,15 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                 setStartDate(e.target.value);
                 setCurrentPage(1);
               }}
-              className="bg-transparent text-slate-900 font-bold focus:outline-hidden cursor-pointer"
+              className="bg-transparent text-[#332F3A] font-extrabold focus:outline-hidden cursor-pointer"
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             />
           </div>
 
           {/* End Date */}
-          <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
-            <Calendar className="w-4 h-4 text-teal-600 shrink-0" />
-            <span className="text-slate-500 font-medium">Tanggal Akhir:</span>
+          <div className="flex items-center gap-2.5 bg-[#EFEBF5] rounded-2xl px-4 py-2.5 shadow-clay-pressed text-xs">
+            <Calendar className="w-4 h-4 text-[#7C3AED] shrink-0" />
+            <span className="text-[#635F69] font-bold">Tanggal Akhir:</span>
             <input
               id="recap-end-date"
               type="date"
@@ -284,16 +285,17 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                 setEndDate(e.target.value);
                 setCurrentPage(1);
               }}
-              className="bg-transparent text-slate-900 font-bold focus:outline-hidden cursor-pointer"
+              className="bg-transparent text-[#332F3A] font-extrabold focus:outline-hidden cursor-pointer"
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             />
           </div>
         </div>
 
         {/* Grade and Class Filtering Controls */}
-        <div className="pt-3 border-t border-slate-100 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+        <div className="pt-4 border-t border-slate-200/60 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
           {/* Grade filter tabs */}
-          <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl text-xs font-semibold">
-            <span className="text-slate-400 px-2 text-[11px] font-bold">Jenjang:</span>
+          <div className="flex items-center gap-2 p-1.5 bg-[#EFEBF5] rounded-2xl shadow-clay-pressed text-xs font-bold">
+            <span className="text-[#635F69] px-2 text-[11px] font-black uppercase" style={{ fontFamily: 'Nunito, sans-serif' }}>Jenjang:</span>
             {(['X', 'XI', 'XII', 'ALL'] as const).map((gr) => (
               <button
                 key={gr}
@@ -308,11 +310,12 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                     setSelectedClass('ALL');
                   }
                 }}
-                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer ${
                   selectedGrade === gr
-                    ? 'bg-white text-teal-700 font-bold shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] text-white font-black shadow-clay-button -translate-y-0.5'
+                    : 'text-[#635F69] hover:text-[#332F3A]'
                 }`}
+                style={{ fontFamily: 'Nunito, sans-serif' }}
               >
                 {gr === 'ALL' ? 'Semua (36 Kelas)' : `Kelas ${gr}`}
               </button>
@@ -320,9 +323,9 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
           </div>
 
           {/* Class dropdown */}
-          <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-700">
-            <Layers className="w-4 h-4 text-teal-600 shrink-0" />
-            <span className="text-slate-400">Pilih Kelas:</span>
+          <div className="flex items-center gap-2.5 bg-[#EFEBF5] rounded-2xl px-4 py-2.5 text-xs text-[#332F3A] shadow-clay-pressed">
+            <Layers className="w-4 h-4 text-[#7C3AED] shrink-0" />
+            <span className="text-[#635F69] font-bold">Pilih Kelas:</span>
             <select
               id="recap-class-select"
               value={selectedClass}
@@ -330,7 +333,8 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                 setSelectedClass(e.target.value);
                 setCurrentPage(1);
               }}
-              className="bg-transparent font-bold text-slate-900 focus:outline-hidden cursor-pointer"
+              className="bg-transparent font-extrabold text-[#332F3A] focus:outline-hidden cursor-pointer"
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               <option value="ALL">Semua Kelas ({availableClasses.length} Kelas)</option>
               {availableClasses.map((c) => (
@@ -344,43 +348,43 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
       </div>
 
       {/* Summary KPI Bar for Selected Range */}
-      <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 flex flex-wrap items-center justify-between gap-3 text-xs">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="font-bold text-slate-700">
+      <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-clay-card border border-white/60 flex flex-wrap items-center justify-between gap-4 text-xs">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <span className="font-black text-[#332F3A]" style={{ fontFamily: 'Nunito, sans-serif' }}>
             Total Rekap ({searchedRecapList.length} Siswa):
           </span>
-          <span className="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800 font-bold">
+          <span className="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 font-extrabold border border-emerald-200 shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
             H: {aggregateTotals.totalH}
           </span>
-          <span className="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-800 font-bold">
+          <span className="px-3 py-1.5 rounded-xl bg-amber-50 text-amber-800 font-extrabold border border-amber-200 shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
             S: {aggregateTotals.totalS}
           </span>
-          <span className="px-2.5 py-1 rounded-lg bg-blue-100 text-blue-800 font-bold">
+          <span className="px-3 py-1.5 rounded-xl bg-sky-50 text-sky-800 font-extrabold border border-sky-200 shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
             I: {aggregateTotals.totalI}
           </span>
-          <span className="px-2.5 py-1 rounded-lg bg-rose-100 text-rose-800 font-bold">
+          <span className="px-3 py-1.5 rounded-xl bg-rose-50 text-rose-800 font-extrabold border border-rose-200 shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
             A: {aggregateTotals.totalA}
           </span>
-          <span className="px-2.5 py-1 rounded-lg bg-indigo-100 text-indigo-800 font-bold">
+          <span className="px-3 py-1.5 rounded-xl bg-purple-50 text-purple-800 font-extrabold border border-purple-200 shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
             D: {aggregateTotals.totalD}
           </span>
-          <span className="px-2.5 py-1 rounded-lg bg-teal-100 text-teal-800 font-bold">
+          <span className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-teal-50 to-emerald-50 text-teal-900 font-black border border-teal-200 shadow-clay-surface" style={{ fontFamily: 'Nunito, sans-serif' }}>
             Rata-rata Kehadiran: {aggregateTotals.avgRate}%
           </span>
         </div>
 
-        <div className="flex items-center gap-2 text-[11px] font-medium text-slate-600">
-          <FileCheck className="w-3.5 h-3.5 text-teal-600" />
-          <span>Surat I/S Terverifikasi: <strong>{aggregateTotals.totalSuratAda}</strong> • Belum Ada Surat: <strong className="text-rose-600">{aggregateTotals.totalSuratBelum}</strong></span>
+        <div className="flex items-center gap-2 text-xs font-bold text-[#635F69]">
+          <FileCheck className="w-4 h-4 text-[#7C3AED]" />
+          <span>Surat I/S Terverifikasi: <strong className="text-emerald-700">{aggregateTotals.totalSuratAda}</strong> • Belum Ada Surat: <strong className="text-rose-600">{aggregateTotals.totalSuratBelum}</strong></span>
         </div>
       </div>
 
       {/* Recap Table */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+      <div className="rounded-[36px] bg-white/80 backdrop-blur-xl shadow-clay-card border border-white/60 overflow-hidden">
         {/* Search Toolbar */}
-        <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-          <div className="relative w-full sm:w-80">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+        <div className="p-5 sm:p-6 border-b border-slate-200/60 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+          <div className="relative w-full sm:w-96">
+            <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[#635F69]" />
             <input
               id="search-recap-student"
               type="text"
@@ -390,12 +394,12 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                 setSearchQuery(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-1 focus:ring-teal-500"
+              className="w-full pl-11 pr-4 py-3 bg-[#EFEBF5] rounded-2xl text-xs text-[#332F3A] placeholder-[#635F69] shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 transition-all font-medium"
             />
           </div>
 
-          <div className="text-xs text-slate-500 font-medium">
-            Periode: <strong>{formatDateIndonesian(startDate)}</strong> s.d. <strong>{formatDateIndonesian(endDate)}</strong> ({diffDays} hari)
+          <div className="text-xs text-[#635F69] font-medium">
+            Periode: <strong className="text-[#332F3A]">{formatDateIndonesian(startDate)}</strong> s.d. <strong className="text-[#332F3A]">{formatDateIndonesian(endDate)}</strong> ({diffDays} hari)
           </div>
         </div>
 
@@ -404,64 +408,64 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
             {isDailyView ? (
               /* THEAD: MODE HARIAN (RENTANG TANGGAL <= 1 BULAN) */
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                  <th rowSpan={2} className="py-2.5 px-3 w-10 text-center border-r border-slate-200/60">No</th>
-                  <th rowSpan={2} className="py-2.5 px-3 w-28 border-r border-slate-200/60">NISN</th>
-                  <th rowSpan={2} className="py-2.5 px-4 min-w-[180px] border-r border-slate-200/60">Nama Lengkap Siswa</th>
-                  <th rowSpan={2} className="py-2.5 px-2 text-center w-10 border-r border-slate-200/60">L/P</th>
-                  <th rowSpan={2} className="py-2.5 px-2 text-center w-14 border-r border-slate-200/60">Kelas</th>
-                  <th colSpan={datesList.length} className="py-1.5 px-2 text-center bg-teal-50 text-teal-900 border-r border-teal-200/80 font-bold">
+                <tr className="bg-gradient-to-r from-slate-100/80 to-purple-50/50 border-b border-slate-200 text-xs font-black uppercase tracking-wider text-[#635F69]" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <th rowSpan={2} className="py-3 px-3 w-12 text-center border-r border-slate-200/60">No</th>
+                  <th rowSpan={2} className="py-3 px-3 w-28 border-r border-slate-200/60">NISN</th>
+                  <th rowSpan={2} className="py-3 px-4 min-w-[180px] border-r border-slate-200/60">Nama Lengkap Siswa</th>
+                  <th rowSpan={2} className="py-3 px-2 text-center w-10 border-r border-slate-200/60">L/P</th>
+                  <th rowSpan={2} className="py-3 px-2 text-center w-14 border-r border-slate-200/60">Kelas</th>
+                  <th colSpan={datesList.length} className="py-2 px-2 text-center bg-purple-100/60 text-[#7C3AED] border-r border-purple-200 font-black">
                     Status Presensi
                   </th>
-                  <th colSpan={6} className="py-1.5 px-2 text-center bg-slate-100 text-slate-700 font-bold">
+                  <th colSpan={6} className="py-2 px-2 text-center bg-slate-100 text-[#332F3A] font-black">
                     Rekapitulasi Jumlah
                   </th>
                 </tr>
-                <tr className="bg-slate-50 border-b border-slate-200 text-[10px] font-bold uppercase text-slate-500">
+                <tr className="bg-slate-50/80 border-b border-slate-200 text-[10px] font-black uppercase text-[#635F69]">
                   {datesList.map((dateStr) => {
                     const dayNum = parseInt(dateStr.split('-')[2], 10);
                     const shortDay = getDayShortName(dateStr);
-                    const isWeekend = isWeekendDay(dateStr); // Sabtu & Minggu (Hari Libur)
+                    const isWeekend = isWeekendDay(dateStr);
                     return (
                       <th
                         key={dateStr}
-                        className={`py-1.5 px-0.5 text-center min-w-[34px] w-[34px] border-r transition-colors ${
+                        className={`py-2 px-0.5 text-center min-w-[36px] w-[36px] border-r transition-colors ${
                           isWeekend 
-                            ? 'bg-rose-100/90 text-rose-700 border-r-rose-200/80 font-bold' 
-                            : 'border-r-slate-200/50 text-slate-600'
+                            ? 'bg-rose-100/90 text-rose-700 border-r-rose-200/80 font-black' 
+                            : 'border-r-slate-200/50 text-[#635F69]'
                         }`}
                         title={`${formatDateIndonesian(dateStr)} ${isWeekend ? '- Hari Libur Sekolah (Sabtu/Minggu)' : ''}`}
                       >
                         <div className="leading-tight">
-                          <span className={`block text-[8.5px] font-bold ${isWeekend ? 'text-rose-700' : 'text-slate-500 opacity-75'}`}>{shortDay}</span>
-                          <span className={`block text-[11px] font-black ${isWeekend ? 'text-rose-900' : 'text-slate-800'}`}>{dayNum}</span>
+                          <span className={`block text-[8.5px] font-bold ${isWeekend ? 'text-rose-700' : 'text-[#635F69] opacity-75'}`}>{shortDay}</span>
+                          <span className={`block text-[11px] font-black ${isWeekend ? 'text-rose-900' : 'text-[#332F3A]'}`}>{dayNum}</span>
                         </div>
                       </th>
                     );
                   })}
-                  <th className="py-1.5 px-1 text-center w-11 text-emerald-700 bg-emerald-50/60 border-r border-slate-200/50">H</th>
-                  <th className="py-1.5 px-1 text-center w-11 text-amber-700 bg-amber-50/60 border-r border-slate-200/50">S</th>
-                  <th className="py-1.5 px-1 text-center w-11 text-blue-700 bg-blue-50/60 border-r border-slate-200/50">I</th>
-                  <th className="py-1.5 px-1 text-center w-11 text-rose-700 bg-rose-50/60 border-r border-slate-200/50">A</th>
-                  <th className="py-1.5 px-1 text-center w-11 text-indigo-700 bg-indigo-50/60 border-r border-slate-200/50">D</th>
-                  <th className="py-1.5 px-2 text-center w-14 text-slate-700">Persen</th>
+                  <th className="py-2 px-1 text-center w-11 text-emerald-700 bg-emerald-50/60 border-r border-slate-200/50">H</th>
+                  <th className="py-2 px-1 text-center w-11 text-amber-700 bg-amber-50/60 border-r border-slate-200/50">S</th>
+                  <th className="py-2 px-1 text-center w-11 text-sky-700 bg-sky-50/60 border-r border-slate-200/50">I</th>
+                  <th className="py-2 px-1 text-center w-11 text-rose-700 bg-rose-50/60 border-r border-slate-200/50">A</th>
+                  <th className="py-2 px-1 text-center w-11 text-purple-700 bg-purple-50/60 border-r border-slate-200/50">D</th>
+                  <th className="py-2 px-2 text-center w-14 text-[#332F3A]">Persen</th>
                 </tr>
               </thead>
             ) : (
               /* THEAD: MODE REKAP JUMLAH SAJA (RENTANG TANGGAL > 1 BULAN) */
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                  <th className="py-3 px-3 w-10 text-center">No</th>
-                  <th className="py-3 px-3 w-28">NISN</th>
-                  <th className="py-3 px-4">Nama Lengkap Siswa</th>
-                  <th className="py-3 px-2 text-center w-10">L/P</th>
-                  <th className="py-3 px-2 text-center w-16">Kelas</th>
-                  <th className="py-3 px-2 text-center w-14 text-emerald-700 bg-emerald-50/50">H</th>
-                  <th className="py-3 px-2 text-center w-14 text-amber-700 bg-amber-50/50">S</th>
-                  <th className="py-3 px-2 text-center w-14 text-blue-700 bg-blue-50/50">I</th>
-                  <th className="py-3 px-2 text-center w-14 text-rose-700 bg-rose-50/50">A</th>
-                  <th className="py-3 px-2 text-center w-14 text-indigo-700 bg-indigo-50/50">D</th>
-                  <th className="py-3 px-3 text-center w-24">Persentase</th>
+                <tr className="bg-gradient-to-r from-slate-100/80 to-purple-50/50 border-b border-slate-200 text-xs font-black uppercase tracking-wider text-[#635F69]" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                  <th className="py-4 px-3 w-12 text-center">No</th>
+                  <th className="py-4 px-3 w-28">NISN</th>
+                  <th className="py-4 px-4">Nama Lengkap Siswa</th>
+                  <th className="py-4 px-2 text-center w-10">L/P</th>
+                  <th className="py-4 px-2 text-center w-16">Kelas</th>
+                  <th className="py-4 px-2 text-center w-14 text-emerald-700 bg-emerald-50/50">H</th>
+                  <th className="py-4 px-2 text-center w-14 text-amber-700 bg-amber-50/50">S</th>
+                  <th className="py-4 px-2 text-center w-14 text-sky-700 bg-sky-50/50">I</th>
+                  <th className="py-4 px-2 text-center w-14 text-rose-700 bg-rose-50/50">A</th>
+                  <th className="py-4 px-2 text-center w-14 text-purple-700 bg-purple-50/50">D</th>
+                  <th className="py-4 px-3 text-center w-24">Persentase</th>
                 </tr>
               </thead>
             )}
@@ -471,7 +475,7 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                 <tr>
                   <td
                     colSpan={isDailyView ? 5 + datesList.length + 6 : 11}
-                    className="py-8 text-center text-slate-400"
+                    className="py-12 text-center text-[#635F69] font-bold"
                   >
                     Tidak ada catatan presensi dalam rentang tanggal dan filter ini.
                   </td>
@@ -482,27 +486,27 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                   if (isDailyView) {
                     /* TBODY ROW: MODE HARIAN PER TANGGAL (≤ 1 BULAN) */
                     return (
-                      <tr key={item.studentId} className="hover:bg-slate-50/80 transition-colors">
-                        <td className="py-2.5 px-3 text-center text-slate-400 font-medium border-r border-slate-100">
+                      <tr key={item.studentId} className="hover:bg-purple-50/30 transition-colors">
+                        <td className="py-3 px-3 text-center text-[#635F69] font-bold border-r border-slate-100">
                           {globalIdx}
                         </td>
-                        <td className="py-2.5 px-3 font-mono text-[11px] text-slate-600 border-r border-slate-100">
+                        <td className="py-3 px-3 font-mono text-[11px] text-[#635F69] border-r border-slate-100">
                           {item.nisn}
                         </td>
-                        <td className="py-2.5 px-4 font-bold text-slate-900 border-r border-slate-100">
+                        <td className="py-3 px-4 font-black text-[#332F3A] border-r border-slate-100" style={{ fontFamily: 'Nunito, sans-serif' }}>
                           {item.name}
                         </td>
-                        <td className="py-2.5 px-2 text-center border-r border-slate-100">
+                        <td className="py-3 px-2 text-center border-r border-slate-100">
                           <span
-                            className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-bold ${
-                              item.gender === 'L' ? 'bg-blue-50 text-blue-700' : 'bg-pink-50 text-pink-700'
+                            className={`inline-block px-2 py-0.5 rounded-lg text-[10px] font-black ${
+                              item.gender === 'L' ? 'bg-sky-50 text-sky-700' : 'bg-pink-50 text-pink-700'
                             }`}
                           >
                             {item.gender}
                           </span>
                         </td>
-                        <td className="py-2.5 px-2 text-center border-r border-slate-100">
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">
+                        <td className="py-3 px-2 text-center border-r border-slate-100">
+                          <span className="px-2 py-0.5 rounded-lg text-[10px] font-extrabold bg-[#EFEBF5] text-[#332F3A] shadow-2xs">
                             {item.className}
                           </span>
                         </td>
@@ -510,7 +514,7 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                         {/* Daily status cells for each date */}
                         {datesList.map((dateStr) => {
                           const rec = attendanceRecordMap.get(`${item.studentId}_${dateStr}`);
-                          const isWeekend = isWeekendDay(dateStr); // Sabtu & Minggu
+                          const isWeekend = isWeekendDay(dateStr);
                           const isMissingLetter = Boolean(
                             rec &&
                             (rec.status === 'I' || rec.status === 'S') &&
@@ -519,7 +523,7 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                           return (
                             <td
                               key={dateStr}
-                              className={`py-2 px-0.5 text-center border-r transition-colors ${
+                              className={`py-2.5 px-0.5 text-center border-r transition-colors ${
                                 isWeekend 
                                   ? 'bg-rose-50/70 border-r-rose-100/80' 
                                   : isMissingLetter
@@ -529,7 +533,7 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                             >
                               {rec ? (
                                 <span
-                                  className={`relative inline-flex items-center justify-center w-6 h-6 rounded font-bold text-[10.5px] cursor-default transition-transform hover:scale-110 shadow-2xs ${
+                                  className={`relative inline-flex items-center justify-center w-6 h-6 rounded-lg font-black text-[10.5px] cursor-default transition-transform hover:scale-110 shadow-clay-surface ${
                                     rec.status === 'H'
                                       ? 'bg-emerald-100 text-emerald-800'
                                       : rec.status === 'S'
@@ -538,11 +542,11 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                                         : 'bg-amber-100 text-amber-800'
                                       : rec.status === 'I'
                                       ? isMissingLetter
-                                        ? 'bg-blue-100 text-blue-900 ring-2 ring-rose-500 font-black'
-                                        : 'bg-blue-100 text-blue-800'
+                                        ? 'bg-sky-100 text-sky-900 ring-2 ring-rose-500 font-black'
+                                        : 'bg-sky-100 text-sky-800'
                                       : rec.status === 'A'
                                       ? 'bg-rose-100 text-rose-800'
-                                      : 'bg-indigo-100 text-indigo-800'
+                                      : 'bg-purple-100 text-purple-800'
                                   }`}
                                   title={
                                     rec.status === 'H'
@@ -567,7 +571,7 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                                   )}
                                 </span>
                               ) : (
-                                <span className={`font-mono text-[11px] select-none ${isWeekend ? 'text-rose-300 font-semibold' : 'text-slate-300'}`}>
+                                <span className={`font-mono text-[11px] select-none ${isWeekend ? 'text-rose-300 font-bold' : 'text-slate-300'}`}>
                                   -
                                 </span>
                               )}
@@ -576,30 +580,31 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                         })}
 
                         {/* Summary totals for daily view */}
-                        <td className="py-2.5 px-1 text-center font-bold text-emerald-700 bg-emerald-50/20 border-r border-slate-100">
+                        <td className="py-3 px-1 text-center font-black text-emerald-700 bg-emerald-50/20 border-r border-slate-100" style={{ fontFamily: 'Nunito, sans-serif' }}>
                           {item.hadir}
                         </td>
-                        <td className="py-2.5 px-1 text-center font-bold text-amber-700 bg-amber-50/20 border-r border-slate-100">
+                        <td className="py-3 px-1 text-center font-black text-amber-700 bg-amber-50/20 border-r border-slate-100" style={{ fontFamily: 'Nunito, sans-serif' }}>
                           {item.sakit}
                         </td>
-                        <td className="py-2.5 px-1 text-center font-bold text-blue-700 bg-blue-50/20 border-r border-slate-100">
+                        <td className="py-3 px-1 text-center font-black text-sky-700 bg-sky-50/20 border-r border-slate-100" style={{ fontFamily: 'Nunito, sans-serif' }}>
                           {item.izin}
                         </td>
-                        <td className={`py-2.5 px-1 text-center font-bold border-r border-slate-100 ${item.alpa > 0 ? 'text-rose-700 bg-rose-100/40' : 'text-slate-400'}`}>
+                        <td className={`py-3 px-1 text-center font-black border-r border-slate-100 ${item.alpa > 0 ? 'text-rose-700 bg-rose-100/40' : 'text-slate-400'}`} style={{ fontFamily: 'Nunito, sans-serif' }}>
                           {item.alpa}
                         </td>
-                        <td className="py-2.5 px-1 text-center font-bold text-indigo-700 bg-indigo-50/20 border-r border-slate-100">
+                        <td className="py-3 px-1 text-center font-black text-purple-700 bg-purple-50/20 border-r border-slate-100" style={{ fontFamily: 'Nunito, sans-serif' }}>
                           {item.dispen}
                         </td>
-                        <td className="py-2.5 px-2 text-center">
+                        <td className="py-3 px-2 text-center">
                           <span
-                            className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                            className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-black shadow-clay-surface ${
                               item.percentage >= 95
                                 ? 'bg-emerald-100 text-emerald-800'
                                 : item.percentage >= 80
                                 ? 'bg-amber-100 text-amber-800'
                                 : 'bg-rose-100 text-rose-800'
                             }`}
+                            style={{ fontFamily: 'Nunito, sans-serif' }}
                           >
                             {item.percentage}%
                           </span>
@@ -610,60 +615,55 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
 
                   /* TBODY ROW: MODE REKAP JUMLAH SAJA (> 1 BULAN) */
                   return (
-                    <tr key={item.studentId} className="hover:bg-slate-50/70 transition-colors">
-                      <td className="py-3 px-3 text-center text-slate-400 font-medium">
+                    <tr key={item.studentId} className="hover:bg-purple-50/30 transition-colors">
+                      <td className="py-3.5 px-3 text-center text-[#635F69] font-bold">
                         {globalIdx}
                       </td>
-                      <td className="py-3 px-3 font-mono text-[11px] text-slate-600">
+                      <td className="py-3.5 px-3 font-mono text-[11px] text-[#635F69]">
                         {item.nisn}
                       </td>
-                      <td className="py-3 px-4 font-bold text-slate-900">
+                      <td className="py-3.5 px-4 font-black text-[#332F3A]" style={{ fontFamily: 'Nunito, sans-serif' }}>
                         {item.name}
                       </td>
-                      <td className="py-3 px-2 text-center">
+                      <td className="py-3.5 px-2 text-center">
                         <span
-                          className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-bold ${
-                            item.gender === 'L' ? 'bg-blue-50 text-blue-700' : 'bg-pink-50 text-pink-700'
+                          className={`inline-block px-2 py-0.5 rounded-lg text-[10px] font-black ${
+                            item.gender === 'L' ? 'bg-sky-50 text-sky-700' : 'bg-pink-50 text-pink-700'
                           }`}
                         >
                           {item.gender}
                         </span>
                       </td>
-                      <td className="py-3 px-2 text-center">
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">
+                      <td className="py-3.5 px-2 text-center">
+                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-extrabold bg-[#EFEBF5] text-[#332F3A] shadow-2xs">
                           {item.className}
                         </span>
                       </td>
-                      {/* H */}
-                      <td className="py-3 px-2 text-center font-bold text-emerald-700 bg-emerald-50/20">
+                      <td className="py-3.5 px-2 text-center font-black text-emerald-700 bg-emerald-50/20" style={{ fontFamily: 'Nunito, sans-serif' }}>
                         {item.hadir}
                       </td>
-                      {/* S */}
-                      <td className="py-3 px-2 text-center font-bold text-amber-700 bg-amber-50/20">
+                      <td className="py-3.5 px-2 text-center font-black text-amber-700 bg-amber-50/20" style={{ fontFamily: 'Nunito, sans-serif' }}>
                         {item.sakit}
                       </td>
-                      {/* I */}
-                      <td className="py-3 px-2 text-center font-bold text-blue-700 bg-blue-50/20">
+                      <td className="py-3.5 px-2 text-center font-black text-sky-700 bg-sky-50/20" style={{ fontFamily: 'Nunito, sans-serif' }}>
                         {item.izin}
                       </td>
-                      {/* A */}
-                      <td className={`py-3 px-2 text-center font-bold ${item.alpa > 0 ? 'text-rose-700 bg-rose-100/40' : 'text-slate-400'}`}>
+                      <td className={`py-3.5 px-2 text-center font-black ${item.alpa > 0 ? 'text-rose-700 bg-rose-100/40' : 'text-slate-400'}`} style={{ fontFamily: 'Nunito, sans-serif' }}>
                         {item.alpa}
                       </td>
-                      {/* D */}
-                      <td className="py-3 px-2 text-center font-bold text-indigo-700 bg-indigo-50/20">
+                      <td className="py-3.5 px-2 text-center font-black text-purple-700 bg-purple-50/20" style={{ fontFamily: 'Nunito, sans-serif' }}>
                         {item.dispen}
                       </td>
-                      {/* Persentase */}
-                      <td className="py-3 px-3 text-center">
+                      <td className="py-3.5 px-3 text-center">
                         <span
-                          className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-black shadow-clay-surface ${
                             item.percentage >= 95
                               ? 'bg-emerald-100 text-emerald-800'
                               : item.percentage >= 80
                               ? 'bg-amber-100 text-amber-800'
                               : 'bg-rose-100 text-rose-800'
                           }`}
+                          style={{ fontFamily: 'Nunito, sans-serif' }}
                         >
                           {item.percentage}%
                         </span>
@@ -677,51 +677,51 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
         </div>
 
         {/* Legend / Status Code Guide */}
-        <div className="px-4 py-3 bg-slate-50/80 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-[11px] text-slate-600">
+        <div className="px-6 py-4 bg-[#EFEBF5]/60 border-t border-slate-200/60 flex flex-wrap items-center justify-between gap-3 text-xs text-[#635F69]">
           <div className="flex items-center gap-3 flex-wrap">
-            <span className="font-bold text-slate-700">Keterangan Kode:</span>
-            <span className="inline-flex items-center gap-1">
-              <span className="w-5 h-5 rounded bg-emerald-100 text-emerald-800 font-bold inline-flex items-center justify-center text-[10px]">H</span>
-              <span>Hadir</span>
+            <span className="font-black text-[#332F3A]" style={{ fontFamily: 'Nunito, sans-serif' }}>Keterangan Kode:</span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 font-black inline-flex items-center justify-center text-xs shadow-clay-surface">H</span>
+              <span className="font-semibold">Hadir</span>
             </span>
-            <span className="inline-flex items-center gap-1">
-              <span className="w-5 h-5 rounded bg-amber-100 text-amber-800 font-bold inline-flex items-center justify-center text-[10px]">S</span>
-              <span>Sakit</span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="w-6 h-6 rounded-lg bg-amber-100 text-amber-800 font-black inline-flex items-center justify-center text-xs shadow-clay-surface">S</span>
+              <span className="font-semibold">Sakit</span>
             </span>
-            <span className="inline-flex items-center gap-1">
-              <span className="w-5 h-5 rounded bg-blue-100 text-blue-800 font-bold inline-flex items-center justify-center text-[10px]">I</span>
-              <span>Izin</span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="w-6 h-6 rounded-lg bg-sky-100 text-sky-800 font-black inline-flex items-center justify-center text-xs shadow-clay-surface">I</span>
+              <span className="font-semibold">Izin</span>
             </span>
-            <span className="inline-flex items-center gap-1">
-              <span className="w-5 h-5 rounded bg-rose-100 text-rose-800 font-bold inline-flex items-center justify-center text-[10px]">A</span>
-              <span>Alpa (Tanpa Keterangan)</span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="w-6 h-6 rounded-lg bg-rose-100 text-rose-800 font-black inline-flex items-center justify-center text-xs shadow-clay-surface">A</span>
+              <span className="font-semibold">Alpa (Tanpa Keterangan)</span>
             </span>
-            <span className="inline-flex items-center gap-1">
-              <span className="w-5 h-5 rounded bg-indigo-100 text-indigo-800 font-bold inline-flex items-center justify-center text-[10px]">D</span>
-              <span>Dispensasi</span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="w-6 h-6 rounded-lg bg-purple-100 text-purple-800 font-black inline-flex items-center justify-center text-xs shadow-clay-surface">D</span>
+              <span className="font-semibold">Dispensasi</span>
             </span>
             {isDailyView && (
-              <span className="inline-flex items-center gap-1.5 pl-2 border-l border-slate-200">
-                <span className="px-1.5 py-0.5 rounded bg-rose-100 text-rose-800 font-bold inline-flex items-center justify-center text-[10px] border border-rose-300">
+              <span className="inline-flex items-center gap-2 pl-3 border-l border-slate-300">
+                <span className="px-2 py-0.5 rounded-lg bg-rose-100 text-rose-800 font-black inline-flex items-center justify-center text-[10px] border border-rose-300 shadow-clay-surface">
                   Sab &amp; Min
                 </span>
-                <span className="font-semibold text-rose-700">Libur Akhir Pekan</span>
+                <span className="font-bold text-rose-700">Libur Akhir Pekan</span>
               </span>
             )}
-            <span className="inline-flex items-center gap-1.5 pl-2 border-l border-slate-200">
-              <span className="relative inline-flex items-center justify-center w-5 h-5 rounded font-bold text-[10px] bg-amber-100 text-amber-900 ring-2 ring-rose-500">
+            <span className="inline-flex items-center gap-2 pl-3 border-l border-slate-300">
+              <span className="relative inline-flex items-center justify-center w-6 h-6 rounded-lg font-black text-[10px] bg-amber-100 text-amber-900 ring-2 ring-rose-500 shadow-clay-surface">
                 S
                 <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-600 rounded-full border border-white flex items-center justify-center text-[7px] text-white font-black leading-none">!</span>
               </span>
-              <span className="font-semibold text-rose-700">Tanda (!) : Status I atau S Belum Kumpulkan Surat</span>
+              <span className="font-bold text-rose-700">Tanda (!) : Belum Kumpulkan Surat</span>
             </span>
           </div>
         </div>
 
         {/* Pagination Bar */}
         {totalPages > 1 && (
-          <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs">
-            <div className="text-slate-500">
+          <div className="p-5 bg-[#EFEBF5]/40 border-t border-slate-200/60 flex items-center justify-between text-xs">
+            <div className="text-[#635F69] font-medium">
               Menampilkan {paginatedList.length} dari total {searchedRecapList.length} siswa
             </div>
             <div className="flex items-center gap-2">
@@ -730,11 +730,11 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                 id="prev-page-btn"
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                className="p-1.5 rounded-lg border border-slate-200 bg-white disabled:opacity-40 hover:bg-slate-100 text-slate-700"
+                className="p-2 rounded-xl bg-white shadow-clay-button disabled:opacity-40 hover:bg-slate-50 text-[#332F3A] cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <span className="font-bold text-slate-700">
+              <span className="font-black text-[#332F3A] px-2" style={{ fontFamily: 'Nunito, sans-serif' }}>
                 Halaman {currentPage} dari {totalPages}
               </span>
               <button
@@ -742,7 +742,7 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                 id="next-page-btn"
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                className="p-1.5 rounded-lg border border-slate-200 bg-white disabled:opacity-40 hover:bg-slate-100 text-slate-700"
+                className="p-2 rounded-xl bg-white shadow-clay-button disabled:opacity-40 hover:bg-slate-50 text-[#332F3A] cursor-pointer"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>

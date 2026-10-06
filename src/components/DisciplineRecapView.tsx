@@ -96,17 +96,13 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
   // Filter records based on Date Range, Class, Status, and Search (sorted by latest first)
   const filteredRecords = useMemo(() => {
     const list = disciplineRecords.filter((rec) => {
-      // Date range check
       const withinDate = rec.date >= startDate && rec.date <= endDate;
       if (!withinDate) return false;
 
-      // Class check
       if (selectedClass !== 'ALL' && rec.className !== selectedClass) return false;
 
-      // Coaching status check
       if (selectedStatus !== 'ALL' && rec.coachingStatus !== selectedStatus) return false;
 
-      // Search query check
       if (searchQuery.trim() !== '') {
         const query = searchQuery.toLowerCase();
         const matchName = rec.studentName.toLowerCase().includes(query);
@@ -147,30 +143,31 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
 
   return (
     <div className="space-y-6 pb-12">
-      {/* Header Banner */}
-      <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-teal-600 text-white flex items-center justify-center shadow-xs">
-              <CalendarDays className="w-5 h-5" />
+      {/* Header Banner with Claymorphism */}
+      <div className="relative overflow-hidden rounded-[36px] bg-white/80 p-6 sm:p-8 backdrop-blur-xl shadow-clay-card border border-white/60">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 text-white flex items-center justify-center shadow-clay-button shrink-0">
+              <CalendarDays className="w-7 h-7" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-slate-900 tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-black text-[#332F3A] tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>
                 Rekap Pelanggaran & Pembinaan
               </h2>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-sm text-[#635F69] mt-1 font-medium">
                 Laporan rekapitulasi data pelanggaran tata tertib dan status pembinaan berdasarkan rentang tanggal
               </p>
             </div>
           </div>
 
           {/* Export Action Buttons */}
-          <div className="flex items-center gap-2.5 w-full sm:w-auto">
+          <div className="flex items-center gap-3 w-full sm:w-auto">
             <button
               type="button"
               id="export-recap-excel-btn"
               onClick={handleExportExcel}
-              className="px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-2xs flex-1 sm:flex-initial cursor-pointer"
+              className="px-4 py-3 rounded-2xl bg-white/90 text-[#332F3A] hover:text-emerald-700 font-extrabold text-xs transition-all flex items-center justify-center gap-2 shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed flex-1 sm:flex-initial cursor-pointer"
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
               <span>Ekspor Excel</span>
@@ -180,7 +177,8 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
               type="button"
               id="export-recap-pdf-btn"
               onClick={handleExportPdf}
-              className="px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-2xs flex-1 sm:flex-initial cursor-pointer"
+              className="px-4 py-3 rounded-2xl bg-white/90 text-[#332F3A] hover:text-rose-700 font-extrabold text-xs transition-all flex items-center justify-center gap-2 shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed flex-1 sm:flex-initial cursor-pointer"
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               <FileText className="w-4 h-4 text-rose-600" />
               <span>Ekspor PDF</span>
@@ -189,89 +187,94 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
         </div>
 
         {exportNotice && (
-          <div className="mt-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2 animate-in fade-in">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+          <div className="mt-4 p-4 rounded-2xl bg-emerald-50/90 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2.5 shadow-clay-surface animate-in fade-in">
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
             <span>{exportNotice}</span>
           </div>
         )}
       </div>
 
       {/* Date Range & Filter Panel */}
-      <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-          <div className="flex items-center gap-2">
-            <CalendarRange className="w-4 h-4 text-teal-600" />
-            <span className="font-bold text-slate-800 text-xs uppercase tracking-wider">
+      <div className="rounded-[36px] bg-white/80 p-6 sm:p-8 backdrop-blur-xl shadow-clay-card border border-white/60 space-y-5">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200/60 pb-4">
+          <div className="flex items-center gap-2.5">
+            <CalendarRange className="w-5 h-5 text-teal-600" />
+            <span className="font-black text-[#332F3A] text-xs uppercase tracking-wider" style={{ fontFamily: 'Nunito, sans-serif' }}>
               Filter Rentang Tanggal & Parameter
             </span>
           </div>
 
           {/* Quick Presets */}
-          <div className="flex items-center gap-1.5">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={handlePresetToday}
-              className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-600 transition-colors"
+              className="px-3.5 py-1.5 rounded-xl text-xs font-extrabold bg-[#EFEBF5] hover:bg-white text-[#635F69] hover:text-[#7C3AED] shadow-clay-pressed transition-all cursor-pointer"
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               Hari Ini
             </button>
             <button
               type="button"
               onClick={handlePreset7Days}
-              className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-600 transition-colors"
+              className="px-3.5 py-1.5 rounded-xl text-xs font-extrabold bg-[#EFEBF5] hover:bg-white text-[#635F69] hover:text-[#7C3AED] shadow-clay-pressed transition-all cursor-pointer"
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               7 Hari Terakhir
             </button>
             <button
               type="button"
               onClick={handlePresetMonth}
-              className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-600 transition-colors"
+              className="px-3.5 py-1.5 rounded-xl text-xs font-extrabold bg-[#EFEBF5] hover:bg-white text-[#635F69] hover:text-[#7C3AED] shadow-clay-pressed transition-all cursor-pointer"
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               Bulan Ini
             </button>
             <button
               type="button"
               onClick={handlePresetAll}
-              className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-600 transition-colors"
+              className="px-3.5 py-1.5 rounded-xl text-xs font-extrabold bg-[#EFEBF5] hover:bg-white text-[#635F69] hover:text-[#7C3AED] shadow-clay-pressed transition-all cursor-pointer"
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               Semua Data
             </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
           {/* Tanggal Awal */}
           <div>
-            <label className="block font-bold text-slate-700 mb-1">Tanggal Awal</label>
+            <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>Tanggal Awal</label>
             <input
               type="date"
               id="recap-start-date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-semibold focus:outline-hidden focus:ring-1 focus:ring-teal-500"
+              className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-bold shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 transition-all"
             />
           </div>
 
           {/* Tanggal Akhir */}
           <div>
-            <label className="block font-bold text-slate-700 mb-1">Tanggal Akhir</label>
+            <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>Tanggal Akhir</label>
             <input
               type="date"
               id="recap-end-date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-semibold focus:outline-hidden focus:ring-1 focus:ring-teal-500"
+              className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-bold shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 transition-all"
             />
           </div>
 
           {/* Filter Kelas */}
           <div>
-            <label className="block font-bold text-slate-700 mb-1">Pilih Kelas</label>
+            <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>Pilih Kelas</label>
             <select
               id="recap-class-select"
               value={selectedClass}
               onChange={(e) => setSelectedClass(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-semibold focus:outline-hidden focus:ring-1 focus:ring-teal-500 cursor-pointer"
+              className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-extrabold shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 transition-all cursor-pointer"
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               <option value="ALL">Semua Kelas (36 Rombel)</option>
               {availableClasses.map((c) => (
@@ -284,12 +287,13 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
 
           {/* Filter Status Pembinaan */}
           <div>
-            <label className="block font-bold text-slate-700 mb-1">Status Pembinaan</label>
+            <label className="block font-black text-[#332F3A] mb-1.5" style={{ fontFamily: 'Nunito, sans-serif' }}>Status Pembinaan</label>
             <select
               id="recap-status-select"
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-semibold focus:outline-hidden focus:ring-1 focus:ring-teal-500 cursor-pointer"
+              className="w-full px-4 py-3 bg-[#EFEBF5] rounded-2xl text-[#332F3A] font-extrabold shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 transition-all cursor-pointer"
+              style={{ fontFamily: 'Nunito, sans-serif' }}
             >
               <option value="ALL">Semua Status Pembinaan</option>
               <option value="Sudah">Sudah Pembinaan</option>
@@ -300,125 +304,136 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
 
         {/* Search Bar */}
         <div className="relative">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[#635F69]" />
           <input
             type="text"
             placeholder="Cari nama siswa, NISN, atau jenis pelanggaran pada rentang tanggal ini..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-1 focus:ring-teal-500"
+            className="w-full pl-11 pr-4 py-3.5 bg-[#EFEBF5] rounded-2xl text-xs text-[#332F3A] placeholder-[#635F69] shadow-clay-pressed focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 transition-all font-medium"
           />
         </div>
       </div>
 
       {/* KPI Cards for Selected Date Range */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-2xs">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
+        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-clay-card border border-white/60 hover:-translate-y-1.5 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase">Kasus Pada Rentang</span>
-            <ShieldAlert className="w-4 h-4 text-slate-400" />
+            <span className="text-[11px] font-black text-[#635F69] uppercase tracking-wider" style={{ fontFamily: 'Nunito, sans-serif' }}>Kasus Pada Rentang</span>
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-400 to-slate-600 text-white flex items-center justify-center shadow-clay-surface">
+              <ShieldAlert className="w-4 h-4" />
+            </div>
           </div>
-          <div className="text-2xl font-extrabold text-slate-900 mt-1">{totalCount}</div>
-          <div className="text-[11px] text-slate-400 mt-0.5">
+          <div className="text-2xl sm:text-3xl font-black text-[#332F3A] mt-2 tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>{totalCount}</div>
+          <div className="text-[10px] text-[#635F69] mt-1 font-medium truncate">
             {formatDateIndonesian(startDate)} - {formatDateIndonesian(endDate)}
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-amber-200 shadow-2xs">
+        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-clay-card border border-amber-200/60 hover:-translate-y-1.5 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-amber-700 uppercase">Belum Pembinaan</span>
-            <Clock className="w-4 h-4 text-amber-500" />
+            <span className="text-[11px] font-black text-amber-700 uppercase tracking-wider" style={{ fontFamily: 'Nunito, sans-serif' }}>Belum Pembinaan</span>
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center shadow-clay-surface">
+              <Clock className="w-4 h-4" />
+            </div>
           </div>
-          <div className="text-2xl font-extrabold text-amber-800 mt-1">{belumCount}</div>
-          <div className="text-[11px] text-amber-600/80 mt-0.5 font-medium">Perlu ditindaklanjuti</div>
+          <div className="text-2xl sm:text-3xl font-black text-amber-700 mt-2 tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>{belumCount}</div>
+          <div className="text-[10px] text-amber-600/90 mt-1 font-semibold">Perlu ditindaklanjuti</div>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-emerald-200 shadow-2xs">
+        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-clay-card border border-emerald-200/60 hover:-translate-y-1.5 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-emerald-700 uppercase">Sudah Pembinaan</span>
-            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+            <span className="text-[11px] font-black text-emerald-700 uppercase tracking-wider" style={{ fontFamily: 'Nunito, sans-serif' }}>Sudah Pembinaan</span>
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center shadow-clay-surface">
+              <CheckCircle2 className="w-4 h-4" />
+            </div>
           </div>
-          <div className="text-2xl font-extrabold text-emerald-800 mt-1">{sudahCount}</div>
-          <div className="text-[11px] text-emerald-600/80 mt-0.5">Telah selesai dibina</div>
+          <div className="text-2xl sm:text-3xl font-black text-emerald-700 mt-2 tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>{sudahCount}</div>
+          <div className="text-[10px] text-emerald-600/90 mt-1 font-semibold">Telah selesai dibina</div>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-teal-200 shadow-2xs">
+        <div className="rounded-[32px] bg-white/80 p-5 backdrop-blur-xl shadow-clay-card border border-teal-200/60 hover:-translate-y-1.5 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-teal-700 uppercase">Rasio Penyelesaian</span>
-            <FileCheck className="w-4 h-4 text-teal-500" />
+            <span className="text-[11px] font-black text-teal-700 uppercase tracking-wider" style={{ fontFamily: 'Nunito, sans-serif' }}>Rasio Penyelesaian</span>
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 text-white flex items-center justify-center shadow-clay-surface">
+              <FileCheck className="w-4 h-4" />
+            </div>
           </div>
-          <div className="text-2xl font-extrabold text-teal-800 mt-1">{persentaseTuntas}%</div>
-          <div className="text-[11px] text-teal-600/80 mt-0.5">Tuntas pada periode ini</div>
+          <div className="text-2xl sm:text-3xl font-black text-teal-700 mt-2 tracking-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>{persentaseTuntas}%</div>
+          <div className="text-[10px] text-teal-600/90 mt-1 font-semibold">Tuntas pada periode ini</div>
         </div>
       </div>
 
-      {/* Recap Table */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-        <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-          <div className="text-xs font-bold text-slate-800 flex items-center gap-2">
-            <span>Daftar Pelanggaran Hasil Rekapitulasi</span>
-            <span className="px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full font-extrabold">
+      {/* Recap Table with Claymorphism */}
+      <div className="rounded-[36px] bg-white/80 backdrop-blur-xl shadow-clay-card border border-white/60 overflow-hidden">
+        <div className="p-5 sm:p-6 border-b border-slate-200/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="text-xs font-black text-[#332F3A] flex items-center gap-2.5" style={{ fontFamily: 'Nunito, sans-serif' }}>
+            <span className="text-sm">Daftar Pelanggaran Hasil Rekapitulasi</span>
+            <span className="px-3 py-1 bg-teal-50 text-teal-700 rounded-xl font-extrabold border border-teal-200 shadow-clay-surface">
               {filteredRecords.length} Data
             </span>
           </div>
-          <div className="text-[11px] text-slate-500">
-            Rentang: <span className="font-semibold text-slate-700">{startDate} s/d {endDate}</span>
+          <div className="text-xs text-[#635F69]">
+            Rentang: <span className="font-extrabold text-[#332F3A]">{startDate} s/d {endDate}</span>
           </div>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 text-slate-500 font-bold text-[11px] uppercase tracking-wider border-b border-slate-100">
-                <th className="py-3 px-3 text-center w-12">No</th>
-                <th className="py-3 px-3 w-28">Tanggal Kejadian</th>
-                <th className="py-3 px-4">Nama Siswa & Kelas</th>
-                <th className="py-3 px-4 min-w-[220px]">Jenis Pelanggaran</th>
-                <th className="py-3 px-3 text-center w-36">Status Pembinaan</th>
-                <th className="py-3 px-3 w-32 text-center">Tanggal Pembinaan</th>
-                <th className="py-3 px-3 text-center w-28">Bukti & Foto</th>
-                <th className="py-3 px-3 text-center w-24">Aksi</th>
+              <tr className="bg-gradient-to-r from-slate-100/80 to-teal-50/50 text-[#635F69] font-black text-xs uppercase tracking-wider border-b border-slate-200/60" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                <th className="py-4 px-4 text-center w-14">No</th>
+                <th className="py-4 px-4 w-32">Tanggal Kejadian</th>
+                <th className="py-4 px-5">Nama Siswa & Kelas</th>
+                <th className="py-4 px-5 min-w-[220px]">Jenis Pelanggaran</th>
+                <th className="py-4 px-4 text-center w-40">Status Pembinaan</th>
+                <th className="py-4 px-4 w-36 text-center">Tanggal Pembinaan</th>
+                <th className="py-4 px-4 text-center w-32">Bukti & Foto</th>
+                <th className="py-4 px-4 text-center w-28">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
               {filteredRecords.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-slate-400">
-                    <CalendarRange className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-                    Tidak ada catatan pelanggaran pada rentang tanggal dan kriteria filter ini.
+                  <td colSpan={8} className="py-16 text-center text-[#635F69]">
+                    <div className="w-16 h-16 rounded-full bg-[#EFEBF5] text-[#635F69] flex items-center justify-center mx-auto mb-3 shadow-clay-surface">
+                      <CalendarRange className="w-8 h-8" />
+                    </div>
+                    <span className="font-bold">Tidak ada catatan pelanggaran pada rentang tanggal dan kriteria filter ini.</span>
                   </td>
                 </tr>
               ) : (
                 filteredRecords.map((rec, idx) => {
                   const isSudah = rec.coachingStatus === 'Sudah';
                   return (
-                    <tr key={rec.id} className="hover:bg-slate-50/70 transition-colors">
-                      <td className="py-3.5 px-3 text-center text-slate-400 font-medium">{idx + 1}</td>
-                      <td className="py-3.5 px-3 text-slate-700 whitespace-nowrap">
-                        <div className="font-semibold text-slate-800">{rec.date}</div>
-                        <div className="text-[10px] text-slate-400">{formatDateIndonesian(rec.date)}</div>
+                    <tr key={rec.id} className="hover:bg-teal-50/40 transition-colors">
+                      <td className="py-4 px-4 text-center text-[#635F69] font-bold">{idx + 1}</td>
+                      <td className="py-4 px-4 text-[#332F3A] whitespace-nowrap">
+                        <div className="font-extrabold text-[#332F3A]" style={{ fontFamily: 'Nunito, sans-serif' }}>{rec.date}</div>
+                        <div className="text-[11px] text-[#635F69]">{formatDateIndonesian(rec.date)}</div>
                       </td>
-                      <td className="py-3.5 px-4">
-                        <div className="font-bold text-slate-900">{rec.studentName}</div>
-                        <div className="text-[11px] text-slate-500 mt-0.5 flex items-center gap-1.5">
-                          <span className="font-semibold text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded-md border border-teal-200">
+                      <td className="py-4 px-5">
+                        <div className="font-black text-[#332F3A] text-sm" style={{ fontFamily: 'Nunito, sans-serif' }}>{rec.studentName}</div>
+                        <div className="text-xs text-[#635F69] mt-0.5 flex items-center gap-1.5">
+                          <span className="font-extrabold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-lg border border-teal-200 shadow-2xs">
                             Kelas {rec.className}
                           </span>
                           <span>•</span>
                           <span>NISN: {rec.nisn}</span>
                         </div>
                       </td>
-                      <td className="py-3.5 px-4">
-                        <div className="font-semibold text-slate-800">{rec.violationName}</div>
-                        <div className="text-[10px] text-slate-400 mt-0.5">Pelapor: {rec.reportedBy}</div>
+                      <td className="py-4 px-5">
+                        <div className="font-bold text-[#332F3A]">{rec.violationName}</div>
+                        <div className="text-[11px] text-[#635F69] mt-0.5">Pelapor: {rec.reportedBy}</div>
                       </td>
-                      <td className="py-3.5 px-3 text-center">
+                      <td className="py-4 px-4 text-center">
                         <span
-                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold ${
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold shadow-clay-surface ${
                             isSudah
                               ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                               : 'bg-amber-50 text-amber-700 border border-amber-200'
                           }`}
+                          style={{ fontFamily: 'Nunito, sans-serif' }}
                         >
                           {isSudah ? (
                             <>
@@ -433,19 +448,19 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                           )}
                         </span>
                       </td>
-                      <td className="py-3.5 px-3 text-center">
+                      <td className="py-4 px-4 text-center">
                         {isSudah && rec.coachingDate ? (
-                          <div className="text-slate-800 font-semibold">
+                          <div className="text-[#332F3A] font-extrabold" style={{ fontFamily: 'Nunito, sans-serif' }}>
                             {rec.coachingDate}
-                            <div className="text-[10px] text-slate-400 font-normal">
+                            <div className="text-[11px] text-[#635F69] font-normal">
                               {formatDateIndonesian(rec.coachingDate)}
                             </div>
                           </div>
                         ) : (
-                          <span className="text-slate-400 text-xs">-</span>
+                          <span className="text-[#635F69] text-xs font-bold">-</span>
                         )}
                       </td>
-                      <td className="py-3.5 px-3 text-center">
+                      <td className="py-4 px-4 text-center">
                         <div className="flex items-center justify-center gap-1.5">
                           {rec.coachingPhoto && (
                             <button
@@ -456,7 +471,7 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                                   title: `Foto Pembinaan: ${rec.studentName}`,
                                 })
                               }
-                              className="p-1.5 rounded-lg bg-teal-50 text-teal-700 hover:bg-teal-100 transition-colors"
+                              className="p-2 rounded-xl bg-teal-50 text-teal-700 hover:bg-teal-100 shadow-clay-surface hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
                               title="Lihat Foto Pembinaan"
                             >
                               <ImageIcon className="w-4 h-4" />
@@ -466,24 +481,25 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                             <button
                               type="button"
                               onClick={() => setActiveRecordForDetail(rec)}
-                              className="p-1.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
+                              className="p-2 rounded-xl bg-sky-50 text-sky-700 hover:bg-sky-100 shadow-clay-surface hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
                               title={`Surat: ${rec.coachingEvidenceFileName}`}
                             >
                               <Paperclip className="w-4 h-4" />
                             </button>
                           )}
                           {!rec.coachingPhoto && !rec.coachingEvidenceFileName && (
-                            <span className="text-slate-400 text-xs">-</span>
+                            <span className="text-[#635F69] text-xs font-bold">-</span>
                           )}
                         </div>
                       </td>
-                      <td className="py-3.5 px-3 text-center">
+                      <td className="py-4 px-4 text-center">
                         <button
                           type="button"
                           onClick={() => setActiveRecordForDetail(rec)}
-                          className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition-colors flex items-center justify-center gap-1 mx-auto"
+                          className="px-3 py-1.5 rounded-xl bg-white/90 hover:bg-white text-[#332F3A] font-extrabold text-xs shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] active:shadow-clay-pressed transition-all flex items-center justify-center gap-1.5 mx-auto cursor-pointer"
+                          style={{ fontFamily: 'Nunito, sans-serif' }}
                         >
-                          <Eye className="w-3.5 h-3.5" />
+                          <Eye className="w-3.5 h-3.5 text-[#7C3AED]" />
                           <span>Detail</span>
                         </button>
                       </td>
@@ -498,47 +514,53 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
 
       {/* Detail Modal */}
       {activeRecordForDetail && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95">
-            <div className="p-5 bg-slate-900 text-white flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <ShieldAlert className="w-5 h-5 text-teal-400" />
-                <h3 className="text-base font-bold">Rincian Data Rekap Pelanggaran</h3>
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#332F3A]/60 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[36px] max-w-lg w-full border border-white/60 shadow-clay-card overflow-hidden animate-in fade-in zoom-in-95 my-8">
+            <div className="p-6 bg-gradient-to-br from-slate-800 to-slate-900 text-white flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center shadow-clay-surface">
+                  <ShieldAlert className="w-6 h-6 text-teal-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black" style={{ fontFamily: 'Nunito, sans-serif' }}>Rincian Data Rekap Pelanggaran</h3>
+                  <p className="text-xs text-slate-300">Detail catatan kejadian & tindak lanjut</p>
+                </div>
               </div>
               <button
                 type="button"
                 onClick={() => setActiveRecordForDetail(null)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white"
+                className="w-9 h-9 rounded-2xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="p-6 space-y-4 text-xs">
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1">
-                <div className="text-slate-400 text-[10px] uppercase font-bold">Identitas Siswa</div>
-                <div className="text-sm font-extrabold text-slate-900">{activeRecordForDetail.studentName}</div>
-                <div className="text-slate-600">
+            <div className="p-6 sm:p-8 space-y-4 text-xs">
+              <div className="p-4 bg-[#EFEBF5] rounded-2xl shadow-clay-pressed space-y-1">
+                <div className="text-[#635F69] text-[10px] uppercase font-black" style={{ fontFamily: 'Nunito, sans-serif' }}>Identitas Siswa</div>
+                <div className="text-base font-black text-[#332F3A]" style={{ fontFamily: 'Nunito, sans-serif' }}>{activeRecordForDetail.studentName}</div>
+                <div className="text-[#635F69] text-xs">
                   Kelas {activeRecordForDetail.className} • NISN: {activeRecordForDetail.nisn}
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
-                  <div className="text-slate-400 text-[10px] uppercase font-bold">Tanggal Kejadian</div>
-                  <div className="font-bold text-slate-800 mt-1">{activeRecordForDetail.date}</div>
-                  <div className="text-[10px] text-slate-500">{formatDateIndonesian(activeRecordForDetail.date)}</div>
+                <div className="p-4 bg-[#EFEBF5] rounded-2xl shadow-clay-pressed">
+                  <div className="text-[#635F69] text-[10px] uppercase font-black" style={{ fontFamily: 'Nunito, sans-serif' }}>Tanggal Kejadian</div>
+                  <div className="font-extrabold text-[#332F3A] mt-1" style={{ fontFamily: 'Nunito, sans-serif' }}>{activeRecordForDetail.date}</div>
+                  <div className="text-[11px] text-[#635F69]">{formatDateIndonesian(activeRecordForDetail.date)}</div>
                 </div>
 
-                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
-                  <div className="text-slate-400 text-[10px] uppercase font-bold">Status Pembinaan</div>
+                <div className="p-4 bg-[#EFEBF5] rounded-2xl shadow-clay-pressed">
+                  <div className="text-[#635F69] text-[10px] uppercase font-black" style={{ fontFamily: 'Nunito, sans-serif' }}>Status Pembinaan</div>
                   <div className="mt-1">
                     <span
-                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-bold text-[11px] ${
+                      className={`inline-flex items-center gap-1 px-3 py-1 rounded-xl font-extrabold text-xs shadow-clay-surface ${
                         activeRecordForDetail.coachingStatus === 'Sudah'
                           ? 'bg-emerald-100 text-emerald-800'
                           : 'bg-amber-100 text-amber-800'
                       }`}
+                      style={{ fontFamily: 'Nunito, sans-serif' }}
                     >
                       {activeRecordForDetail.coachingStatus === 'Sudah'
                         ? 'Sudah Dilakukan Pembinaan'
@@ -548,44 +570,44 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                 </div>
               </div>
 
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
-                <div className="text-slate-400 text-[10px] uppercase font-bold">Jenis Pelanggaran</div>
-                <div className="font-bold text-slate-900 text-sm mt-0.5">{activeRecordForDetail.violationName}</div>
-                <div className="text-slate-500 mt-1">{activeRecordForDetail.description}</div>
+              <div className="p-4 bg-[#EFEBF5] rounded-2xl shadow-clay-pressed">
+                <div className="text-[#635F69] text-[10px] uppercase font-black" style={{ fontFamily: 'Nunito, sans-serif' }}>Jenis Pelanggaran</div>
+                <div className="font-black text-[#332F3A] text-sm mt-0.5" style={{ fontFamily: 'Nunito, sans-serif' }}>{activeRecordForDetail.violationName}</div>
+                <div className="text-[#635F69] mt-1 text-xs">{activeRecordForDetail.description}</div>
               </div>
 
               {activeRecordForDetail.coachingStatus === 'Sudah' && (
-                <div className="p-4 rounded-xl bg-teal-50/80 border border-teal-200 space-y-2">
-                  <div className="font-bold text-teal-900 flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-teal-600" />
+                <div className="p-5 rounded-2xl bg-teal-50/80 border border-teal-200 space-y-3 shadow-clay-surface">
+                  <div className="font-black text-teal-900 flex items-center gap-2" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                    <CheckCircle2 className="w-5 h-5 text-teal-600" />
                     <span>Dokumentasi Pembinaan Siswa</span>
                   </div>
                   {activeRecordForDetail.coachingDate && (
-                    <div className="text-slate-700">
-                      <span className="font-semibold text-slate-900">Tanggal Pelaksanaan:</span>{' '}
+                    <div className="text-[#332F3A]">
+                      <span className="font-bold">Tanggal Pelaksanaan:</span>{' '}
                       {activeRecordForDetail.coachingDate} ({formatDateIndonesian(activeRecordForDetail.coachingDate)})
                     </div>
                   )}
 
                   {activeRecordForDetail.coachingPhoto && (
                     <div>
-                      <div className="text-[11px] font-semibold text-slate-800 mb-1 flex items-center justify-between">
+                      <div className="text-xs font-bold text-[#332F3A] mb-1.5 flex items-center justify-between">
                         <span>Foto Dokumentasi Pembinaan:</span>
                         {activeRecordForDetail.coachingPhoto.includes('drive.google.com') && (
                           <a
                             href={getGoogleDriveViewUrl(activeRecordForDetail.coachingPhoto)}
                             target="_blank"
                             rel="noreferrer"
-                            className="text-[10px] text-teal-700 hover:underline flex items-center gap-1 font-bold"
+                            className="text-[11px] text-teal-700 hover:underline flex items-center gap-1 font-bold"
                           >
-                            <Cloud className="w-3 h-3 text-teal-600" /> Buka di Google Drive <ExternalLink className="w-3 h-3" />
+                            <Cloud className="w-3.5 h-3.5 text-teal-600" /> Buka di Google Drive <ExternalLink className="w-3 h-3" />
                           </a>
                         )}
                       </div>
                       <img
                         src={getGoogleDriveDirectImageUrl(activeRecordForDetail.coachingPhoto)}
                         alt="Foto Pembinaan"
-                        className="w-full max-h-56 object-cover rounded-xl border border-teal-200 cursor-pointer shadow-xs"
+                        className="w-full max-h-56 object-cover rounded-2xl border border-teal-200 cursor-pointer shadow-clay-surface"
                         onClick={() =>
                           setActivePreviewImage({
                             url: activeRecordForDetail.coachingPhoto!,
@@ -597,16 +619,16 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                   )}
 
                   {activeRecordForDetail.coachingEvidenceFileName && (
-                    <div className="p-3 bg-white rounded-xl border border-teal-200 flex items-center justify-between gap-2 shadow-2xs">
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center shrink-0">
-                          <FileText className="w-4 h-4" />
+                    <div className="p-3.5 bg-white rounded-2xl border border-teal-200 flex items-center justify-between gap-3 shadow-clay-surface">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center shrink-0">
+                          <FileText className="w-5 h-5" />
                         </div>
                         <div className="min-w-0">
-                          <p className="font-medium text-slate-800 truncate text-xs">
+                          <p className="font-bold text-[#332F3A] truncate text-xs">
                             {activeRecordForDetail.coachingEvidenceFileName}
                           </p>
-                          <p className="text-[10px] text-teal-700 font-bold">Surat Terverifikasi</p>
+                          <p className="text-[10px] text-teal-700 font-black">Surat Terverifikasi</p>
                         </div>
                       </div>
                       {activeRecordForDetail.coachingEvidenceFile && (
@@ -614,9 +636,10 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                           href={getGoogleDriveViewUrl(activeRecordForDetail.coachingEvidenceFile)}
                           target="_blank"
                           rel="noreferrer"
-                          className="px-3 py-1.5 bg-teal-50 hover:bg-teal-100 text-teal-700 font-bold text-[11px] rounded-lg transition-colors flex items-center gap-1 shrink-0"
+                          className="px-3.5 py-2 bg-teal-50 hover:bg-teal-100 text-teal-700 font-black text-xs rounded-xl transition-all shadow-clay-surface flex items-center gap-1.5 shrink-0"
+                          style={{ fontFamily: 'Nunito, sans-serif' }}
                         >
-                          <ExternalLink className="w-3 h-3" />
+                          <ExternalLink className="w-3.5 h-3.5" />
                           <span>Buka Berkas</span>
                         </a>
                       )}
@@ -625,11 +648,12 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                 </div>
               )}
 
-              <div className="pt-2 flex justify-end">
+              <div className="pt-3 flex justify-end">
                 <button
                   type="button"
                   onClick={() => setActiveRecordForDetail(null)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl"
+                  className="px-6 py-2.5 bg-gradient-to-br from-slate-800 to-slate-900 text-white font-black text-xs rounded-2xl shadow-clay-button hover:-translate-y-0.5 active:scale-[0.92] cursor-pointer"
+                  style={{ fontFamily: 'Nunito, sans-serif' }}
                 >
                   Tutup
                 </button>
@@ -641,9 +665,9 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
 
       {/* Image Preview Modal */}
       {activePreviewImage && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="max-w-2xl w-full bg-slate-900 rounded-2xl overflow-hidden border border-slate-700">
-            <div className="p-3.5 bg-slate-800 text-white flex items-center justify-between text-xs font-bold">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="max-w-2xl w-full bg-[#332F3A] rounded-[36px] overflow-hidden border border-white/20 shadow-clay-card">
+            <div className="p-4 bg-slate-800 text-white flex items-center justify-between text-xs font-extrabold" style={{ fontFamily: 'Nunito, sans-serif' }}>
               <span>{activePreviewImage.title}</span>
               <div className="flex items-center gap-2">
                 {activePreviewImage.url.includes('drive.google.com') && (
@@ -651,26 +675,26 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                     href={getGoogleDriveViewUrl(activePreviewImage.url)}
                     target="_blank"
                     rel="noreferrer"
-                    className="px-2.5 py-1 bg-teal-600 hover:bg-teal-500 text-white rounded-lg text-[10px] font-bold flex items-center gap-1"
+                    className="px-3 py-1.5 bg-teal-600 hover:bg-teal-500 text-white rounded-xl text-xs font-black flex items-center gap-1 shadow-clay-button"
                   >
-                    <ExternalLink className="w-3 h-3" />
+                    <ExternalLink className="w-3.5 h-3.5" />
                     <span>Buka di Google Drive</span>
                   </a>
                 )}
                 <button
                   type="button"
                   onClick={() => setActivePreviewImage(null)}
-                  className="p-1 text-slate-400 hover:text-white"
+                  className="p-1.5 text-slate-400 hover:text-white rounded-lg"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
             </div>
-            <div className="p-4 flex items-center justify-center bg-black/50">
+            <div className="p-6 flex items-center justify-center bg-black/50">
               <img
                 src={getGoogleDriveDirectImageUrl(activePreviewImage.url)}
                 alt={activePreviewImage.title}
-                className="max-h-[75vh] w-auto max-w-full rounded-lg object-contain"
+                className="max-h-[75vh] w-auto max-w-full rounded-2xl object-contain shadow-2xl"
               />
             </div>
           </div>
