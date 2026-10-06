@@ -11,7 +11,7 @@ import {
   initialUsers,
   RombelClass
 } from './data/initialData';
-import { AdminUser, AttendanceRecord, DisciplineRecord, Student, DisciplineStatus, WaliKelasTeacher, ViolationRule } from './types';
+import { AdminUser, AttendanceRecord, DisciplineRecord, Student, DisciplineStatus, WaliKelasTeacher, ViolationRule, SchoolProfile } from './types';
 import { sortClasses, sortStudents, sortWaliKelas, sortDisciplineRecords, sortViolationRules } from './utils/sortUtils';
 import { Navbar } from './components/Navbar';
 import { Sidebar, NavTab } from './components/Sidebar';
@@ -200,7 +200,7 @@ export default function App() {
       const next = { ...prev, ...updated };
       localStorage.setItem('app_sman1batu_school_profile_v3', JSON.stringify(next));
       if (isFirebaseConfigured()) {
-        saveDocument(COLLECTIONS.SCHOOL_PROFILE, 'main_profile', next);
+        saveDocument(COLLECTIONS.SCHOOL_PROFILE, { id: 'main_profile', ...next });
       }
       return next;
     });
