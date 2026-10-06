@@ -379,23 +379,6 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
     setResolveCoachingEvidenceFileName(record.coachingEvidenceFileName || '');
   };
 
-  const handleToggleToBelum = (record: DisciplineRecord) => {
-    if (confirm(`Ubah status pembinaan siswa ${record.studentName} kembali menjadi "Belum"?`)) {
-      const updated: DisciplineRecord = {
-        ...record,
-        coachingStatus: 'Belum',
-        status: 'Dalam Pantauan',
-      };
-      if (onUpdateRecord) {
-        onUpdateRecord(updated);
-      } else if (onUpdateStatus) {
-        onUpdateStatus(record.id, 'Dalam Pantauan');
-      }
-      setExportNotice(`Status pembinaan ${record.studentName} diubah menjadi Belum.`);
-      setTimeout(() => setExportNotice(null), 3000);
-    }
-  };
-
   const handleResolvePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -925,41 +908,22 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                               type="button"
                               onClick={() => handleClickTandaiSudah(rec)}
                               className="px-2.5 py-1 rounded-lg text-[10px] font-bold border border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors flex items-center gap-1 shadow-2xs cursor-pointer"
-                              title="Tandai Sudah Pembinaan (Syarat minimal: Foto Pembinaan, Surat bisa menyusul)"
+                              title="Tandai Sudah Pembinaan (Syarat: Foto Pembinaan, Surat Bukti)"
                             >
                               <Upload className="w-3 h-3 text-emerald-600" />
                               <span>Tandai: Sudah</span>
                             </button>
                           ) : !hasLetter ? (
-                            <div className="flex items-center gap-1">
-                              <button
-                                type="button"
-                                onClick={() => handleOpenFollowUpModal(rec)}
-                                className="px-2 py-1 rounded-lg text-[10px] font-bold border border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 transition-colors flex items-center gap-1 shadow-2xs cursor-pointer"
-                                title="Unggah surat bukti pembinaan yang sudah selesai ditandatangani"
-                              >
-                                <Paperclip className="w-3 h-3 text-amber-700" />
-                                <span>Unggah Surat</span>
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => handleToggleToBelum(rec)}
-                                className="px-1.5 py-1 rounded-lg text-[10px] text-slate-400 hover:text-slate-600 hover:bg-slate-100"
-                                title="Ubah kembali status ke Belum"
-                              >
-                                Ubah
-                              </button>
-                            </div>
-                          ) : (
                             <button
                               type="button"
-                              onClick={() => handleToggleToBelum(rec)}
-                              className="px-2 py-1 rounded-lg text-[10px] font-bold border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
-                              title="Klik untuk ubah kembali ke Belum"
+                              onClick={() => handleOpenFollowUpModal(rec)}
+                              className="px-2.5 py-1 rounded-lg text-[10px] font-bold border border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 transition-colors flex items-center gap-1 shadow-2xs cursor-pointer"
+                              title="Unggah surat bukti pembinaan yang sudah selesai ditandatangani"
                             >
-                              Ubah: Belum
+                              <Paperclip className="w-3 h-3 text-amber-700" />
+                              <span>Unggah Surat</span>
                             </button>
-                          )}
+                          ) : null}
                           
                           <button
                             type="button"
