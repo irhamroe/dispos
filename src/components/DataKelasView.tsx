@@ -177,44 +177,44 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
       </div>
 
       {/* Metric Cards Ringkasan */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="rounded-2xl bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE] to-[#BAE6FD]/60 p-4 shadow-xs border border-[#7DD3FC]/70 hover:-translate-y-1 transition-all flex items-center gap-3.5 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0284C7] to-[#38BDF8] text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform shrink-0">
-            <Layers className="w-5 h-5" />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="rounded-[32px] bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE] to-[#BAE6FD]/60 p-5 shadow-xs border border-[#7DD3FC]/70 hover:-translate-y-1.5 transition-all flex items-center gap-4 group">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#0284C7] to-[#38BDF8] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform shrink-0">
+            <Layers className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[10px] font-extrabold text-[#0369A1] uppercase tracking-wider">Total Rombel</div>
-            <div className="text-base sm:text-lg font-black text-[#0369A1] mt-0.5">{classes.length} Kelas</div>
+            <div className="text-[11px] font-black text-[#0369A1] uppercase tracking-wider">Total Rombel</div>
+            <div className="text-lg sm:text-xl font-black text-[#0369A1] mt-0.5">{classes.length} Kelas</div>
           </div>
         </div>
 
-        <div className="rounded-2xl bg-gradient-to-br from-[#F0FDF4] via-[#DCFCE7] to-[#BBF7D0]/60 p-4 shadow-xs border border-[#86EFAC]/70 hover:-translate-y-1 transition-all flex items-center gap-3.5 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#059669] to-[#10B981] text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform shrink-0">
-            <GraduationCap className="w-5 h-5" />
+        <div className="rounded-[32px] bg-gradient-to-br from-[#F0FDF4] via-[#DCFCE7] to-[#BBF7D0]/60 p-5 shadow-xs border border-[#86EFAC]/70 hover:-translate-y-1.5 transition-all flex items-center gap-4 group">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#059669] to-[#10B981] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform shrink-0">
+            <GraduationCap className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[10px] font-extrabold text-[#047857] uppercase tracking-wider">Kelas X (Hijau)</div>
-            <div className="text-base sm:text-lg font-black text-[#047857] mt-0.5">{countGradeX} Rombel</div>
+            <div className="text-[11px] font-black text-[#047857] uppercase tracking-wider">Kelas X (Hijau)</div>
+            <div className="text-lg sm:text-xl font-black text-[#047857] mt-0.5">{countGradeX} Rombel</div>
           </div>
         </div>
 
-        <div className="rounded-2xl bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7] to-[#FDE68A]/60 p-4 shadow-xs border border-[#FCD34D]/70 hover:-translate-y-1 transition-all flex items-center gap-3.5 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#D97706] to-[#F59E0B] text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform shrink-0">
-            <GraduationCap className="w-5 h-5" />
+        <div className="rounded-[32px] bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7] to-[#FDE68A]/60 p-5 shadow-xs border border-[#FCD34D]/70 hover:-translate-y-1.5 transition-all flex items-center gap-4 group">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#D97706] to-[#F59E0B] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform shrink-0">
+            <GraduationCap className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[10px] font-extrabold text-[#B45309] uppercase tracking-wider">Kelas XI (Kuning)</div>
-            <div className="text-base sm:text-lg font-black text-[#B45309] mt-0.5">{countGradeXI} Rombel</div>
+            <div className="text-[11px] font-black text-[#B45309] uppercase tracking-wider">Kelas XI (Kuning)</div>
+            <div className="text-lg sm:text-xl font-black text-[#B45309] mt-0.5">{countGradeXI} Rombel</div>
           </div>
         </div>
 
-        <div className="rounded-2xl bg-gradient-to-br from-[#FFF1F2] via-[#FFE4E6] to-[#FECDD3]/60 p-4 shadow-xs border border-[#FDA4AF]/70 hover:-translate-y-1 transition-all flex items-center gap-3.5 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#E11D48] to-[#F43F5E] text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform shrink-0">
-            <GraduationCap className="w-5 h-5" />
+        <div className="rounded-[32px] bg-gradient-to-br from-[#FFF1F2] via-[#FFE4E6] to-[#FECDD3]/60 p-5 shadow-xs border border-[#FDA4AF]/70 hover:-translate-y-1.5 transition-all flex items-center gap-4 group">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#E11D48] to-[#F43F5E] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform shrink-0">
+            <GraduationCap className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[10px] font-extrabold text-[#BE123C] uppercase tracking-wider">Kelas XII (Merah)</div>
-            <div className="text-base sm:text-lg font-black text-[#BE123C] mt-0.5">{countGradeXII} Rombel</div>
+            <div className="text-[11px] font-black text-[#BE123C] uppercase tracking-wider">Kelas XII (Merah)</div>
+            <div className="text-lg sm:text-xl font-black text-[#BE123C] mt-0.5">{countGradeXII} Rombel</div>
           </div>
         </div>
       </div>
