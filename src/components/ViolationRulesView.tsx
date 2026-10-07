@@ -437,9 +437,9 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
 
       {/* MODAL: Input / Edit Aturan */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-[#F8FAFC] rounded-[32px] max-w-lg w-full border border-[#E0F2FE] shadow-lg overflow-hidden animate-in fade-in zoom-in-95 my-8">
-            <div className="p-6 bg-[#0284C7] text-white flex items-center justify-between">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/40 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-[#F8FAFC] rounded-[32px] max-w-lg w-full border border-[#E0F2FE] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 max-h-[calc(100vh-2rem)] flex flex-col my-auto">
+            <div className="p-5 sm:p-6 bg-[#0284C7] text-white flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
                   <SlidersHorizontal className="w-5 h-5 text-white" />
@@ -457,7 +457,7 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
               </button>
             </div>
 
-            <form onSubmit={handleSubmitForm} className="p-6 sm:p-8 space-y-5 text-xs">
+            <form onSubmit={handleSubmitForm} className="p-6 sm:p-8 space-y-5 text-xs overflow-y-auto flex-1">
               <div className="grid grid-cols-4 gap-3">
                 <div className="col-span-1">
                   <MdInput

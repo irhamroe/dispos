@@ -376,9 +376,9 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
 
       {/* Edit Class Modal */}
       {editingClass && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-2xl w-full max-w-md rounded-[32px] p-6 sm:p-8 shadow-sm border border-white/60 animate-in fade-in zoom-in-95 my-8">
-            <div className="flex items-center justify-between mb-5 border-b border-slate-200/60 pb-4">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white/95 backdrop-blur-2xl w-full max-w-md rounded-[32px] p-6 sm:p-8 shadow-2xl border border-white/60 animate-in fade-in zoom-in-95 max-h-[calc(100vh-2rem)] flex flex-col my-auto">
+            <div className="flex items-center justify-between mb-5 border-b border-slate-200/60 pb-4 shrink-0">
               <h3 className="text-lg font-black text-[#0F172A]" >
                 Edit Rombel {editingClass.name}
               </h3>
@@ -391,7 +391,7 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
               </button>
             </div>
 
-            <form onSubmit={handleSaveEdit} className="space-y-4 text-xs">
+            <form onSubmit={handleSaveEdit} className="space-y-4 text-xs overflow-y-auto flex-1">
               <div>
                 <label className="block font-black text-[#0F172A] mb-1.5" >
                   Nama Rombel
@@ -470,9 +470,9 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
 
       {/* Add Class Modal */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-2xl w-full max-w-md rounded-[32px] p-6 sm:p-8 shadow-sm border border-white/60 animate-in fade-in zoom-in-95 my-8">
-            <div className="flex items-center justify-between mb-5 border-b border-slate-200/60 pb-4">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white/95 backdrop-blur-2xl w-full max-w-md rounded-[32px] p-6 sm:p-8 shadow-2xl border border-white/60 animate-in fade-in zoom-in-95 max-h-[calc(100vh-2rem)] flex flex-col my-auto">
+            <div className="flex items-center justify-between mb-5 border-b border-slate-200/60 pb-4 shrink-0">
               <h3 className="text-lg font-black text-[#0F172A]" >
                 Tambah Rombongan Belajar Baru
               </h3>
@@ -485,7 +485,7 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
               </button>
             </div>
 
-            <form onSubmit={handleSaveNew} className="space-y-4 text-xs">
+            <form onSubmit={handleSaveNew} className="space-y-4 text-xs overflow-y-auto flex-1">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block font-black text-[#0F172A] mb-1.5" >

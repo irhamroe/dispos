@@ -95,10 +95,10 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
   const isConfigured = isGoogleDriveConfigured();
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/40 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200">
-      <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[32px] max-w-2xl w-full border border-white/80 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/40 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
+      <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[32px] max-w-2xl w-full border border-white/80 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 max-h-[calc(100vh-2rem)] flex flex-col my-auto">
         {/* Modal Header */}
-        <div className="p-6 sm:p-7 bg-gradient-to-r from-emerald-600 via-teal-600 to-[#0284C7] text-white flex items-center justify-between shadow-sm">
+        <div className="p-5 sm:p-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-[#0284C7] text-white flex items-center justify-between shadow-sm shrink-0">
           <div className="flex items-center gap-3.5">
             <div className="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-xs">
               <Cloud className="w-6 h-6 text-emerald-200" />
@@ -130,7 +130,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-sky-100/50 bg-[#F8FAFC] px-6 sm:px-8 pt-3 gap-2.5 text-xs font-black" >
+        <div className="flex border-b border-sky-100/50 bg-[#F8FAFC] px-6 sm:px-8 pt-3 gap-2.5 text-xs font-black shrink-0" >
           <button
             type="button"
             onClick={() => setActiveTab('settings')}
@@ -159,7 +159,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
 
         {/* Tab Content: Settings */}
         {activeTab === 'settings' && (
-          <form onSubmit={handleSave} className="p-6 sm:p-8 space-y-4">
+          <form onSubmit={handleSave} className="p-6 sm:p-8 space-y-4 overflow-y-auto flex-1">
             <div className="p-4 bg-emerald-50/80 border border-emerald-200 rounded-[24px] text-xs text-emerald-950 flex items-start gap-3 shadow-sm">
               <Sparkles className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
               <div className="leading-relaxed">
@@ -326,7 +326,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
 
         {/* Tab Content: Tutorial */}
         {activeTab === 'tutorial' && (
-          <div className="p-6 sm:p-8 space-y-4 max-h-[65vh] overflow-y-auto">
+          <div className="p-6 sm:p-8 space-y-4 overflow-y-auto flex-1">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-black text-base text-[#0F172A]" >Panduan Pemasangan Google Apps Script (1 Menit)</h4>

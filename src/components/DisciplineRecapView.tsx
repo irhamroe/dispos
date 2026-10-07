@@ -512,9 +512,9 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
 
       {/* Detail Modal */}
       {activeRecordForDetail && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
-            <div className="p-6 bg-gradient-to-br from-slate-800 to-slate-900 text-white flex items-center justify-between">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 max-h-[calc(100vh-2rem)] flex flex-col my-auto">
+            <div className="p-5 sm:p-6 bg-gradient-to-br from-slate-800 to-slate-900 text-white flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center shadow-xs">
                   <ShieldAlert className="w-6 h-6 text-teal-400" />
@@ -533,7 +533,7 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
               </button>
             </div>
 
-            <div className="p-6 sm:p-8 space-y-4 text-xs">
+            <div className="p-6 sm:p-8 space-y-4 text-xs overflow-y-auto flex-1">
               <div className="p-4 bg-[#E2F1FD] rounded-2xl shadow-none space-y-1">
                 <div className="text-[#334155] text-[10px] uppercase font-black" >Identitas Siswa</div>
                 <div className="text-base font-black text-[#0F172A]" >{activeRecordForDetail.studentName}</div>
@@ -663,9 +663,9 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
 
       {/* Image Preview Modal */}
       {activePreviewImage && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="max-w-2xl w-full bg-[#0F172A] rounded-[32px] overflow-hidden border border-white/20 shadow-sm">
-            <div className="p-4 bg-slate-800 text-white flex items-center justify-between text-xs font-extrabold" >
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+          <div className="max-w-2xl w-full bg-[#0F172A] rounded-[32px] overflow-hidden border border-white/20 shadow-2xl max-h-[calc(100vh-2rem)] flex flex-col my-auto">
+            <div className="p-4 bg-slate-800 text-white flex items-center justify-between text-xs font-extrabold shrink-0" >
               <span>{activePreviewImage.title}</span>
               <div className="flex items-center gap-2">
                 {activePreviewImage.url.includes('drive.google.com') && (

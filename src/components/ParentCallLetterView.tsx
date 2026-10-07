@@ -304,32 +304,76 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
   };
 
   return (
-    <div className="space-y-6 pb-16">
-      {/* Print-specific style to isolate the letter when printing */}
+    <div className="space-y-6 pb-16 print:p-0 print:m-0 print:space-y-0">
+      {/* Print-specific style to isolate the letter when printing cleanly on 1 A4 page */}
       <style>{`
         @media print {
-          body * {
-            visibility: hidden;
+          @page {
+            size: A4 portrait;
+            margin: 10mm 15mm 10mm 15mm;
           }
-          #printable-call-letter, #printable-call-letter * {
-            visibility: visible;
+          html, body {
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          nav, aside, header, footer, #main-header, #app-sidebar, #app-navbar, .print\\:hidden {
+            display: none !important;
+          }
+          main {
+            padding: 0 !important;
+            margin: 0 !important;
+            max-width: 100% !important;
+            width: 100% !important;
+            display: block !important;
           }
           #printable-call-letter {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            margin: 0;
-            padding: 20mm;
-            background: white !important;
-            box-shadow: none !important;
+            display: block !important;
+            position: static !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
             border: none !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            background: #ffffff !important;
+            font-size: 10pt !important;
+            line-height: 1.35 !important;
+            color: #000000 !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+          }
+          #printable-call-letter table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            font-size: 8.5pt !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+          }
+          #printable-call-letter table th,
+          #printable-call-letter table td {
+            padding: 2.5px 5px !important;
+            border: 1px solid #334155 !important;
+          }
+          #printable-call-letter .signature-block {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            margin-top: 6px !important;
           }
         }
       `}</style>
 
       {/* Header Banner */}
-      <div className="bg-white/85 backdrop-blur-xl p-6 rounded-[32px] shadow-sm border border-white flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white/85 backdrop-blur-xl p-6 rounded-[32px] shadow-sm border border-white flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
         <div>
           <div className="flex items-center gap-2 text-xs  font-extrabold text-sky-700 uppercase tracking-wider mb-1">
             <span>Disiplin Positif</span>
@@ -362,16 +406,16 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
 
       {/* Feedback Toast */}
       {copyFeedback && (
-        <div className="p-4 bg-emerald-500 text-white rounded-2xl shadow-sm text-xs  font-extrabold flex items-center gap-2.5 animate-in fade-in">
+        <div className="p-4 bg-emerald-500 text-white rounded-2xl shadow-sm text-xs  font-extrabold flex items-center gap-2.5 animate-in fade-in print:hidden">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{copyFeedback}</span>
         </div>
       )}
 
       {/* Main Grid: Controls & Letter Preview */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start print:block print:w-full print:p-0 print:m-0">
         {/* LEFT COLUMN: Controls & Form (5 Cols) */}
-        <div className="xl:col-span-5 space-y-6">
+        <div className="xl:col-span-5 space-y-6 print:hidden">
           {/* STEP 1: PILIH KELAS & SISWA */}
           <div className="bg-white/85 backdrop-blur-xl rounded-[32px] shadow-sm border border-white p-6 space-y-4">
             <div className="flex items-center justify-between border-b border-sky-100 pb-3">
@@ -763,9 +807,9 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
         </div>
 
         {/* RIGHT COLUMN: PREVIEW DOKUMEN & TOMBOL AKSI (7 Cols) */}
-        <div className="xl:col-span-7 space-y-4">
+        <div className="xl:col-span-7 space-y-4 print:w-full print:p-0 print:m-0 print:space-y-0">
           {/* Action Buttons Toolbar */}
-          <div className="bg-white/85 backdrop-blur-xl p-4 rounded-[28px] shadow-sm border border-white flex flex-wrap items-center justify-between gap-3">
+          <div className="bg-white/85 backdrop-blur-xl p-4 rounded-[28px] shadow-sm border border-white flex flex-wrap items-center justify-between gap-3 print:hidden">
             <div className="flex items-center gap-2">
               <span className="text-xs  font-extrabold text-[#0F172A]">Aksi Dokumen:</span>
               <span className="text-[10px] bg-sky-100 text-sky-800 px-2.5 py-0.5 rounded-full font-bold shadow-xs">
@@ -825,33 +869,33 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
           {/* OFFICIAL LETTER PREVIEW (Printable Container) */}
           <div
             id="printable-call-letter"
-            className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 sm:p-10 font-serif text-slate-900 text-xs leading-relaxed space-y-4"
+            className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 font-serif text-slate-900 text-xs leading-relaxed space-y-3 print:p-0 print:m-0 print:border-none print:shadow-none print:rounded-none print:space-y-1.5 print:text-[10pt] print:leading-normal print:w-full"
           >
             {/* KOP SURAT RESMI */}
-            <div className="flex items-center gap-4 pb-2">
-              <img src="/logo.png" alt="Logo SMAN 1 Batu" className="w-16 h-16 object-contain shrink-0" />
+            <div className="flex items-center gap-3 pb-1">
+              <img src="/logo.png" alt="Logo SMAN 1 Batu" className="w-14 h-14 object-contain shrink-0" />
               <div className="text-center flex-1 font-sans">
-                <h3 className="font-bold text-xs tracking-wider text-slate-800 uppercase">
+                <h3 className="font-bold text-xs tracking-wider text-slate-800 uppercase leading-tight">
                   PEMERINTAH PROVINSI JAWA TIMUR
                 </h3>
-                <h3 className="font-bold text-xs tracking-wider text-slate-800 uppercase">
+                <h3 className="font-bold text-xs tracking-wider text-slate-800 uppercase leading-tight">
                   DINAS PENDIDIKAN
                 </h3>
-                <h2 className="font-extrabold text-base tracking-wide text-slate-950 uppercase mt-0.5">
+                <h2 className="font-black text-base tracking-wide text-slate-950 uppercase mt-0.5 leading-tight">
                   {schoolProfile.name}
                 </h2>
-                <p className="text-[10px] text-slate-600 mt-0.5">
+                <p className="text-[9.5px] text-slate-600 mt-0.5 leading-tight">
                   Jalan KH. Agus Salim Nomor 57, Sisir, Kota Batu Jawa Timur 65314
                 </p>
-                <p className="text-[9.5px] text-slate-600">
+                <p className="text-[9px] text-slate-600 leading-tight">
                   Telepon (0341)591310, Laman: www.sman1batu.sch.id, Pos-el: sman1batu@yahoo.com
                 </p>
               </div>
-              <div className="w-16 shrink-0 hidden sm:block" />
+              <div className="w-14 shrink-0 hidden sm:block" />
             </div>
 
             {/* Garis Pembatas Kop Surat */}
-            <div className="space-y-0.5 pb-2">
+            <div className="space-y-0.5 pb-1">
               <div className="h-[2px] bg-slate-900 w-full" />
               <div className="h-[0.5px] bg-slate-900 w-full" />
             </div>
@@ -862,7 +906,7 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
             </div>
 
             {/* Nomor, Lampiran, Perihal (Kiri Atas) */}
-            <div className="font-sans text-xs space-y-1">
+            <div className="font-sans text-xs space-y-0.5">
               <div className="grid grid-cols-[80px_10px_auto] gap-x-1">
                 <span>Nomor</span>
                 <span>:</span>
@@ -881,7 +925,7 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
             </div>
 
             {/* Tujuan Surat */}
-            <div className="pt-2 font-sans text-xs space-y-0.5">
+            <div className="pt-1 font-sans text-xs space-y-0.5">
               <div>Yth.</div>
               <div>Bapak/Ibu Orang Tua/Wali Murid</div>
               <div className="font-bold uppercase text-slate-950">
@@ -892,14 +936,14 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
             </div>
 
             {/* Paragraf Pembuka */}
-            <div className="pt-2 space-y-2 font-serif text-[12px] text-justify leading-relaxed">
+            <div className="pt-1 space-y-1 font-serif text-[12px] text-justify leading-relaxed">
               <p className="indent-8">
                 Sehubungan dengan adanya permasalahan yang harus diselesaikan bersama, maka kami mengharapkan kehadiran Bapak/Ibu Orang Tua/Wali Murid beserta siswa, pada:
               </p>
             </div>
 
             {/* Detail Jadwal Pertemuan */}
-            <div className="pl-8 font-sans text-xs space-y-1 py-1">
+            <div className="pl-8 font-sans text-xs space-y-0.5 py-0.5">
               <div className="grid grid-cols-[100px_10px_auto] gap-x-1">
                 <span>Hari</span>
                 <span>:</span>
@@ -923,7 +967,7 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
             </div>
 
             {/* TABEL RINCIAN PELANGGARAN YANG DILAKUKAN SISWA */}
-            <div className="py-2 space-y-1.5">
+            <div className="py-1 space-y-1">
               <p className="font-serif text-[11.5px] text-slate-800">
                 Adapun rincian pelanggaran tata tertib yang telah dilakukan oleh siswa adalah sebagai berikut:
               </p>
@@ -931,20 +975,20 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
               <table className="w-full border-collapse border border-slate-300 font-sans text-[11px]">
                 <thead>
                   <tr className="bg-slate-100 border-b border-slate-300 text-slate-800 font-bold">
-                    <th className="border border-slate-300 py-1.5 px-2 w-8 text-center">No</th>
-                    <th className="border border-slate-300 py-1.5 px-2 w-24 text-center">Tanggal</th>
-                    <th className="border border-slate-300 py-1.5 px-2 text-left">Jenis Pelanggaran</th>
-                    <th className="border border-slate-300 py-1.5 px-2 w-20 text-center">Kategori</th>
+                    <th className="border border-slate-300 py-1 px-2 w-8 text-center">No</th>
+                    <th className="border border-slate-300 py-1 px-2 w-24 text-center">Tanggal</th>
+                    <th className="border border-slate-300 py-1 px-2 text-left">Jenis Pelanggaran</th>
+                    <th className="border border-slate-300 py-1 px-2 w-20 text-center">Kategori</th>
                     {enablePointsSystem && (
-                      <th className="border border-slate-300 py-1.5 px-2 w-16 text-center">Poin</th>
+                      <th className="border border-slate-300 py-1 px-2 w-16 text-center">Poin</th>
                     )}
-                    <th className="border border-slate-300 py-1.5 px-2 w-28 text-center">Status Pembinaan</th>
+                    <th className="border border-slate-300 py-1 px-2 w-28 text-center">Status Pembinaan</th>
                   </tr>
                 </thead>
                 <tbody>
                   {includedViolations.length === 0 ? (
                     <tr>
-                      <td colSpan={enablePointsSystem ? 6 : 5} className="border border-slate-300 py-3 text-center text-slate-500 italic">
+                      <td colSpan={enablePointsSystem ? 6 : 5} className="border border-slate-300 py-2.5 text-center text-slate-500 italic">
                         Tidak ada catatan pelanggaran khusus / Pembinaan preventif berkala.
                       </td>
                     </tr>
@@ -999,7 +1043,7 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
             </div>
 
             {/* Paragraf Penutup */}
-            <div className="pt-2 space-y-2 font-serif text-[12px] text-justify leading-relaxed">
+            <div className="pt-1 space-y-1 font-serif text-[12px] text-justify leading-relaxed">
               <p className="indent-8">
                 Mengingat pentingnya hal tersebut, maka kami mengharapkan Bapak/Ibu untuk datang tepat pada waktu yang telah ditentukan.
               </p>
@@ -1009,10 +1053,10 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
             </div>
 
             {/* TANDA TANGAN RESMI KEPALA SEKOLAH (RATA KANAN) */}
-            <div className="pt-8 flex justify-end font-sans text-xs">
+            <div className="pt-3 flex justify-end font-sans text-xs signature-block">
               <div className="text-left w-64 space-y-0.5">
                 <p>Kepala {schoolProfile.name}</p>
-                <div className="h-20" />
+                <div className="h-12" />
                 <p className="font-bold text-slate-900 underline">{principalName}</p>
                 {principalRank && <p className="text-[10.5px] text-slate-700">{principalRank}</p>}
                 <p className="text-[10.5px] text-slate-600">NIP. {principalNip}</p>

@@ -250,7 +250,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Sidebar container with Material You */}
       <aside
         id="app-sidebar"
-        className={`fixed top-20 bottom-4 left-3 z-40 w-72 bg-[#F0F9FF]/95 backdrop-blur-md rounded-[32px] shadow-sm border border-[#E0F2FE] flex flex-col justify-between transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] lg:translate-x-0 ${
+        className={`fixed top-20 bottom-4 left-3 z-40 w-72 bg-[#F0F9FF]/95 backdrop-blur-md rounded-[32px] shadow-sm border border-[#E0F2FE] flex flex-col justify-between transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] lg:translate-x-0 print:hidden ${
           isOpenMobile ? 'translate-x-0 top-3 bottom-3 left-3 shadow-lg' : '-translate-x-[110%]'
         }`}
       >

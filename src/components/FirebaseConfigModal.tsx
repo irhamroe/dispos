@@ -291,7 +291,7 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/40 backdrop-blur-md animate-in fade-in duration-200">
       <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[32px] shadow-sm border border-white/80 w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-amber-500 via-teal-600 to-[#0284C7] text-white flex items-center justify-between shadow-sm">
+        <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-amber-500 via-teal-600 to-[#0284C7] text-white flex items-center justify-between shadow-sm shrink-0">
           <div className="flex items-center gap-3.5">
             <div className="w-10 h-10 bg-white/20 rounded-2xl flex items-center justify-center shadow-xs">
               <Database className="w-5 h-5 text-amber-200" />
@@ -311,7 +311,7 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-sky-100/50 bg-[#F8FAFC] px-6 sm:px-8 pt-3 gap-2.5 text-xs font-black" >
+        <div className="flex border-b border-sky-100/50 bg-[#F8FAFC] px-6 sm:px-8 pt-3 gap-2.5 text-xs font-black shrink-0" >
           <button
             type="button"
             onClick={() => setActiveTab('config')}

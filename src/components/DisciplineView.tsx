@@ -1210,10 +1210,10 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
       {/*   - Bukti Pembinaan (File Surat pembinaan)                */}
       {/* ========================================================= */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-clay-foreground/50 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-xl w-full border border-white shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 my-8">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-clay-foreground/50 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-xl w-full border border-white shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 max-h-[calc(100vh-2rem)] flex flex-col my-auto">
             {/* Modal Header */}
-            <div className="p-6 bg-gradient-to-r from-violet-700 via-violet-800 to-indigo-800 text-white flex items-center justify-between">
+            <div className="p-5 sm:p-6 bg-gradient-to-r from-violet-700 via-violet-800 to-indigo-800 text-white flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-inner">
                   <ShieldAlert className="w-5 h-5" />
@@ -1236,7 +1236,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleSubmitCatatPelanggaran} className="p-6 space-y-4 text-xs">
+            <form onSubmit={handleSubmitCatatPelanggaran} className="p-6 space-y-4 text-xs overflow-y-auto flex-1">
               {/* 1. Tanggal Kejadian */}
               <div>
                 <label className="block  font-extrabold text-[#0F172A] mb-1.5 flex items-center gap-1.5">
@@ -1609,9 +1609,9 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
       {/* Detail Record Modal */}
       {activeRecordForDetail && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95">
-            <div className="p-5 bg-slate-900 text-white flex items-center justify-between">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 max-h-[calc(100vh-2rem)] flex flex-col my-auto">
+            <div className="p-5 bg-slate-900 text-white flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2.5">
                 <ShieldAlert className="w-5 h-5 text-emerald-400" />
                 <h3 className="text-base font-bold">Rincian Data Pelanggaran Siswa</h3>
@@ -1625,7 +1625,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
               </button>
             </div>
 
-            <div className="p-6 space-y-4 text-xs">
+            <div className="p-6 space-y-4 text-xs overflow-y-auto flex-1">
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1">
                 <div className="text-slate-400 text-[10px] uppercase font-bold">Data Siswa</div>
                 <div className="text-sm font-extrabold text-slate-900">{activeRecordForDetail.studentName}</div>
@@ -1742,9 +1742,9 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
       {/* Jendela Modal Upload Foto Pembinaan & Surat Pembinaan (Tandai: Sudah) */}
       {resolvingCoachingRecord && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 my-8">
-            <div className="p-5 bg-slate-900 text-white flex items-center justify-between">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 max-h-[calc(100vh-2rem)] flex flex-col my-auto">
+            <div className="p-5 bg-slate-900 text-white flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2.5">
                 <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                 <div>
@@ -1761,7 +1761,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
               </button>
             </div>
 
-            <form onSubmit={handleSaveResolveCoaching} className="p-6 space-y-4 text-xs">
+            <form onSubmit={handleSaveResolveCoaching} className="p-6 space-y-4 text-xs overflow-y-auto flex-1">
               {/* Info Siswa & Pelanggaran */}
               <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1.5">
                 <div className="flex items-center justify-between">
@@ -1999,9 +1999,9 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
       {/* Modal Khusus Unggah Surat Pembinaan Menyusul */}
       {followUpRecord && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 my-8">
-            <div className="p-5 bg-amber-700 text-white flex items-center justify-between">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 max-h-[calc(100vh-2rem)] flex flex-col my-auto">
+            <div className="p-5 bg-amber-700 text-white flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2.5">
                 <Paperclip className="w-5 h-5 text-amber-200" />
                 <div>
@@ -2018,7 +2018,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
               </button>
             </div>
 
-            <form onSubmit={handleSaveFollowUpLetter} className="p-6 space-y-4 text-xs">
+            <form onSubmit={handleSaveFollowUpLetter} className="p-6 space-y-4 text-xs overflow-y-auto flex-1">
               {/* Info Siswa */}
               <div className="p-3.5 bg-amber-50/70 rounded-xl border border-amber-200/80 space-y-1.5">
                 <div className="flex items-center justify-between">
@@ -2130,10 +2130,10 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
       {/* MODAL: EDIT CATATAN PELANGGARAN (Antisipasi salah input) */}
       {editingRecord && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-xl w-full border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 my-8">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white rounded-2xl max-w-xl w-full border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 max-h-[calc(100vh-2rem)] flex flex-col my-auto">
             {/* Modal Header */}
-            <div className="p-5 bg-gradient-to-r from-slate-800 to-slate-900 text-white flex items-center justify-between">
+            <div className="p-5 bg-gradient-to-r from-slate-800 to-slate-900 text-white flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400">
                   <Edit3 className="w-4 h-4" />
@@ -2155,7 +2155,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleSubmitEditRecord} className="p-6 space-y-4 text-xs">
+            <form onSubmit={handleSubmitEditRecord} className="p-6 space-y-4 text-xs overflow-y-auto flex-1">
               {/* 1. Tanggal Kejadian */}
               <div>
                 <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1.5">
@@ -2511,9 +2511,9 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
       {/* Image Preview Modal */}
       {activePreviewImage && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="max-w-2xl w-full bg-slate-900 rounded-2xl overflow-hidden border border-slate-700">
-            <div className="p-3.5 bg-slate-800 text-white flex items-center justify-between text-xs font-bold">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+          <div className="max-w-2xl w-full bg-slate-900 rounded-2xl overflow-hidden border border-slate-700 shadow-2xl max-h-[calc(100vh-2rem)] flex flex-col my-auto">
+            <div className="p-3.5 bg-slate-800 text-white flex items-center justify-between text-xs font-bold shrink-0">
               <span>{activePreviewImage.title}</span>
               <div className="flex items-center gap-2">
                 {activePreviewImage.url.includes('drive.google.com') && (

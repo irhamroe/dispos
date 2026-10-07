@@ -678,9 +678,9 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
       {/* MODAL: Verifikasi / Terima Surat Izin */}
       {markingRecord && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
-            <div className="p-6 bg-gradient-to-br from-emerald-600 to-teal-700 text-white flex items-center justify-between">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 max-h-[calc(100vh-2rem)] flex flex-col my-auto">
+            <div className="p-5 sm:p-6 bg-gradient-to-br from-emerald-600 to-teal-700 text-white flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center shadow-xs">
                   <CheckCircle2 className="w-6 h-6 text-emerald-200" />
@@ -701,7 +701,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
               </button>
             </div>
 
-            <form onSubmit={handleSaveMarkRecord} className="p-6 sm:p-8 space-y-5 text-xs">
+            <form onSubmit={handleSaveMarkRecord} className="p-6 sm:p-8 space-y-5 text-xs overflow-y-auto flex-1">
               {/* Info Siswa */}
               <div className="p-4 bg-[#E2F1FD] rounded-2xl shadow-none space-y-1">
                 <div className="font-black text-[#0F172A] text-sm" >{markingRecord.studentName}</div>
@@ -773,9 +773,9 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
 
       {/* MODAL: Konfirmasi Ubah Status ke Alpa (A) */}
       {alpaModalRecord && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
-            <div className="p-6 bg-gradient-to-br from-rose-600 to-red-700 text-white flex items-center justify-between">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 max-h-[calc(100vh-2rem)] flex flex-col my-auto">
+            <div className="p-5 sm:p-6 bg-gradient-to-br from-rose-600 to-red-700 text-white flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center shadow-xs">
                   <UserX className="w-6 h-6 text-rose-200" />
@@ -796,7 +796,7 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
               </button>
             </div>
 
-            <form onSubmit={handleConfirmConvertToAlpa} className="p-6 sm:p-8 space-y-5 text-xs">
+            <form onSubmit={handleConfirmConvertToAlpa} className="p-6 sm:p-8 space-y-5 text-xs overflow-y-auto flex-1">
               {/* Info Siswa */}
               <div className="p-4 bg-[#E2F1FD] rounded-2xl shadow-none space-y-1">
                 <div className="font-black text-[#0F172A] text-sm" >{alpaModalRecord.studentName}</div>

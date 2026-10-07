@@ -735,9 +735,9 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
 
       {/* MODAL: TAMBAH SISWA BARU */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
-            <div className="p-6 bg-gradient-to-br from-[#0284C7] to-[#9333EA] text-white flex items-center justify-between">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 max-h-[calc(100vh-2rem)] flex flex-col my-auto">
+            <div className="p-5 sm:p-6 bg-gradient-to-br from-[#0284C7] to-[#9333EA] text-white flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center shadow-xs">
                   <UserPlus className="w-6 h-6 text-white" />
@@ -1007,9 +1007,9 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
 
       {/* MODAL: EDIT DATA SISWA */}
       {editingStudent && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
-            <div className="p-6 bg-gradient-to-br from-slate-800 to-slate-900 text-white flex items-center justify-between">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 max-h-[calc(100vh-2rem)] flex flex-col my-auto">
+            <div className="p-5 sm:p-6 bg-gradient-to-br from-slate-800 to-slate-900 text-white flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center shadow-xs">
                   <Edit3 className="w-6 h-6 text-amber-400" />
@@ -1284,9 +1284,9 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
 
       {/* MODAL: DETAIL / KARTU PROFIL SISWA */}
       {viewingStudent && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-md w-full border border-white/60 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
-            <div className="bg-gradient-to-br from-[#0284C7] via-[#9333EA] to-[#6D28D9] p-6 text-white relative">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-md w-full border border-white/60 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 max-h-[calc(100vh-2rem)] flex flex-col my-auto">
+            <div className="bg-gradient-to-br from-[#0284C7] via-[#9333EA] to-[#6D28D9] p-5 sm:p-6 text-white relative shrink-0">
               <button
                 type="button"
                 onClick={() => setViewingStudent(null)}
@@ -1336,7 +1336,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
               </div>
             </div>
 
-            <div className="p-6 sm:p-8 space-y-4 text-xs">
+            <div className="p-6 sm:p-8 space-y-4 text-xs overflow-y-auto flex-1">
               {/* Alamat Domisili */}
               <div className="p-4 bg-[#E2F1FD] rounded-2xl shadow-none space-y-1">
                 <span className="text-[10px] font-black text-[#334155] uppercase tracking-wider flex items-center gap-1.5" >

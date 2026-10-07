@@ -651,7 +651,7 @@ export default function App() {
   ).length;
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-roboto text-[#0F172A] relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-roboto text-[#0F172A] relative overflow-x-hidden print:bg-white print:overflow-visible print:min-h-0 print:block print:p-0 print:m-0">
       {/* Material You Layered Organic Ambient Blobs */}
       <MdBackgroundBlobs />
 
@@ -666,7 +666,7 @@ export default function App() {
         onOpenFirebaseModal={() => setIsFirebaseModalOpen(true)}
       />
 
-      <div className="flex-1 flex relative z-10">
+      <div className="flex-1 flex relative z-10 print:block print:p-0 print:m-0">
         {/* Left Sidebar */}
         <Sidebar
           currentTab={currentTab}
@@ -685,7 +685,7 @@ export default function App() {
         />
 
         {/* Main Content Area */}
-        <main className="flex-1 lg:pl-80 pt-5 pb-10 px-4 sm:px-6 lg:px-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 lg:pl-80 pt-5 pb-10 px-4 sm:px-6 lg:px-8 max-w-7xl w-full mx-auto print:p-0 print:m-0 print:max-w-none print:w-full print:block">
           {currentTab === 'dashboard' && (
             <DashboardView
               students={students}

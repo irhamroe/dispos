@@ -593,9 +593,9 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
 
       {/* MODAL: Selesaikan Tagihan Pembinaan */}
       {resolvingRecord && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
-            <div className="p-6 bg-gradient-to-br from-emerald-600 to-teal-700 text-white flex items-center justify-between">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 max-h-[calc(100vh-2rem)] flex flex-col my-auto">
+            <div className="p-5 sm:p-6 bg-gradient-to-br from-emerald-600 to-teal-700 text-white flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center shadow-xs">
                   <CheckCircle2 className="w-6 h-6 text-white" />
@@ -616,7 +616,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
               </button>
             </div>
 
-            <form onSubmit={handleSaveResolve} className="p-6 sm:p-8 space-y-5 text-xs">
+            <form onSubmit={handleSaveResolve} className="p-6 sm:p-8 space-y-5 text-xs overflow-y-auto flex-1">
               {/* Info Banner */}
               <div className="p-4 bg-[#E2F1FD] rounded-2xl shadow-none space-y-1">
                 <div className="text-[#334155] text-[10px] uppercase font-black" >Siswa & Pelanggaran</div>
@@ -827,9 +827,9 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
 
       {/* MODAL: Khusus Unggah Surat Bukti Pembinaan Menyusul */}
       {letterUploadRecord && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
-            <div className="p-6 bg-gradient-to-br from-amber-500 to-orange-600 text-white flex items-center justify-between">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-lg w-full border border-white/60 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 max-h-[calc(100vh-2rem)] flex flex-col my-auto">
+            <div className="p-5 sm:p-6 bg-gradient-to-br from-amber-500 to-orange-600 text-white flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center shadow-xs">
                   <Paperclip className="w-6 h-6 text-white" />
@@ -850,7 +850,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
               </button>
             </div>
 
-            <form onSubmit={handleSaveFollowUpLetter} className="p-6 sm:p-8 space-y-5 text-xs">
+            <form onSubmit={handleSaveFollowUpLetter} className="p-6 sm:p-8 space-y-5 text-xs overflow-y-auto flex-1">
               <div className="p-4 bg-[#E2F1FD] rounded-2xl shadow-none space-y-1">
                 <div className="font-black text-[#0F172A] text-sm" >{letterUploadRecord.studentName}</div>
                 <div className="text-[#334155] text-xs">
@@ -992,9 +992,9 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
 
       {/* MODAL: Surat Pemanggilan Siswa / Notifikasi Tagihan */}
       {callingLetterRecord && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-xl w-full border border-white/60 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 my-8">
-            <div className="p-5 bg-gradient-to-br from-slate-800 to-slate-900 text-white flex items-center justify-between">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-xl w-full border border-white/60 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 max-h-[calc(100vh-2rem)] flex flex-col my-auto">
+            <div className="p-5 bg-gradient-to-br from-slate-800 to-slate-900 text-white flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2.5">
                 <Printer className="w-5 h-5 text-emerald-400" />
                 <span className="font-black text-sm" >Surat Pemanggilan & Tagihan Pembinaan Siswa</span>
@@ -1009,7 +1009,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
             </div>
 
             {/* Printable Letterhead & Body */}
-            <div className="p-6 sm:p-8 space-y-4 text-xs text-slate-800 font-serif leading-relaxed bg-white">
+            <div className="p-6 sm:p-8 space-y-4 text-xs text-slate-800 font-serif leading-relaxed bg-white overflow-y-auto flex-1">
               {/* Kop Surat */}
               <div className="flex items-center gap-3 border-b-2 border-slate-900 pb-3">
                 <img src="/logo.png" alt="Logo SMAN 1 Batu" className="w-14 h-14 object-contain shrink-0" />

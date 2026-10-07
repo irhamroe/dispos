@@ -32,7 +32,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <header 
       id="main-header" 
-      className="sticky top-0 z-30 px-3 sm:px-6 pt-3 pb-1"
+      className="sticky top-0 z-30 px-3 sm:px-6 pt-3 pb-1 print:hidden"
     >
       <div className="max-w-7xl mx-auto bg-[#F0F9FF]/95 backdrop-blur-md rounded-[32px] shadow-sm border border-[#E0F2FE] px-4 sm:px-6 py-2.5 sm:py-3 transition-all duration-300">
         <div className="flex items-center justify-between">
