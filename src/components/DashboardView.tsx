@@ -18,9 +18,11 @@ import {
   BookOpen,
   Award,
   Users,
-  AlertTriangle
+  AlertTriangle,
+  DoorOpen,
+  Bell
 } from 'lucide-react';
-import { AttendanceRecord, DisciplineRecord, Student } from '../types';
+import { AttendanceRecord, DisciplineRecord, Student, StudentPermitRecord } from '../types';
 import { RombelClass } from '../data/initialData';
 import { NavTab } from './Sidebar';
 import { formatDateIndonesian } from '../utils/exportUtils';
@@ -35,6 +37,7 @@ interface DashboardViewProps {
   selectedDate: string;
   onDateChange: (date: string) => void;
   onNavigateTab: (tab: NavTab) => void;
+  studentPermits?: StudentPermitRecord[];
 }
 
 export const DashboardView: React.FC<DashboardViewProps> = ({
@@ -45,6 +48,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   selectedDate,
   onDateChange,
   onNavigateTab,
+  studentPermits = [],
 }) => {
   const [selectedGradeFilter, setSelectedGradeFilter] = useState<'ALL' | 'X' | 'XI' | 'XII'>('ALL');
   const [selectedClassFilter, setSelectedClassFilter] = useState<string>('ALL');
@@ -112,8 +116,47 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     });
   }, [availableClasses, students, attendanceRecords, selectedDate]);
 
+  const pendingPermitsList = useMemo(() => {
+    return studentPermits.filter((p) => p.status === 'Menunggu');
+  }, [studentPermits]);
+
   return (
     <div className="space-y-6 pb-12 font-roboto text-[#0F172A]">
+      {/* Pending Student Permits Alert Banner */}
+      {pendingPermitsList.length > 0 && (
+        <div className="bg-gradient-to-r from-amber-500 via-rose-500 to-red-600 text-white p-5 rounded-[28px] shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-in fade-in slide-in-from-top-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0 shadow-xs">
+              <Bell className="w-6 h-6 text-white animate-bounce" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded-full bg-white text-rose-700 text-[10px] font-black uppercase tracking-wider">
+                  Perlu Persetujuan
+                </span>
+                <span className="text-xs font-bold text-amber-100">Layanan Izin Siswa</span>
+              </div>
+              <h3 className="text-base font-black text-white mt-0.5">
+                Ada {pendingPermitsList.length} Permohonan Izin Siswa Baru Menunggu Persetujuan
+              </h3>
+              <p className="text-xs text-rose-100/90 font-medium">
+                Siswa baru saja mengajukan izin keluar / dispensasi seragam. Permohonan yang disetujui akan otomatis masuk ke Buku Rekapitulasi Izin Resmi.
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            id="dash-review-permits-btn"
+            onClick={() => onNavigateTab('layanan-izin-siswa')}
+            className="px-5 py-2.5 rounded-2xl bg-white hover:bg-amber-50 text-rose-700 font-black text-xs transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 cursor-pointer shrink-0 flex items-center gap-2"
+          >
+            <DoorOpen className="w-4 h-4" />
+            <span>Tinjau &amp; Setujui Sekarang</span>
+          </button>
+        </div>
+      )}
+
       {/* Top Filter Card */}
       <MdCard variant="elevated" radius="large" className="p-5 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
         <div>

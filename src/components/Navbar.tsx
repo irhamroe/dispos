@@ -5,7 +5,8 @@ import {
   CalendarDays,
   LogOut,
   Cloud,
-  CloudOff
+  CloudOff,
+  Bell
 } from 'lucide-react';
 import { AdminUser, SchoolProfile } from '../types';
 import { MdBadge, MdButton } from './md3';
@@ -18,6 +19,8 @@ interface NavbarProps {
   todayStr: string;
   isFirebaseConnected?: boolean;
   onOpenFirebaseModal?: () => void;
+  totalPendingPermits?: number;
+  onNavigatePermits?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -28,6 +31,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   todayStr,
   isFirebaseConnected = false,
   onOpenFirebaseModal,
+  totalPendingPermits = 0,
+  onNavigatePermits,
 }) => {
   return (
     <header 
@@ -76,8 +81,22 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </div>
 
-          {/* Right Header Section: Cloud Sync, Date & User Profile */}
+          {/* Right Header Section: Cloud Sync, Notifications, Date & User Profile */}
           <div className="flex items-center space-x-2 sm:space-x-3">
+            {/* Notification for Pending Student Permits */}
+            {totalPendingPermits > 0 && onNavigatePermits && (
+              <button
+                type="button"
+                id="navbar-pending-permits-btn"
+                onClick={onNavigatePermits}
+                title={`${totalPendingPermits} Permohonan Izin Siswa Menunggu Persetujuan`}
+                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white text-xs font-black shadow-xs transition-all cursor-pointer active:scale-95 animate-pulse"
+              >
+                <Bell className="w-3.5 h-3.5" />
+                <span>{totalPendingPermits} Izin Baru</span>
+              </button>
+            )}
+
             {/* Cloud Sync Status Pill */}
             {onOpenFirebaseModal && (
               <button

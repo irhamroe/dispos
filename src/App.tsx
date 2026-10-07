@@ -768,7 +768,7 @@ export default function App() {
 
   // Calculate pending student permits waiting for teacher/piket review
   const totalPendingPermits = studentPermits.filter(
-    (p) => p.status === 'Menunggu Persetujuan'
+    (p) => p.status === 'Menunggu' || (p.status as any) === 'Menunggu Persetujuan'
   ).length;
 
   return (
@@ -785,6 +785,8 @@ export default function App() {
         todayStr={formatDayAndDateIndonesian(getTodayDateString())}
         isFirebaseConnected={isFirebaseConnected}
         onOpenFirebaseModal={() => setIsFirebaseModalOpen(true)}
+        totalPendingPermits={totalPendingPermits}
+        onNavigatePermits={() => handleSelectTab('layanan-izin-siswa')}
       />
 
       <div className="flex-1 flex relative z-10 print:block print:p-0 print:m-0">
@@ -817,6 +819,7 @@ export default function App() {
               selectedDate={selectedDate}
               onDateChange={setSelectedDate}
               onNavigateTab={handleSelectTab}
+              studentPermits={studentPermits}
             />
           )}
 
