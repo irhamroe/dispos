@@ -523,7 +523,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
               <tr className="bg-gradient-to-r from-slate-100/80 to-purple-50/50 border-b border-slate-200 text-xs font-black uppercase tracking-wider text-[#334155]" >
                 <th className="py-4 px-4 w-12 text-center">No</th>
                 <th className="py-4 px-5 min-w-[220px]">Profil &amp; Identitas Siswa</th>
-                <th className="py-4 px-4 text-center w-24">Kelas</th>
+                <th className="py-4 px-4 text-center min-w-[90px] w-24">Kelas</th>
                 <th className="py-4 px-5 min-w-[160px]">Kontak (Siswa / Ortu)</th>
                 <th className="py-4 px-5 min-w-[180px]">Alamat Domisili</th>
                 <th className="py-4 px-4 text-center w-24">Status</th>
@@ -616,8 +616,8 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                       </td>
 
                       {/* Kelas */}
-                      <td className="py-4 px-4 text-center">
-                        <span className="px-3 py-1 rounded-xl text-xs font-black bg-sky-50 text-[#0284C7] border border-sky-200 shadow-xs" >
+                      <td className="py-4 px-4 text-center whitespace-nowrap">
+                        <span className="inline-flex items-center justify-center px-3 py-1 rounded-xl text-xs font-black bg-sky-50 text-[#0284C7] border border-sky-200 shadow-xs whitespace-nowrap min-w-[58px]" >
                           {s.className}
                         </span>
                       </td>

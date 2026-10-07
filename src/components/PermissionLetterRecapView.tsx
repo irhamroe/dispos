@@ -571,7 +571,11 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
                           <div className="text-[11px] text-[#334155]">Gender: {student.gender}</div>
                         )}
                       </td>
-                      <td className="py-4 px-4 font-black text-[#0F172A] text-center" >{rec.className}</td>
+                      <td className="py-4 px-4 text-center whitespace-nowrap">
+                        <span className="inline-flex items-center justify-center px-3 py-1 rounded-xl text-xs font-black bg-sky-50 text-[#0284C7] border border-sky-200 shadow-xs whitespace-nowrap min-w-[58px]" >
+                          {rec.className}
+                        </span>
+                      </td>
                       <td className="py-4 px-4 text-center">
                         {rec.status === 'I' ? (
                           <span className="px-3 py-1 rounded-xl text-xs font-black bg-sky-50 text-sky-700 border border-sky-200 inline-flex items-center gap-1 shadow-xs" >

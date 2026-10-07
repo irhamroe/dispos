@@ -478,8 +478,8 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                             {item.gender}
                           </span>
                         </td>
-                        <td className="py-3 px-2 text-center border-r border-[#E0F2FE]">
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#E2F1FD] text-[#0F172A]">
+                        <td className="py-3 px-2 text-center border-r border-[#E0F2FE] whitespace-nowrap">
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#E2F1FD] text-[#0F172A] whitespace-nowrap inline-block min-w-[44px]">
                             {item.className}
                           </span>
                         </td>
@@ -606,8 +606,8 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                           {item.gender}
                         </span>
                       </td>
-                      <td className="py-3.5 px-2 text-center">
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#E2F1FD] text-[#0F172A]">
+                      <td className="py-3.5 px-2 text-center whitespace-nowrap">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#E2F1FD] text-[#0F172A] whitespace-nowrap inline-block min-w-[44px]">
                           {item.className}
                         </span>
                       </td>
