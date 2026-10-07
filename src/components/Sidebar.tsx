@@ -64,6 +64,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   totalDisciplineCases,
   totalPendingDebt = 0,
   totalPendingLetters = 0,
+  totalPendingPermits = 0,
   totalUsers = 0,
 }) => {
   const isManagementTab = 
