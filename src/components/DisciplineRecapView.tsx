@@ -314,51 +314,51 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
       </div>
 
       {/* KPI Cards for Selected Date Range */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
-        <div className="rounded-[32px] bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE] to-[#BAE6FD]/60 p-5 shadow-xs border border-[#7DD3FC]/70 hover:-translate-y-1.5 transition-all group">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="rounded-2xl bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE] to-[#BAE6FD]/60 p-4 shadow-xs border border-[#7DD3FC]/70 hover:-translate-y-1 transition-all group">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-black text-[#0369A1] uppercase tracking-wider">Kasus Pada Rentang</span>
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#0284C7] to-[#38BDF8] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
-              <ShieldAlert className="w-4 h-4" />
+            <span className="text-[10px] font-extrabold text-[#0369A1] uppercase tracking-wider">Kasus Pada Rentang</span>
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-[#0284C7] to-[#38BDF8] text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+              <ShieldAlert className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-[#0369A1] mt-2 tracking-tight">{totalCount}</div>
-          <div className="text-[10px] text-[#0369A1]/80 mt-1 font-medium truncate">
+          <div className="text-base sm:text-lg font-black text-[#0369A1] mt-1 tracking-tight">{totalCount} Kasus</div>
+          <div className="text-[10px] text-[#0369A1]/80 mt-0.5 font-medium truncate">
             {formatDateIndonesian(startDate)} - {formatDateIndonesian(endDate)}
           </div>
         </div>
 
-        <div className="rounded-[32px] bg-gradient-to-br from-[#FFF1F2] via-[#FFE4E6] to-[#FECDD3]/60 p-5 shadow-xs border border-[#FDA4AF]/70 hover:-translate-y-1.5 transition-all group">
+        <div className="rounded-2xl bg-gradient-to-br from-[#FFF1F2] via-[#FFE4E6] to-[#FECDD3]/60 p-4 shadow-xs border border-[#FDA4AF]/70 hover:-translate-y-1 transition-all group">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-black text-[#E11D48] uppercase tracking-wider">Belum Pembinaan</span>
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#E11D48] to-[#F43F5E] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
-              <Clock className="w-4 h-4" />
+            <span className="text-[10px] font-extrabold text-[#E11D48] uppercase tracking-wider">Belum Pembinaan</span>
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-[#E11D48] to-[#F43F5E] text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+              <Clock className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-[#E11D48] mt-2 tracking-tight">{belumCount}</div>
-          <div className="text-[10px] text-[#BE123C] mt-1 font-semibold">Perlu ditindaklanjuti</div>
+          <div className="text-base sm:text-lg font-black text-[#E11D48] mt-1 tracking-tight">{belumCount} Kasus</div>
+          <div className="text-[10px] text-[#BE123C] mt-0.5 font-semibold">Perlu ditindaklanjuti</div>
         </div>
 
-        <div className="rounded-[32px] bg-gradient-to-br from-[#ECFDF5] via-[#D1FAE5] to-[#A7F3D0]/60 p-5 shadow-xs border border-[#6EE7B7]/70 hover:-translate-y-1.5 transition-all group">
+        <div className="rounded-2xl bg-gradient-to-br from-[#ECFDF5] via-[#D1FAE5] to-[#A7F3D0]/60 p-4 shadow-xs border border-[#6EE7B7]/70 hover:-translate-y-1 transition-all group">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-black text-[#047857] uppercase tracking-wider">Sudah Pembinaan</span>
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#059669] to-[#10B981] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
-              <CheckCircle2 className="w-4 h-4" />
+            <span className="text-[10px] font-extrabold text-[#047857] uppercase tracking-wider">Sudah Pembinaan</span>
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-[#059669] to-[#10B981] text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+              <CheckCircle2 className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-[#047857] mt-2 tracking-tight">{sudahCount}</div>
-          <div className="text-[10px] text-[#065F46] mt-1 font-semibold">Telah selesai dibina</div>
+          <div className="text-base sm:text-lg font-black text-[#047857] mt-1 tracking-tight">{sudahCount} Kasus</div>
+          <div className="text-[10px] text-[#065F46] mt-0.5 font-semibold">Telah selesai dibina</div>
         </div>
 
-        <div className="rounded-[32px] bg-gradient-to-br from-[#F0FDFA] via-[#CCFBF1] to-[#99F6E4]/60 p-5 shadow-xs border border-[#5EEAD4]/70 hover:-translate-y-1.5 transition-all group">
+        <div className="rounded-2xl bg-gradient-to-br from-[#F0FDFA] via-[#CCFBF1] to-[#99F6E4]/60 p-4 shadow-xs border border-[#5EEAD4]/70 hover:-translate-y-1 transition-all group">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-black text-[#0F766E] uppercase tracking-wider">Rasio Penyelesaian</span>
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#0D9488] to-[#14B8A6] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
-              <FileCheck className="w-4 h-4" />
+            <span className="text-[10px] font-extrabold text-[#0F766E] uppercase tracking-wider">Rasio Penyelesaian</span>
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-[#0D9488] to-[#14B8A6] text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+              <FileCheck className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-[#0F766E] mt-2 tracking-tight">{persentaseTuntas}%</div>
-          <div className="text-[10px] text-[#115E59] mt-1 font-semibold">Tuntas pada periode ini</div>
+          <div className="text-base sm:text-lg font-black text-[#0F766E] mt-1 tracking-tight">{persentaseTuntas}%</div>
+          <div className="text-[10px] text-[#115E59] mt-0.5 font-semibold">Tuntas pada periode ini</div>
         </div>
       </div>
 
