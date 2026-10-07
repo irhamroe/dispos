@@ -166,10 +166,9 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
               type="button"
               id="export-recap-excel-btn"
               onClick={handleExportExcel}
-              className="px-4 py-3 rounded-2xl bg-white/90 text-[#0F172A] hover:text-emerald-700 font-extrabold text-xs transition-all flex items-center justify-center gap-2 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none flex-1 sm:flex-initial cursor-pointer"
-              
+              className="px-4 py-3 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold text-xs transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none flex-1 sm:flex-initial cursor-pointer"
             >
-              <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+              <FileSpreadsheet className="w-4 h-4 text-white" />
               <span>Ekspor Excel</span>
             </button>
 
@@ -177,10 +176,9 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
               type="button"
               id="export-recap-pdf-btn"
               onClick={handleExportPdf}
-              className="px-4 py-3 rounded-2xl bg-white/90 text-[#0F172A] hover:text-rose-700 font-extrabold text-xs transition-all flex items-center justify-center gap-2 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none flex-1 sm:flex-initial cursor-pointer"
-              
+              className="px-4 py-3 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-extrabold text-xs transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none flex-1 sm:flex-initial cursor-pointer"
             >
-              <FileText className="w-4 h-4 text-rose-600" />
+              <FileText className="w-4 h-4 text-white" />
               <span>Ekspor PDF</span>
             </button>
           </div>
