@@ -136,17 +136,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const disciplineNavItems = [
     {
-      id: 'layanan-izin-siswa' as NavTab,
-      label: 'Layanan Izin Siswa',
-      sublabel: 'Keluar kelas/sekolah & seragam',
-      icon: DoorOpen,
-      iconBg: 'bg-[#0284C7] text-white',
-      inactiveIconBg: 'bg-[#E0F2FE] text-[#0369A1]',
-      activeBg: 'bg-[#F0F9FF] text-[#0284C7] shadow-xs',
-      badge: (totalPendingPermits && totalPendingPermits > 0) ? `${totalPendingPermits} Menunggu` : 'QR Publik',
-      badgeBg: (totalPendingPermits && totalPendingPermits > 0) ? 'bg-[#FFDAD6] text-[#410002]' : 'bg-[#E0F2FE] text-[#0369A1]',
-    },
-    {
       id: 'discipline' as NavTab,
       label: 'Input Pelanggaran',
       sublabel: 'Catat pelanggaran & riwayat',
@@ -189,6 +178,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
       activeBg: 'bg-[#F5F3FF] text-[#6D28D9] shadow-xs',
       badge: 'Resmi',
       badgeBg: 'bg-[#E0F2FE] text-[#0369A1]',
+    },
+    {
+      id: 'layanan-izin-siswa' as NavTab,
+      label: 'Layanan Izin Siswa',
+      sublabel: 'Keluar kelas/sekolah & seragam',
+      icon: DoorOpen,
+      iconBg: 'bg-[#0284C7] text-white',
+      inactiveIconBg: 'bg-[#E0F2FE] text-[#0369A1]',
+      activeBg: 'bg-[#F0F9FF] text-[#0284C7] shadow-xs',
+      badge: (totalPendingPermits && totalPendingPermits > 0) ? `${totalPendingPermits} Menunggu` : 'QR Publik',
+      badgeBg: (totalPendingPermits && totalPendingPermits > 0) ? 'bg-[#FFDAD6] text-[#410002]' : 'bg-[#E0F2FE] text-[#0369A1]',
     },
     {
       id: 'aturan-pelanggaran' as NavTab,

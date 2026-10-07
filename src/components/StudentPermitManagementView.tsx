@@ -56,7 +56,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
   const [selectedStatusFilter, setSelectedStatusFilter] = useState<'ALL' | StudentPermitStatus>('ALL');
   const [selectedClassFilter, setSelectedClassFilter] = useState<string>('ALL');
   const [selectedDate, setSelectedDate] = useState<string>(() => getTodayDateString());
-  const [useDateFilter, setUseDateFilter] = useState<boolean>(true);
+  const [useDateFilter, setUseDateFilter] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   // Modal: Print Standee QR Code
