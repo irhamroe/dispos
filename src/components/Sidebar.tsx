@@ -17,6 +17,7 @@ import {
   CalendarDays, 
   Mail, 
   ShieldCheck, 
+  DoorOpen,
   X 
 } from 'lucide-react';
 
@@ -25,6 +26,7 @@ export type NavTab =
   | 'attendance' 
   | 'recap' 
   | 'rekap-surat-izin'
+  | 'layanan-izin-siswa'
   | 'discipline' 
   | 'rekap-pelanggaran'
   | 'tagihan-pembinaan'
@@ -49,6 +51,7 @@ interface SidebarProps {
   totalDisciplineCases: number;
   totalPendingDebt?: number;
   totalPendingLetters?: number;
+  totalPendingPermits?: number;
   totalUsers?: number;
 }
 
@@ -131,6 +134,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   const disciplineNavItems = [
+    {
+      id: 'layanan-izin-siswa' as NavTab,
+      label: 'Layanan Izin Siswa',
+      sublabel: 'Keluar kelas/sekolah & seragam',
+      icon: DoorOpen,
+      iconBg: 'bg-[#0284C7] text-white',
+      inactiveIconBg: 'bg-[#E0F2FE] text-[#0369A1]',
+      activeBg: 'bg-[#F0F9FF] text-[#0284C7] shadow-xs',
+      badge: (totalPendingPermits && totalPendingPermits > 0) ? `${totalPendingPermits} Menunggu` : 'QR Publik',
+      badgeBg: (totalPendingPermits && totalPendingPermits > 0) ? 'bg-[#FFDAD6] text-[#410002]' : 'bg-[#E0F2FE] text-[#0369A1]',
+    },
     {
       id: 'discipline' as NavTab,
       label: 'Input Pelanggaran',

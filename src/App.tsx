@@ -9,9 +9,21 @@ import {
   defaultAdminUser,
   sampleViolationCatalog,
   initialUsers,
+  initialStudentPermits,
   RombelClass
 } from './data/initialData';
-import { AdminUser, AttendanceRecord, DisciplineRecord, Student, DisciplineStatus, WaliKelasTeacher, ViolationRule, SchoolProfile } from './types';
+import { 
+  AdminUser, 
+  AttendanceRecord, 
+  DisciplineRecord, 
+  Student, 
+  DisciplineStatus, 
+  WaliKelasTeacher, 
+  ViolationRule, 
+  SchoolProfile,
+  StudentPermitRecord,
+  StudentPermitStatus
+} from './types';
 import { sortClasses, sortStudents, sortWaliKelas, sortDisciplineRecords, sortViolationRules } from './utils/sortUtils';
 import { Navbar } from './components/Navbar';
 import { Sidebar, NavTab } from './components/Sidebar';
@@ -20,6 +32,8 @@ import { DashboardView } from './components/DashboardView';
 import { DailyAttendanceView } from './components/DailyAttendanceView';
 import { RecapAttendanceView } from './components/RecapAttendanceView';
 import { PermissionLetterRecapView } from './components/PermissionLetterRecapView';
+import { PublicStudentPermitView } from './components/PublicStudentPermitView';
+import { StudentPermitManagementView } from './components/StudentPermitManagementView';
 import { DisciplineView } from './components/DisciplineView';
 import { DisciplineRecapView } from './components/DisciplineRecapView';
 import { DisciplineDebtView } from './components/DisciplineDebtView';
@@ -231,6 +245,87 @@ export default function App() {
   const [selectedDate, setSelectedDate] = useState<string>(() => getTodayDateString());
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [selectedClassForStudentView, setSelectedClassForStudentView] = useState<string | undefined>(undefined);
+
+  // Public Student Permit View state (Direct link or QR scan)
+  const [isPublicPermitOpen, setIsPublicPermitOpen] = useState<boolean>(() => {
+    try {
+      const search = window.location.search;
+      const hash = window.location.hash;
+      const urlParams = new URLSearchParams(search);
+      return urlParams.get('view') === 'izin-siswa' || 
+             urlParams.get('tab') === 'izin-siswa' || 
+             hash.includes('izin-siswa');
+    } catch {
+      return false;
+    }
+  });
+
+  // Student Permits state
+  const [studentPermits, setStudentPermits] = useState<StudentPermitRecord[]>(() => {
+    try {
+      const saved = localStorage.getItem('app_sman1batu_student_permits_v1');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+      localStorage.setItem('app_sman1batu_student_permits_v1', JSON.stringify(initialStudentPermits));
+      return initialStudentPermits;
+    } catch {
+      return initialStudentPermits;
+    }
+  });
+
+  // Create new permit (Public form submission)
+  const handleCreateStudentPermit = (permitData: Omit<StudentPermitRecord, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const newRecord: StudentPermitRecord = {
+      ...permitData,
+      id: `PERMIT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    setStudentPermits((prev) => {
+      const updated = [newRecord, ...prev];
+      localStorage.setItem('app_sman1batu_student_permits_v1', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  // Update permit status (Approve, Reject, or Mark Returned)
+  const handleUpdateStudentPermitStatus = (
+    permitId: string, 
+    status: StudentPermitStatus, 
+    reviewedBy?: string, 
+    rejectionReason?: string
+  ) => {
+    setStudentPermits((prev) => {
+      const updated = prev.map((p) => {
+        if (p.id === permitId) {
+          return {
+            ...p,
+            status,
+            reviewedBy: reviewedBy || currentUser?.name || 'Petugas Piket / Guru Dispos',
+            rejectionReason: rejectionReason !== undefined ? rejectionReason : p.rejectionReason,
+            actualReturnTime: status === 'Sudah Kembali' 
+              ? new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) 
+              : p.actualReturnTime,
+            updatedAt: new Date().toISOString(),
+          };
+        }
+        return p;
+      });
+      localStorage.setItem('app_sman1batu_student_permits_v1', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  // Delete permit
+  const handleDeleteStudentPermit = (permitId: string) => {
+    setStudentPermits((prev) => {
+      const updated = prev.filter((p) => p.id !== permitId);
+      localStorage.setItem('app_sman1batu_student_permits_v1', JSON.stringify(updated));
+      return updated;
+    });
+  };
 
   // Firebase connection & modal states
   const [isFirebaseModalOpen, setIsFirebaseModalOpen] = useState(false);
@@ -624,6 +719,26 @@ export default function App() {
     setCurrentTab('discipline');
   };
 
+  // If public permit portal is active (via QR code or direct button), render it without requiring login
+  if (isPublicPermitOpen) {
+    return (
+      <PublicStudentPermitView
+        students={students}
+        classes={classes}
+        schoolProfile={schoolProfile}
+        onSubmitPermit={handleCreateStudentPermit}
+        onBackToApp={() => {
+          setIsPublicPermitOpen(false);
+          // Clean URL params if any
+          if (window.location.search.includes('izin-siswa') || window.location.hash.includes('izin-siswa')) {
+            window.history.replaceState(null, '', window.location.pathname);
+          }
+        }}
+        isTeacherOrAdminLoggedIn={!!currentUser}
+      />
+    );
+  }
+
   // If not logged in, display the secure login screen
   if (!currentUser) {
     return (
@@ -631,6 +746,7 @@ export default function App() {
         onLoginSuccess={handleLoginSuccess}
         schoolProfile={schoolProfile}
         users={users}
+        onOpenPublicPermit={() => setIsPublicPermitOpen(true)}
       />
     );
   }
@@ -648,6 +764,11 @@ export default function App() {
   // Calculate pending permission / sick letters (students with I or S who have not submitted physical letters)
   const totalPendingLetters = attendanceRecords.filter(
     (r) => (r.status === 'I' || r.status === 'S') && r.hasLetter !== 'Sudah Ada Surat'
+  ).length;
+
+  // Calculate pending student permits waiting for teacher/piket review
+  const totalPendingPermits = studentPermits.filter(
+    (p) => p.status === 'Menunggu Persetujuan'
   ).length;
 
   return (
@@ -681,6 +802,7 @@ export default function App() {
           totalDisciplineCases={disciplineRecords.length}
           totalPendingDebt={totalPendingDebt}
           totalPendingLetters={totalPendingLetters}
+          totalPendingPermits={totalPendingPermits}
           totalUsers={users.length}
         />
 
@@ -727,6 +849,19 @@ export default function App() {
               classes={classes}
               schoolProfile={schoolProfile}
               onUpdateAttendance={handleSaveAttendance}
+            />
+          )}
+
+          {currentTab === 'layanan-izin-siswa' && (
+            <StudentPermitManagementView
+              permits={studentPermits}
+              students={students}
+              classes={classes}
+              schoolProfile={schoolProfile}
+              currentUserName={currentUser.name}
+              onUpdateStatus={handleUpdateStudentPermitStatus}
+              onDeletePermit={handleDeleteStudentPermit}
+              onCreatePermit={handleCreateStudentPermit}
             />
           )}
 

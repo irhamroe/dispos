@@ -15,8 +15,9 @@ import {
   HeartHandshake,
   UserCheck,
   Sparkles,
-  CheckCircle2,
-  FileSpreadsheet
+  FileSpreadsheet,
+  DoorOpen,
+  QrCode
 } from 'lucide-react';
 import { AdminUser, SchoolProfile } from '../types';
 
@@ -24,12 +25,14 @@ interface LoginScreenProps {
   onLoginSuccess: (user: AdminUser) => void;
   schoolProfile: SchoolProfile;
   users?: AdminUser[];
+  onOpenPublicPermit?: () => void;
 }
 
 export const LoginScreen: React.FC<LoginScreenProps> = ({
   onLoginSuccess,
   schoolProfile,
   users = [],
+  onOpenPublicPermit,
 }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -304,6 +307,32 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                   )}
                 </button>
               </div>
+
+              {/* Public Student Permit Link */}
+              {onOpenPublicPermit && (
+                <div className="pt-3 border-t border-[#BAE6FD]/60 mt-3">
+                  <div className="bg-gradient-to-r from-emerald-500/10 via-sky-500/10 to-indigo-500/10 border border-sky-300/60 rounded-2xl p-3.5 text-center">
+                    <div className="flex items-center justify-center gap-2 mb-1.5">
+                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500 text-white shadow-xs">
+                        <DoorOpen className="w-3.5 h-3.5" />
+                      </span>
+                      <span className="text-xs font-bold text-[#0F172A]">Layanan Siswa (Tanpa Login)</span>
+                    </div>
+                    <p className="text-[11px] text-[#475569] leading-tight mb-2.5">
+                      Ingin mengajukan izin keluar kelas, izin keluar sekolah, atau izin seragam/atribut?
+                    </p>
+                    <button
+                      type="button"
+                      id="open-public-permit-btn"
+                      onClick={onOpenPublicPermit}
+                      className="w-full py-2.5 px-3 rounded-xl bg-white hover:bg-sky-50 text-[#0284C7] font-bold text-xs border border-sky-200 shadow-xs hover:shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <QrCode className="w-4 h-4 text-emerald-600" />
+                      <span>Isi Formulir Izin Siswa Sekarang</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </form>
           </div>
         </div>

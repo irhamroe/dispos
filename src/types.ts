@@ -143,3 +143,39 @@ export interface StudentRecapItem {
   totalDays: number;
   percentage: number;
 }
+
+export type StudentPermitType = 'Keluar Sekolah' | 'Keluar Kelas' | 'Dispensasi Seragam';
+
+export type StudentPermitStatus = 'Menunggu' | 'Disetujui' | 'Ditolak' | 'Kembali';
+
+export interface StudentPermitRecord {
+  id: string;
+  permitNumber: string; // Misal: IZIN-20261007-001
+  type: StudentPermitType;
+  studentId?: string;
+  studentName: string;
+  nisn?: string;
+  className: string;
+  date: string; // YYYY-MM-DD
+  timeSubmitted: string; // HH:mm:ss
+  
+  // Spesifik Izin Keluar Sekolah & Keluar Kelas
+  subject?: string; // Mata Pelajaran saat ini
+  lessonHour?: string; // Jam Pelajaran Ke- (misal: "3 - 4")
+  reason: string; // Keperluan / Alasan
+  willReturn?: 'Kembali' | 'Tidak Kembali'; // Khusus Keluar Sekolah
+  
+  // Spesifik Izin Seragam / Atribut
+  uniformViolationType?: string; // Misal: "Sepatu bukan hitam", "Tidak memakai dasi", dll
+  startDate?: string; // Tanggal mulai izin
+  estimatedEndDate?: string; // Tanggal perkiraan selesai izin
+  
+  // Status & Verifikasi
+  status: StudentPermitStatus;
+  approvedBy?: string; // Nama Guru Piket / BK yang memverifikasi
+  approvedAt?: string;
+  actualReturnTime?: string;
+  notes?: string;
+  qrVerificationCode?: string;
+}
+

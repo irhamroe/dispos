@@ -1,4 +1,4 @@
-import { SchoolProfile, Student, AttendanceRecord, DisciplineRecord, AdminUser, AttendanceStatus, LetterStatus, WaliKelasTeacher, ViolationRule } from '../types';
+import { SchoolProfile, Student, AttendanceRecord, DisciplineRecord, AdminUser, AttendanceStatus, LetterStatus, WaliKelasTeacher, ViolationRule, StudentPermitRecord } from '../types';
 
 export const initialSchoolProfile: SchoolProfile = {
   name: 'SMAN 1 Batu',
@@ -617,3 +617,60 @@ export const sampleViolationCatalog: ViolationRule[] = [
     suggestedIntervention: 'Penghapusan dokumentasi dan edukasi privasi serta etika dokumentasi di lingkungan sekolah.'
   }
 ];
+
+export const initialStudentPermits: StudentPermitRecord[] = [
+  {
+    id: 'prm-001',
+    permitNumber: 'IZIN-KS-20261007-001',
+    type: 'Keluar Sekolah',
+    studentName: 'ACHMAD DWI SYAHRUDIN',
+    nisn: '0089882201',
+    className: 'X-1',
+    date: '2026-10-07',
+    timeSubmitted: '09:15',
+    subject: 'Matematika Wajib',
+    lessonHour: 'Jam ke-3 s/d 4',
+    reason: 'Pemeriksaan gigi di RSUD Karsa Husada Batu (ada surat rujukan dokter)',
+    willReturn: 'Kembali',
+    status: 'Disetujui',
+    approvedBy: 'Drs. Supriyanto (Guru Piket)',
+    approvedAt: '09:18',
+    qrVerificationCode: 'VERIF-KS-001-SMABA',
+  },
+  {
+    id: 'prm-002',
+    permitNumber: 'IZIN-KK-20261007-002',
+    type: 'Keluar Kelas',
+    studentName: 'ADHE PRATAMA PUTRA RIANTO',
+    nisn: '0089882202',
+    className: 'X-1',
+    date: '2026-10-07',
+    timeSubmitted: '10:30',
+    subject: 'Bahasa Indonesia',
+    lessonHour: 'Jam ke-5',
+    reason: 'Mengambil referensi buku antologi puisi di Perpustakaan Pusat Sekolah',
+    status: 'Disetujui',
+    approvedBy: 'Dini Ayupratiwi, S.Pd',
+    approvedAt: '10:32',
+    qrVerificationCode: 'VERIF-KK-002-SMABA',
+  },
+  {
+    id: 'prm-003',
+    permitNumber: 'IZIN-SG-20261007-003',
+    type: 'Dispensasi Seragam',
+    studentName: 'AILIN CHAYA AGATHA',
+    nisn: '0089882206',
+    className: 'X-1',
+    date: '2026-10-07',
+    timeSubmitted: '06:45',
+    uniformViolationType: 'Sepatu Olahraga / Bukan Hitam Polos',
+    startDate: '2026-10-07',
+    estimatedEndDate: '2026-10-08',
+    reason: 'Sepatu hitam basah terkena hujan deras kemarin sore dan belum kering',
+    status: 'Disetujui',
+    approvedBy: 'Tim Ketertiban & Disiplin Positif',
+    approvedAt: '06:55',
+    qrVerificationCode: 'VERIF-SG-003-SMABA',
+  }
+];
+
