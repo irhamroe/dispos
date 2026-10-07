@@ -4,7 +4,7 @@ import {
   ShieldCheck, 
   CalendarDays,
   LogOut,
-  CloudCheck,
+  Cloud,
   CloudOff
 } from 'lucide-react';
 import { AdminUser, SchoolProfile } from '../types';

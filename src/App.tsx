@@ -859,9 +859,15 @@ export default function App() {
               classes={classes}
               schoolProfile={schoolProfile}
               currentUserName={currentUser.name}
-              onUpdateStatus={handleUpdateStudentPermitStatus}
+              onUpdatePermit={(updated) => {
+                setStudentPermits((prev) => {
+                  const next = prev.map((p) => p.id === updated.id ? updated : p);
+                  localStorage.setItem('app_sman1batu_student_permits_v1', JSON.stringify(next));
+                  return next;
+                });
+              }}
               onDeletePermit={handleDeleteStudentPermit}
-              onCreatePermit={handleCreateStudentPermit}
+              onOpenPublicPortal={() => setIsPublicPermitOpen(true)}
             />
           )}
 

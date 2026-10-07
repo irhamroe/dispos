@@ -34,7 +34,9 @@ interface PublicStudentPermitViewProps {
   students: Student[];
   classes: RombelClass[];
   onSubmitPermit: (permit: StudentPermitRecord) => void;
-  onBackToLogin: () => void;
+  onBackToLogin?: () => void;
+  onBackToApp?: () => void;
+  isTeacherOrAdminLoggedIn?: boolean;
 }
 
 export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = ({
@@ -43,6 +45,8 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
   classes,
   onSubmitPermit,
   onBackToLogin,
+  onBackToApp,
+  isTeacherOrAdminLoggedIn = false,
 }) => {
   const [activeTab, setActiveTab] = useState<StudentPermitType>('Keluar Sekolah');
 
@@ -180,15 +184,19 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={onBackToLogin}
-            className="px-3.5 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95"
-            title="Kembali ke portal login guru"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="hidden sm:inline">Portal Guru</span>
-          </button>
+          {(onBackToApp || onBackToLogin) && (
+            <button
+              type="button"
+              onClick={onBackToApp || onBackToLogin}
+              className="px-3.5 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95"
+              title={isTeacherOrAdminLoggedIn ? 'Kembali ke Dashboard Aplikasi' : 'Kembali ke portal login guru'}
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span className="hidden sm:inline">
+                {isTeacherOrAdminLoggedIn ? 'Kembali ke Dashboard' : 'Portal Guru'}
+              </span>
+            </button>
+          )}
         </div>
 
         {/* JIKA SUDAH BERHASIL SUBMIT: TAMPILKAN E-SURAT IZIN DIGITAL RESMI */}
