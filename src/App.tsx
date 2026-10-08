@@ -435,6 +435,13 @@ export default function App() {
             await batchSaveDocuments(COLLECTIONS.STUDENT_PERMITS, missingInCloud);
           }
         }
+
+        // Check & seed school profile if empty
+        const remoteProfile = await fetchAllDocuments<SchoolProfile>(COLLECTIONS.SCHOOL_PROFILE);
+        if (remoteProfile.length === 0) {
+          const profileToSave = { id: 'main_profile', ...schoolProfile };
+          await saveDocument(COLLECTIONS.SCHOOL_PROFILE, profileToSave);
+        }
       } catch (e) {
         console.warn('Auto-seed check failed:', e);
       }
