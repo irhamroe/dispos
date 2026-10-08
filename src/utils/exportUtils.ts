@@ -1128,7 +1128,7 @@ export const exportParentCallLetterToPdf = (data: ParentCallLetterData) => {
 
   // 5. Paragraf Pembuka
   curY += 8;
-  const introText = 'Sehubungan dengan adanya permasalahan yang harus diselesaikan bersama, maka kami mengharapkan kehadiran Bapak/Ibu Orang Tua/Wali Murid beserta siswa, pada:';
+  const introText = 'Sehubungan dengan adanya hal yang harus diselesaikan bersama, maka kami mengharapkan kehadiran Bapak/Ibu Orang Tua/Wali Murid beserta siswa, pada:';
   const splitIntro = doc.splitTextToSize(introText, pageWidth - (marginX * 2));
   doc.text(splitIntro, marginX, curY);
   curY += (splitIntro.length * 4.5) + 3;
@@ -1157,87 +1157,37 @@ export const exportParentCallLetterToPdf = (data: ParentCallLetterData) => {
   doc.text('Adapun rincian pelanggaran tata tertib yang telah dilakukan oleh siswa adalah sebagai berikut:', marginX, curY);
   curY += 3;
 
-  const totalPoints = violations.reduce((acc, v) => acc + (v.points || 0), 0);
-  const violationRows = violations.map((v, idx) => {
-    if (enablePointsSystem) {
-      return [
-        idx + 1,
-        v.date,
-        v.violationName,
-        v.category,
-        `${v.points} Poin`,
-        v.coachingStatus === 'Sudah' ? 'Sudah Dibina' : 'Belum Dibina',
-      ];
-    } else {
-      return [
-        idx + 1,
-        v.date,
-        v.violationName,
-        v.category,
-        v.coachingStatus === 'Sudah' ? 'Sudah Dibina' : 'Belum Dibina',
-      ];
-    }
-  });
+  const violationRows = violations.map((v, idx) => [
+    idx + 1,
+    v.date,
+    v.violationName,
+  ]);
 
-  const tableHead = enablePointsSystem
-    ? [['No', 'Tanggal', 'Jenis Pelanggaran', 'Kategori', 'Poin', 'Status Pembinaan']]
-    : [['No', 'Tanggal', 'Jenis Pelanggaran', 'Kategori', 'Status Pembinaan']];
+  const tableHead = [['No', 'Tanggal', 'Jenis Pelanggaran']];
+  const emptyBody = [['-', '-', 'Tidak ada catatan pelanggaran khusus / Pembinaan preventif berkala']];
 
-  const emptyBody = enablePointsSystem
-    ? [['-', '-', 'Tidak ada catatan pelanggaran khusus / Pembinaan preventif berkala', '-', '0 Poin', 'Selesai']]
-    : [['-', '-', 'Tidak ada catatan pelanggaran khusus / Pembinaan preventif berkala', '-', 'Selesai']];
-
-  const tableFoot = enablePointsSystem
-    ? (violationRows.length > 0 ? [[
-        { content: 'TOTAL POIN PELANGGARAN', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } },
-        { content: `${totalPoints} Poin`, styles: { halign: 'center', fontStyle: 'bold', textColor: [185, 28, 28] } },
-        { content: '', styles: { halign: 'center' } }
-      ]] : undefined)
-    : (violationRows.length > 0 ? [[
-        { content: 'TOTAL PELANGGARAN', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } },
-        { content: `${violations.length} Kejadian`, styles: { halign: 'center', fontStyle: 'bold', textColor: [15, 23, 42] } }
-      ]] : undefined);
-
-  const columnStylesConfig = enablePointsSystem
-    ? {
-        0: { halign: 'center', cellWidth: 8 },
-        1: { halign: 'center', cellWidth: 22 },
-        2: { halign: 'left', cellWidth: 'auto' },
-        3: { halign: 'center', cellWidth: 18 },
-        4: { halign: 'center', cellWidth: 16 },
-        5: { halign: 'center', cellWidth: 24 },
-      }
-    : {
-        0: { halign: 'center', cellWidth: 8 },
-        1: { halign: 'center', cellWidth: 24 },
-        2: { halign: 'left', cellWidth: 'auto' },
-        3: { halign: 'center', cellWidth: 20 },
-        4: { halign: 'center', cellWidth: 28 },
-      };
+  const columnStylesConfig = {
+    0: { halign: 'center', cellWidth: 10 },
+    1: { halign: 'center', cellWidth: 32 },
+    2: { halign: 'left', cellWidth: 'auto' },
+  };
 
   autoTable(doc, {
     startY: curY,
     head: tableHead,
     body: violationRows.length > 0 ? violationRows : emptyBody,
-    foot: tableFoot,
     theme: 'grid',
     headStyles: {
       fillColor: [30, 41, 59],
       textColor: [255, 255, 255],
-      fontSize: 7.5,
+      fontSize: 8,
       fontStyle: 'bold',
       halign: 'center',
     },
     bodyStyles: {
-      fontSize: 7,
-      textColor: [15, 23, 42],
-      cellPadding: 1.5,
-    },
-    footStyles: {
-      fillColor: [241, 245, 249],
-      textColor: [15, 23, 42],
       fontSize: 7.5,
-      fontStyle: 'bold',
+      textColor: [15, 23, 42],
+      cellPadding: 2,
     },
     columnStyles: columnStylesConfig as any,
     margin: { left: marginX, right: marginX },

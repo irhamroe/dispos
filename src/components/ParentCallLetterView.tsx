@@ -250,7 +250,7 @@ Bapak/Ibu Orang Tua/Wali Murid
 *${selectedStudent.name} (${selectedStudent.className})*
 di Tempat
 
-Sehubungan dengan adanya permasalahan yang harus diselesaikan bersama, maka kami mengharapkan kehadiran Bapak/Ibu Orang Tua/Wali Murid beserta siswa, pada:
+Sehubungan dengan adanya hal yang harus diselesaikan bersama, maka kami mengharapkan kehadiran Bapak/Ibu Orang Tua/Wali Murid beserta siswa, pada:
 
 📅 *Hari:* ${getDayNameIndonesian(callDate)}
 📆 *Tanggal:* ${formatDateIndonesian(callDate)}
@@ -292,7 +292,7 @@ Kepada Yth.
 Bapak/Ibu Orang Tua/Wali Murid
 *${selectedStudent.name} (${selectedStudent.className})*
 
-Sehubungan dengan adanya permasalahan yang harus diselesaikan bersama, maka kami mengharapkan kehadiran Bapak/Ibu Orang Tua/Wali Murid beserta siswa, pada:
+Sehubungan dengan adanya hal yang harus diselesaikan bersama, maka kami mengharapkan kehadiran Bapak/Ibu Orang Tua/Wali Murid beserta siswa, pada:
 📅 *Hari:* ${getDayNameIndonesian(callDate)}
 📆 *Tanggal:* ${formatDateIndonesian(callDate)}
 ⏰ *Waktu:* ${callTime}
@@ -938,7 +938,7 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
             {/* Paragraf Pembuka */}
             <div className="pt-1 space-y-1 font-serif text-[12px] text-justify leading-relaxed">
               <p className="indent-8">
-                Sehubungan dengan adanya permasalahan yang harus diselesaikan bersama, maka kami mengharapkan kehadiran Bapak/Ibu Orang Tua/Wali Murid beserta siswa, pada:
+                Sehubungan dengan adanya hal yang harus diselesaikan bersama, maka kami mengharapkan kehadiran Bapak/Ibu Orang Tua/Wali Murid beserta siswa, pada:
               </p>
             </div>
 
@@ -975,70 +975,30 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
               <table className="w-full border-collapse border border-slate-300 font-sans text-[11px]">
                 <thead>
                   <tr className="bg-slate-100 border-b border-slate-300 text-slate-800 font-bold">
-                    <th className="border border-slate-300 py-1 px-2 w-8 text-center">No</th>
-                    <th className="border border-slate-300 py-1 px-2 w-24 text-center">Tanggal</th>
-                    <th className="border border-slate-300 py-1 px-2 text-left">Jenis Pelanggaran</th>
-                    <th className="border border-slate-300 py-1 px-2 w-20 text-center">Kategori</th>
-                    {enablePointsSystem && (
-                      <th className="border border-slate-300 py-1 px-2 w-16 text-center">Poin</th>
-                    )}
-                    <th className="border border-slate-300 py-1 px-2 w-28 text-center">Status Pembinaan</th>
+                    <th className="border border-slate-300 py-1.5 px-2 w-10 text-center">No</th>
+                    <th className="border border-slate-300 py-1.5 px-2 w-28 text-center">Tanggal</th>
+                    <th className="border border-slate-300 py-1.5 px-3 text-left">Jenis Pelanggaran</th>
                   </tr>
                 </thead>
                 <tbody>
                   {includedViolations.length === 0 ? (
                     <tr>
-                      <td colSpan={enablePointsSystem ? 6 : 5} className="border border-slate-300 py-2.5 text-center text-slate-500 italic">
+                      <td colSpan={3} className="border border-slate-300 py-2.5 text-center text-slate-500 italic">
                         Tidak ada catatan pelanggaran khusus / Pembinaan preventif berkala.
                       </td>
                     </tr>
                   ) : (
                     includedViolations.map((v, idx) => (
                       <tr key={v.id} className="border-b border-slate-200">
-                        <td className="border border-slate-300 py-1 px-2 text-center text-slate-600">{idx + 1}</td>
-                        <td className="border border-slate-300 py-1 px-2 text-center whitespace-nowrap">{v.date}</td>
-                        <td className="border border-slate-300 py-1 px-2">
-                          <span className="font-semibold text-slate-900">{v.violationName}</span>
-                          {v.description && (
-                            <div className="text-[10px] text-slate-500 italic">
-                              Ket: {v.description}
-                            </div>
-                          )}
-                        </td>
-                        <td className="border border-slate-300 py-1 px-2 text-center">{v.category}</td>
-                        {enablePointsSystem && (
-                          <td className="border border-slate-300 py-1 px-2 text-center font-bold text-rose-700">
-                            {v.points}
-                          </td>
-                        )}
-                        <td className="border border-slate-300 py-1 px-2 text-center">
-                          {v.coachingStatus === 'Sudah' ? (
-                            <span className="text-emerald-700 font-semibold">Sudah Dibina</span>
-                          ) : (
-                            <span className="text-rose-700 font-semibold">Belum Dibina</span>
-                          )}
+                        <td className="border border-slate-300 py-1.5 px-2 text-center text-slate-600">{idx + 1}</td>
+                        <td className="border border-slate-300 py-1.5 px-2 text-center whitespace-nowrap">{v.date}</td>
+                        <td className="border border-slate-300 py-1.5 px-3 font-semibold text-slate-900">
+                          {v.violationName}
                         </td>
                       </tr>
                     ))
                   )}
                 </tbody>
-                {includedViolations.length > 0 && (
-                  <tfoot>
-                    <tr className="bg-slate-50 font-bold border-t border-slate-400">
-                      <td colSpan={4} className="border border-slate-300 py-1 px-3 text-right">
-                        TOTAL POIN:
-                      </td>
-                      {enablePointsSystem && (
-                        <td className="border border-slate-300 py-1 px-2 text-center text-rose-700 font-black">
-                          {totalPoints} Poin
-                        </td>
-                      )}
-                      <td className="border border-slate-300 py-1 px-2 text-center text-slate-600 text-[10px]">
-                        {includedViolations.length} Catatan
-                      </td>
-                    </tr>
-                  </tfoot>
-                )}
               </table>
             </div>
 
