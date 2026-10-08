@@ -19,10 +19,20 @@ import {
   Image as ImageIcon,
   Paperclip,
   Cloud,
-  ExternalLink
+  ExternalLink,
+  Printer,
+  FileCheck2,
+  Camera,
+  Award
 } from 'lucide-react';
 import { DisciplineRecord, SchoolProfile, Student } from '../types';
-import { exportDisciplineToExcel, exportDisciplineToPdf, formatDateIndonesian } from '../utils/exportUtils';
+import { 
+  exportDisciplineToExcel, 
+  exportDisciplineToPdf, 
+  exportCoachingProofLetterPdf, 
+  exportCoachingPhotoProofPdf, 
+  formatDateIndonesian 
+} from '../utils/exportUtils';
 import { sortClasses, sortDisciplineRecords } from '../utils/sortUtils';
 import { getGoogleDriveDirectImageUrl, getGoogleDriveViewUrl } from '../services/googleDriveService';
 
@@ -387,7 +397,7 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                 <th className="py-4 px-4 text-center w-40">Status Pembinaan</th>
                 <th className="py-4 px-4 w-36 text-center">Tanggal Pembinaan</th>
                 <th className="py-4 px-4 text-center w-32">Bukti & Foto</th>
-                <th className="py-4 px-4 text-center w-28">Aksi</th>
+                <th className="py-4 px-4 text-center w-48">Aksi & Cetak</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
@@ -491,15 +501,43 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                         </div>
                       </td>
                       <td className="py-4 px-4 text-center">
-                        <button
-                          type="button"
-                          onClick={() => setActiveRecordForDetail(rec)}
-                          className="px-3 py-1.5 rounded-xl bg-white/90 hover:bg-white text-[#0F172A] font-extrabold text-xs shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none transition-all flex items-center justify-center gap-1.5 mx-auto cursor-pointer"
-                          
-                        >
-                          <Eye className="w-3.5 h-3.5 text-[#0284C7]" />
-                          <span>Detail</span>
-                        </button>
+                        <div className="flex items-center justify-center gap-1.5 flex-wrap">
+                          <button
+                            type="button"
+                            onClick={() => setActiveRecordForDetail(rec)}
+                            className="px-2.5 py-1.5 rounded-xl bg-white/90 hover:bg-white text-[#0F172A] font-extrabold text-xs shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none transition-all flex items-center gap-1 cursor-pointer border border-slate-200/80"
+                            title="Lihat Detail Pelanggaran"
+                          >
+                            <Eye className="w-3.5 h-3.5 text-[#0284C7]" />
+                            <span>Detail</span>
+                          </button>
+
+                          {isSudah && (
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => exportCoachingProofLetterPdf(schoolProfile, rec)}
+                                className="px-2.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none transition-all flex items-center gap-1 cursor-pointer"
+                                title="Cetak Surat Bukti Pembinaan Siswa (PDF)"
+                              >
+                                <FileCheck2 className="w-3.5 h-3.5 text-white" />
+                                <span>Surat</span>
+                              </button>
+
+                              {rec.coachingPhoto && (
+                                <button
+                                  type="button"
+                                  onClick={() => exportCoachingPhotoProofPdf(schoolProfile, rec)}
+                                  className="px-2.5 py-1.5 rounded-xl bg-teal-500 hover:bg-teal-600 text-white font-extrabold text-xs shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none transition-all flex items-center gap-1 cursor-pointer"
+                                  title="Cetak Lembar Foto Bukti Pembinaan (PDF)"
+                                >
+                                  <Camera className="w-3.5 h-3.5 text-white" />
+                                  <span>Foto</span>
+                                </button>
+                              )}
+                            </>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   );
@@ -575,10 +613,15 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
               </div>
 
               {activeRecordForDetail.coachingStatus === 'Sudah' && (
-                <div className="p-5 rounded-2xl bg-teal-50/80 border border-teal-200 space-y-3 shadow-xs">
-                  <div className="font-black text-teal-900 flex items-center gap-2" >
-                    <CheckCircle2 className="w-5 h-5 text-teal-600" />
-                    <span>Dokumentasi Pembinaan Siswa</span>
+                <div className="p-5 rounded-2xl bg-teal-50/80 border border-teal-200 space-y-4 shadow-xs">
+                  <div className="font-black text-teal-900 flex items-center justify-between gap-2" >
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-teal-600" />
+                      <span>Dokumentasi Pembinaan Siswa</span>
+                    </div>
+                    <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 rounded-lg text-[10px] font-extrabold">
+                      Tuntas Dibina
+                    </span>
                   </div>
                   {activeRecordForDetail.coachingDate && (
                     <div className="text-[#0F172A]">
@@ -643,6 +686,34 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                       )}
                     </div>
                   )}
+
+                  {/* Quick PDF Print Actions for Completed Coaching */}
+                  <div className="pt-3 border-t border-teal-200/80 space-y-2">
+                    <p className="text-[11px] font-black text-teal-950 uppercase tracking-wider">
+                      Cetak Berkas Bukti Resmi:
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <button
+                        type="button"
+                        onClick={() => exportCoachingProofLetterPdf(schoolProfile, activeRecordForDetail)}
+                        className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black text-xs shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-[0.92] transition-all flex items-center justify-center gap-2 cursor-pointer flex-1"
+                      >
+                        <Printer className="w-4 h-4 text-white" />
+                        <span>Cetak Surat Bukti Pembinaan</span>
+                      </button>
+
+                      {activeRecordForDetail.coachingPhoto && (
+                        <button
+                          type="button"
+                          onClick={() => exportCoachingPhotoProofPdf(schoolProfile, activeRecordForDetail)}
+                          className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-black text-xs shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-[0.92] transition-all flex items-center justify-center gap-2 cursor-pointer flex-1"
+                        >
+                          <Camera className="w-4 h-4 text-white" />
+                          <span>Cetak Lembar Foto Bukti</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
               )}
 
