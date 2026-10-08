@@ -1038,12 +1038,12 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                       </td>
                       <td className="py-3.5 px-4">
                         <div className="font-bold text-slate-900">{rec.studentName}</div>
-                        <div className="text-[11px] text-slate-500 mt-0.5 flex items-center gap-1.5">
-                          <span className="font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-md border border-emerald-200">
+                        <div className="text-[11px] text-slate-500 mt-1 flex items-center gap-1.5 flex-wrap">
+                          <span className="inline-flex items-center justify-center font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 whitespace-nowrap shrink-0 leading-tight">
                             {rec.className}
                           </span>
                           <span>•</span>
-                          <span>NISN: {rec.nisn}</span>
+                          <span className="whitespace-nowrap">NISN: {rec.nisn}</span>
                         </div>
                       </td>
                       <td className="py-3.5 px-4">
