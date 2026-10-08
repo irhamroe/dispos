@@ -210,18 +210,60 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
   }, [permits, checkStudentId, checkClass]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B2545] via-[#134074] to-[#0A192F] py-8 px-4 sm:px-6 lg:px-8 relative font-roboto text-slate-900 selection:bg-sky-500 selection:text-white">
+    <div className="min-h-screen bg-gradient-to-br from-[#0B2545] via-[#134074] to-[#0A192F] py-8 px-4 sm:px-6 lg:px-8 relative font-roboto text-slate-900 selection:bg-sky-500 selection:text-white print:p-0 print:m-0 print:bg-white print:min-h-0">
+      {/* Print-specific style: Isolasi HANYA printable-student-permit yang tercetak / simpan PDF */}
+      <style>{`
+        @media print {
+          @page {
+            size: A5 portrait;
+            margin: 8mm;
+          }
+          html, body {
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            height: auto !important;
+            min-height: 0 !important;
+          }
+          body * {
+            visibility: hidden !important;
+          }
+          #printable-student-permit,
+          #printable-student-permit * {
+            visibility: visible !important;
+          }
+          #printable-student-permit {
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 16px !important;
+            border: 2px solid #0f172a !important;
+            border-radius: 20px !important;
+            box-shadow: none !important;
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+            overflow: visible !important;
+          }
+        }
+      `}</style>
+
       {/* Decorative Ambient Shapes */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden -z-10" aria-hidden="true">
+      <div className="pointer-events-none fixed inset-0 overflow-hidden -z-10 print:hidden" aria-hidden="true">
         <div className="absolute -top-[15%] -left-[10%] w-[70vh] h-[70vh] rounded-full bg-sky-500/20 blur-3xl animate-md-drift-1" />
         <div className="absolute top-[30%] -right-[15%] w-[65vh] h-[65vh] rounded-full bg-blue-600/25 blur-3xl animate-md-drift-2" />
         <div className="absolute -bottom-[20%] left-[25%] w-[60vh] h-[60vh] rounded-full bg-teal-500/15 blur-3xl animate-md-drift-1" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(14,165,233,0.12)_0%,_transparent_70%)]" />
       </div>
 
-      <div className="max-w-3xl mx-auto space-y-6">
+      <div className="max-w-3xl mx-auto space-y-6 print:w-full print:m-0 print:p-0 print:space-y-0">
         {/* Top Header Bar */}
-        <div className="flex items-center justify-between bg-white/10 backdrop-blur-xl p-4 rounded-[28px] border border-white/20 shadow-xl text-white">
+        <div className="flex items-center justify-between bg-white/10 backdrop-blur-xl p-4 rounded-[28px] border border-white/20 shadow-xl text-white print:hidden">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl bg-white p-1.5 flex items-center justify-center shadow-md shrink-0 border border-sky-100">
               <img src="/logo.png" alt={schoolProfile.name} className="w-full h-full object-contain" />
@@ -455,9 +497,6 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                       <h2 className="font-black text-sm tracking-wide text-slate-950 uppercase leading-tight">
                         {schoolProfile.name}
                       </h2>
-                      <p className="text-[9px] text-slate-600 leading-tight">
-                        TIM DISIPLIN POSITIF &amp; GURU PIKET KESISWAAN
-                      </p>
                     </div>
                     <div className="w-12 shrink-0 hidden sm:block" />
                   </div>
@@ -547,19 +586,15 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                         <QrCode className="w-full h-full text-slate-900" />
                       </div>
                       <div className="text-left text-xs">
-                        <div className="text-[10px] text-slate-500 uppercase font-bold">Verifikasi Guru Piket</div>
+                        <div className="text-[10px] text-slate-500 uppercase font-bold">Verifikasi Disiplin Positif</div>
                         <div className="text-xs font-mono font-bold text-emerald-800">
-                          DISETUJUI OLEH {activePermit.approvedBy ? activePermit.approvedBy.toUpperCase() : 'GURU PIKET'}
-                        </div>
-                        <div className="text-[11px] text-emerald-700 font-bold flex items-center gap-1 mt-0.5">
-                          <CheckCircle2 className="w-3.5 h-3.5" />
-                          <span>Data resmi tercatat di SIM Dispos SMAN 1 Batu</span>
+                          DISETUJUI OLEH {activePermit.approvedBy ? activePermit.approvedBy.toUpperCase() : 'DISIPLIN POSITIF'}
                         </div>
                       </div>
                     </div>
 
                     <div className="text-right text-xs">
-                      <div className="text-slate-600">Guru Piket / Kesiswaan</div>
+                      <div className="text-slate-600">Disiplin Positif</div>
                       <div className="h-8 flex items-center justify-end">
                         <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-black rounded border border-emerald-300 uppercase">
                           VERIFIED
@@ -573,7 +608,7 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                 </div>
 
                 {/* Tombol Aksi */}
-                <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-2 print:hidden">
                   <button
                     type="button"
                     onClick={handleResetForm}
