@@ -44,6 +44,18 @@ interface PublicStudentPermitViewProps {
   isTeacherOrAdminLoggedIn?: boolean;
 }
 
+const LESSON_HOUR_OPTIONS = [
+  'Jam ke-1 s/d 2',
+  'Jam ke-2 s/d 3',
+  'Jam ke-3 s/d 4',
+  'Jam ke-4 s/d 5',
+  'Jam ke-5 s/d 6',
+  'Jam ke-6 s/d 7',
+  'Jam ke-7 s/d 8',
+  'Jam ke-8 s/d 9',
+  'Jam ke-9 s/d 10',
+];
+
 export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = ({
   schoolProfile,
   students,
@@ -65,7 +77,7 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
 
   // Form Fields for Exit School / Exit Class
   const [subject, setSubject] = useState<string>('');
-  const [lessonHour, setLessonHour] = useState<string>('Jam ke-3 s/d 4');
+  const [lessonHour, setLessonHour] = useState<string>('Jam ke-1 s/d 2');
   const [reason, setReason] = useState<string>('');
   const [willReturn, setWillReturn] = useState<'Kembali' | 'Tidak Kembali'>('Kembali');
 
@@ -946,14 +958,17 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                       <label className="block font-black text-[#0F172A] mb-1">
                         Jam Pelajaran Ke- <span className="text-rose-500">*</span>
                       </label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="Contoh: Jam ke-3 s/d 4 (09.00 - 10.30)"
+                      <select
                         value={lessonHour}
                         onChange={(e) => setLessonHour(e.target.value)}
-                        className="w-full px-4 py-2.5 bg-white rounded-2xl text-xs font-bold text-[#0F172A] border border-sky-200 shadow-2xs focus:outline-hidden focus:ring-4 focus:ring-sky-500/20"
-                      />
+                        className="w-full px-4 py-2.5 bg-white rounded-2xl text-xs font-bold text-[#0F172A] border border-sky-200 shadow-2xs focus:outline-hidden focus:ring-4 focus:ring-sky-500/20 cursor-pointer"
+                      >
+                        {LESSON_HOUR_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt}>
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
 
@@ -1051,14 +1066,17 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                       <label className="block font-black text-[#0F172A] mb-1">
                         Jam Pelajaran Ke- <span className="text-rose-500">*</span>
                       </label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="Contoh: Jam ke-5 (10.45 - 11.30)"
+                      <select
                         value={lessonHour}
                         onChange={(e) => setLessonHour(e.target.value)}
-                        className="w-full px-4 py-2.5 bg-white rounded-2xl text-xs font-bold text-[#0F172A] border border-emerald-200 shadow-2xs focus:outline-hidden focus:ring-4 focus:ring-emerald-500/20"
-                      />
+                        className="w-full px-4 py-2.5 bg-white rounded-2xl text-xs font-bold text-[#0F172A] border border-emerald-200 shadow-2xs focus:outline-hidden focus:ring-4 focus:ring-emerald-500/20 cursor-pointer"
+                      >
+                        {LESSON_HOUR_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt}>
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
 

@@ -222,11 +222,27 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
   };
 
   // Generate URL for QR code (points to public portal)
-  const publicPortalUrl = typeof window !== 'undefined' 
-    ? `${window.location.origin}${window.location.pathname}?view=izin-siswa`
-    : 'https://dispos-smaba.vercel.app?view=izin-siswa';
+  const [customPortalUrl, setCustomPortalUrl] = useState<string>(() => {
+    return localStorage.getItem('app_sman1batu_portal_qr_url') || '';
+  });
 
-  const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(publicPortalUrl)}&margin=10`;
+  const publicPortalUrl = useMemo(() => {
+    if (customPortalUrl.trim()) return customPortalUrl.trim();
+    if (typeof window !== 'undefined') {
+      const origin = window.location.origin;
+      // If hosted online on live domain (Vercel, school domain, etc.)
+      if (!origin.includes('localhost') && !origin.includes('127.0.0.1')) {
+        const cleanPath = window.location.pathname.endsWith('/') 
+          ? window.location.pathname 
+          : `${window.location.pathname}/`;
+        return `${origin}${cleanPath}?view=izin-siswa`;
+      }
+    }
+    // Default online URL so mobile phones scanning from localhost can immediately open the live web app
+    return 'https://dispos-smaba.vercel.app/?view=izin-siswa';
+  }, [customPortalUrl]);
+
+  const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=450x450&data=${encodeURIComponent(publicPortalUrl)}&margin=10&format=png&ecc=M`;
 
   return (
     <div className="space-y-6 pb-12 font-roboto text-[#0F172A]">
@@ -981,7 +997,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
             </div>
 
             {/* Standee Poster Preview */}
-            <div className="border-4 border-indigo-600 rounded-3xl p-6 bg-gradient-to-br from-indigo-50 via-white to-sky-50 text-center space-y-4 shadow-sm">
+            <div id="printable-qr-standee" className="border-4 border-indigo-600 rounded-3xl p-6 bg-gradient-to-br from-indigo-50 via-white to-sky-50 text-center space-y-4 shadow-sm">
               <div className="flex items-center justify-center gap-2">
                 <img src="/logo.png" alt="Logo" className="w-12 h-12 object-contain" />
                 <div className="text-left">
@@ -1000,18 +1016,67 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
               </div>
 
               {/* QR Image */}
-              <div className="w-48 h-48 mx-auto bg-white p-2.5 rounded-2xl shadow-md border-2 border-indigo-200 flex items-center justify-center">
+              <div className="w-52 h-52 mx-auto bg-white p-2.5 rounded-2xl shadow-md border-2 border-indigo-200 flex items-center justify-center">
                 <img src={qrImageUrl} alt="QR Code Izin Siswa" className="w-full h-full object-contain" />
               </div>
 
               <div className="space-y-1 text-xs text-slate-700">
                 <p className="font-black text-slate-900">Petunjuk Pengisian Siswa:</p>
                 <ol className="text-[11px] text-slate-600 list-decimal list-inside space-y-0.5 text-left max-w-xs mx-auto">
-                  <li>Scan QR menggunakan kamera HP</li>
-                  <li>Pilih jenis izin &amp; isi form tanpa login</li>
-                  <li>Tunggu persetujuan guru piket di sistem</li>
+                  <li>Arahkan kamera HP / Google Lens ke QR Code</li>
+                  <li>Ketuk tombol <strong className="text-indigo-700">"Buka di Browser"</strong> yang muncul</li>
+                  <li>Pilih jenis izin &amp; kirim formulir tanpa login</li>
+                  <li>Tunggu persetujuan Guru Piket di meja piket</li>
                 </ol>
               </div>
+            </div>
+
+            {/* URL Configuration / Link Info (Non-printed setting) */}
+            <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-2 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="font-black text-slate-800 text-[11px] uppercase tracking-wider">
+                  Tautan Web Tujuan QR Code:
+                </span>
+                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">
+                  Auto-Open HTTPS
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={customPortalUrl || publicPortalUrl}
+                  onChange={(e) => {
+                    setCustomPortalUrl(e.target.value);
+                    localStorage.setItem('app_sman1batu_portal_qr_url', e.target.value.trim());
+                  }}
+                  placeholder="https://dispos-smaba.vercel.app/?view=izin-siswa"
+                  className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono font-bold text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(publicPortalUrl);
+                    alert('Tautan portal siswa berhasil disalin ke clipboard!');
+                  }}
+                  className="px-3 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                  title="Salin Tautan"
+                >
+                  Salin
+                </button>
+                <a
+                  href={publicPortalUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1"
+                  title="Buka Langsung"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Buka</span>
+                </a>
+              </div>
+              <p className="text-[10px] text-slate-500 leading-tight">
+                *Tautan QR code telah dikonfigurasi dengan protokol web standar sehingga kamera HP (Android/iPhone) langsung mendeteksinya sebagai tautan web otomatis.
+              </p>
             </div>
 
             {/* Modal Footer */}
