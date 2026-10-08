@@ -282,11 +282,11 @@ export default function App() {
   });
 
   // Create new permit (Public form submission)
-  const handleCreateStudentPermit = (permitData: Omit<StudentPermitRecord, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const handleCreateStudentPermit = (permitData: StudentPermitRecord | Omit<StudentPermitRecord, 'id' | 'createdAt' | 'updatedAt'>) => {
     const newRecord: StudentPermitRecord = {
       ...permitData,
-      id: `PERMIT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-      createdAt: new Date().toISOString(),
+      id: ('id' in permitData && permitData.id) ? permitData.id : `PERMIT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      createdAt: ('createdAt' in permitData && permitData.createdAt) ? permitData.createdAt : new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
     setStudentPermits((prev) => {
@@ -780,6 +780,7 @@ export default function App() {
         students={students}
         classes={classes}
         schoolProfile={schoolProfile}
+        permits={studentPermits}
         onSubmitPermit={handleCreateStudentPermit}
         onBackToApp={() => {
           setIsPublicPermitOpen(false);

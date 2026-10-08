@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   LogOut, 
   DoorOpen, 
@@ -22,17 +22,22 @@ import {
   School,
   ExternalLink,
   ChevronRight,
-  HelpCircle
+  HelpCircle,
+  RefreshCw,
+  Search,
+  XCircle,
+  Clock4
 } from 'lucide-react';
 import { Student, SchoolProfile, StudentPermitRecord, StudentPermitType } from '../types';
 import { RombelClass } from '../data/initialData';
-import { formatDateIndonesian, formatDayAndDateIndonesian, getTodayDateString, getTodayIndonesian } from '../utils/exportUtils';
+import { formatDateIndonesian, formatDayAndDateIndonesian, getTodayDateString } from '../utils/exportUtils';
 import { sortClasses, sortStudents } from '../utils/sortUtils';
 
 interface PublicStudentPermitViewProps {
   schoolProfile: SchoolProfile;
   students: Student[];
   classes: RombelClass[];
+  permits?: StudentPermitRecord[];
   onSubmitPermit: (permit: StudentPermitRecord) => void;
   onBackToLogin?: () => void;
   onBackToApp?: () => void;
@@ -43,16 +48,17 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
   schoolProfile,
   students,
   classes,
+  permits = [],
   onSubmitPermit,
   onBackToLogin,
   onBackToApp,
   isTeacherOrAdminLoggedIn = false,
 }) => {
   const [activeTab, setActiveTab] = useState<StudentPermitType>('Keluar Sekolah');
+  const [portalMode, setPortalMode] = useState<'FORM' | 'STATUS_CHECK'>('FORM');
 
   // Form states
   const [selectedClass, setSelectedClass] = useState<string>('X-1');
-  const [studentSearch, setStudentSearch] = useState<string>('');
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [customStudentName, setCustomStudentName] = useState<string>('');
   const [customNisn, setCustomNisn] = useState<string>('');
@@ -73,14 +79,37 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
     return d.toISOString().slice(0, 10);
   });
 
-  // Submission success state (Digital e-Pass Preview)
-  const [submittedPermit, setSubmittedPermit] = useState<StudentPermitRecord | null>(null);
+  // Track active submitted / viewed permit
+  const [activePermitId, setActivePermitId] = useState<string | null>(null);
+  const [localSubmittedPermit, setLocalSubmittedPermit] = useState<StudentPermitRecord | null>(null);
 
-  // Filter students in the selected class
+  // Status check lookup state
+  const [checkClass, setCheckClass] = useState<string>('X-1');
+  const [checkStudentId, setCheckStudentId] = useState<string>('');
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+
+  // Derive current permit from permits prop (for real-time Firestore sync) or local fallback
+  const activePermit = useMemo(() => {
+    if (!activePermitId) return null;
+    const found = permits.find((p) => p.id === activePermitId);
+    if (found) return found;
+    if (localSubmittedPermit && localSubmittedPermit.id === activePermitId) {
+      return localSubmittedPermit;
+    }
+    return null;
+  }, [activePermitId, permits, localSubmittedPermit]);
+
+  // Filter students in the selected class for form
   const classStudents = useMemo(() => {
     const list = students.filter((s) => s.className === selectedClass);
     return sortStudents(list);
   }, [students, selectedClass]);
+
+  // Filter students in the selected class for status check
+  const checkClassStudents = useMemo(() => {
+    const list = students.filter((s) => s.className === checkClass);
+    return sortStudents(list);
+  }, [students, checkClass]);
 
   // Handle student selection from dropdown
   const handleSelectStudent = (s: Student) => {
@@ -89,7 +118,6 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
     setCustomNisn(s.nisn);
   };
 
-  // Pre-fill student if student search matches or dropdown changes
   const handleClassChange = (className: string) => {
     setSelectedClass(className);
     setSelectedStudent(null);
@@ -111,17 +139,12 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
     const timeSubmitted = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
     const todayDate = getTodayDateString();
 
-    let prefix = 'IZIN-KS';
-    if (activeTab === 'Keluar Kelas') prefix = 'IZIN-KK';
-    if (activeTab === 'Dispensasi Seragam') prefix = 'IZIN-SG';
-
-    const randomSuffix = Math.floor(100 + Math.random() * 900);
-    const permitNumber = `${prefix}-${todayDate.replace(/-/g, '')}-${randomSuffix}`;
-    const qrCode = `VERIF-${permitNumber}-SMAN1BATU`;
+    const permitId = `PERMIT-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    const qrCode = `VERIF-${todayDate.replace(/-/g, '')}-${permitId.slice(-6)}-SMAN1BATU`;
 
     const newPermit: StudentPermitRecord = {
-      id: `prm-${Date.now()}`,
-      permitNumber,
+      id: permitId,
+      permitNumber: `IZIN-${todayDate.replace(/-/g, '')}-${Math.floor(100 + Math.random() * 900)}`,
       type: activeTab,
       studentId: selectedStudent?.id,
       studentName: finalStudentName,
@@ -143,17 +166,36 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
     };
 
     onSubmitPermit(newPermit);
-    setSubmittedPermit(newPermit);
+    setLocalSubmittedPermit(newPermit);
+    setActivePermitId(permitId);
   };
 
   const handleResetForm = () => {
-    setSubmittedPermit(null);
+    setActivePermitId(null);
+    setLocalSubmittedPermit(null);
     setReason('');
     setSubject('');
     setCustomStudentName('');
     setCustomNisn('');
     setSelectedStudent(null);
+    setPortalMode('FORM');
   };
+
+  const handleRefreshStatus = () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 600);
+  };
+
+  // Find permits for status check
+  const studentPermitsToday = useMemo(() => {
+    if (!checkStudentId) return [];
+    const today = getTodayDateString();
+    return permits.filter(
+      (p) => (p.studentId === checkStudentId || p.className === checkClass) && p.date === today
+    );
+  }, [permits, checkStudentId, checkClass]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0B2545] via-[#134074] to-[#0A192F] py-8 px-4 sm:px-6 lg:px-8 relative font-roboto text-slate-900 selection:bg-sky-500 selection:text-white">
@@ -199,173 +241,516 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
           )}
         </div>
 
-        {/* JIKA SUDAH BERHASIL SUBMIT: TAMPILKAN E-SURAT IZIN DIGITAL RESMI */}
-        {submittedPermit ? (
-          <div className="bg-white rounded-[32px] p-6 sm:p-8 shadow-2xl border border-white space-y-6 animate-in fade-in zoom-in-95">
-            <div className="p-4 bg-emerald-500 text-white rounded-2xl shadow-sm flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h2 className="text-sm sm:text-base font-black">Permohonan Izin Berhasil Terkirim!</h2>
-                  <p className="text-xs text-emerald-100">
-                    Tunjukkan e-Surat Izin ini kepada Guru Piket / Satpam untuk verifikasi persetujuan.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* E-Pass Card Preview */}
-            <div 
-              id="printable-student-permit"
-              className="border-2 border-slate-300 rounded-[28px] p-6 sm:p-8 bg-gradient-to-br from-slate-50 via-white to-sky-50/40 space-y-4 shadow-sm relative overflow-hidden font-serif"
+        {/* NAVIGATION MODE: AJUKAN IZIN vs CEK STATUS */}
+        {!activePermit && (
+          <div className="flex bg-white/10 backdrop-blur-md p-1.5 rounded-2xl border border-white/15">
+            <button
+              type="button"
+              onClick={() => setPortalMode('FORM')}
+              className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                portalMode === 'FORM'
+                  ? 'bg-white text-[#0B2545] shadow-md'
+                  : 'text-white/80 hover:text-white hover:bg-white/10'
+              }`}
             >
-              {/* Header Kop Mini */}
-              <div className="flex items-center gap-3 pb-3 border-b-2 border-slate-900">
-                <img src="/logo.png" alt="Logo SMAN 1 Batu" className="w-12 h-12 object-contain shrink-0" />
-                <div className="text-center flex-1 font-sans">
-                  <h3 className="font-bold text-[11px] tracking-wider text-slate-800 uppercase leading-tight">
-                    PEMERINTAH PROVINSI JAWA TIMUR • DINAS PENDIDIKAN
-                  </h3>
-                  <h2 className="font-black text-sm tracking-wide text-slate-950 uppercase leading-tight">
-                    {schoolProfile.name}
-                  </h2>
-                  <p className="text-[9px] text-slate-600 leading-tight">
-                    TIM DISIPLIN POSITIF &amp; GURU PIKET KESISWAAN
-                  </p>
-                </div>
-                <div className="w-12 shrink-0 hidden sm:block" />
-              </div>
+              <Send className="w-4 h-4" />
+              <span>Ajukan Permohonan Izin</span>
+            </button>
 
-              {/* Title & Badge */}
-              <div className="text-center pt-1 font-sans">
-                <span className="inline-block px-3 py-1 rounded-full text-xs font-black bg-sky-100 text-sky-900 border border-sky-300 uppercase tracking-wide">
-                  SURAT IZIN: {submittedPermit.type.toUpperCase()}
-                </span>
-                <div className="text-xs text-slate-600 font-mono mt-1">
-                  No: <strong className="text-slate-900">{submittedPermit.permitNumber}</strong>
-                </div>
-              </div>
+            <button
+              type="button"
+              onClick={() => setPortalMode('STATUS_CHECK')}
+              className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                portalMode === 'STATUS_CHECK'
+                  ? 'bg-white text-[#0B2545] shadow-md'
+                  : 'text-white/80 hover:text-white hover:bg-white/10'
+              }`}
+            >
+              <Search className="w-4 h-4" />
+              <span>Cek Status Permohonan</span>
+            </button>
+          </div>
+        )}
 
-              {/* Detail Identitas Siswa */}
-              <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs font-sans text-xs space-y-2">
-                <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
-                  <span className="text-slate-600">Nama Siswa</span>
-                  <span>:</span>
-                  <span className="font-black text-slate-950 text-sm uppercase">{submittedPermit.studentName}</span>
-                </div>
-                <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
-                  <span className="text-slate-600">Kelas / NISN</span>
-                  <span>:</span>
-                  <span className="font-bold text-slate-900">Kelas {submittedPermit.className} • {submittedPermit.nisn}</span>
-                </div>
-                <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
-                  <span className="text-slate-600">Waktu Pengajuan</span>
-                  <span>:</span>
-                  <span className="text-slate-800">{formatDateIndonesian(submittedPermit.date)}, Pukul {submittedPermit.timeSubmitted} WIB</span>
-                </div>
-
-                {submittedPermit.subject && (
-                  <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
-                    <span className="text-slate-600">Mata Pelajaran</span>
-                    <span>:</span>
-                    <span className="font-semibold text-slate-900">{submittedPermit.subject}</span>
+        {/* ---------------------------------------------------- */}
+        {/* TAMPILAN STATUS / SURAT IZIN AKTIF */}
+        {/* ---------------------------------------------------- */}
+        {activePermit ? (
+          <div className="space-y-6">
+            {/* KONDISI 1: STATUS MENUNGGU PERSETUJUAN */}
+            {activePermit.status === 'Menunggu' && (
+              <div className="bg-white rounded-[32px] p-6 sm:p-8 shadow-2xl border border-white space-y-6 animate-in fade-in zoom-in-95">
+                {/* Header Menunggu */}
+                <div className="p-5 bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 text-white rounded-2xl shadow-md flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center shrink-0 animate-pulse">
+                      <Clock4 className="w-7 h-7 text-white" />
+                    </div>
+                    <div>
+                      <div className="text-[10px] uppercase font-black tracking-wider text-amber-200 bg-black/15 px-2 py-0.5 rounded-md inline-block">
+                        Status: Menunggu Persetujuan
+                      </div>
+                      <h2 className="text-base sm:text-lg font-black mt-0.5">
+                        Permohonan Izin Terkirim ke Guru Piket
+                      </h2>
+                      <p className="text-xs text-amber-100">
+                        Silakan menghadap Guru Piket di Meja Piket untuk mendapatkan persetujuan.
+                      </p>
+                    </div>
                   </div>
-                )}
 
-                {submittedPermit.lessonHour && (
-                  <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
-                    <span className="text-slate-600">Jam Pelajaran</span>
-                    <span>:</span>
-                    <span className="font-semibold text-slate-900">{submittedPermit.lessonHour}</span>
+                  <button
+                    type="button"
+                    onClick={handleRefreshStatus}
+                    className="p-2.5 rounded-xl bg-white/20 hover:bg-white/30 text-white transition-all cursor-pointer shrink-0"
+                    title="Segarkan Status"
+                  >
+                    <RefreshCw className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : ''}`} />
+                  </button>
+                </div>
+
+                {/* Status Notice Box */}
+                <div className="p-4 bg-sky-50 rounded-2xl border border-sky-200 flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-sky-600 shrink-0 mt-0.5" />
+                  <div className="text-xs text-slate-700 leading-relaxed">
+                    <strong className="text-slate-900 font-bold block mb-0.5">
+                      Surat Izin Resmi Belum Terbit
+                    </strong>
+                    Surat izin resmi dan kode verifikasi hanya akan ditampilkan di layar handphone ini setelah permohonan disetujui oleh Guru Piket / Admin. Halaman ini akan otomatis diperbarui begitu disetujui.
                   </div>
-                )}
+                </div>
 
-                {submittedPermit.willReturn && (
-                  <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
-                    <span className="text-slate-600">Status Kepulangan</span>
-                    <span>:</span>
-                    <span className={`font-bold ${submittedPermit.willReturn === 'Kembali' ? 'text-emerald-700' : 'text-amber-800'}`}>
-                      {submittedPermit.willReturn === 'Kembali' ? 'Akan Kembali ke Sekolah' : 'Tidak Kembali (Izin Pulang)'}
+                {/* Ringkasan Permohonan Siswa */}
+                <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3 text-xs">
+                  <div className="font-black text-slate-900 uppercase text-[11px] tracking-wider border-b border-slate-200 pb-2 flex items-center justify-between">
+                    <span>Ringkasan Pengajuan Izin</span>
+                    <span className="text-amber-700 font-bold bg-amber-100 px-2 py-0.5 rounded-md">
+                      {activePermit.type}
                     </span>
                   </div>
-                )}
 
-                {submittedPermit.uniformViolationType && (
                   <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
-                    <span className="text-slate-600">Jenis Dispensasi</span>
+                    <span className="text-slate-500 font-bold">Nama Siswa</span>
                     <span>:</span>
-                    <span className="font-bold text-rose-800">{submittedPermit.uniformViolationType}</span>
+                    <span className="font-black text-slate-900 text-sm uppercase">{activePermit.studentName}</span>
                   </div>
-                )}
 
-                {submittedPermit.startDate && submittedPermit.estimatedEndDate && (
                   <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
-                    <span className="text-slate-600">Masa Berlaku Izin</span>
+                    <span className="text-slate-500 font-bold">Kelas / NISN</span>
                     <span>:</span>
-                    <span className="font-semibold text-slate-900">
-                      {formatDateIndonesian(submittedPermit.startDate)} s/d {formatDateIndonesian(submittedPermit.estimatedEndDate)}
-                    </span>
+                    <span className="font-bold text-slate-800">Kelas {activePermit.className} • {activePermit.nisn || '-'}</span>
                   </div>
-                )}
 
-                <div className="grid grid-cols-[130px_10px_auto] gap-x-1 pt-1 border-t border-slate-100">
-                  <span className="text-slate-600">Keperluan / Alasan</span>
-                  <span>:</span>
-                  <span className="font-medium text-slate-900 italic">"{submittedPermit.reason}"</span>
+                  <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
+                    <span className="text-slate-500 font-bold">Waktu Diajukan</span>
+                    <span>:</span>
+                    <span className="text-slate-800">{formatDateIndonesian(activePermit.date)}, Pukul {activePermit.timeSubmitted} WIB</span>
+                  </div>
+
+                  {activePermit.subject && (
+                    <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
+                      <span className="text-slate-500 font-bold">Mata Pelajaran</span>
+                      <span>:</span>
+                      <span className="font-semibold text-slate-900">{activePermit.subject}</span>
+                    </div>
+                  )}
+
+                  {activePermit.lessonHour && (
+                    <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
+                      <span className="text-slate-500 font-bold">Jam Pelajaran</span>
+                      <span>:</span>
+                      <span className="font-semibold text-slate-900">{activePermit.lessonHour}</span>
+                    </div>
+                  )}
+
+                  {activePermit.willReturn && (
+                    <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
+                      <span className="text-slate-500 font-bold">Status Kepulangan</span>
+                      <span>:</span>
+                      <span className={`font-bold ${activePermit.willReturn === 'Kembali' ? 'text-emerald-700' : 'text-amber-800'}`}>
+                        {activePermit.willReturn === 'Kembali' ? 'Akan Kembali ke Sekolah' : 'Tidak Kembali (Izin Pulang)'}
+                      </span>
+                    </div>
+                  )}
+
+                  {activePermit.uniformViolationType && (
+                    <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
+                      <span className="text-slate-500 font-bold">Jenis Atribut</span>
+                      <span>:</span>
+                      <span className="font-bold text-rose-800">{activePermit.uniformViolationType}</span>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-[130px_10px_auto] gap-x-1 pt-2 border-t border-slate-200">
+                    <span className="text-slate-500 font-bold">Alasan / Keperluan</span>
+                    <span>:</span>
+                    <span className="font-medium text-slate-900 italic">"{activePermit.reason}"</span>
+                  </div>
+                </div>
+
+                {/* Tombol Aksi */}
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={handleResetForm}
+                    className="px-5 py-2.5 rounded-2xl bg-[#E2F1FD] hover:bg-[#D0E8FB] text-[#0F172A] font-black text-xs transition-all cursor-pointer shadow-xs active:scale-95 flex items-center gap-1.5"
+                  >
+                    <ArrowLeft className="w-4 h-4 text-sky-700" />
+                    <span>Kembali ke Halaman Utama</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleRefreshStatus}
+                    className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 text-white font-black text-xs transition-all cursor-pointer shadow-xs active:scale-95 flex items-center gap-2"
+                  >
+                    <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                    <span>Perbarui Status Persetujuan</span>
+                  </button>
                 </div>
               </div>
+            )}
 
-              {/* Status & QR Verifikasi */}
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 font-sans">
-                <div className="flex items-center gap-3">
-                  <div className="w-16 h-16 p-1.5 bg-white border border-slate-300 rounded-xl shadow-2xs flex items-center justify-center">
-                    <QrCode className="w-full h-full text-slate-900" />
-                  </div>
-                  <div className="text-left text-xs">
-                    <div className="text-[10px] text-slate-500 uppercase font-bold">Verifikasi Guru Piket</div>
-                    <div className="text-xs font-mono font-bold text-slate-800">{submittedPermit.qrVerificationCode}</div>
-                    <div className="text-[11px] text-emerald-700 font-bold flex items-center gap-1 mt-0.5">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>Data tercatat di SIM Dispos SMAN 1 Batu</span>
+            {/* KONDISI 2: STATUS DISETUJUI / KEMBALI (SURAT RESMI TAMPIL) */}
+            {(activePermit.status === 'Disetujui' || activePermit.status === 'Kembali') && (
+              <div className="bg-white rounded-[32px] p-6 sm:p-8 shadow-2xl border border-white space-y-6 animate-in fade-in zoom-in-95">
+                <div className="p-4 bg-emerald-500 text-white rounded-2xl shadow-sm flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                      <CheckCircle2 className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-sm sm:text-base font-black">Permohonan Izin Telah Disetujui!</h2>
+                      <p className="text-xs text-emerald-100">
+                        Tunjukkan e-Surat Izin ini kepada Guru Pengajar / Satpam saat keluar kelas atau gerbang sekolah.
+                      </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="text-right text-xs">
-                  <div className="text-slate-600">Guru Piket / Kesiswaan</div>
-                  <div className="h-10" />
-                  <div className="font-bold underline text-slate-900">Petugas Piket Harian</div>
+                {/* E-Pass Card Preview */}
+                <div 
+                  id="printable-student-permit"
+                  className="border-2 border-slate-300 rounded-[28px] p-6 sm:p-8 bg-gradient-to-br from-slate-50 via-white to-sky-50/40 space-y-4 shadow-sm relative overflow-hidden font-serif"
+                >
+                  {/* Header Kop Mini */}
+                  <div className="flex items-center gap-3 pb-3 border-b-2 border-slate-900">
+                    <img src="/logo.png" alt="Logo SMAN 1 Batu" className="w-12 h-12 object-contain shrink-0" />
+                    <div className="text-center flex-1 font-sans">
+                      <h3 className="font-bold text-[11px] tracking-wider text-slate-800 uppercase leading-tight">
+                        PEMERINTAH PROVINSI JAWA TIMUR • DINAS PENDIDIKAN
+                      </h3>
+                      <h2 className="font-black text-sm tracking-wide text-slate-950 uppercase leading-tight">
+                        {schoolProfile.name}
+                      </h2>
+                      <p className="text-[9px] text-slate-600 leading-tight">
+                        TIM DISIPLIN POSITIF &amp; GURU PIKET KESISWAAN
+                      </p>
+                    </div>
+                    <div className="w-12 shrink-0 hidden sm:block" />
+                  </div>
+
+                  {/* Title & Badge */}
+                  <div className="text-center pt-1 font-sans">
+                    <span className="inline-block px-4 py-1.5 rounded-full text-xs font-black bg-emerald-100 text-emerald-900 border border-emerald-300 uppercase tracking-wide shadow-2xs">
+                      SURAT IZIN: {activePermit.type.toUpperCase()} (DISETUJUI)
+                    </span>
+                  </div>
+
+                  {/* Detail Identitas Siswa */}
+                  <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs font-sans text-xs space-y-2">
+                    <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
+                      <span className="text-slate-600">Nama Siswa</span>
+                      <span>:</span>
+                      <span className="font-black text-slate-950 text-sm uppercase">{activePermit.studentName}</span>
+                    </div>
+                    <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
+                      <span className="text-slate-600">Kelas / NISN</span>
+                      <span>:</span>
+                      <span className="font-bold text-slate-900">Kelas {activePermit.className} • {activePermit.nisn || '-'}</span>
+                    </div>
+                    <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
+                      <span className="text-slate-600">Waktu Disetujui</span>
+                      <span>:</span>
+                      <span className="text-slate-800 font-bold">
+                        {formatDateIndonesian(activePermit.date)}, Pukul {activePermit.approvedAt || activePermit.timeSubmitted} WIB
+                      </span>
+                    </div>
+
+                    {activePermit.subject && (
+                      <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
+                        <span className="text-slate-600">Mata Pelajaran</span>
+                        <span>:</span>
+                        <span className="font-semibold text-slate-900">{activePermit.subject}</span>
+                      </div>
+                    )}
+
+                    {activePermit.lessonHour && (
+                      <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
+                        <span className="text-slate-600">Jam Pelajaran</span>
+                        <span>:</span>
+                        <span className="font-semibold text-slate-900">{activePermit.lessonHour}</span>
+                      </div>
+                    )}
+
+                    {activePermit.willReturn && (
+                      <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
+                        <span className="text-slate-600">Status Kepulangan</span>
+                        <span>:</span>
+                        <span className={`font-bold ${activePermit.willReturn === 'Kembali' ? 'text-emerald-700' : 'text-amber-800'}`}>
+                          {activePermit.willReturn === 'Kembali' ? 'Akan Kembali ke Sekolah' : 'Tidak Kembali (Izin Pulang)'}
+                        </span>
+                      </div>
+                    )}
+
+                    {activePermit.uniformViolationType && (
+                      <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
+                        <span className="text-slate-600">Jenis Dispensasi</span>
+                        <span>:</span>
+                        <span className="font-bold text-rose-800">{activePermit.uniformViolationType}</span>
+                      </div>
+                    )}
+
+                    {activePermit.startDate && activePermit.estimatedEndDate && (
+                      <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
+                        <span className="text-slate-600">Masa Berlaku Izin</span>
+                        <span>:</span>
+                        <span className="font-semibold text-slate-900">
+                          {formatDateIndonesian(activePermit.startDate)} s/d {formatDateIndonesian(activePermit.estimatedEndDate)}
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-[130px_10px_auto] gap-x-1 pt-1 border-t border-slate-100">
+                      <span className="text-slate-600">Keperluan / Alasan</span>
+                      <span>:</span>
+                      <span className="font-medium text-slate-900 italic">"{activePermit.reason}"</span>
+                    </div>
+                  </div>
+
+                  {/* Status & QR Verifikasi */}
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 font-sans">
+                    <div className="flex items-center gap-3">
+                      <div className="w-16 h-16 p-1.5 bg-white border border-slate-300 rounded-xl shadow-2xs flex items-center justify-center">
+                        <QrCode className="w-full h-full text-slate-900" />
+                      </div>
+                      <div className="text-left text-xs">
+                        <div className="text-[10px] text-slate-500 uppercase font-bold">Verifikasi Guru Piket</div>
+                        <div className="text-xs font-mono font-bold text-emerald-800">
+                          DISETUJUI OLEH {activePermit.approvedBy ? activePermit.approvedBy.toUpperCase() : 'GURU PIKET'}
+                        </div>
+                        <div className="text-[11px] text-emerald-700 font-bold flex items-center gap-1 mt-0.5">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <span>Data resmi tercatat di SIM Dispos SMAN 1 Batu</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="text-right text-xs">
+                      <div className="text-slate-600">Guru Piket / Kesiswaan</div>
+                      <div className="h-8 flex items-center justify-end">
+                        <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-black rounded border border-emerald-300 uppercase">
+                          VERIFIED
+                        </span>
+                      </div>
+                      <div className="font-bold underline text-slate-900">
+                        {activePermit.approvedBy || 'Petugas Piket Harian'}
+                      </div>
+                    </div>
+                  </div>
                 </div>
+
+                {/* Tombol Aksi */}
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={handleResetForm}
+                    className="px-5 py-2.5 rounded-2xl bg-[#E2F1FD] hover:bg-[#D0E8FB] text-[#0F172A] font-black text-xs transition-all cursor-pointer shadow-xs active:scale-95 flex items-center gap-1.5"
+                  >
+                    <ArrowLeft className="w-4 h-4 text-sky-700" />
+                    <span>Ajukan Surat Izin Lainnya</span>
+                  </button>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => window.print()}
+                      className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 text-white font-black text-xs transition-all cursor-pointer shadow-xs hover:-translate-y-0.5 active:scale-95 flex items-center gap-1.5"
+                    >
+                      <Printer className="w-4 h-4" />
+                      <span>Cetak / Simpan PDF</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* KONDISI 3: STATUS DITOLAK */}
+            {activePermit.status === 'Ditolak' && (
+              <div className="bg-white rounded-[32px] p-6 sm:p-8 shadow-2xl border border-white space-y-6 animate-in fade-in zoom-in-95">
+                <div className="p-4 bg-rose-600 text-white rounded-2xl shadow-sm flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                      <XCircle className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-sm sm:text-base font-black">Permohonan Izin Ditolak</h2>
+                      <p className="text-xs text-rose-100">
+                        Permohonan izin tidak dapat disetujui oleh Guru Piket / Kesiswaan.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-rose-50 rounded-2xl border border-rose-200 space-y-2 text-xs">
+                  <span className="font-black text-rose-900 uppercase tracking-wider block text-[11px]">
+                    Alasan Penolakan dari Guru Piket:
+                  </span>
+                  <p className="text-rose-800 font-semibold italic bg-white p-3 rounded-xl border border-rose-100">
+                    "{activePermit.rejectionReason || 'Permohonan izin tidak memenuhi persyaratan atau alasan tidak dapat diterima.'}"
+                  </p>
+                  <div className="text-[11px] text-slate-500 pt-1">
+                    Diverifikasi oleh: <strong className="text-slate-800">{activePermit.approvedBy || 'Guru Piket'}</strong> ({activePermit.approvedAt || '-'} WIB)
+                  </div>
+                </div>
+
+                <div className="pt-2 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={handleResetForm}
+                    className="px-6 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-900 text-white font-black text-xs transition-all cursor-pointer shadow-xs active:scale-95 flex items-center gap-2"
+                  >
+                    <span>Ajukan Permohonan Baru</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : portalMode === 'STATUS_CHECK' ? (
+          /* ---------------------------------------------------- */
+          /* PORTAL CEK STATUS PERMOHONAN SISWA */
+          /* ---------------------------------------------------- */
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] p-6 sm:p-8 shadow-2xl border border-white space-y-6 animate-in fade-in">
+            <div>
+              <h2 className="text-base sm:text-lg font-black text-[#0F172A] flex items-center gap-2">
+                <Search className="w-5 h-5 text-sky-600" />
+                <span>Cek Status Permohonan Izin Siswa</span>
+              </h2>
+              <p className="text-xs text-[#64748B] mt-0.5">
+                Pilih kelas dan nama Anda untuk melihat apakah permohonan izin hari ini sudah disetujui.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 bg-sky-50/70 rounded-2xl border border-sky-100 text-xs">
+              <div>
+                <label className="block font-black text-[#0F172A] mb-1">
+                  Pilih Kelas Rombel <span className="text-rose-500">*</span>
+                </label>
+                <select
+                  value={checkClass}
+                  onChange={(e) => {
+                    setCheckClass(e.target.value);
+                    setCheckStudentId('');
+                  }}
+                  className="w-full px-4 py-2.5 bg-white rounded-2xl text-xs font-bold text-[#0F172A] border border-sky-200 shadow-2xs focus:outline-hidden"
+                >
+                  {sortClasses(classes).map((cls) => (
+                    <option key={cls.id || cls.name} value={cls.name}>
+                      Kelas {cls.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block font-black text-[#0F172A] mb-1">
+                  Pilih Nama Siswa <span className="text-rose-500">*</span>
+                </label>
+                <select
+                  value={checkStudentId}
+                  onChange={(e) => setCheckStudentId(e.target.value)}
+                  className="w-full px-4 py-2.5 bg-white rounded-2xl text-xs font-bold text-[#0F172A] border border-sky-200 shadow-2xs focus:outline-hidden"
+                >
+                  <option value="">-- Pilih Nama Siswa ({checkClassStudents.length} Siswa) --</option>
+                  {checkClassStudents.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.name} ({s.nisn})
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
-            {/* Tombol Aksi */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+            {/* Hasil Pencarian Izin Hari Ini */}
+            <div className="space-y-3">
+              <div className="text-xs font-black text-[#0F172A] uppercase tracking-wider">
+                Daftar Permohonan Hari Ini ({formatDateIndonesian(getTodayDateString())}):
+              </div>
+
+              {studentPermitsToday.length === 0 ? (
+                <div className="p-6 text-center bg-slate-50 rounded-2xl border border-slate-200 text-slate-500 text-xs">
+                  {checkStudentId
+                    ? 'Belum ada permohonan izin tercatat untuk siswa yang dipilih hari ini.'
+                    : 'Silakan pilih nama siswa di atas untuk melihat status permohonan izin.'}
+                </div>
+              ) : (
+                <div className="space-y-2.5">
+                  {studentPermitsToday.map((p) => (
+                    <div
+                      key={p.id}
+                      onClick={() => setActivePermitId(p.id)}
+                      className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-sky-400 hover:shadow-md transition-all cursor-pointer flex items-center justify-between gap-3 text-xs"
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-black text-slate-900 text-sm">{p.studentName}</span>
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700">
+                            Kelas {p.className}
+                          </span>
+                        </div>
+                        <div className="text-slate-500 text-[11px]">
+                          Jenis: <strong className="text-slate-800">{p.type}</strong> • Diajukan pukul {p.timeSubmitted} WIB
+                        </div>
+                        <div className="text-slate-600 italic">"{p.reason}"</div>
+                      </div>
+
+                      <div className="flex items-center gap-3 shrink-0">
+                        <span className={`px-3 py-1 rounded-xl text-[11px] font-black border ${
+                          p.status === 'Disetujui' || p.status === 'Kembali'
+                            ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                            : p.status === 'Menunggu'
+                            ? 'bg-amber-100 text-amber-900 border-amber-300 animate-pulse'
+                            : 'bg-rose-100 text-rose-900 border-rose-300'
+                        }`}>
+                          {p.status === 'Disetujui' || p.status === 'Kembali'
+                            ? '✓ Disetujui'
+                            : p.status === 'Menunggu'
+                            ? '⏳ Menunggu'
+                            : '✕ Ditolak'}
+                        </span>
+                        <ChevronRight className="w-4 h-4 text-slate-400" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="pt-2">
               <button
                 type="button"
-                onClick={handleResetForm}
-                className="px-5 py-2.5 rounded-2xl bg-[#E2F1FD] hover:bg-[#D0E8FB] text-[#0F172A] font-black text-xs transition-all cursor-pointer shadow-xs active:scale-95 flex items-center gap-1.5"
+                onClick={() => setPortalMode('FORM')}
+                className="w-full py-3 rounded-2xl bg-[#E2F1FD] hover:bg-[#D0E8FB] text-[#0F172A] font-black text-xs transition-all cursor-pointer shadow-xs active:scale-95 flex items-center justify-center gap-2"
               >
-                <Send className="w-4 h-4 text-sky-700" />
-                <span>Ajukan Surat Izin Lainnya</span>
+                <ArrowLeft className="w-4 h-4 text-sky-700" />
+                <span>Kembali ke Form Pengajuan Izin</span>
               </button>
-
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => window.print()}
-                  className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 text-white font-black text-xs transition-all cursor-pointer shadow-xs hover:-translate-y-0.5 active:scale-95 flex items-center gap-1.5"
-                >
-                  <Printer className="w-4 h-4" />
-                  <span>Cetak / Simpan PDF</span>
-                </button>
-              </div>
             </div>
           </div>
         ) : (
-          /* FORM PENGAJUAN SURAT IZIN */
+          /* ---------------------------------------------------- */
+          /* FORM PENGAJUAN SURAT IZIN BARU */
+          /* ---------------------------------------------------- */
           <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] p-6 sm:p-8 shadow-2xl border border-white space-y-6">
             {/* Header Tabs Jenis Izin */}
             <div className="space-y-2">

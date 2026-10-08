@@ -114,10 +114,9 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
         const q = searchQuery.toLowerCase();
         const matchName = p.studentName.toLowerCase().includes(q);
         const matchNisn = (p.nisn || '').toLowerCase().includes(q);
-        const matchNumber = p.permitNumber.toLowerCase().includes(q);
         const matchReason = p.reason.toLowerCase().includes(q);
         const matchSubject = (p.subject || '').toLowerCase().includes(q);
-        if (!matchName && !matchNisn && !matchNumber && !matchReason && !matchSubject) return false;
+        if (!matchName && !matchNisn && !matchReason && !matchSubject) return false;
       }
 
       return true;
@@ -177,7 +176,6 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
   const handleExportCSV = () => {
     const headers = [
       'No', 
-      'No. Surat', 
       'Jenis Izin', 
       'Tanggal', 
       'Waktu Pengajuan', 
@@ -196,7 +194,6 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
     
     const rows = filteredPermits.map((p, idx) => [
       idx + 1,
-      `"${p.permitNumber}"`,
       `"${p.type}"`,
       `"${p.date}"`,
       `"${p.timeSubmitted}"`,
@@ -554,7 +551,6 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
               <tr className="bg-gradient-to-r from-slate-100/90 to-sky-50/60 text-[#334155] font-black text-xs uppercase tracking-wider border-b border-slate-200/60">
                 <th className="py-4 px-3 w-12 text-center">No</th>
                 <th className="py-4 px-4 w-28">Waktu &amp; Tgl</th>
-                <th className="py-4 px-4 min-w-[130px]">No. Tiket</th>
                 <th className="py-4 px-4 w-36 text-center">Kategori Izin</th>
                 <th className="py-4 px-5 min-w-[200px]">Nama Siswa &amp; Kelas</th>
                 <th className="py-4 px-5 min-w-[240px]">Rincian &amp; Alasan Izin</th>
@@ -565,7 +561,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
             <tbody className="divide-y divide-slate-100 text-xs">
               {filteredPermits.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-[#64748B]">
+                  <td colSpan={7} className="py-12 text-center text-[#64748B]">
                     <div className="flex flex-col items-center justify-center space-y-2">
                       <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
                         <CheckCircle2 className="w-6 h-6" />
@@ -596,13 +592,6 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                       <td className="py-4 px-4">
                         <div className="font-black text-[#0F172A]">{p.timeSubmitted} WIB</div>
                         <div className="text-[11px] text-[#64748B]">{p.date}</div>
-                      </td>
-
-                      {/* No. Tiket */}
-                      <td className="py-4 px-4">
-                        <span className="font-mono text-[11px] font-bold text-sky-800 bg-sky-50 px-2 py-0.5 rounded-lg border border-sky-200 block truncate max-w-[130px]" title={p.permitNumber}>
-                          {p.permitNumber}
-                        </span>
                       </td>
 
                       {/* Kategori Izin */}
@@ -754,7 +743,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                           <button
                             type="button"
                             onClick={() => {
-                              if (confirm(`Hapus permohonan surat izin ${p.permitNumber} atas nama ${p.studentName}?`)) {
+                              if (confirm(`Hapus permohonan surat izin atas nama ${p.studentName}?`)) {
                                 onDeletePermit(p.id);
                               }
                             }}
@@ -797,7 +786,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                 Siswa: <span className="font-black">{rejectingPermit.studentName}</span> ({rejectingPermit.className})
               </div>
               <div className="text-slate-700">
-                Jenis: <span className="font-bold">{rejectingPermit.type}</span> • No: {rejectingPermit.permitNumber}
+                Jenis: <span className="font-bold">{rejectingPermit.type}</span>
               </div>
               <div className="text-slate-600 italic">
                 Keperluan: "{rejectingPermit.reason}"
@@ -882,9 +871,6 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                 <h3 className="text-base font-black uppercase tracking-wider underline">
                   SURAT KETERANGAN IZIN {viewingPermit.type.toUpperCase()}
                 </h3>
-                <div className="text-xs font-mono text-slate-600 font-bold">
-                  Nomor: {viewingPermit.permitNumber}
-                </div>
               </div>
 
               {/* Data Siswa */}
