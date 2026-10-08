@@ -28,7 +28,7 @@ import {
   fetchAllDocuments,
   COLLECTIONS
 } from '../services/firestoreService';
-import { Student, AttendanceRecord, DisciplineRecord, WaliKelasTeacher, ViolationRule, AdminUser } from '../types';
+import { Student, AttendanceRecord, DisciplineRecord, WaliKelasTeacher, ViolationRule, AdminUser, StudentPermitRecord } from '../types';
 import { RombelClass } from '../data/initialData';
 
 interface FirebaseConfigModalProps {
@@ -41,6 +41,7 @@ interface FirebaseConfigModalProps {
   disciplineRecords: DisciplineRecord[];
   violationRules: ViolationRule[];
   users: AdminUser[];
+  studentPermits?: StudentPermitRecord[];
   onDataSynced?: (data: {
     students?: Student[];
     classes?: RombelClass[];
@@ -48,6 +49,7 @@ interface FirebaseConfigModalProps {
     attendanceRecords?: AttendanceRecord[];
     disciplineRecords?: DisciplineRecord[];
     violationRules?: ViolationRule[];
+    studentPermits?: StudentPermitRecord[];
   }) => void;
 }
 
@@ -61,6 +63,7 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
   disciplineRecords,
   violationRules,
   users,
+  studentPermits = [],
   onDataSynced,
 }) => {
   const [activeTab, setActiveTab] = useState<'config' | 'sync' | 'guide'>('config');
@@ -236,7 +239,13 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
         await batchSaveDocuments(COLLECTIONS.DISCIPLINE, disciplineRecords);
       }
 
-      setSyncSuccessMsg('Semua data master & absensi berhasil diunggah ke Cloud Firestore!');
+      // 7. Student Permits
+      if (studentPermits.length > 0) {
+        setUploadProgress({ current: 0, total: studentPermits.length, label: 'Mengunggah Data Izin & Dispensasi Siswa...' });
+        await batchSaveDocuments(COLLECTIONS.STUDENT_PERMITS, studentPermits);
+      }
+
+      setSyncSuccessMsg('Semua data master, absensi & permohonan izin berhasil diunggah ke Cloud Firestore!');
     } catch (error: any) {
       alert(`Gagal mengunggah data: ${error.message}`);
     } finally {
@@ -256,7 +265,7 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
     setSyncSuccessMsg('');
 
     try {
-      const [remoteClasses, remoteWali, remoteStudents, remoteAttendance, remoteDiscipline, remoteRules] =
+      const [remoteClasses, remoteWali, remoteStudents, remoteAttendance, remoteDiscipline, remoteRules, remotePermits] =
         await Promise.all([
           fetchAllDocuments<RombelClass>(COLLECTIONS.CLASSES),
           fetchAllDocuments<WaliKelasTeacher>(COLLECTIONS.WALI_KELAS),
@@ -264,6 +273,7 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
           fetchAllDocuments<AttendanceRecord>(COLLECTIONS.ATTENDANCE),
           fetchAllDocuments<DisciplineRecord>(COLLECTIONS.DISCIPLINE),
           fetchAllDocuments<ViolationRule>(COLLECTIONS.VIOLATION_RULES),
+          fetchAllDocuments<StudentPermitRecord>(COLLECTIONS.STUDENT_PERMITS),
         ]);
 
       if (onDataSynced) {
@@ -274,11 +284,12 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
           attendanceRecords: remoteAttendance.length > 0 ? remoteAttendance : undefined,
           disciplineRecords: remoteDiscipline.length > 0 ? remoteDiscipline : undefined,
           violationRules: remoteRules.length > 0 ? remoteRules : undefined,
+          studentPermits: remotePermits.length > 0 ? remotePermits : undefined,
         });
       }
 
       setSyncSuccessMsg(
-        `Berhasil menarik ${remoteStudents.length} siswa, ${remoteClasses.length} kelas, dan ${remoteAttendance.length} rekap absensi dari Firestore!`
+        `Berhasil menarik ${remoteStudents.length} siswa, ${remoteClasses.length} kelas, ${remoteAttendance.length} rekap absensi, dan ${remotePermits.length} permohonan izin dari Firestore!`
       );
     } catch (error: any) {
       alert(`Gagal mengambil data dari Firestore: ${error.message}`);

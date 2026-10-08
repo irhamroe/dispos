@@ -56,6 +56,8 @@ import {
   saveStudent,
   saveDisciplineRecord,
   deleteDisciplineRecord as deleteDisciplineFromDb,
+  saveStudentPermit,
+  deleteStudentPermit,
   COLLECTIONS
 } from './services/firestoreService';
 import { MdBackgroundBlobs } from './components/md3/MdBackgroundBlobs';
@@ -288,6 +290,8 @@ export default function App() {
       localStorage.setItem('app_sman1batu_student_permits_v1', JSON.stringify(updated));
       return updated;
     });
+    // Instant Cloud Firestore sync for multi-device support (HP <-> Laptop)
+    saveStudentPermit(newRecord).catch((e) => console.warn('Failed to sync permit to Cloud Firestore:', e));
   };
 
   // Update permit status (Approve, Reject, or Mark Returned)
@@ -298,9 +302,10 @@ export default function App() {
     rejectionReason?: string
   ) => {
     setStudentPermits((prev) => {
+      let targetRecord: StudentPermitRecord | null = null;
       const updated = prev.map((p) => {
         if (p.id === permitId) {
-          return {
+          const modRecord: StudentPermitRecord = {
             ...p,
             status,
             reviewedBy: reviewedBy || currentUser?.name || 'Petugas Piket / Guru Dispos',
@@ -310,10 +315,15 @@ export default function App() {
               : p.actualReturnTime,
             updatedAt: new Date().toISOString(),
           };
+          targetRecord = modRecord;
+          return modRecord;
         }
         return p;
       });
       localStorage.setItem('app_sman1batu_student_permits_v1', JSON.stringify(updated));
+      if (targetRecord) {
+        saveStudentPermit(targetRecord).catch((e) => console.warn('Failed to sync permit update to Cloud Firestore:', e));
+      }
       return updated;
     });
   };
@@ -325,6 +335,7 @@ export default function App() {
       localStorage.setItem('app_sman1batu_student_permits_v1', JSON.stringify(updated));
       return updated;
     });
+    deleteStudentPermit(permitId).catch((e) => console.warn('Failed to delete permit from Cloud Firestore:', e));
   };
 
   // Firebase connection & modal states
@@ -406,6 +417,20 @@ export default function App() {
           await batchSaveDocuments(COLLECTIONS.VIOLATION_RULES, sampleViolationCatalog);
           setViolationRules(sampleViolationCatalog);
         }
+
+        // Check & seed student permits or merge un-synced local permits (e.g. pending permits created on laptop)
+        const remotePermits = await fetchAllDocuments<StudentPermitRecord>(COLLECTIONS.STUDENT_PERMITS);
+        if (remotePermits.length === 0) {
+          const toUpload = studentPermits.length > 0 ? studentPermits : initialStudentPermits;
+          await batchSaveDocuments(COLLECTIONS.STUDENT_PERMITS, toUpload);
+        } else {
+          const remoteIds = new Set(remotePermits.map((p) => p.id));
+          const missingInCloud = studentPermits.filter((p) => !remoteIds.has(p.id));
+          if (missingInCloud.length > 0) {
+            console.log(`Syncing ${missingInCloud.length} local permit(s) to Cloud Firestore...`);
+            await batchSaveDocuments(COLLECTIONS.STUDENT_PERMITS, missingInCloud);
+          }
+        }
       } catch (e) {
         console.warn('Auto-seed check failed:', e);
       }
@@ -470,6 +495,19 @@ export default function App() {
       }
     });
 
+    // 9. Realtime Student Permits subscription (Instant multi-device sync between HP & Laptop)
+    const unsubPermits = subscribeToCollection<StudentPermitRecord>(COLLECTIONS.STUDENT_PERMITS, (data) => {
+      if (data) {
+        const sorted = [...data].sort((a, b) => {
+          const timeA = a.createdAt ? new Date(a.createdAt).getTime() : new Date(`${a.date}T${a.timeSubmitted || '00:00'}:00`).getTime() || 0;
+          const timeB = b.createdAt ? new Date(b.createdAt).getTime() : new Date(`${b.date}T${b.timeSubmitted || '00:00'}:00`).getTime() || 0;
+          return timeB - timeA;
+        });
+        setStudentPermits(sorted);
+        localStorage.setItem('app_sman1batu_student_permits_v1', JSON.stringify(sorted));
+      }
+    });
+
     return () => {
       if (unsubStudents) unsubStudents();
       if (unsubClasses) unsubClasses();
@@ -479,6 +517,7 @@ export default function App() {
       if (unsubRules) unsubRules();
       if (unsubUsers) unsubUsers();
       if (unsubSchoolProfile) unsubSchoolProfile();
+      if (unsubPermits) unsubPermits();
     };
   }, []);
 
@@ -868,6 +907,7 @@ export default function App() {
                   localStorage.setItem('app_sman1batu_student_permits_v1', JSON.stringify(next));
                   return next;
                 });
+                saveStudentPermit(updated).catch((e) => console.warn('Failed to sync permit update to Cloud Firestore:', e));
               }}
               onDeletePermit={handleDeleteStudentPermit}
               onOpenPublicPortal={() => setIsPublicPermitOpen(true)}
@@ -1004,6 +1044,7 @@ export default function App() {
         disciplineRecords={disciplineRecords}
         violationRules={violationRules}
         users={users}
+        studentPermits={studentPermits}
         onDataSynced={(synced) => {
           if (synced.students) setStudents(synced.students);
           if (synced.classes) setClasses(synced.classes);
@@ -1011,6 +1052,7 @@ export default function App() {
           if (synced.attendanceRecords) setAttendanceRecords(synced.attendanceRecords);
           if (synced.disciplineRecords) setDisciplineRecords(synced.disciplineRecords);
           if (synced.violationRules) setViolationRules(synced.violationRules);
+          if (synced.studentPermits) setStudentPermits(synced.studentPermits);
           setIsFirebaseConnected(true);
         }}
       />

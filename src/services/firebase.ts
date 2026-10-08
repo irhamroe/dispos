@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
-import { getFirestore, Firestore } from 'firebase/firestore';
+import { initializeFirestore, getFirestore, Firestore } from 'firebase/firestore';
 import { getAuth, Auth } from 'firebase/auth';
 
 export interface FirebaseConfig {
@@ -76,7 +76,13 @@ export const initFirebase = (): { app: FirebaseApp | null; db: Firestore | null;
     } else {
       appInstance = getApp();
     }
-    dbInstance = getFirestore(appInstance);
+    try {
+      dbInstance = initializeFirestore(appInstance, {
+        ignoreUndefinedProperties: true,
+      });
+    } catch {
+      dbInstance = getFirestore(appInstance);
+    }
     authInstance = getAuth(appInstance);
     return { app: appInstance, db: dbInstance, auth: authInstance };
   } catch (error) {

@@ -19,7 +19,8 @@ import {
   WaliKelasTeacher,
   ViolationRule,
   AdminUser,
-  SchoolProfile
+  SchoolProfile,
+  StudentPermitRecord
 } from '../types';
 import { RombelClass } from '../data/initialData';
 
@@ -32,6 +33,7 @@ export const COLLECTIONS = {
   VIOLATION_RULES: 'violationRules',
   USERS: 'users',
   SCHOOL_PROFILE: 'schoolProfile',
+  STUDENT_PERMITS: 'studentPermits',
 };
 
 // =======================
@@ -84,6 +86,26 @@ export const subscribeToCollection = <T>(
 };
 
 // =======================
+// Data Sanitation Helper
+// =======================
+
+export const sanitizeData = <T>(data: T): T => {
+  if (data === null || data === undefined || typeof data !== 'object') {
+    return data;
+  }
+  if (Array.isArray(data)) {
+    return data.map(sanitizeData) as unknown as T;
+  }
+  const clean: any = {};
+  for (const [key, value] of Object.entries(data)) {
+    if (value !== undefined) {
+      clean[key] = sanitizeData(value);
+    }
+  }
+  return clean as T;
+};
+
+// =======================
 // Single Document Operations
 // =======================
 
@@ -96,7 +118,8 @@ export const saveDocument = async <T extends { id: string }>(
 
   try {
     const docRef = doc(db, collectionName, item.id);
-    await setDoc(docRef, item, { merge: true });
+    const cleanItem = sanitizeData(item);
+    await setDoc(docRef, cleanItem, { merge: true });
     return true;
   } catch (error) {
     console.error(`Error saving doc to ${collectionName}:`, error);
@@ -167,7 +190,8 @@ export const batchSaveDocuments = async <T extends { id: string }>(
 
       for (const item of chunk) {
         const docRef = doc(db, collectionName, item.id);
-        batch.set(docRef, item, { merge: true });
+        const cleanItem = sanitizeData(item);
+        batch.set(docRef, cleanItem, { merge: true });
       }
 
       await batch.commit();
@@ -215,3 +239,16 @@ export const saveDisciplineRecord = async (record: DisciplineRecord): Promise<bo
 export const deleteDisciplineRecord = async (id: string): Promise<boolean> => {
   return deleteDocument(COLLECTIONS.DISCIPLINE, id);
 };
+
+// =======================
+// Student Permits Operations
+// =======================
+
+export const saveStudentPermit = async (permit: StudentPermitRecord): Promise<boolean> => {
+  return saveDocument(COLLECTIONS.STUDENT_PERMITS, permit);
+};
+
+export const deleteStudentPermit = async (id: string): Promise<boolean> => {
+  return deleteDocument(COLLECTIONS.STUDENT_PERMITS, id);
+};
+
