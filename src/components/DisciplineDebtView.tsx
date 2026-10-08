@@ -9,7 +9,6 @@ import {
   Image as ImageIcon, 
   Paperclip, 
   FileText, 
-  Printer, 
   X, 
   Calendar, 
   User, 
@@ -74,9 +73,6 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
 
   // Preview image modal
   const [previewPhoto, setPreviewPhoto] = useState<{ url: string; title: string } | null>(null);
-
-  // Call letter / notification preview modal
-  const [callingLetterRecord, setCallingLetterRecord] = useState<DisciplineRecord | null>(null);
 
   const photoInputRef = useRef<HTMLInputElement>(null);
   const docInputRef = useRef<HTMLInputElement>(null);
@@ -553,7 +549,6 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                               onClick={() => handleOpenLetterUploadModal(rec)}
                               className="px-3 py-2 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-extrabold text-xs transition-all flex items-center gap-1.5 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none cursor-pointer"
                               title="Unggah Surat Bukti Pembinaan yang telah ditandatangani"
-                              
                             >
                               <Paperclip className="w-4 h-4" />
                               <span>Unggah Surat</span>
@@ -564,22 +559,11 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                               onClick={() => handleOpenResolveModal(rec)}
                               className="px-3 py-2 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold text-xs transition-all flex items-center gap-1.5 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none cursor-pointer"
                               title="Tandai Pembinaan Selesai"
-                              
                             >
                               <Upload className="w-4 h-4" />
                               <span>Bina Siswa</span>
                             </button>
                           )}
-
-                          {/* Cetak Surat Panggilan */}
-                          <button
-                            type="button"
-                            onClick={() => setCallingLetterRecord(rec)}
-                            className="p-2 rounded-2xl bg-white/80 text-[#334155] hover:text-[#0F172A] shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none transition-all cursor-pointer"
-                            title="Cetak Surat Panggilan / Tagihan"
-                          >
-                            <Printer className="w-4 h-4" />
-                          </button>
                         </div>
                       </td>
                     </tr>
@@ -985,105 +969,6 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                 alt={previewPhoto.title}
                 className="max-h-[75vh] w-auto max-w-full rounded-2xl object-contain shadow-2xl"
               />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* MODAL: Surat Pemanggilan Siswa / Notifikasi Tagihan */}
-      {callingLetterRecord && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0F172A]/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] max-w-xl w-full border border-white/60 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 max-h-[calc(100vh-2rem)] flex flex-col my-auto">
-            <div className="p-5 bg-gradient-to-br from-slate-800 to-slate-900 text-white flex items-center justify-between shrink-0">
-              <div className="flex items-center gap-2.5">
-                <Printer className="w-5 h-5 text-emerald-400" />
-                <span className="font-black text-sm" >Surat Pemanggilan & Tagihan Pembinaan Siswa</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setCallingLetterRecord(null)}
-                className="p-1.5 text-slate-400 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Printable Letterhead & Body */}
-            <div className="p-6 sm:p-8 space-y-4 text-xs text-slate-800 font-serif leading-relaxed bg-white overflow-y-auto flex-1">
-              {/* Kop Surat */}
-              <div className="flex items-center gap-3 border-b-2 border-slate-900 pb-3">
-                <img src="/logo.png" alt="Logo SMAN 1 Batu" className="w-14 h-14 object-contain shrink-0" />
-                <div className="text-center flex-1">
-                  <h3 className="font-bold text-sm tracking-wide text-slate-900">{schoolProfile.name.toUpperCase()}</h3>
-                  <p className="text-[10px] text-slate-600 font-sans">
-                    {schoolProfile.address}, {schoolProfile.city} | NPSN: {schoolProfile.npsn}
-                  </p>
-                  <p className="text-[10px] text-slate-500 font-sans">TIM KETERTIBAN & BIMBINGAN KONSELING</p>
-                </div>
-                <div className="w-14 shrink-0 hidden sm:block" />
-              </div>
-
-              <div className="text-right text-[11px] font-sans">
-                Kota Batu, {formatDateIndonesian(new Date().toISOString().slice(0, 10))}
-              </div>
-
-              <div className="space-y-1 font-sans">
-                <p><strong>Nomor:</strong> 421.3/BK-DISC/{new Date().getFullYear()}</p>
-                <p><strong>Hal:</strong> Pemberitahuan & Tagihan Penyelesaian Pembinaan Siswa</p>
-                <p><strong>Kepada Yth:</strong> Orang Tua / Wali Siswa dari <strong>{callingLetterRecord.studentName}</strong></p>
-                <p>Di Tempat</p>
-              </div>
-
-              <p>Dengan hormat,</p>
-              <p>
-                Berdasarkan rekapitulasi data ketertiban siswa {schoolProfile.name}, dengan ini kami menginformasikan
-                bahwa putra/putri Bapak/Ibu tercatat melakukan pelanggaran tata tertib sekolah berupa:
-              </p>
-
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 font-sans space-y-1 text-xs">
-                <p><strong>Nama Siswa:</strong> {callingLetterRecord.studentName}</p>
-                <p><strong>Kelas / NISN:</strong> Kelas {callingLetterRecord.className} / {callingLetterRecord.nisn}</p>
-                <p><strong>Tanggal Kejadian:</strong> {formatDateIndonesian(callingLetterRecord.date)}</p>
-                <p><strong>Jenis Pelanggaran:</strong> {callingLetterRecord.violationName}</p>
-                <p><strong>Status Saat Ini:</strong> Belum menyelesaikan kewajiban pembinaan dan penyerahan surat komitmen.</p>
-              </div>
-
-              <p>
-                Sehubungan dengan hal tersebut, kami mengharapkan kehadiran Bapak/Ibu untuk mendampingi putra/putri
-                guna menyelesaikan sesi pembinaan serta penandatanganan surat komitmen bersama di ruang BK/Piket SMAN 1 Batu.
-              </p>
-
-              <div className="grid grid-cols-2 pt-6 font-sans text-center">
-                <div>
-                  <p>Guru BK / Tim Ketertiban,</p>
-                  <p className="mt-12 font-bold">(..................................................)</p>
-                </div>
-                <div>
-                  <p>Kepala {schoolProfile.name},</p>
-                  <p className="mt-12 font-bold underline">{schoolProfile.principalName}</p>
-                  <p className="text-[10px]">NIP. {schoolProfile.principalNip}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-4 bg-[#E2F1FD] border-t border-slate-200/60 flex items-center justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setCallingLetterRecord(null)}
-                className="px-5 py-2.5 rounded-2xl bg-white hover:bg-slate-100 text-[#334155] font-black text-xs shadow-xs active:scale-[0.92] cursor-pointer"
-                
-              >
-                Tutup
-              </button>
-              <button
-                type="button"
-                onClick={() => window.print()}
-                className="px-5 py-2.5 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 text-white font-black text-xs flex items-center gap-2 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] cursor-pointer"
-                
-              >
-                <Printer className="w-4 h-4" />
-                <span>Cetak Surat</span>
-              </button>
             </div>
           </div>
         </div>
