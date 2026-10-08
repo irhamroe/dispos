@@ -157,10 +157,12 @@ export default function App() {
   // Discipline Records state (sorted by latest input first)
   const [disciplineRecords, setDisciplineRecords] = useState<DisciplineRecord[]>(() => {
     try {
-      const saved = localStorage.getItem('app_sman1batu_discipline_v2');
-      return saved ? sortDisciplineRecords(JSON.parse(saved)) : initialDisciplineRecords;
+      localStorage.removeItem('app_sman1batu_discipline');
+      localStorage.removeItem('app_sman1batu_discipline_v2');
+      const saved = localStorage.getItem('app_sman1batu_discipline_v3');
+      return saved ? sortDisciplineRecords(JSON.parse(saved)) : [];
     } catch {
-      return initialDisciplineRecords;
+      return [];
     }
   });
 
@@ -559,7 +561,7 @@ export default function App() {
   }, [attendanceRecords]);
 
   useEffect(() => {
-    localStorage.setItem('app_sman1batu_discipline_v2', JSON.stringify(disciplineRecords));
+    localStorage.setItem('app_sman1batu_discipline_v3', JSON.stringify(disciplineRecords));
   }, [disciplineRecords]);
 
   useEffect(() => {
