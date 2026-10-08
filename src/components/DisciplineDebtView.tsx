@@ -484,12 +484,10 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                       </td>
                       <td className="py-4 px-5">
                         <div className="font-black text-[#0F172A] text-sm" >{rec.studentName}</div>
-                        <div className="text-xs text-[#334155] mt-1 flex items-center gap-1.5 flex-wrap">
-                          <span className="inline-flex items-center justify-center font-extrabold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-lg border border-rose-200 shadow-2xs whitespace-nowrap shrink-0 leading-tight">
+                        <div className="mt-1">
+                          <span className="inline-flex items-center justify-center font-extrabold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-lg border border-rose-200 shadow-2xs whitespace-nowrap leading-tight text-xs">
                             {rec.className}
                           </span>
-                          <span>•</span>
-                          <span className="whitespace-nowrap">NISN: {rec.nisn}</span>
                         </div>
                       </td>
                       <td className="py-4 px-5">
@@ -605,8 +603,8 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
               <div className="p-4 bg-[#E2F1FD] rounded-2xl shadow-none space-y-1">
                 <div className="text-[#334155] text-[10px] uppercase font-black" >Siswa & Pelanggaran</div>
                 <div className="font-black text-[#0F172A] text-sm" >{resolvingRecord.studentName}</div>
-                <div className="text-[#334155] text-xs">
-                  {resolvingRecord.className} • NISN: {resolvingRecord.nisn}
+                <div className="text-[#334155] text-xs font-bold">
+                  {resolvingRecord.className}
                 </div>
                 <div className="text-rose-700 font-bold pt-1.5 border-t border-slate-300/40 mt-1.5">
                   Pelanggaran: {resolvingRecord.violationName} ({resolvingRecord.date})
@@ -837,8 +835,8 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
             <form onSubmit={handleSaveFollowUpLetter} className="p-6 sm:p-8 space-y-5 text-xs overflow-y-auto flex-1">
               <div className="p-4 bg-[#E2F1FD] rounded-2xl shadow-none space-y-1">
                 <div className="font-black text-[#0F172A] text-sm" >{letterUploadRecord.studentName}</div>
-                <div className="text-[#334155] text-xs">
-                  {letterUploadRecord.className} • NISN: {letterUploadRecord.nisn}
+                <div className="text-[#334155] text-xs font-bold">
+                  {letterUploadRecord.className}
                 </div>
                 <div className="text-[#0F172A] font-bold pt-1.5 border-t border-slate-300/40 mt-1.5">
                   Pelanggaran: {letterUploadRecord.violationName}

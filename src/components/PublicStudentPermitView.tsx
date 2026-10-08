@@ -348,9 +348,9 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                   </div>
 
                   <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
-                    <span className="text-slate-500 font-bold">Kelas / NISN</span>
+                    <span className="text-slate-500 font-bold">Kelas</span>
                     <span>:</span>
-                    <span className="font-bold text-slate-800">Kelas {activePermit.className} • {activePermit.nisn || '-'}</span>
+                    <span className="font-bold text-slate-800">{activePermit.className}</span>
                   </div>
 
                   <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
@@ -477,9 +477,9 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                       <span className="font-black text-slate-950 text-sm uppercase">{activePermit.studentName}</span>
                     </div>
                     <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
-                      <span className="text-slate-600">Kelas / NISN</span>
+                      <span className="text-slate-600">Kelas</span>
                       <span>:</span>
-                      <span className="font-bold text-slate-900">Kelas {activePermit.className} • {activePermit.nisn || '-'}</span>
+                      <span className="font-bold text-slate-900">{activePermit.className}</span>
                     </div>
                     <div className="grid grid-cols-[130px_10px_auto] gap-x-1">
                       <span className="text-slate-600">Waktu Disetujui</span>

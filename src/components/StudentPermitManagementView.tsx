@@ -629,12 +629,10 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                       {/* Nama Siswa & Kelas */}
                       <td className="py-4 px-5">
                         <div className="font-black text-[#0F172A] text-sm">{p.studentName}</div>
-                        <div className="flex items-center gap-1.5 text-xs text-[#64748B] mt-1 flex-wrap">
-                          <span className="inline-flex items-center justify-center font-bold text-[#0284C7] bg-sky-50 px-2 py-0.5 rounded-md border border-sky-200 whitespace-nowrap shrink-0 leading-tight">
+                        <div className="mt-1">
+                          <span className="inline-flex items-center justify-center font-bold text-[#0284C7] bg-sky-50 px-2 py-0.5 rounded-md border border-sky-200 whitespace-nowrap leading-tight text-xs">
                             {p.className}
                           </span>
-                          <span>•</span>
-                          <span className="whitespace-nowrap">NISN: {p.nisn || '-'}</span>
                         </div>
                       </td>
 
@@ -896,8 +894,8 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                   <span className="col-span-2 font-black text-slate-900 uppercase">{viewingPermit.studentName}</span>
                 </div>
                 <div className="grid grid-cols-3 py-1 border-b border-slate-100">
-                  <span className="text-slate-500 font-bold">Kelas / NISN</span>
-                  <span className="col-span-2 font-bold text-slate-900">Kelas {viewingPermit.className} • NISN: {viewingPermit.nisn || '-'}</span>
+                  <span className="text-slate-500 font-bold">Kelas</span>
+                  <span className="col-span-2 font-bold text-slate-900">{viewingPermit.className}</span>
                 </div>
                 <div className="grid grid-cols-3 py-1 border-b border-slate-100">
                   <span className="text-slate-500 font-bold">Hari &amp; Tanggal</span>

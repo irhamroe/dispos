@@ -421,12 +421,10 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                       </td>
                       <td className="py-4 px-5">
                         <div className="font-black text-[#0F172A] text-sm" >{rec.studentName}</div>
-                        <div className="text-xs text-[#334155] mt-1 flex items-center gap-1.5 flex-wrap">
-                          <span className="inline-flex items-center justify-center font-extrabold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-lg border border-teal-200 shadow-2xs whitespace-nowrap shrink-0 leading-tight">
+                        <div className="mt-1">
+                          <span className="inline-flex items-center justify-center font-extrabold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-lg border border-teal-200 shadow-2xs whitespace-nowrap leading-tight text-xs">
                             {rec.className}
                           </span>
-                          <span>•</span>
-                          <span className="whitespace-nowrap">NISN: {rec.nisn}</span>
                         </div>
                       </td>
                       <td className="py-4 px-5">
@@ -560,8 +558,8 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
               <div className="p-4 bg-[#E2F1FD] rounded-2xl shadow-none space-y-1">
                 <div className="text-[#334155] text-[10px] uppercase font-black" >Identitas Siswa</div>
                 <div className="text-base font-black text-[#0F172A]" >{activeRecordForDetail.studentName}</div>
-                <div className="text-[#334155] text-xs">
-                  {activeRecordForDetail.className} • NISN: {activeRecordForDetail.nisn}
+                <div className="text-[#334155] text-xs font-bold">
+                  {activeRecordForDetail.className}
                 </div>
               </div>
 

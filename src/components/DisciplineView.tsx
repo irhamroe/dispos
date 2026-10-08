@@ -1038,12 +1038,10 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                       </td>
                       <td className="py-3.5 px-4">
                         <div className="font-bold text-slate-900">{rec.studentName}</div>
-                        <div className="text-[11px] text-slate-500 mt-1 flex items-center gap-1.5 flex-wrap">
-                          <span className="inline-flex items-center justify-center font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 whitespace-nowrap shrink-0 leading-tight">
+                        <div className="mt-1">
+                          <span className="inline-flex items-center justify-center font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 whitespace-nowrap leading-tight text-[11px]">
                             {rec.className}
                           </span>
-                          <span>•</span>
-                          <span className="whitespace-nowrap">NISN: {rec.nisn}</span>
                         </div>
                       </td>
                       <td className="py-3.5 px-4">
@@ -1629,8 +1627,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1">
                 <div className="text-slate-400 text-[10px] uppercase font-bold">Data Siswa</div>
                 <div className="text-sm font-extrabold text-slate-900">{activeRecordForDetail.studentName}</div>
-                <div className="text-slate-600">
-                  {activeRecordForDetail.className} • NISN: {activeRecordForDetail.nisn}
+                <div className="text-slate-600 font-bold">
+                  {activeRecordForDetail.className}
                 </div>
               </div>
 
@@ -1771,7 +1769,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                   </span>
                 </div>
                 <div className="text-slate-600 text-[11px]">
-                  NISN: {resolvingCoachingRecord.nisn} • Tanggal Kejadian: {resolvingCoachingRecord.date}
+                  Tanggal Kejadian: {resolvingCoachingRecord.date}
                 </div>
                 <div className="pt-1 text-slate-800 font-semibold border-t border-slate-200/60 flex items-center gap-1.5">
                   <ShieldAlert className="w-3.5 h-3.5 text-amber-600 shrink-0" />
@@ -2028,7 +2026,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                   </span>
                 </div>
                 <div className="text-slate-600 text-[11px]">
-                  NISN: {followUpRecord.nisn} • Tgl Pelanggaran: {followUpRecord.date}
+                  Tgl Pelanggaran: {followUpRecord.date}
                 </div>
                 <div className="pt-1 text-slate-800 font-semibold border-t border-amber-200/60 flex items-center gap-1.5">
                   <ShieldAlert className="w-3.5 h-3.5 text-amber-600 shrink-0" />

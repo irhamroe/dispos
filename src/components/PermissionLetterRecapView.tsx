@@ -709,8 +709,8 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
               {/* Info Siswa */}
               <div className="p-4 bg-[#E2F1FD] rounded-2xl shadow-none space-y-1">
                 <div className="font-black text-[#0F172A] text-sm" >{markingRecord.studentName}</div>
-                <div className="text-[#334155] text-xs">
-                  Kelas {markingRecord.className} • NISN: {markingRecord.nisn}
+                <div className="text-[#334155] text-xs font-bold">
+                  {markingRecord.className}
                 </div>
                 <div className="text-[#0F172A] font-bold pt-1.5 border-t border-slate-300/40 mt-1.5 flex items-center justify-between">
                   <span>Tanggal Presensi: {formatDateIndonesian(markingRecord.date)}</span>
@@ -804,8 +804,8 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
               {/* Info Siswa */}
               <div className="p-4 bg-[#E2F1FD] rounded-2xl shadow-none space-y-1">
                 <div className="font-black text-[#0F172A] text-sm" >{alpaModalRecord.studentName}</div>
-                <div className="text-[#334155] text-xs">
-                  Kelas {alpaModalRecord.className} • NISN: {alpaModalRecord.nisn}
+                <div className="text-[#334155] text-xs font-bold">
+                  {alpaModalRecord.className}
                 </div>
                 <div className="text-[#0F172A] font-bold pt-1.5 border-t border-slate-300/40 mt-1.5 flex items-center justify-between">
                   <span>Tanggal Presensi: {formatDateIndonesian(alpaModalRecord.date)}</span>
