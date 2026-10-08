@@ -840,17 +840,6 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
                 <span>Unduh PDF</span>
               </button>
 
-              <button
-                type="button"
-                id="btn-copy-wa-message"
-                onClick={handleCopyWhatsApp}
-                className="px-4 py-2 rounded-2xl bg-white text-[#0F172A] hover:text-emerald-700  font-extrabold text-xs transition-all shadow-xs hover:-translate-y-0.5 active:scale-95 cursor-pointer flex items-center gap-1.5"
-                title="Salin ringkasan pesan panggilan untuk dikirim ke WhatsApp"
-              >
-                <Copy className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Salin WA</span>
-              </button>
-
               {(selectedStudent?.parentPhone || selectedStudent?.phone) && (
                 <button
                   type="button"
