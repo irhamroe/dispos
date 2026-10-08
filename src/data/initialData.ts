@@ -110,80 +110,14 @@ export const initialWaliKelas: WaliKelasTeacher[] = rawWaliKelasData.map((item) 
 });
 
 import { realStudentsData } from './studentsData';
+import { historicalAttendanceData } from './historicalAttendance';
 
 export const initialStudents: Student[] = realStudentsData;
+export const initialAttendanceRecords: AttendanceRecord[] = historicalAttendanceData;
 
-// Generate attendance records for today and recent days based on real student data
+// Real attendance records from Database Absensi AppScript SMAN 1 Batu (61 school days, 58,012 records)
 export const generateInitialAttendance = (allStudents: Student[] = initialStudents): AttendanceRecord[] => {
-  const records: AttendanceRecord[] = [];
-  const now = new Date();
-  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-  
-  const dates = [
-    '2026-09-14',
-    '2026-09-15',
-    '2026-09-16',
-    '2026-09-17',
-  ];
-  if (!dates.includes(todayStr)) {
-    dates.push(todayStr);
-  }
-
-  dates.forEach((date) => {
-    allStudents.forEach((student, idx) => {
-      // Deterministic variation based on student id and date
-      const hash = (idx * 31 + date.charCodeAt(9) * 17) % 100;
-      let status: AttendanceStatus = 'H';
-      let hasLetter: LetterStatus | undefined = undefined;
-      let notes = '';
-      let timeRecorded = '06:50';
-
-      if (hash === 3 || hash === 19) {
-        // Sakit
-        status = 'S';
-        hasLetter = hash === 3 ? 'Sudah Ada Surat' : 'Belum Ada Surat';
-        notes = hash === 3 ? 'Surat dokter RS Karsa Husada Batu terlampir' : 'Kabar via WhatsApp orang tua, surat menyusul';
-        timeRecorded = '07:10';
-      } else if (hash === 7 || hash === 42) {
-        // Izin
-        status = 'I';
-        hasLetter = hash === 7 ? 'Sudah Ada Surat' : 'Belum Ada Surat';
-        notes = hash === 7 ? 'Surat permohonan izin acara keluarga resmi' : 'Izin lisan belum menyerahkan surat fisik';
-        timeRecorded = '07:05';
-      } else if (hash === 13) {
-        // Alpa (Tanpa Keterangan)
-        status = 'A';
-        notes = 'Tanpa pemberitahuan sama sekali ke wali kelas/piket';
-        timeRecorded = '07:30';
-      } else if (hash === 28) {
-        // Dispen (Dispensasi)
-        status = 'D';
-        notes = 'Dispensasi Lomba FLS2N / OSN Tingkat Kota Batu';
-        timeRecorded = '07:00';
-      } else {
-        // Hadir
-        status = 'H';
-        timeRecorded = '06:45';
-      }
-
-      records.push({
-        id: `att-${date}-${student.id}`,
-        date,
-        studentId: student.id,
-        studentName: student.name,
-        nisn: student.nisn,
-        classId: student.classId,
-        className: student.className,
-        status,
-        hasLetter,
-        notes,
-        timeRecorded,
-        recordedBy: 'Guru Piket SMAN 1 Batu',
-      });
-    });
-  });
-
-  return records;
+  return historicalAttendanceData;
 };
 
 export const initialDisciplineRecords: DisciplineRecord[] = [];
