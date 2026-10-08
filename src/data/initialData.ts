@@ -115,7 +115,7 @@ import { historicalAttendanceData } from './historicalAttendance';
 export const initialStudents: Student[] = realStudentsData;
 export const initialAttendanceRecords: AttendanceRecord[] = historicalAttendanceData;
 
-// Real attendance records from Database Absensi AppScript SMAN 1 Batu (61 school days, 58,012 records)
+// Real attendance records from Database Absensi AppScript SMAN 1 Batu & auto-filled H for unrecorded effective days (61 school days from 14 Juli 2026, 77,714 records)
 export const generateInitialAttendance = (allStudents: Student[] = initialStudents): AttendanceRecord[] => {
   return historicalAttendanceData;
 };

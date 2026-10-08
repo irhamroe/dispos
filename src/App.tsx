@@ -140,15 +140,17 @@ export default function App() {
     }
   });
 
-  // Attendance Records state (H, I, S, A, D - 58,012 real records from AppScript Database)
+  // Attendance Records state (H, I, S, A, D - 77,714 records across 61 effective school days from 14 Juli 2026)
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>(() => {
     try {
       localStorage.removeItem('app_sman1batu_attendance');
       localStorage.removeItem('app_sman1batu_attendance_v2');
-      const saved = localStorage.getItem('app_sman1batu_attendance_v3');
+      localStorage.removeItem('app_sman1batu_attendance_v3');
+      localStorage.removeItem('app_sman1batu_attendance_v4');
+      const saved = localStorage.getItem('app_sman1batu_attendance_v5');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length >= 50000) return parsed;
+        if (Array.isArray(parsed) && parsed.length >= 75000) return parsed;
       }
       return generateInitialAttendance(initialStudents);
     } catch {
@@ -567,9 +569,9 @@ export default function App() {
 
   useEffect(() => {
     try {
-      localStorage.setItem('app_sman1batu_attendance_v3', JSON.stringify(attendanceRecords));
+      localStorage.setItem('app_sman1batu_attendance_v5', JSON.stringify(attendanceRecords));
     } catch (e) {
-      // 58k records can exceed 5MB quota, memory state holds it perfectly
+      // 77k records can exceed 5MB quota, memory state holds it perfectly
     }
   }, [attendanceRecords]);
 

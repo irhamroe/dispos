@@ -1,7 +1,7 @@
 const fs = require('fs');
 const xlsx = require('xlsx');
 
-// Read studentsData.ts
+// 1. Read studentsData.ts
 const tsContent = fs.readFileSync('src/data/studentsData.ts', 'utf8');
 const jsonMatch = tsContent.match(/export const realStudentsData: Student\[\] = (\[[\s\S]*\]);/);
 if (!jsonMatch) {
@@ -19,6 +19,7 @@ for (const s of students) {
   nameMap.set(s.name.trim().toLowerCase(), s);
 }
 
+// 2. Read Database Absensi.xlsx
 const wb = xlsx.readFile('Database Absensi.xlsx');
 const wsSiswa = wb.Sheets['Siswa'];
 const excelSiswa = xlsx.utils.sheet_to_json(wsSiswa);
@@ -35,7 +36,9 @@ for (const row of excelSiswa) {
 const wsAbs = wb.Sheets['Data_Absensi'];
 const dataAbs = xlsx.utils.sheet_to_json(wsAbs);
 
-const convertedAttendance = [];
+// Store existing records indexed by date_studentId
+const existingRecordMap = new Map();
+const recordedDates = new Set();
 
 for (const row of dataAbs) {
   const rawNis = String(row['NIS'] || '').trim();
@@ -62,7 +65,7 @@ for (const row of dataAbs) {
       ? (isSuratAda ? 'Sudah Ada Surat' : 'Belum Ada Surat') 
       : undefined;
 
-    convertedAttendance.push({
+    const record = {
       id: `att-${dateStr}-${student.id}`,
       date: dateStr,
       studentId: student.id,
@@ -74,11 +77,68 @@ for (const row of dataAbs) {
       hasLetter: hasLetter,
       timeRecorded: '07:00',
       recordedBy: 'Guru Piket / AppScript'
-    });
+    };
+
+    existingRecordMap.set(`${dateStr}_${student.id}`, record);
+    recordedDates.add(dateStr);
   }
 }
 
-console.log('Writing historicalAttendance.ts with', convertedAttendance.length, 'records...');
-const outContent = `import { AttendanceRecord } from '../types';\n\nexport const historicalAttendanceData: AttendanceRecord[] = ${JSON.stringify(convertedAttendance, null, 2)};\n`;
+console.log('Unique raw attendance records loaded:', existingRecordMap.size);
+console.log('Distinct dates in Excel:', recordedDates.size);
+
+// 3. Define all effective school days between 2026-07-14 and 2026-10-07
+// Start date is 2026-07-14 as requested.
+const effectiveDates = Array.from(recordedDates)
+  .filter(d => d >= '2026-07-14' && d <= '2026-10-07')
+  .sort();
+
+console.log('Total effective school days:', effectiveDates.length);
+console.log('Effective school days list:', effectiveDates);
+
+// 4. Fill missing records with 'H' status for every student on each effective school day
+const allAttendanceRecords = [];
+let preservedCount = 0;
+let filledHCount = 0;
+
+for (const date of effectiveDates) {
+  for (const s of students) {
+    const key = `${date}_${s.id}`;
+    const existing = existingRecordMap.get(key);
+    if (existing) {
+      allAttendanceRecords.push(existing);
+      preservedCount++;
+    } else {
+      allAttendanceRecords.push({
+        id: `att-${date}-${s.id}`,
+        date: date,
+        studentId: s.id,
+        studentName: s.name,
+        nisn: s.nisn,
+        classId: s.classId,
+        className: s.className,
+        status: 'H',
+        timeRecorded: '07:00',
+        recordedBy: 'Guru Piket / Sistem Otomatis'
+      });
+      filledHCount++;
+    }
+  }
+}
+
+console.log('Total generated attendance records:', allAttendanceRecords.length);
+console.log('Preserved existing records:', preservedCount);
+console.log('Filled missing as H records:', filledHCount);
+
+// Status distribution
+const statusCounts = {};
+for (const r of allAttendanceRecords) {
+  statusCounts[r.status] = (statusCounts[r.status] || 0) + 1;
+}
+console.log('Final Status distribution:', statusCounts);
+
+// 5. Write to src/data/historicalAttendance.ts
+console.log('Writing src/data/historicalAttendance.ts...');
+const outContent = `import { AttendanceRecord } from '../types';\n\nexport const historicalAttendanceData: AttendanceRecord[] = ${JSON.stringify(allAttendanceRecords, null, 2)};\n`;
 fs.writeFileSync('src/data/historicalAttendance.ts', outContent, 'utf8');
-console.log('Successfully written src/data/historicalAttendance.ts!');
+console.log('Successfully generated src/data/historicalAttendance.ts!');
