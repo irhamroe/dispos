@@ -29,8 +29,7 @@ import { DisciplineRecord, SchoolProfile, Student } from '../types';
 import { 
   exportDisciplineToExcel, 
   exportDisciplineToPdf, 
-  exportCoachingProofLetterPdf, 
-  exportCoachingPhotoProofPdf, 
+  exportCoachingCompleteProofPdf, 
   formatDateIndonesian 
 } from '../utils/exportUtils';
 import { sortClasses, sortDisciplineRecords } from '../utils/sortUtils';
@@ -397,7 +396,7 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                 <th className="py-4 px-4 text-center w-40">Status Pembinaan</th>
                 <th className="py-4 px-4 w-36 text-center">Tanggal Pembinaan</th>
                 <th className="py-4 px-4 text-center w-32">Bukti & Foto</th>
-                <th className="py-4 px-4 text-center w-48">Aksi & Cetak</th>
+                <th className="py-4 px-4 text-center w-44">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
@@ -513,29 +512,15 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                           </button>
 
                           {isSudah && (
-                            <>
-                              <button
-                                type="button"
-                                onClick={() => exportCoachingProofLetterPdf(schoolProfile, rec)}
-                                className="px-2.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none transition-all flex items-center gap-1 cursor-pointer"
-                                title="Cetak Surat Bukti Pembinaan Siswa (PDF)"
-                              >
-                                <FileCheck2 className="w-3.5 h-3.5 text-white" />
-                                <span>Surat</span>
-                              </button>
-
-                              {rec.coachingPhoto && (
-                                <button
-                                  type="button"
-                                  onClick={() => exportCoachingPhotoProofPdf(schoolProfile, rec)}
-                                  className="px-2.5 py-1.5 rounded-xl bg-teal-500 hover:bg-teal-600 text-white font-extrabold text-xs shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none transition-all flex items-center gap-1 cursor-pointer"
-                                  title="Cetak Lembar Foto Bukti Pembinaan (PDF)"
-                                >
-                                  <Camera className="w-3.5 h-3.5 text-white" />
-                                  <span>Foto</span>
-                                </button>
-                              )}
-                            </>
+                            <button
+                              type="button"
+                              onClick={() => exportCoachingCompleteProofPdf(schoolProfile, rec)}
+                              className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold text-xs shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none transition-all flex items-center gap-1 cursor-pointer"
+                              title="Cetak Berkas Bukti Pembinaan (2 Halaman: Surat TTD & Foto Pembinaan)"
+                            >
+                              <Printer className="w-3.5 h-3.5 text-white" />
+                              <span>Cetak Bukti</span>
+                            </button>
                           )}
                         </div>
                       </td>
@@ -687,32 +672,19 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                     </div>
                   )}
 
-                  {/* Quick PDF Print Actions for Completed Coaching */}
+                  {/* Single 2-Page PDF Print Action for Completed Coaching */}
                   <div className="pt-3 border-t border-teal-200/80 space-y-2">
                     <p className="text-[11px] font-black text-teal-950 uppercase tracking-wider">
                       Cetak Berkas Bukti Resmi:
                     </p>
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <button
-                        type="button"
-                        onClick={() => exportCoachingProofLetterPdf(schoolProfile, activeRecordForDetail)}
-                        className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black text-xs shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-[0.92] transition-all flex items-center justify-center gap-2 cursor-pointer flex-1"
-                      >
-                        <Printer className="w-4 h-4 text-white" />
-                        <span>Cetak Surat Bukti Pembinaan</span>
-                      </button>
-
-                      {activeRecordForDetail.coachingPhoto && (
-                        <button
-                          type="button"
-                          onClick={() => exportCoachingPhotoProofPdf(schoolProfile, activeRecordForDetail)}
-                          className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-black text-xs shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-[0.92] transition-all flex items-center justify-center gap-2 cursor-pointer flex-1"
-                        >
-                          <Camera className="w-4 h-4 text-white" />
-                          <span>Cetak Lembar Foto Bukti</span>
-                        </button>
-                      )}
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => exportCoachingCompleteProofPdf(schoolProfile, activeRecordForDetail)}
+                      className="w-full px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black text-xs shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-[0.92] transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <Printer className="w-4 h-4 text-white" />
+                      <span>Cetak Berkas Bukti Lengkap (Surat TTD & Foto - 2 Halaman)</span>
+                    </button>
                   </div>
                 </div>
               )}

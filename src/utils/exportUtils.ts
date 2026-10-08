@@ -1290,9 +1290,11 @@ export const exportParentCallLetterToPdf = (data: ParentCallLetterData) => {
 };
 
 /**
- * Cetak Dokumen Resmi Surat Bukti Pelaksanaan Pembinaan Siswa
+ * Cetak Dokumen 2 Halaman:
+ * - Halaman 1: Dokumen Surat Bukti Pembinaan Bertanda Tangan yang Diunggah
+ * - Halaman 2: Foto Dokumentasi Saat Pembinaan Siswa
  */
-export const exportCoachingProofLetterPdf = (
+export const exportCoachingCompleteProofPdf = (
   schoolProfile: SchoolProfile,
   record: DisciplineRecord
 ) => {
@@ -1304,337 +1306,295 @@ export const exportCoachingProofLetterPdf = (
 
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
-  const marginX = 20;
+  const marginX = 16;
 
-  // 1. KOP SURAT RESMI
+  const drawLetterhead = (docInstance: jsPDF) => {
+    docInstance.setFont('helvetica', 'bold');
+    docInstance.setFontSize(10);
+    docInstance.setTextColor(15, 23, 42);
+    docInstance.text('PEMERINTAH PROVINSI JAWA TIMUR', pageWidth / 2, 12, { align: 'center' });
+    docInstance.text('DINAS PENDIDIKAN', pageWidth / 2, 16.5, { align: 'center' });
+
+    docInstance.setFontSize(13);
+    docInstance.text(schoolProfile.name.toUpperCase(), pageWidth / 2, 22, { align: 'center' });
+
+    docInstance.setFont('helvetica', 'normal');
+    docInstance.setFontSize(7.5);
+    docInstance.setTextColor(71, 85, 105);
+    docInstance.text(
+      'Jalan KH. Agus Salim Nomor 57, Sisir, Kota Batu Jawa Timur 65314',
+      pageWidth / 2,
+      26.5,
+      { align: 'center' }
+    );
+    docInstance.text(
+      'Telepon (0341)591310, Laman: www.sman1batu.sch.id, Pos-el: sman1batu@yahoo.com',
+      pageWidth / 2,
+      30.5,
+      { align: 'center' }
+    );
+
+    // Garis Kop Surat Tebal-Tipis
+    docInstance.setDrawColor(15, 23, 42);
+    docInstance.setLineWidth(0.7);
+    docInstance.line(marginX, 33, pageWidth - marginX, 33);
+    docInstance.setLineWidth(0.2);
+    docInstance.line(marginX, 34, pageWidth - marginX, 34);
+  };
+
+  // ==========================================
+  // HALAMAN 1: SURAT BUKTI PEMBINAAN YANG DIUNGGAH
+  // ==========================================
+  drawLetterhead(doc);
+
+  let curY = 41;
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(10.5);
+  doc.setFontSize(11);
   doc.setTextColor(15, 23, 42);
-  doc.text('PEMERINTAH PROVINSI JAWA TIMUR', pageWidth / 2, 14, { align: 'center' });
-  doc.text('DINAS PENDIDIKAN', pageWidth / 2, 19, { align: 'center' });
-
-  doc.setFontSize(13.5);
-  doc.text(schoolProfile.name.toUpperCase(), pageWidth / 2, 25, { align: 'center' });
+  doc.text('DOKUMEN SURAT BUKTI PEMBINAAN SISWA', pageWidth / 2, curY, { align: 'center' });
+  curY += 4.5;
 
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8);
-  doc.setTextColor(51, 65, 85);
-  doc.text(
-    'Jalan KH. Agus Salim Nomor 57, Sisir, Kota Batu Jawa Timur 65314',
-    pageWidth / 2,
-    30,
-    { align: 'center' }
-  );
-  doc.text(
-    'Telepon (0341)591310, Laman: www.sman1batu.sch.id, Pos-el: sman1batu@yahoo.com',
-    pageWidth / 2,
-    34,
-    { align: 'center' }
-  );
-
-  // Garis Kop Surat Tebal-Tipis
-  doc.setDrawColor(15, 23, 42);
-  doc.setLineWidth(0.8);
-  doc.line(marginX, 36.5, pageWidth - marginX, 36.5);
-  doc.setLineWidth(0.2);
-  doc.line(marginX, 37.5, pageWidth - marginX, 37.5);
-
-  let curY = 46;
-
-  // Judul Surat
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(12);
-  doc.setTextColor(15, 23, 42);
-  doc.text('SURAT KETERANGAN BUKTI PEMBINAAN DISIPLIN POSITIF', pageWidth / 2, curY, { align: 'center' });
-  curY += 5;
-
-  const yearNum = new Date().getFullYear();
-  const cleanId = (record.id || '001').replace(/[^a-zA-Z0-9]/g, '').slice(-4).toUpperCase();
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  doc.text(`Nomor: 400.3.8 / BUKTI-DISP / ${cleanId} / 101.6.10.26 / ${yearNum}`, pageWidth / 2, curY, { align: 'center' });
-  curY += 10;
-
-  // Paragraf Pembuka
-  doc.setFontSize(9.5);
-  doc.text(
-    'Yang bertanda tangan di bawah ini menerangkan dengan sesungguhnya bahwa peserta didik:',
-    marginX,
-    curY
-  );
+  doc.setFontSize(8.5);
+  doc.setTextColor(100, 116, 139);
+  doc.text('(Halaman 1 dari 2: Berkas Surat Bukti yang Telah Ditandatangani)', pageWidth / 2, curY, { align: 'center' });
   curY += 6;
 
-  // Tabel Identitas Siswa
-  const labelX = marginX + 6;
-  const valX = marginX + 55;
-
-  doc.setFont('helvetica', 'bold');
-  doc.text('Nama Lengkap', labelX, curY);
-  doc.setFont('helvetica', 'normal');
-  doc.text(`:  ${record.studentName.toUpperCase()}`, valX, curY);
-  curY += 5.5;
-
-  doc.setFont('helvetica', 'bold');
-  doc.text('NISN', labelX, curY);
-  doc.setFont('helvetica', 'normal');
-  doc.text(`:  ${record.nisn || '-'}`, valX, curY);
-  curY += 5.5;
-
-  doc.setFont('helvetica', 'bold');
-  doc.text('Kelas / Rombel', labelX, curY);
-  doc.setFont('helvetica', 'normal');
-  doc.text(`:  ${record.className}`, valX, curY);
-  curY += 8;
-
-  // Rincian Pelanggaran & Pembinaan
-  doc.text(
-    'Telah tercatat melakukan pelanggaran tata tertib dan telah menyelesaikan seluruh tahapan pembinaan disiplin positif dengan rincian sebagai berikut:',
-    marginX,
-    curY,
-    { maxWidth: pageWidth - marginX * 2 }
-  );
-  curY += 8;
-
-  autoTable(doc, {
-    startY: curY,
-    head: [['KOMPONEN', 'KETERANGAN']],
-    body: [
-      ['Tanggal Kejadian', formatDayAndDateIndonesian(record.date)],
-      ['Jenis Pelanggaran', `${record.violationName} (Kategori: ${record.category}, ${record.points} Poin)`],
-      ['Catatan / Deskripsi', record.description || 'Tidak ada catatan tambahan'],
-      ['Tanggal Pembinaan', record.coachingDate ? formatDayAndDateIndonesian(record.coachingDate) : formatDayAndDateIndonesian(record.date)],
-      ['Bentuk Pembinaan / Restitusi', record.positiveIntervention || 'Pembinaan disiplin positif, refleksi diri, dan penugasan edukatif'],
-      ['Dokumen Pendukung', record.coachingEvidenceFileName || (record.coachingPhoto ? 'Foto & Berita Acara Terlampir' : 'Lengkap')],
-      ['Status Akhir Pembinaan', 'TUNTAS / SELESAI DIBINA'],
-    ],
-    theme: 'grid',
-    headStyles: {
-      fillColor: [30, 41, 59],
-      textColor: [255, 255, 255],
-      fontSize: 8.5,
-      fontStyle: 'bold',
-    },
-    bodyStyles: {
-      fontSize: 8.5,
-      textColor: [15, 23, 42],
-      cellPadding: 2.5,
-    },
-    columnStyles: {
-      0: { fontStyle: 'bold', cellWidth: 55, fillColor: [248, 250, 252] },
-      1: { cellWidth: 'auto' },
-    },
-    margin: { left: marginX, right: marginX },
-  });
-
-  curY = (doc as any).lastAutoTable.finalY + 6;
-
-  // Pernyataan Komitmen
-  const pClosing = 'Dengan selesainya pembinaan ini, siswa yang bersangkutan menyatakan memahami kesalahan, berkomitmen untuk tidak mengulangi pelanggaran serupa, dan bersedia mentaati seluruh tata tertib yang berlaku di SMA Negeri 1 Batu.';
-  const splitClosing = doc.splitTextToSize(pClosing, pageWidth - (marginX * 2));
-  doc.text(splitClosing, marginX, curY);
-  curY += (splitClosing.length * 4.5) + 5;
-
-  doc.text('Demikian surat keterangan bukti pembinaan ini dibuat dengan sebenar-benarnya untuk dipergunakan sebagaimana mestinya.', marginX, curY);
-  curY += 9;
-
-  // Blok Tanda Tangan (3 Kolom: Siswa, Guru Pembina, Kepala Sekolah)
-  if (curY > pageHeight - 45) {
-    doc.addPage();
-    curY = 25;
-  }
-
-  const signDateFormatted = record.coachingDate ? formatDateIndonesian(record.coachingDate) : getTodayIndonesian();
-  doc.text(`Kota Batu, ${signDateFormatted}`, pageWidth - marginX - 60, curY);
-  curY += 5;
-
-  const colWidth = (pageWidth - marginX * 2) / 3;
-  const col1X = marginX;
-  const col2X = marginX + colWidth;
-  const col3X = marginX + colWidth * 2;
-
-  doc.setFontSize(8.5);
-  doc.text('Peserta Didik,', col1X + 5, curY);
-  doc.text('Guru Pembina / BK,', col2X + 5, curY);
-  doc.text(`Kepala ${schoolProfile.name},`, col3X + 5, curY);
-
-  curY += 20;
-
-  // Nama Siswa
-  doc.setFont('helvetica', 'bold');
-  doc.text(record.studentName, col1X + 5, curY);
-  doc.setFont('helvetica', 'normal');
-  doc.text(`NISN. ${record.nisn || '-'}`, col1X + 5, curY + 4);
-
-  // Guru Pembina
-  doc.setFont('helvetica', 'bold');
-  doc.text(record.reportedBy || 'Tim Ketertiban Sekolah', col2X + 5, curY);
-  doc.setFont('helvetica', 'normal');
-  doc.text('Guru Disiplin / Piket', col2X + 5, curY + 4);
-
-  // Kepala Sekolah
-  doc.setFont('helvetica', 'bold');
-  doc.text(schoolProfile.principalName, col3X + 5, curY);
-  doc.setFont('helvetica', 'normal');
-  doc.text(`NIP. ${schoolProfile.principalNip}`, col3X + 5, curY + 4);
-
-  const cleanName = record.studentName.replace(/[^a-zA-Z0-9]/g, '_');
-  const filename = `Surat_Bukti_Pembinaan_${cleanName}_${record.date}.pdf`;
-  previewOrDownloadPdf(doc, filename);
-};
-
-/**
- * Cetak Lembar Dokumentasi Foto Bukti Pembinaan Siswa
- */
-export const exportCoachingPhotoProofPdf = (
-  schoolProfile: SchoolProfile,
-  record: DisciplineRecord
-) => {
-  const doc = new jsPDF({
-    orientation: 'portrait',
-    unit: 'mm',
-    format: 'a4',
-  });
-
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
-  const marginX = 20;
-
-  // 1. KOP SURAT RESMI
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(10.5);
-  doc.setTextColor(15, 23, 42);
-  doc.text('PEMERINTAH PROVINSI JAWA TIMUR', pageWidth / 2, 14, { align: 'center' });
-  doc.text('DINAS PENDIDIKAN', pageWidth / 2, 19, { align: 'center' });
-
-  doc.setFontSize(13.5);
-  doc.text(schoolProfile.name.toUpperCase(), pageWidth / 2, 25, { align: 'center' });
-
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8);
-  doc.setTextColor(51, 65, 85);
-  doc.text(
-    'Jalan KH. Agus Salim Nomor 57, Sisir, Kota Batu Jawa Timur 65314',
-    pageWidth / 2,
-    30,
-    { align: 'center' }
-  );
-  doc.text(
-    'Telepon (0341)591310, Laman: www.sman1batu.sch.id, Pos-el: sman1batu@yahoo.com',
-    pageWidth / 2,
-    34,
-    { align: 'center' }
-  );
-
-  // Garis Kop Surat Tebal-Tipis
-  doc.setDrawColor(15, 23, 42);
-  doc.setLineWidth(0.8);
-  doc.line(marginX, 36.5, pageWidth - marginX, 36.5);
-  doc.setLineWidth(0.2);
-  doc.line(marginX, 37.5, pageWidth - marginX, 37.5);
-
-  let curY = 46;
-
-  // Judul Lembar Dokumentasi
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(12);
-  doc.setTextColor(15, 23, 42);
-  doc.text('LEMBAR DOKUMENTASI FOTO BUKTI PEMBINAAN SISWA', pageWidth / 2, curY, { align: 'center' });
-  curY += 5;
-
-  const yearNum = new Date().getFullYear();
-  const cleanId = (record.id || '001').replace(/[^a-zA-Z0-9]/g, '').slice(-4).toUpperCase();
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  doc.text(`Lampiran Berita Acara Disiplin Positif: #FOTO-DISP-${cleanId}/${yearNum}`, pageWidth / 2, curY, { align: 'center' });
-  curY += 8;
-
-  // Info Ringkas Siswa & Pembinaan (Card)
+  // Mini Banner Identitas
   doc.setFillColor(248, 250, 252);
   doc.setDrawColor(203, 213, 225);
-  doc.roundedRect(marginX, curY, pageWidth - marginX * 2, 24, 3, 3, 'FD');
+  doc.setLineWidth(0.3);
+  doc.roundedRect(marginX, curY, pageWidth - marginX * 2, 17, 2.5, 2.5, 'FD');
 
+  doc.setFontSize(8);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(15, 23, 42);
+  doc.text('Siswa / Kelas', marginX + 4, curY + 5.5);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`: ${record.studentName} (${record.className})  |  NISN: ${record.nisn || '-'}`, marginX + 26, curY + 5.5);
+
+  doc.setFont('helvetica', 'bold');
+  doc.text('Pelanggaran', marginX + 4, curY + 11.5);
+  doc.setFont('helvetica', 'normal');
+  doc.text(
+    `: ${record.violationName}  |  Tgl Pembinaan: ${
+      record.coachingDate ? formatDateIndonesian(record.coachingDate) : formatDateIndonesian(record.date)
+    }`,
+    marginX + 26,
+    curY + 11.5
+  );
+
+  curY += 21;
+
+  // Tampilkan Gambar Surat yang Diunggah
+  const evidenceFile = record.coachingEvidenceFile;
+  const isImageEvidence =
+    evidenceFile &&
+    (evidenceFile.startsWith('data:image') ||
+      evidenceFile.match(/\.(jpeg|jpg|png|webp)($|\?)/i) ||
+      (record.coachingEvidenceFileName &&
+        record.coachingEvidenceFileName.match(/\.(jpeg|jpg|png|webp)$/i)));
+
+  if (evidenceFile && isImageEvidence) {
+    try {
+      const imgWidth = pageWidth - marginX * 2;
+      const maxImgHeight = pageHeight - curY - 18;
+      const imgHeight = Math.min(190, maxImgHeight);
+      const imgX = marginX;
+
+      // Frame border
+      doc.setDrawColor(203, 213, 225);
+      doc.setLineWidth(0.3);
+      doc.rect(imgX, curY, imgWidth, imgHeight);
+
+      doc.addImage(evidenceFile, 'JPEG', imgX, curY, imgWidth, imgHeight, undefined, 'FAST');
+      curY += imgHeight + 5;
+    } catch (e) {
+      // Fallback
+      doc.setFillColor(241, 245, 249);
+      doc.roundedRect(marginX, curY, pageWidth - marginX * 2, 120, 3, 3, 'FD');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9.5);
+      doc.setTextColor(15, 23, 42);
+      doc.text('Dokumen Surat Bukti Pembinaan Terlampir Secara Digital', pageWidth / 2, curY + 55, { align: 'center' });
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.text(record.coachingEvidenceFileName || 'Surat_Bukti_Pembinaan.pdf', pageWidth / 2, curY + 63, { align: 'center' });
+      curY += 130;
+    }
+  } else if (evidenceFile) {
+    // Non-image document (e.g. PDF/Drive link)
+    doc.setFillColor(248, 250, 252);
+    doc.setDrawColor(186, 230, 253);
+    doc.setLineWidth(0.4);
+    doc.roundedRect(marginX, curY, pageWidth - marginX * 2, 140, 4, 4, 'FD');
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10.5);
+    doc.setTextColor(3, 105, 161);
+    doc.text('DOKUMEN SURAT BUKTI PEMBINAAN RESMI TERVERIFIKASI', pageWidth / 2, curY + 50, { align: 'center' });
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(51, 65, 85);
+    doc.text(`Nama Berkas: ${record.coachingEvidenceFileName || 'Surat_Pembinaan_Bertandatangan.pdf'}`, pageWidth / 2, curY + 62, {
+      align: 'center',
+    });
+    doc.text('Status: Telah ditandatangani dan diarsipkan dalam sistem', pageWidth / 2, curY + 70, { align: 'center' });
+
+    doc.setFontSize(8);
+    doc.setTextColor(100, 116, 139);
+    doc.text('Dokumen PDF digital tersimpan pada Google Drive / Database Sekolah.', pageWidth / 2, curY + 85, { align: 'center' });
+    curY += 150;
+  } else {
+    // Dokumen fisik
+    doc.setFillColor(248, 250, 252);
+    doc.setDrawColor(226, 232, 240);
+    doc.roundedRect(marginX, curY, pageWidth - marginX * 2, 120, 3, 3, 'FD');
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9.5);
+    doc.setTextColor(71, 85, 105);
+    doc.text('Dokumen Fisik Surat Bukti Pembinaan', pageWidth / 2, curY + 55, { align: 'center' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.text('Surat bukti fisik telah ditandatangani dan diarsipkan di Ruang BK / Ketertiban.', pageWidth / 2, curY + 63, { align: 'center' });
+    curY += 130;
+  }
+
+  // Footer Hal 1
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(7.5);
+  doc.setTextColor(148, 163, 184);
+  doc.text(`SMAN 1 Batu • Sistem Informasi Absensi & Disiplin • Dicetak: ${getTodayIndonesian()}`, marginX, pageHeight - 8);
+  doc.text('Halaman 1 / 2', pageWidth - marginX, pageHeight - 8, { align: 'right' });
+
+  // ==========================================
+  // HALAMAN 2: FOTO DOKUMENTASI SAAT PEMBINAAN
+  // ==========================================
+  doc.addPage();
+  drawLetterhead(doc);
+
+  curY = 41;
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.setTextColor(15, 23, 42);
+  doc.text('LEMBAR DOKUMENTASI FOTO SAAT PEMBINAAN SISWA', pageWidth / 2, curY, { align: 'center' });
+  curY += 4.5;
+
+  doc.setFont('helvetica', 'normal');
   doc.setFontSize(8.5);
+  doc.setTextColor(100, 116, 139);
+  doc.text('(Halaman 2 dari 2: Foto Bukti Pelaksanaan Sesi Pembinaan / Restitusi)', pageWidth / 2, curY, { align: 'center' });
+  curY += 6;
+
+  // Mini Banner Identitas
+  doc.setFillColor(248, 250, 252);
+  doc.setDrawColor(203, 213, 225);
+  doc.setLineWidth(0.3);
+  doc.roundedRect(marginX, curY, pageWidth - marginX * 2, 22, 2.5, 2.5, 'FD');
+
+  doc.setFontSize(8);
   doc.setFont('helvetica', 'bold');
-  doc.text('Nama Siswa', marginX + 4, curY + 6);
+  doc.setTextColor(15, 23, 42);
+  doc.text('Nama Siswa', marginX + 4, curY + 5.5);
   doc.setFont('helvetica', 'normal');
-  doc.text(`: ${record.studentName} (${record.className}) - NISN: ${record.nisn || '-'}`, marginX + 32, curY + 6);
+  doc.text(`: ${record.studentName} (${record.className})  |  NISN: ${record.nisn || '-'}`, marginX + 26, curY + 5.5);
 
   doc.setFont('helvetica', 'bold');
-  doc.text('Pelanggaran', marginX + 4, curY + 12);
+  doc.text('Pelanggaran', marginX + 4, curY + 11.5);
   doc.setFont('helvetica', 'normal');
-  doc.text(`: ${record.violationName} (${record.points} Poin)`, marginX + 32, curY + 12);
+  doc.text(`: ${record.violationName} (${record.points} Poin)`, marginX + 26, curY + 11.5);
 
   doc.setFont('helvetica', 'bold');
-  doc.text('Tgl Pembinaan', marginX + 4, curY + 18);
+  doc.text('Pelaksanaan', marginX + 4, curY + 17.5);
   doc.setFont('helvetica', 'normal');
-  doc.text(`: ${record.coachingDate ? formatDayAndDateIndonesian(record.coachingDate) : formatDayAndDateIndonesian(record.date)} | Pembina: ${record.reportedBy || 'Guru Disiplin/Piket'}`, marginX + 32, curY + 18);
+  doc.text(
+    `: ${record.coachingDate ? formatDayAndDateIndonesian(record.coachingDate) : formatDayAndDateIndonesian(record.date)}  |  Pembina: ${
+      record.reportedBy || 'Guru BK / Tim Ketertiban'
+    }`,
+    marginX + 26,
+    curY + 17.5
+  );
 
-  curY += 30;
+  curY += 28;
 
-  // Tampilkan Foto Dokumentasi
+  // Tampilkan Foto Pembinaan
   if (record.coachingPhoto) {
     try {
-      const imgWidth = 120;
-      const imgHeight = 90;
+      const imgWidth = 135;
+      const imgHeight = 100;
       const imgX = (pageWidth - imgWidth) / 2;
 
       // Draw photo container border
       doc.setDrawColor(15, 23, 42);
       doc.setLineWidth(0.4);
-      doc.rect(imgX - 2, curY - 2, imgWidth + 4, imgHeight + 4);
+      doc.rect(imgX - 1.5, curY - 1.5, imgWidth + 3, imgHeight + 3);
 
-      // Add image
       doc.addImage(record.coachingPhoto, 'JPEG', imgX, curY, imgWidth, imgHeight, undefined, 'FAST');
       curY += imgHeight + 8;
     } catch (e) {
-      // Fallback if image format is a direct url or needs placeholder
       doc.setFillColor(241, 245, 249);
-      doc.roundedRect(marginX + 20, curY, pageWidth - (marginX * 2) - 40, 60, 4, 4, 'FD');
+      doc.roundedRect(marginX + 15, curY, pageWidth - marginX * 2 - 30, 70, 3, 3, 'FD');
       doc.setFont('helvetica', 'bold');
-      doc.text('Foto Dokumentasi Pembinaan Siswa Terlampir Secara Digital', pageWidth / 2, curY + 25, { align: 'center' });
+      doc.setFontSize(9);
+      doc.text('Foto Dokumentasi Pembinaan Siswa Terlampir Secara Digital', pageWidth / 2, curY + 30, { align: 'center' });
       doc.setFont('helvetica', 'normal');
-      doc.text(record.coachingPhotoName || 'Foto_Pembinaan_Siswa.jpg', pageWidth / 2, curY + 33, { align: 'center' });
-      curY += 70;
+      doc.setFontSize(8);
+      doc.text(record.coachingPhotoName || 'Foto_Pembinaan_Siswa.jpg', pageWidth / 2, curY + 38, { align: 'center' });
+      curY += 80;
     }
   } else {
     doc.setFillColor(241, 245, 249);
-    doc.roundedRect(marginX + 20, curY, pageWidth - (marginX * 2) - 40, 60, 4, 4, 'FD');
+    doc.roundedRect(marginX + 15, curY, pageWidth - marginX * 2 - 30, 70, 3, 3, 'FD');
     doc.setFont('helvetica', 'normal');
-    doc.text('Tidak ada lampiran foto langsung / Foto diarsipkan terpisah', pageWidth / 2, curY + 30, { align: 'center' });
-    curY += 70;
+    doc.setFontSize(8.5);
+    doc.text('Foto dokumentasi pembinaan disimpan secara digital / terpisah', pageWidth / 2, curY + 35, { align: 'center' });
+    curY += 80;
   }
 
-  // Deskripsi & Caption Pembinaan
+  // Keterangan / Restitusi Positif
   doc.setFont('helvetica', 'italic');
-  doc.setFontSize(8.5);
+  doc.setFontSize(8);
   doc.setTextColor(51, 65, 85);
-  const caption = `Keterangan: Dokumentasi pelaksanaan pembinaan / restitusi positif "${record.positiveIntervention || record.violationName}" oleh siswa ${record.studentName} pada ${record.coachingDate ? formatDateIndonesian(record.coachingDate) : formatDateIndonesian(record.date)}.`;
+  const caption = `Keterangan: Dokumentasi pelaksanaan pembinaan / restitusi positif "${
+    record.positiveIntervention || record.violationName
+  }" oleh siswa ${record.studentName} pada ${
+    record.coachingDate ? formatDateIndonesian(record.coachingDate) : formatDateIndonesian(record.date)
+  }.`;
   const splitCaption = doc.splitTextToSize(caption, pageWidth - marginX * 2);
   doc.text(splitCaption, marginX, curY);
-  curY += (splitCaption.length * 4.5) + 10;
+  curY += splitCaption.length * 4.2 + 8;
 
   // Tanda Tangan Guru Pembina
-  if (curY > pageHeight - 40) {
-    doc.addPage();
-    curY = 25;
+  if (curY > pageHeight - 38) {
+    curY = pageHeight - 38;
   }
 
   const sigX = pageWidth - marginX - 60;
   const signDateFormatted = record.coachingDate ? formatDateIndonesian(record.coachingDate) : getTodayIndonesian();
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8.5);
+  doc.setFontSize(8);
   doc.setTextColor(15, 23, 42);
   doc.text(`Kota Batu, ${signDateFormatted}`, sigX, curY);
-  doc.text('Guru Pembina / Tim Ketertiban,', sigX, curY + 5);
+  doc.text('Guru Pembina / Tim Ketertiban,', sigX, curY + 4.5);
 
-  curY += 20;
+  curY += 18;
   doc.setFont('helvetica', 'bold');
   doc.text(record.reportedBy || 'Tim Ketertiban SMAN 1 Batu', sigX, curY);
   doc.setFont('helvetica', 'normal');
   doc.text('NIP. ..................................................', sigX, curY + 4);
 
+  // Footer Hal 2
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(7.5);
+  doc.setTextColor(148, 163, 184);
+  doc.text(`SMAN 1 Batu • Sistem Informasi Absensi & Disiplin • Dicetak: ${getTodayIndonesian()}`, marginX, pageHeight - 8);
+  doc.text('Halaman 2 / 2', pageWidth - marginX, pageHeight - 8, { align: 'right' });
+
   const cleanName = record.studentName.replace(/[^a-zA-Z0-9]/g, '_');
-  const filename = `Foto_Bukti_Pembinaan_${cleanName}_${record.date}.pdf`;
+  const filename = `Berkas_Bukti_Pembinaan_${cleanName}_${record.date}.pdf`;
   previewOrDownloadPdf(doc, filename);
 };
+
 
