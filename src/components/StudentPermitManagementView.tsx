@@ -631,7 +631,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                         <div className="font-black text-[#0F172A] text-sm">{p.studentName}</div>
                         <div className="flex items-center gap-1.5 text-xs text-[#64748B] mt-0.5">
                           <span className="font-bold text-[#0284C7] bg-sky-50 px-2 py-0.2 rounded-md border border-sky-200">
-                            Kelas {p.className}
+                            {p.className}
                           </span>
                           <span>•</span>
                           <span>NISN: {p.nisn || '-'}</span>

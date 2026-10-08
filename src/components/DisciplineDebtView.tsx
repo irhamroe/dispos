@@ -486,7 +486,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                         <div className="font-black text-[#0F172A] text-sm" >{rec.studentName}</div>
                         <div className="text-xs text-[#334155] mt-0.5 flex items-center gap-1.5">
                           <span className="font-extrabold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-lg border border-rose-200 shadow-2xs">
-                            Kelas {rec.className}
+                            {rec.className}
                           </span>
                           <span>•</span>
                           <span>NISN: {rec.nisn}</span>
@@ -606,7 +606,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                 <div className="text-[#334155] text-[10px] uppercase font-black" >Siswa & Pelanggaran</div>
                 <div className="font-black text-[#0F172A] text-sm" >{resolvingRecord.studentName}</div>
                 <div className="text-[#334155] text-xs">
-                  Kelas {resolvingRecord.className} • NISN: {resolvingRecord.nisn}
+                  {resolvingRecord.className} • NISN: {resolvingRecord.nisn}
                 </div>
                 <div className="text-rose-700 font-bold pt-1.5 border-t border-slate-300/40 mt-1.5">
                   Pelanggaran: {resolvingRecord.violationName} ({resolvingRecord.date})
@@ -838,7 +838,7 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
               <div className="p-4 bg-[#E2F1FD] rounded-2xl shadow-none space-y-1">
                 <div className="font-black text-[#0F172A] text-sm" >{letterUploadRecord.studentName}</div>
                 <div className="text-[#334155] text-xs">
-                  Kelas {letterUploadRecord.className} • NISN: {letterUploadRecord.nisn}
+                  {letterUploadRecord.className} • NISN: {letterUploadRecord.nisn}
                 </div>
                 <div className="text-[#0F172A] font-bold pt-1.5 border-t border-slate-300/40 mt-1.5">
                   Pelanggaran: {letterUploadRecord.violationName}

@@ -423,7 +423,7 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                         <div className="font-black text-[#0F172A] text-sm" >{rec.studentName}</div>
                         <div className="text-xs text-[#334155] mt-0.5 flex items-center gap-1.5">
                           <span className="font-extrabold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-lg border border-teal-200 shadow-2xs">
-                            Kelas {rec.className}
+                            {rec.className}
                           </span>
                           <span>•</span>
                           <span>NISN: {rec.nisn}</span>
@@ -561,7 +561,7 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                 <div className="text-[#334155] text-[10px] uppercase font-black" >Identitas Siswa</div>
                 <div className="text-base font-black text-[#0F172A]" >{activeRecordForDetail.studentName}</div>
                 <div className="text-[#334155] text-xs">
-                  Kelas {activeRecordForDetail.className} • NISN: {activeRecordForDetail.nisn}
+                  {activeRecordForDetail.className} • NISN: {activeRecordForDetail.nisn}
                 </div>
               </div>
 

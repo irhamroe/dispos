@@ -1040,7 +1040,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                         <div className="font-bold text-slate-900">{rec.studentName}</div>
                         <div className="text-[11px] text-slate-500 mt-0.5 flex items-center gap-1.5">
                           <span className="font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-md border border-emerald-200">
-                            Kelas {rec.className}
+                            {rec.className}
                           </span>
                           <span>•</span>
                           <span>NISN: {rec.nisn}</span>
@@ -1630,7 +1630,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                 <div className="text-slate-400 text-[10px] uppercase font-bold">Data Siswa</div>
                 <div className="text-sm font-extrabold text-slate-900">{activeRecordForDetail.studentName}</div>
                 <div className="text-slate-600">
-                  Kelas {activeRecordForDetail.className} • NISN: {activeRecordForDetail.nisn}
+                  {activeRecordForDetail.className} • NISN: {activeRecordForDetail.nisn}
                 </div>
               </div>
 
@@ -1767,7 +1767,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                 <div className="flex items-center justify-between">
                   <span className="font-extrabold text-sm text-slate-900">{resolvingCoachingRecord.studentName}</span>
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-700">
-                    Kelas {resolvingCoachingRecord.className}
+                    {resolvingCoachingRecord.className}
                   </span>
                 </div>
                 <div className="text-slate-600 text-[11px]">
@@ -2024,7 +2024,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                 <div className="flex items-center justify-between">
                   <span className="font-extrabold text-sm text-slate-900">{followUpRecord.studentName}</span>
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-200 text-amber-900">
-                    Kelas {followUpRecord.className}
+                    {followUpRecord.className}
                   </span>
                 </div>
                 <div className="text-slate-600 text-[11px]">

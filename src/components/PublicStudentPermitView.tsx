@@ -717,7 +717,7 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                         <div className="flex items-center gap-2">
                           <span className="font-black text-slate-900 text-sm">{p.studentName}</span>
                           <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700">
-                            Kelas {p.className}
+                            {p.className}
                           </span>
                         </div>
                         <div className="text-slate-500 text-[11px]">
