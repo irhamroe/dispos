@@ -22,9 +22,10 @@ import {
   ExternalLink,
   Loader2
 } from 'lucide-react';
-import { DisciplineRecord, SchoolProfile, Student } from '../types';
+import { DisciplineRecord, SchoolProfile, Student, AdminUser, RoleMatrixMap } from '../types';
 import { formatDateIndonesian } from '../utils/exportUtils';
 import { sortClasses, sortDisciplineRecords } from '../utils/sortUtils';
+import { checkActionPermission, initialRoleMatrix } from '../data/roleMatrixData';
 import { 
   uploadFileToGoogleDrive, 
   isGoogleDriveConfigured, 
@@ -38,6 +39,8 @@ interface DisciplineDebtViewProps {
   schoolProfile: SchoolProfile;
   onUpdateRecord: (updated: DisciplineRecord) => void;
   currentUserName: string;
+  currentUser?: AdminUser | null;
+  roleMatrix?: RoleMatrixMap;
 }
 
 export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
@@ -46,7 +49,10 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
   schoolProfile,
   onUpdateRecord,
   currentUserName,
+  currentUser,
+  roleMatrix = initialRoleMatrix,
 }) => {
+  const canCoach = checkActionPermission(currentUser?.role, 'discipline_coaching', roleMatrix);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClass, setSelectedClass] = useState('ALL');
   const [debtFilterType, setDebtFilterType] = useState<'ALL' | 'NO_COACHING' | 'WAITING_LETTER'>('ALL');

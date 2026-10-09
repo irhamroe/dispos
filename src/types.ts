@@ -146,7 +146,7 @@ export interface StudentRecapItem {
 
 export type StudentPermitType = 'Keluar Sekolah' | 'Keluar Kelas' | 'Dispensasi Seragam';
 
-export type StudentPermitStatus = 'Menunggu' | 'Disetujui' | 'Ditolak' | 'Kembali';
+export type StudentPermitStatus = 'Menunggu' | 'Disetujui' | 'Ditolak' | 'Kembali' | 'Sudah Kembali' | 'Menunggu Persetujuan';
 
 export interface StudentPermitRecord {
   id: string;
@@ -174,8 +174,67 @@ export interface StudentPermitRecord {
   status: StudentPermitStatus;
   approvedBy?: string; // Nama Guru Piket / BK yang memverifikasi
   approvedAt?: string;
+  reviewedBy?: string;
+  rejectionReason?: string;
   actualReturnTime?: string;
   notes?: string;
   qrVerificationCode?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
+
+export type PermissionCategory = 
+  | 'nav_menu'
+  | 'attendance'
+  | 'discipline'
+  | 'student_permit'
+  | 'parent_call'
+  | 'violation_rules'
+  | 'master_data'
+  | 'user_management';
+
+export type ActionPermissionKey =
+  // Presensi
+  | 'attendance_input_all'
+  | 'attendance_input_own'
+  | 'attendance_export'
+  | 'attendance_verify_letter'
+  // Disiplin
+  | 'discipline_create'
+  | 'discipline_edit'
+  | 'discipline_delete'
+  | 'discipline_coaching'
+  | 'discipline_export'
+  // Izin Siswa
+  | 'permit_approve'
+  | 'permit_create_manual'
+  | 'permit_delete'
+  // Surat Panggilan
+  | 'parent_call_create'
+  | 'parent_call_print'
+  // Aturan
+  | 'rules_manage'
+  // Master Data
+  | 'students_manage'
+  | 'classes_manage'
+  | 'walikelas_manage'
+  // User & Sistem
+  | 'users_manage'
+  | 'users_reset_password'
+  | 'matrix_manage';
+
+export interface RolePermissionConfig {
+  role: UserRole;
+  label: string;
+  description: string;
+  badgeClass: string;
+  iconName: string;
+  allowedTabs: string[]; // List of NavTab IDs accessible by this role
+  actionPermissions: Record<ActionPermissionKey, boolean>;
+  isSystemRole?: boolean; // Cannot be deleted
+  lastUpdated?: string;
+  updatedBy?: string;
+}
+
+export type RoleMatrixMap = Record<UserRole, RolePermissionConfig>;
 

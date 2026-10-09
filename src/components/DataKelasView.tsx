@@ -15,9 +15,10 @@ import {
   DoorOpen, 
   Building2 
 } from 'lucide-react';
-import { Student } from '../types';
+import { Student, AdminUser, RoleMatrixMap } from '../types';
 import { RombelClass } from '../data/initialData';
 import { sortClasses } from '../utils/sortUtils';
+import { checkActionPermission, initialRoleMatrix } from '../data/roleMatrixData';
 
 interface DataKelasViewProps {
   classes: RombelClass[];
@@ -26,6 +27,8 @@ interface DataKelasViewProps {
   onAddClass?: (newClass: RombelClass) => void;
   onDeleteClass?: (classId: string) => void;
   onViewClassStudents: (className: string) => void;
+  currentUser?: AdminUser | null;
+  roleMatrix?: RoleMatrixMap;
 }
 
 export const DataKelasView: React.FC<DataKelasViewProps> = ({
@@ -35,7 +38,10 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
   onAddClass,
   onDeleteClass,
   onViewClassStudents,
+  currentUser,
+  roleMatrix = initialRoleMatrix,
 }) => {
+  const canManageClasses = checkActionPermission(currentUser?.role, 'classes_manage', roleMatrix);
   const [selectedGrade, setSelectedGrade] = useState<'ALL' | 'X' | 'XI' | 'XII'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [editingClass, setEditingClass] = useState<RombelClass | null>(null);
@@ -162,13 +168,12 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
           </div>
         </div>
 
-        {onAddClass && (
+        {canManageClasses && onAddClass && (
           <button
             type="button"
             id="btn-add-class"
             onClick={() => setIsAddModalOpen(true)}
             className="px-5 py-3 bg-gradient-to-br from-[#E0F2FE] to-[#0284C7] hover:from-[#9333EA] hover:to-[#6D28D9] text-white rounded-2xl text-xs font-extrabold transition-all shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none flex items-center gap-2 cursor-pointer self-start md:self-auto"
-            
           >
             <Plus className="w-4 h-4" />
             <span>Tambah Rombel</span>
@@ -343,16 +348,18 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
                             <Eye className="w-3.5 h-3.5" />
                             <span>Siswa</span>
                           </button>
-                          <button
-                            type="button"
-                            id={`btn-edit-class-${c.id}`}
-                            onClick={() => handleOpenEdit(c)}
-                            title="Edit Rombel"
-                            className="p-2 bg-white hover:bg-amber-50 text-[#334155] hover:text-amber-700 rounded-xl shadow-xs hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
-                          >
-                            <Edit3 className="w-4 h-4" />
-                          </button>
-                          {onDeleteClass && (
+                          {canManageClasses && (
+                            <button
+                              type="button"
+                              id={`btn-edit-class-${c.id}`}
+                              onClick={() => handleOpenEdit(c)}
+                              title="Edit Rombel"
+                              className="p-2 bg-white hover:bg-amber-50 text-[#334155] hover:text-amber-700 rounded-xl shadow-xs hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
+                            >
+                              <Edit3 className="w-4 h-4" />
+                            </button>
+                          )}
+                          {canManageClasses && onDeleteClass && (
                             <button
                               type="button"
                               id={`btn-delete-class-${c.id}`}

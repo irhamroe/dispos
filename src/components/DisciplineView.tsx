@@ -26,10 +26,11 @@ import {
   FolderOpen,
   Edit3
 } from 'lucide-react';
-import { DisciplineRecord, SchoolProfile, Student, ViolationCategory, DisciplineStatus, CoachingStatus, ViolationRule } from '../types';
+import { DisciplineRecord, SchoolProfile, Student, ViolationCategory, DisciplineStatus, CoachingStatus, ViolationRule, AdminUser, RoleMatrixMap } from '../types';
 import { sampleViolationCatalog } from '../data/initialData';
 import { formatDateIndonesian } from '../utils/exportUtils';
 import { sortClasses, sortStudents, sortDisciplineRecords, sortViolationRules } from '../utils/sortUtils';
+import { checkActionPermission, initialRoleMatrix } from '../data/roleMatrixData';
 import { 
   uploadFileToGoogleDrive, 
   isGoogleDriveConfigured, 
@@ -53,6 +54,8 @@ interface DisciplineViewProps {
   onClearInitialModalData?: () => void;
   violationRules?: ViolationRule[];
   enablePointsSystem?: boolean;
+  currentUser?: AdminUser | null;
+  roleMatrix?: RoleMatrixMap;
 }
 
 export const DisciplineView: React.FC<DisciplineViewProps> = ({
@@ -69,8 +72,16 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
   onClearInitialModalData,
   violationRules = sampleViolationCatalog,
   enablePointsSystem = true,
+  currentUser,
+  roleMatrix = initialRoleMatrix,
 }) => {
   const catalogToUse = sortViolationRules(violationRules && violationRules.length > 0 ? violationRules : sampleViolationCatalog);
+
+  const canCreate = checkActionPermission(currentUser?.role, 'discipline_create', roleMatrix);
+  const canEdit = checkActionPermission(currentUser?.role, 'discipline_edit', roleMatrix);
+  const canDelete = checkActionPermission(currentUser?.role, 'discipline_delete', roleMatrix);
+  const canCoach = checkActionPermission(currentUser?.role, 'discipline_coaching', roleMatrix);
+  const canExport = checkActionPermission(currentUser?.role, 'discipline_export', roleMatrix);
 
   // Filters & search state
   const [searchQuery, setSearchQuery] = useState('');
@@ -880,15 +891,22 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
           {/* Tombol Aksi: Catat Pelanggaran */}
           <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
-            <button
-              type="button"
-              id="catat-pelanggaran-btn"
-              onClick={handleOpenModal}
-              className="px-5 py-3 rounded-2xl bg-gradient-to-r from-violet-600 via-violet-700 to-indigo-700 hover:from-violet-500 hover:to-indigo-600 text-white  font-extrabold text-xs transition-all shadow-xs hover:-translate-y-1 active:scale-[0.92] active:shadow-none flex items-center gap-2 cursor-pointer w-full sm:w-auto justify-center"
-            >
-              <Plus className="w-4 h-4 stroke-[3]" />
-              <span>Catat Pelanggaran</span>
-            </button>
+            {canCreate ? (
+              <button
+                type="button"
+                id="catat-pelanggaran-btn"
+                onClick={handleOpenModal}
+                className="px-5 py-3 rounded-2xl bg-gradient-to-r from-violet-600 via-violet-700 to-indigo-700 hover:from-violet-500 hover:to-indigo-600 text-white font-extrabold text-xs transition-all shadow-xs hover:-translate-y-1 active:scale-[0.92] active:shadow-none flex items-center gap-2 cursor-pointer w-full sm:w-auto justify-center"
+              >
+                <Plus className="w-4 h-4 stroke-[3]" />
+                <span>Catat Pelanggaran</span>
+              </button>
+            ) : (
+              <span className="px-4 py-2.5 rounded-2xl bg-slate-100 border border-slate-200 text-slate-500 font-bold text-xs flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-500" />
+                <span>Input Pelanggaran Dibatasi (Lihat Saja)</span>
+              </span>
+            )}
           </div>
         </div>
 
@@ -1127,7 +1145,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                       </td>
                       <td className="py-3.5 px-3 text-center">
                         <div className="flex items-center justify-center gap-1.5">
-                          {!isSudah ? (
+                          {canCoach && !isSudah && (
                             <button
                               type="button"
                               onClick={() => handleClickTandaiSudah(rec)}
@@ -1137,7 +1155,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                               <Upload className="w-3 h-3 text-emerald-600" />
                               <span>Tandai: Sudah</span>
                             </button>
-                          ) : !hasLetter ? (
+                          )}
+                          {canCoach && isSudah && !hasLetter && (
                             <button
                               type="button"
                               onClick={() => handleOpenFollowUpModal(rec)}
@@ -1147,16 +1166,18 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                               <Paperclip className="w-3 h-3 text-amber-700" />
                               <span>Unggah Surat</span>
                             </button>
-                          ) : null}
+                          )}
                           
-                          <button
-                            type="button"
-                            onClick={() => handleOpenEditModal(rec)}
-                            className="p-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors cursor-pointer"
-                            title="Edit Catatan Pelanggaran"
-                          >
-                            <Edit3 className="w-3.5 h-3.5" />
-                          </button>
+                          {canEdit && (
+                            <button
+                              type="button"
+                              onClick={() => handleOpenEditModal(rec)}
+                              className="p-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors cursor-pointer"
+                              title="Edit Catatan Pelanggaran"
+                            >
+                              <Edit3 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
 
                           <button
                             type="button"
@@ -1167,7 +1188,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                             <Eye className="w-3.5 h-3.5" />
                           </button>
 
-                          {onDeleteRecord && (
+                          {canDelete && onDeleteRecord && (
                             <button
                               type="button"
                               onClick={() => {

@@ -14,8 +14,9 @@ import {
   Scale,
   Sparkles
 } from 'lucide-react';
-import { ViolationRule, ViolationCategory } from '../types';
+import { ViolationRule, ViolationCategory, AdminUser, RoleMatrixMap } from '../types';
 import { sortViolationRules } from '../utils/sortUtils';
+import { checkActionPermission, initialRoleMatrix } from '../data/roleMatrixData';
 import { MdCard, MdBadge, MdButton, MdInput, MdSelect } from './md3';
 
 interface ViolationRulesViewProps {
@@ -26,6 +27,8 @@ interface ViolationRulesViewProps {
   onResetRules: () => void;
   enablePointsSystem?: boolean;
   onTogglePointsSystem?: (enabled: boolean) => void;
+  currentUser?: AdminUser | null;
+  roleMatrix?: RoleMatrixMap;
 }
 
 export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
@@ -36,7 +39,10 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
   onResetRules,
   enablePointsSystem = true,
   onTogglePointsSystem,
+  currentUser,
+  roleMatrix = initialRoleMatrix,
 }) => {
+  const canManageRules = checkActionPermission(currentUser?.role, 'rules_manage', roleMatrix);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<'ALL' | ViolationCategory>('ALL');
   const [notice, setNotice] = useState<string | null>(null);
@@ -159,24 +165,26 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <MdButton
-              variant="outlined"
-              onClick={handleReset}
-              icon={<RotateCcw className="w-4 h-4" />}
-            >
-              <span>Reset Standar</span>
-            </MdButton>
+          {canManageRules && (
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <MdButton
+                variant="outlined"
+                onClick={handleReset}
+                icon={<RotateCcw className="w-4 h-4" />}
+              >
+                <span>Reset Standar</span>
+              </MdButton>
 
-            <MdButton
-              variant="filled"
-              id="add-new-rule-btn"
-              onClick={handleOpenCreateModal}
-              icon={<Plus className="w-4 h-4" />}
-            >
-              <span>Tambah Aturan Baru</span>
-            </MdButton>
-          </div>
+              <MdButton
+                variant="filled"
+                id="add-new-rule-btn"
+                onClick={handleOpenCreateModal}
+                icon={<Plus className="w-4 h-4" />}
+              >
+                <span>Tambah Aturan Baru</span>
+              </MdButton>
+            </div>
+          )}
         </div>
 
         {notice && (
@@ -408,22 +416,28 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
                       )}
                       <td className="py-3 px-4 text-center">
                         <div className="flex items-center justify-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => handleOpenEditModal(rule)}
-                            className="p-2 rounded-full bg-[#E0F2FE] text-[#0284C7] hover:bg-[#DFD3F3] active:scale-95 transition-all cursor-pointer"
-                            title="Edit Aturan"
-                          >
-                            <Edit3 className="w-4 h-4" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDelete(rule)}
-                            className="p-2 rounded-full bg-[#FFDAD6] text-[#410002] hover:bg-[#FFCDD2] active:scale-95 transition-all cursor-pointer"
-                            title="Hapus Aturan"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          {canManageRules ? (
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => handleOpenEditModal(rule)}
+                                className="p-2 rounded-full bg-[#E0F2FE] text-[#0284C7] hover:bg-[#DFD3F3] active:scale-95 transition-all cursor-pointer"
+                                title="Edit Aturan"
+                              >
+                                <Edit3 className="w-4 h-4" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleDelete(rule)}
+                                className="p-2 rounded-full bg-[#FFDAD6] text-[#410002] hover:bg-[#FFCDD2] active:scale-95 transition-all cursor-pointer"
+                                title="Hapus Aturan"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </>
+                          ) : (
+                            <span className="text-[11px] text-slate-400 italic">Lihat Saja</span>
+                          )}
                         </div>
                       </td>
                     </tr>

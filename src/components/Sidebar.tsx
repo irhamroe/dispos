@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   LayoutDashboard, 
   ClipboardCheck, 
@@ -36,7 +36,11 @@ export type NavTab =
   | 'data-siswa' 
   | 'data-kelas' 
   | 'data-walikelas'
-  | 'manajemen-user';
+  | 'manajemen-user'
+  | 'matriks-role';
+
+import { RoleMatrixMap } from '../types';
+import { checkTabAccess, initialRoleMatrix } from '../data/roleMatrixData';
 
 interface SidebarProps {
   currentTab: NavTab;
@@ -53,6 +57,8 @@ interface SidebarProps {
   totalPendingLetters?: number;
   totalPendingPermits?: number;
   totalUsers?: number;
+  userRole?: string;
+  roleMatrix?: RoleMatrixMap;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -66,12 +72,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
   totalPendingLetters = 0,
   totalPendingPermits = 0,
   totalUsers = 0,
+  userRole = 'Admin',
+  roleMatrix = initialRoleMatrix,
 }) => {
   const isManagementTab = 
     currentTab === 'data-siswa' || 
     currentTab === 'data-kelas' || 
     currentTab === 'data-walikelas' ||
     currentTab === 'manajemen-user' ||
+    currentTab === 'matriks-role' ||
     currentTab === 'students';
 
   const isRecapTab = currentTab === 'recap' || currentTab === 'rekap-surat-izin';
@@ -87,7 +96,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     if (isRecapTab) setIsRecapOpen(true);
   }, [isRecapTab]);
 
-  const primaryAttendanceNavItems = [
+  const rawPrimaryAttendanceNavItems = [
     {
       id: 'dashboard' as NavTab,
       label: 'Dashboard Statistik',
@@ -111,7 +120,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
   ];
 
-  const recapSubItems = [
+  const rawRecapSubItems = [
     {
       id: 'recap' as NavTab,
       label: 'Rekap Presensi',
@@ -134,7 +143,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
   ];
 
-  const disciplineNavItems = [
+  const rawDisciplineNavItems = [
     {
       id: 'discipline' as NavTab,
       label: 'Input Pelanggaran',
@@ -203,7 +212,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
   ];
 
-  const managementSubItems = [
+  const rawManagementSubItems = [
     {
       id: 'data-siswa' as NavTab,
       label: 'Data Siswa',
@@ -233,14 +242,41 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
     {
       id: 'manajemen-user' as NavTab,
-      label: 'Manajemen User',
-      sublabel: 'Role: Admin, Wali, Guru',
-      icon: ShieldCheck,
+      label: 'Manajemen Pengguna',
+      sublabel: 'Role: Admin, Wali, Guru, Tendik',
+      icon: Users,
       iconBg: 'bg-[#10B981] text-white',
       inactiveIconBg: 'bg-[#D1FAE5] text-[#059669]',
       badge: totalUsers > 0 ? `${totalUsers} Akun` : 'Multi-Role',
     },
+    {
+      id: 'matriks-role' as NavTab,
+      label: 'Matriks Hak Akses User',
+      sublabel: 'Pengaturan izin per role (RBAC)',
+      icon: ShieldCheck,
+      iconBg: 'bg-[#0284C7] text-white',
+      inactiveIconBg: 'bg-[#E0F2FE] text-[#0284C7]',
+      badge: 'RBAC',
+      badgeBg: 'bg-[#E0F2FE] text-[#0369A1]',
+    },
   ];
+
+  // Dynamically filter according to role matrix permissions
+  const primaryAttendanceNavItems = useMemo(() => {
+    return rawPrimaryAttendanceNavItems.filter((i) => checkTabAccess(userRole, i.id, roleMatrix));
+  }, [userRole, roleMatrix, todayCount]);
+
+  const recapSubItems = useMemo(() => {
+    return rawRecapSubItems.filter((i) => checkTabAccess(userRole, i.id, roleMatrix));
+  }, [userRole, roleMatrix, totalPendingLetters]);
+
+  const disciplineNavItems = useMemo(() => {
+    return rawDisciplineNavItems.filter((i) => checkTabAccess(userRole, i.id, roleMatrix));
+  }, [userRole, roleMatrix, totalDisciplineCases, totalPendingDebt, totalPendingPermits]);
+
+  const managementSubItems = useMemo(() => {
+    return rawManagementSubItems.filter((i) => checkTabAccess(userRole, i.id, roleMatrix));
+  }, [userRole, roleMatrix, todayCount, totalUsers]);
 
   const handleNavClick = (tabId: NavTab) => {
     onSelectTab(tabId);
@@ -282,92 +318,240 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         <div className="flex-1 overflow-y-auto px-3.5 py-4 space-y-4 font-roboto">
           {/* Section 1: Presensi & Kehadiran */}
-          <div>
-            <div className="mb-2 px-3">
-              <span className="text-[11px] font-medium uppercase tracking-wider text-[#0284C7]">
-                Presensi &amp; Kehadiran
-              </span>
-            </div>
+          {(primaryAttendanceNavItems.length > 0 || recapSubItems.length > 0) && (
+            <div>
+              <div className="mb-2 px-3">
+                <span className="text-[11px] font-medium uppercase tracking-wider text-[#0284C7]">
+                  Presensi &amp; Kehadiran
+                </span>
+              </div>
 
-            <nav className="space-y-1" aria-label="Presensi Navigation">
-              {primaryAttendanceNavItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = currentTab === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    id={`nav-btn-${item.id}`}
-                    onClick={() => handleNavClick(item.id)}
-                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-full text-left transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] group cursor-pointer active:scale-95 ${
-                      isActive
-                        ? `${item.activeBg} font-medium shadow-xs`
-                        : 'text-[#334155] hover:bg-[#0284C7]/10 hover:text-[#0F172A]'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-3 min-w-0">
-                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
-                          isActive
-                            ? `${item.iconBg} shadow-xs`
-                            : `${item.inactiveIconBg} group-hover:scale-105`
-                        }`}
-                      >
-                        <Icon className="w-4 h-4" />
-                      </div>
-                      <div className="truncate">
-                        <div className="text-xs font-medium truncate leading-tight">
-                          {item.label}
+              <nav className="space-y-1" aria-label="Presensi Navigation">
+                {primaryAttendanceNavItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = currentTab === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      id={`nav-btn-${item.id}`}
+                      onClick={() => handleNavClick(item.id)}
+                      className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-full text-left transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] group cursor-pointer active:scale-95 ${
+                        isActive
+                          ? `${item.activeBg} font-medium shadow-xs`
+                          : 'text-[#334155] hover:bg-[#0284C7]/10 hover:text-[#0F172A]'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3 min-w-0">
+                        <div
+                          className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+                            isActive
+                              ? `${item.iconBg} shadow-xs`
+                              : `${item.inactiveIconBg} group-hover:scale-105`
+                          }`}
+                        >
+                          <Icon className="w-4 h-4" />
                         </div>
-                        <div className="text-[10px] text-[#334155] truncate mt-0.5">
-                          {item.sublabel}
+                        <div className="truncate">
+                          <div className="text-xs font-medium truncate leading-tight">
+                            {item.label}
+                          </div>
+                          <div className="text-[10px] text-[#334155] truncate mt-0.5">
+                            {item.sublabel}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    {item.badge && (
-                      <span
-                        className={`ml-2 px-2.5 py-0.5 text-[10px] font-medium rounded-full whitespace-nowrap ${item.badgeBg}`}
-                      >
-                        {item.badge}
-                      </span>
+                      {item.badge && (
+                        <span
+                          className={`ml-2 px-2.5 py-0.5 text-[10px] font-medium rounded-full whitespace-nowrap ${item.badgeBg}`}
+                        >
+                          {item.badge}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+
+                {/* Sub Menu: Rekap Kehadiran (Accordion) */}
+                {recapSubItems.length > 0 && (
+                  <div className="pt-0.5">
+                    <button
+                      type="button"
+                      id="nav-btn-rekap-kehadiran-toggle"
+                      onClick={() => setIsRecapOpen(!isRecapOpen)}
+                      className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-full text-left transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] group cursor-pointer active:scale-95 ${
+                        isRecapTab && !isRecapOpen
+                          ? 'bg-[#E0F2FE] text-[#0369A1] font-medium'
+                          : 'text-[#334155] hover:bg-[#0284C7]/10 hover:text-[#0F172A]'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3 min-w-0">
+                        <div className="w-8 h-8 rounded-full bg-[#E0F2FE] text-[#0284C7] group-hover:bg-[#0284C7] group-hover:text-white flex items-center justify-center transition-all">
+                          <CalendarRange className="w-4 h-4" />
+                        </div>
+                        <div className="truncate">
+                          <div className="text-xs font-medium truncate">
+                            Rekap Kehadiran
+                          </div>
+                          <div className="text-[10px] text-[#334155] truncate mt-0.5">
+                            Presensi &amp; surat izin
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center space-x-1.5 ml-2">
+                        {totalPendingLetters > 0 && (
+                          <span className="px-2 py-0.5 text-[10px] font-medium rounded-full bg-[#FFDAD6] text-[#410002]">
+                            {totalPendingLetters}
+                          </span>
+                        )}
+                        {isRecapOpen ? (
+                          <ChevronDown className="w-4 h-4 text-[#64748B]" />
+                        ) : (
+                          <ChevronRight className="w-4 h-4 text-[#64748B]" />
+                        )}
+                      </div>
+                    </button>
+
+                    {isRecapOpen && (
+                      <div className="mt-1 ml-3 p-1.5 bg-[#E2F1FD]/60 rounded-2xl space-y-1">
+                        {recapSubItems.map((subItem) => {
+                          const SubIcon = subItem.icon;
+                          const isSubActive = currentTab === subItem.id;
+                          return (
+                            <button
+                              key={subItem.id}
+                              id={`nav-sub-${subItem.id}`}
+                              onClick={() => handleNavClick(subItem.id)}
+                              className={`w-full flex items-center justify-between px-3 py-2 rounded-full text-left transition-all cursor-pointer active:scale-95 ${
+                                isSubActive
+                                  ? 'bg-[#0284C7] text-white font-medium shadow-xs'
+                                  : 'text-[#334155] hover:bg-[#0284C7]/10'
+                              }`}
+                            >
+                              <div className="flex items-center space-x-2.5 min-w-0">
+                                <div
+                                  className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${
+                                    isSubActive ? 'bg-white/20 text-white' : subItem.inactiveIconBg
+                                  }`}
+                                >
+                                  <SubIcon className="w-3.5 h-3.5 shrink-0" />
+                                </div>
+                                <div className="truncate text-xs leading-tight">
+                                  {subItem.label}
+                                </div>
+                              </div>
+
+                              {subItem.badge && (
+                                <span
+                                  className={`ml-1 px-2 py-0.5 text-[9.5px] font-medium rounded-full ${
+                                    isSubActive ? 'bg-white/20 text-white' : subItem.badgeBg
+                                  }`}
+                                >
+                                  {subItem.badge}
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
                     )}
-                  </button>
-                );
-              })}
+                  </div>
+                )}
+              </nav>
+            </div>
+          )}
 
-              {/* Sub Menu: Rekap Kehadiran (Accordion) */}
-              <div className="pt-0.5">
+          {/* Section 2: Disiplin Positif */}
+          {disciplineNavItems.length > 0 && (
+            <div>
+              <div className="mb-2 px-3">
+                <span className="text-[11px] font-medium uppercase tracking-wider text-[#0284C7]">
+                  Disiplin Positif
+                </span>
+              </div>
+
+              <nav className="space-y-1" aria-label="Disiplin Positif Navigation">
+                {disciplineNavItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = currentTab === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      id={`nav-btn-${item.id}`}
+                      onClick={() => handleNavClick(item.id)}
+                      className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-full text-left transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] group cursor-pointer active:scale-95 ${
+                        isActive
+                          ? `${item.activeBg} font-medium shadow-xs`
+                          : 'text-[#334155] hover:bg-[#0284C7]/10 hover:text-[#0F172A]'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3 min-w-0">
+                        <div
+                          className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+                            isActive
+                              ? `${item.iconBg} shadow-xs`
+                              : `${item.inactiveIconBg} group-hover:scale-105`
+                          }`}
+                        >
+                          <Icon className="w-4 h-4" />
+                        </div>
+                        <div className="truncate">
+                          <div className="text-xs font-medium truncate leading-tight">
+                            {item.label}
+                          </div>
+                          <div className="text-[10px] text-[#334155] truncate mt-0.5">
+                            {item.sublabel}
+                          </div>
+                        </div>
+                      </div>
+
+                      {item.badge && (
+                        <span
+                          className={`ml-2 px-2.5 py-0.5 text-[10px] font-medium rounded-full whitespace-nowrap ${item.badgeBg}`}
+                        >
+                          {item.badge}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </nav>
+            </div>
+          )}
+
+          {/* Section 3: Master Data */}
+          {managementSubItems.length > 0 && (
+            <div>
+              <div className="mb-2 px-3">
+                <span className="text-[11px] font-medium uppercase tracking-wider text-[#0284C7]">
+                  Master Data
+                </span>
+              </div>
+
+              <div className="rounded-2xl overflow-hidden bg-[#E2F1FD]/40 border border-[#E0F2FE]">
                 <button
                   type="button"
-                  id="nav-btn-rekap-kehadiran-toggle"
-                  onClick={() => setIsRecapOpen(!isRecapOpen)}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-full text-left transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] group cursor-pointer active:scale-95 ${
-                    isRecapTab && !isRecapOpen
+                  id="nav-btn-manajemen-data"
+                  onClick={() => setIsManagementOpen(!isManagementOpen)}
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 text-left transition-colors cursor-pointer ${
+                    isManagementTab
                       ? 'bg-[#E0F2FE] text-[#0369A1] font-medium'
-                      : 'text-[#334155] hover:bg-[#0284C7]/10 hover:text-[#0F172A]'
+                      : 'text-[#334155] hover:bg-[#0284C7]/10 font-medium'
                   }`}
                 >
-                  <div className="flex items-center space-x-3 min-w-0">
-                    <div className="w-8 h-8 rounded-full bg-[#E0F2FE] text-[#0284C7] group-hover:bg-[#0284C7] group-hover:text-white flex items-center justify-center transition-all">
-                      <CalendarRange className="w-4 h-4" />
+                  <div className="flex items-center space-x-2.5">
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-xs">
+                      <Database className="w-3.5 h-3.5" />
                     </div>
-                    <div className="truncate">
-                      <div className="text-xs font-medium truncate">
-                        Rekap Kehadiran
-                      </div>
-                      <div className="text-[10px] text-[#334155] truncate mt-0.5">
-                        Presensi &amp; surat izin
-                      </div>
+                    <div>
+                      <div className="text-xs font-medium leading-tight">Master Data</div>
+                      <div className="text-[10px] text-[#334155]">Siswa, Kelas, Wali & User</div>
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-1.5 ml-2">
-                    {totalPendingLetters > 0 && (
-                      <span className="px-2 py-0.5 text-[10px] font-medium rounded-full bg-[#FFDAD6] text-[#410002]">
-                        {totalPendingLetters}
-                      </span>
-                    )}
-                    {isRecapOpen ? (
+                  <div className="flex items-center gap-1.5">
+                    {isManagementOpen ? (
                       <ChevronDown className="w-4 h-4 text-[#64748B]" />
                     ) : (
                       <ChevronRight className="w-4 h-4 text-[#64748B]" />
@@ -375,16 +559,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   </div>
                 </button>
 
-                {isRecapOpen && (
-                  <div className="mt-1 ml-3 p-1.5 bg-[#E2F1FD]/60 rounded-2xl space-y-1">
-                    {recapSubItems.map((subItem) => {
-                      const SubIcon = subItem.icon;
-                      const isSubActive = currentTab === subItem.id;
+                {isManagementOpen && (
+                  <div className="p-1.5 space-y-1 bg-[#E2F1FD]/60">
+                    {managementSubItems.map((sub) => {
+                      const SubIcon = sub.icon;
+                      const isSubActive =
+                        currentTab === sub.id || (sub.id === 'data-siswa' && currentTab === 'students');
+
                       return (
                         <button
-                          key={subItem.id}
-                          id={`nav-sub-${subItem.id}`}
-                          onClick={() => handleNavClick(subItem.id)}
+                          key={sub.id}
+                          id={`nav-sub-${sub.id}`}
+                          onClick={() => handleNavClick(sub.id)}
                           className={`w-full flex items-center justify-between px-3 py-2 rounded-full text-left transition-all cursor-pointer active:scale-95 ${
                             isSubActive
                               ? 'bg-[#0284C7] text-white font-medium shadow-xs'
@@ -394,178 +580,36 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           <div className="flex items-center space-x-2.5 min-w-0">
                             <div
                               className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${
-                                isSubActive ? 'bg-white/20 text-white' : subItem.inactiveIconBg
+                                isSubActive ? 'bg-white/20 text-white' : sub.inactiveIconBg
                               }`}
                             >
                               <SubIcon className="w-3.5 h-3.5 shrink-0" />
                             </div>
-                            <div className="truncate text-xs leading-tight">
-                              {subItem.label}
+                            <div className="truncate">
+                              <div className="text-xs truncate leading-tight font-medium">{sub.label}</div>
+                              <div className={`text-[9.5px] truncate ${isSubActive ? 'text-[#E0F2FE]' : 'text-[#334155]'}`}>
+                                {sub.sublabel}
+                              </div>
                             </div>
                           </div>
 
-                          {subItem.badge && (
-                            <span
-                              className={`ml-1 px-2 py-0.5 text-[9.5px] font-medium rounded-full ${
-                                isSubActive ? 'bg-white/20 text-white' : subItem.badgeBg
-                              }`}
-                            >
-                              {subItem.badge}
-                            </span>
-                          )}
+                          <span
+                            className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                              isSubActive
+                                ? 'bg-white/20 text-white'
+                                : 'bg-[#F8FAFC] text-[#334155]'
+                            }`}
+                          >
+                            {sub.badge}
+                          </span>
                         </button>
                       );
                     })}
                   </div>
                 )}
               </div>
-            </nav>
-          </div>
-
-          {/* Section 2: Disiplin Positif */}
-          <div>
-            <div className="mb-2 px-3">
-              <span className="text-[11px] font-medium uppercase tracking-wider text-[#0284C7]">
-                Disiplin Positif
-              </span>
             </div>
-
-            <nav className="space-y-1" aria-label="Disiplin Positif Navigation">
-              {disciplineNavItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = currentTab === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    id={`nav-btn-${item.id}`}
-                    onClick={() => handleNavClick(item.id)}
-                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-full text-left transition-all duration-200 ease-[cubic-bezier(0.2,0,0,1)] group cursor-pointer active:scale-95 ${
-                      isActive
-                        ? `${item.activeBg} font-medium shadow-xs`
-                        : 'text-[#334155] hover:bg-[#0284C7]/10 hover:text-[#0F172A]'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-3 min-w-0">
-                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
-                          isActive
-                            ? `${item.iconBg} shadow-xs`
-                            : `${item.inactiveIconBg} group-hover:scale-105`
-                        }`}
-                      >
-                        <Icon className="w-4 h-4" />
-                      </div>
-                      <div className="truncate">
-                        <div className="text-xs font-medium truncate leading-tight">
-                          {item.label}
-                        </div>
-                        <div className="text-[10px] text-[#334155] truncate mt-0.5">
-                          {item.sublabel}
-                        </div>
-                      </div>
-                    </div>
-
-                    {item.badge && (
-                      <span
-                        className={`ml-2 px-2.5 py-0.5 text-[10px] font-medium rounded-full whitespace-nowrap ${item.badgeBg}`}
-                      >
-                        {item.badge}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
-
-          {/* Section 3: Master Data */}
-          <div>
-            <div className="mb-2 px-3">
-              <span className="text-[11px] font-medium uppercase tracking-wider text-[#0284C7]">
-                Master Data
-              </span>
-            </div>
-
-            <div className="rounded-2xl overflow-hidden bg-[#E2F1FD]/40 border border-[#E0F2FE]">
-              <button
-                type="button"
-                id="nav-btn-manajemen-data"
-                onClick={() => setIsManagementOpen(!isManagementOpen)}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 text-left transition-colors cursor-pointer ${
-                  isManagementTab
-                    ? 'bg-[#E0F2FE] text-[#0369A1] font-medium'
-                    : 'text-[#334155] hover:bg-[#0284C7]/10 font-medium'
-                }`}
-              >
-                <div className="flex items-center space-x-2.5">
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-xs">
-                    <Database className="w-3.5 h-3.5" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-medium leading-tight">Master Data</div>
-                    <div className="text-[10px] text-[#334155]">Siswa, Kelas, Wali & User</div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-1.5">
-                  {isManagementOpen ? (
-                    <ChevronDown className="w-4 h-4 text-[#64748B]" />
-                  ) : (
-                    <ChevronRight className="w-4 h-4 text-[#64748B]" />
-                  )}
-                </div>
-              </button>
-
-              {isManagementOpen && (
-                <div className="p-1.5 space-y-1 bg-[#E2F1FD]/60">
-                  {managementSubItems.map((sub) => {
-                    const SubIcon = sub.icon;
-                    const isSubActive =
-                      currentTab === sub.id || (sub.id === 'data-siswa' && currentTab === 'students');
-
-                    return (
-                      <button
-                        key={sub.id}
-                        id={`nav-sub-${sub.id}`}
-                        onClick={() => handleNavClick(sub.id)}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-full text-left transition-all cursor-pointer active:scale-95 ${
-                          isSubActive
-                            ? 'bg-[#0284C7] text-white font-medium shadow-xs'
-                            : 'text-[#334155] hover:bg-[#0284C7]/10'
-                        }`}
-                      >
-                        <div className="flex items-center space-x-2.5 min-w-0">
-                          <div
-                            className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${
-                              isSubActive ? 'bg-white/20 text-white' : sub.inactiveIconBg
-                            }`}
-                          >
-                            <SubIcon className="w-3.5 h-3.5 shrink-0" />
-                          </div>
-                          <div className="truncate">
-                            <div className="text-xs truncate leading-tight font-medium">{sub.label}</div>
-                            <div className={`text-[9.5px] truncate ${isSubActive ? 'text-[#E0F2FE]' : 'text-[#334155]'}`}>
-                              {sub.sublabel}
-                            </div>
-                          </div>
-                        </div>
-
-                        <span
-                          className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
-                            isSubActive
-                              ? 'bg-white/20 text-white'
-                              : 'bg-[#F8FAFC] text-[#334155]'
-                          }`}
-                        >
-                          {sub.badge}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          </div>
+          )}
 
           {/* Quick Attendance Widget in Sidebar */}
           <div className="p-4 rounded-2xl bg-[#E0F2FE]/60 border border-[#E0F2FE]">

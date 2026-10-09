@@ -22,8 +22,10 @@ import {
   ViolationRule, 
   SchoolProfile,
   StudentPermitRecord,
-  StudentPermitStatus
+  StudentPermitStatus,
+  RoleMatrixMap
 } from './types';
+import { initialRoleMatrix, checkTabAccess } from './data/roleMatrixData';
 import { sortClasses, sortStudents, sortWaliKelas, sortDisciplineRecords, sortViolationRules } from './utils/sortUtils';
 import { Navbar } from './components/Navbar';
 import { Sidebar, NavTab } from './components/Sidebar';
@@ -247,6 +249,39 @@ export default function App() {
       return initialUsers;
     }
   });
+
+  // Role Permission Matrix state (Dynamic Access Control for 4 Main Roles)
+  const [roleMatrix, setRoleMatrix] = useState<RoleMatrixMap>(() => {
+    try {
+      const saved = localStorage.getItem('app_sman1batu_role_matrix_v1');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed?.Admin && parsed?.['Wali Kelas'] && parsed?.Guru && parsed?.Tendik) {
+          return parsed;
+        }
+      }
+      localStorage.setItem('app_sman1batu_role_matrix_v1', JSON.stringify(initialRoleMatrix));
+      return initialRoleMatrix;
+    } catch {
+      return initialRoleMatrix;
+    }
+  });
+
+  const handleUpdateRoleMatrix = (updatedMatrix: RoleMatrixMap) => {
+    setRoleMatrix(updatedMatrix);
+    localStorage.setItem('app_sman1batu_role_matrix_v1', JSON.stringify(updatedMatrix));
+    if (isFirebaseConfigured()) {
+      saveDocument(COLLECTIONS.ROLE_MATRIX, { id: 'matrix_config', ...updatedMatrix }).catch(() => {});
+    }
+  };
+
+  const handleResetRoleMatrix = () => {
+    setRoleMatrix(initialRoleMatrix);
+    localStorage.setItem('app_sman1batu_role_matrix_v1', JSON.stringify(initialRoleMatrix));
+    if (isFirebaseConfigured()) {
+      saveDocument(COLLECTIONS.ROLE_MATRIX, { id: 'matrix_config', ...initialRoleMatrix }).catch(() => {});
+    }
+  };
 
   // Navigation and view states
   const [currentTab, setCurrentTab] = useState<NavTab>('dashboard');
@@ -521,6 +556,18 @@ export default function App() {
       }
     });
 
+    // 10. Realtime Role Matrix subscription
+    const unsubMatrix = subscribeToCollection<any>(COLLECTIONS.ROLE_MATRIX, (data) => {
+      if (data && data.length > 0) {
+        const remote = data[0];
+        if (remote?.Admin && remote?.['Wali Kelas']) {
+          const { id, ...matrixOnly } = remote;
+          setRoleMatrix(matrixOnly as RoleMatrixMap);
+          localStorage.setItem('app_sman1batu_role_matrix_v1', JSON.stringify(matrixOnly));
+        }
+      }
+    });
+
     return () => {
       if (unsubStudents) unsubStudents();
       if (unsubClasses) unsubClasses();
@@ -531,6 +578,7 @@ export default function App() {
       if (unsubUsers) unsubUsers();
       if (unsubSchoolProfile) unsubSchoolProfile();
       if (unsubPermits) unsubPermits();
+      if (unsubMatrix) unsubMatrix();
     };
   }, []);
 
@@ -863,6 +911,8 @@ export default function App() {
           totalPendingLetters={totalPendingLetters}
           totalPendingPermits={totalPendingPermits}
           totalUsers={users.length}
+          userRole={currentUser?.role}
+          roleMatrix={roleMatrix}
         />
 
         {/* Main Content Area */}
@@ -890,6 +940,8 @@ export default function App() {
               onSaveAttendance={handleSaveAttendance}
               onOpenQuickDiscipline={handleOpenQuickDiscipline}
               currentUserName={currentUser.name}
+              currentUser={currentUser}
+              roleMatrix={roleMatrix}
             />
           )}
 
@@ -919,6 +971,8 @@ export default function App() {
               classes={classes}
               schoolProfile={schoolProfile}
               currentUserName={currentUser.name}
+              currentUser={currentUser}
+              roleMatrix={roleMatrix}
               onUpdatePermit={(updated) => {
                 setStudentPermits((prev) => {
                   const next = prev.map((p) => p.id === updated.id ? updated : p);
@@ -942,6 +996,8 @@ export default function App() {
               onDeleteRecord={handleDeleteDisciplineRecord}
               schoolProfile={schoolProfile}
               currentUserName={currentUser.name}
+              currentUser={currentUser}
+              roleMatrix={roleMatrix}
               initialStudentForModal={initialStudentForDisc}
               initialViolationForModal={initialViolationForDisc}
               onClearInitialModalData={() => {
@@ -968,6 +1024,8 @@ export default function App() {
               schoolProfile={schoolProfile}
               onUpdateRecord={handleUpdateDisciplineRecord}
               currentUserName={currentUser.name}
+              currentUser={currentUser}
+              roleMatrix={roleMatrix}
             />
           )}
 
@@ -980,6 +1038,8 @@ export default function App() {
               schoolProfile={schoolProfile}
               onUpdateSchoolProfile={handleUpdateSchoolProfile}
               currentUserName={currentUser.name}
+              currentUser={currentUser}
+              roleMatrix={roleMatrix}
               enablePointsSystem={enablePointsSystem}
             />
           )}
@@ -993,6 +1053,8 @@ export default function App() {
               onResetRules={handleResetViolationRules}
               enablePointsSystem={enablePointsSystem}
               onTogglePointsSystem={setEnablePointsSystem}
+              currentUser={currentUser}
+              roleMatrix={roleMatrix}
             />
           )}
 
@@ -1008,6 +1070,8 @@ export default function App() {
               onResetToDefaultStudents={handleResetToDefaultStudents}
               initialClassFilter={selectedClassForStudentView}
               enablePointsSystem={enablePointsSystem}
+              currentUser={currentUser}
+              roleMatrix={roleMatrix}
             />
           )}
 
@@ -1019,6 +1083,8 @@ export default function App() {
               onAddClass={handleAddClass}
               onDeleteClass={handleDeleteClass}
               onViewClassStudents={handleViewClassStudents}
+              currentUser={currentUser}
+              roleMatrix={roleMatrix}
             />
           )}
 
@@ -1031,10 +1097,12 @@ export default function App() {
               onAddWaliKelas={handleAddWaliKelas}
               onDeleteWaliKelas={handleDeleteWaliKelas}
               onViewClassStudents={handleViewClassStudents}
+              currentUser={currentUser}
+              roleMatrix={roleMatrix}
             />
           )}
 
-          {currentTab === 'manajemen-user' && (
+          {(currentTab === 'manajemen-user' || currentTab === 'matriks-role') && (
             <UserManagementView
               users={users}
               onAddUser={handleAddUser}
@@ -1043,6 +1111,10 @@ export default function App() {
               onSwitchUser={handleSwitchUser}
               currentUser={currentUser}
               classes={classes}
+              roleMatrix={roleMatrix}
+              onUpdateRoleMatrix={handleUpdateRoleMatrix}
+              onResetRoleMatrix={handleResetRoleMatrix}
+              initialTab={currentTab === 'matriks-role' ? 'matrix' : 'users'}
             />
           )}
         </main>

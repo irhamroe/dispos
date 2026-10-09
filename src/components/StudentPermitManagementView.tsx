@@ -30,10 +30,11 @@ import {
   XCircle,
   RotateCcw
 } from 'lucide-react';
-import { Student, SchoolProfile, StudentPermitRecord, StudentPermitType, StudentPermitStatus } from '../types';
+import { Student, SchoolProfile, StudentPermitRecord, StudentPermitType, StudentPermitStatus, AdminUser, RoleMatrixMap } from '../types';
 import { RombelClass } from '../data/initialData';
 import { formatDateIndonesian, formatDayAndDateIndonesian, getTodayDateString, getTodayIndonesian } from '../utils/exportUtils';
 import { sortClasses } from '../utils/sortUtils';
+import { checkActionPermission, initialRoleMatrix } from '../data/roleMatrixData';
 
 interface StudentPermitManagementViewProps {
   permits: StudentPermitRecord[];
@@ -44,6 +45,8 @@ interface StudentPermitManagementViewProps {
   onUpdatePermit: (updated: StudentPermitRecord) => void;
   onDeletePermit: (permitId: string) => void;
   onOpenPublicPortal: () => void;
+  currentUser?: AdminUser | null;
+  roleMatrix?: RoleMatrixMap;
 }
 
 type ManagementMainTab = 'PENDING' | 'APPROVED_RECAP' | 'REJECTED' | 'ALL_HISTORY';
@@ -57,7 +60,12 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
   onUpdatePermit,
   onDeletePermit,
   onOpenPublicPortal,
+  currentUser,
+  roleMatrix = initialRoleMatrix,
 }) => {
+  const canApprove = checkActionPermission(currentUser?.role, 'permit_approve', roleMatrix);
+  const canCreateManual = checkActionPermission(currentUser?.role, 'permit_create_manual', roleMatrix);
+  const canDelete = checkActionPermission(currentUser?.role, 'permit_delete', roleMatrix);
   // Main view tab (Pending vs Approved Recap vs Rejected vs All)
   const [mainTab, setMainTab] = useState<ManagementMainTab>('PENDING');
 

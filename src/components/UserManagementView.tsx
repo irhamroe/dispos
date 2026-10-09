@@ -31,9 +31,11 @@ import {
   User,
   AlertTriangle
 } from 'lucide-react';
-import { AdminUser, UserRole } from '../types';
+import { AdminUser, UserRole, RoleMatrixMap } from '../types';
 import { RombelClass } from '../data/initialData';
 import { sortClasses } from '../utils/sortUtils';
+import { RoleMatrixSettingsView } from './RoleMatrixSettingsView';
+import { checkActionPermission, initialRoleMatrix } from '../data/roleMatrixData';
 
 interface UserManagementViewProps {
   users: AdminUser[];
@@ -43,6 +45,10 @@ interface UserManagementViewProps {
   onSwitchUser?: (user: AdminUser) => void;
   currentUser: AdminUser | null;
   classes: RombelClass[];
+  roleMatrix?: RoleMatrixMap;
+  onUpdateRoleMatrix?: (matrix: RoleMatrixMap) => void;
+  onResetRoleMatrix?: () => void;
+  initialTab?: 'users' | 'matrix';
 }
 
 export const UserManagementView: React.FC<UserManagementViewProps> = ({
@@ -53,7 +59,24 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
   onSwitchUser,
   currentUser,
   classes,
+  roleMatrix = initialRoleMatrix,
+  onUpdateRoleMatrix,
+  onResetRoleMatrix,
+  initialTab = 'users',
 }) => {
+  // Main view tab: 'users' or 'matrix'
+  const [activeMainTab, setActiveMainTab] = useState<'users' | 'matrix'>(initialTab);
+
+  const canManageUsers = checkActionPermission(currentUser?.role, 'users_manage', roleMatrix);
+  const canResetPassword = checkActionPermission(currentUser?.role, 'users_reset_password', roleMatrix);
+  const canManageMatrix = checkActionPermission(currentUser?.role, 'matrix_manage', roleMatrix);
+
+  React.useEffect(() => {
+    if (initialTab) {
+      setActiveMainTab(initialTab);
+    }
+  }, [initialTab]);
+
   // Filters & Search
   const [selectedRoleFilter, setSelectedRoleFilter] = useState<string>('ALL');
   const [selectedStatusFilter, setSelectedStatusFilter] = useState<'ALL' | 'Aktif' | 'Nonaktif'>('ALL');
@@ -173,6 +196,15 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
 
     return counts;
   }, [users]);
+
+  const roleCountsGrouped: Record<UserRole, number> = useMemo(() => {
+    return {
+      'Admin': roleCounts.admin,
+      'Wali Kelas': roleCounts.waliKelas,
+      'Guru': roleCounts.guru,
+      'Tendik': roleCounts.tendik,
+    };
+  }, [roleCounts]);
 
   // Filtered users list
   const filteredUsers = useMemo(() => {
@@ -503,11 +535,14 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           <div className="flex flex-wrap items-center gap-3">
             <button
               type="button"
-              onClick={() => setIsMatrixModalOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/90 hover:bg-white text-[#0F172A] font-extrabold text-xs rounded-2xl transition-all duration-200 cursor-pointer border border-white/60 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none"
-              
+              onClick={() => setActiveMainTab('matrix')}
+              className={`inline-flex items-center gap-2 px-4 py-2.5 font-extrabold text-xs rounded-2xl transition-all duration-200 cursor-pointer border shadow-xs hover:-translate-y-0.5 active:scale-[0.92] ${
+                activeMainTab === 'matrix'
+                  ? 'bg-[#0284C7] text-white border-[#0284C7]'
+                  : 'bg-white/90 hover:bg-white text-[#0F172A] border-white/60'
+              }`}
             >
-              <Info className="w-4 h-4 text-[#0284C7]" />
+              <ShieldCheck className="w-4 h-4 text-[#0284C7]" />
               <span>Matriks Izin Role</span>
             </button>
 
@@ -515,7 +550,6 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               type="button"
               onClick={handleExportCSV}
               className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/90 hover:bg-white text-[#0F172A] font-extrabold text-xs rounded-2xl transition-all duration-200 cursor-pointer border border-white/60 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none"
-              
             >
               <Download className="w-4 h-4 text-[#0EA5E9]" />
               <span>Ekspor Data</span>
@@ -528,7 +562,6 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                 setIsAddModalOpen(true);
               }}
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-br from-[#E0F2FE] to-[#0284C7] hover:from-[#9333EA] hover:to-[#6D28D9] text-white font-black text-xs rounded-2xl transition-all duration-200 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none cursor-pointer"
-              
             >
               <UserPlus className="w-4 h-4" />
               <span>Tambah Pengguna</span>
@@ -536,116 +569,151 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           </div>
         </div>
 
-        {/* 4 Role Summary Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 pt-6 border-t border-sky-100/50">
-          {/* Card 1: Admin */}
-          <div 
-            onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Admin' ? 'ALL' : 'Admin')}
-            className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden group ${
-              selectedRoleFilter === 'Admin'
-                ? 'bg-gradient-to-br from-[#FAF5FF] via-[#F3E8FF] to-[#DDD6FE] border-2 border-[#7C3AED] shadow-sm -translate-y-1'
-                : 'bg-gradient-to-br from-[#FAF5FF] via-[#F3E8FF]/70 to-[#DDD6FE]/40 border border-[#DDD6FE]/70 hover:border-[#A855F7] shadow-xs hover:-translate-y-1'
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#7C3AED] to-[#A855F7] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <span className="text-2xl font-black text-[#6D28D9]">{roleCounts.admin}</span>
-            </div>
-            <div className="mt-3">
-              <div className="text-xs font-black text-[#6D28D9] flex items-center gap-1.5">
-                <span>1. Administrator</span>
-                {selectedRoleFilter === 'Admin' && <span className="text-[10px] text-[#7C3AED] font-bold">(Aktif)</span>}
-              </div>
-              <p className="text-[11px] text-[#6D28D9]/80 mt-1 leading-relaxed">
-                Hak penuh sistem, data master, aturan poin &amp; akun.
-              </p>
-            </div>
-          </div>
+        {/* Tab Switcher: Daftar Pengguna vs Pengaturan Matriks Hak Akses */}
+        <div className="flex items-center gap-2 mt-6 pt-6 border-t border-sky-100/50">
+          <div className="flex items-center gap-2 p-1.5 bg-[#E2F1FD] rounded-2xl w-fit">
+            <button
+              type="button"
+              onClick={() => setActiveMainTab('users')}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                activeMainTab === 'users'
+                  ? 'bg-[#0284C7] text-white shadow-xs'
+                  : 'text-[#334155] hover:bg-white/60'
+              }`}
+            >
+              <Users className="w-4 h-4" />
+              <span>Daftar Akun Pengguna ({users.length})</span>
+            </button>
 
-          {/* Card 2: Wali Kelas */}
-          <div 
-            onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Wali Kelas' ? 'ALL' : 'Wali Kelas')}
-            className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden group ${
-              selectedRoleFilter === 'Wali Kelas'
-                ? 'bg-gradient-to-br from-[#ECFDF5] via-[#D1FAE5] to-[#A7F3D0] border-2 border-[#059669] shadow-sm -translate-y-1'
-                : 'bg-gradient-to-br from-[#ECFDF5] via-[#D1FAE5]/70 to-[#A7F3D0]/40 border border-[#6EE7B7]/70 hover:border-[#10B981] shadow-xs hover:-translate-y-1'
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#059669] to-[#10B981] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
-                <UserCheck className="w-5 h-5" />
-              </div>
-              <span className="text-2xl font-black text-[#047857]">{roleCounts.waliKelas}</span>
-            </div>
-            <div className="mt-3">
-              <div className="text-xs font-black text-[#047857] flex items-center gap-1.5">
-                <span>2. Wali Kelas</span>
-                {selectedRoleFilter === 'Wali Kelas' && <span className="text-[10px] text-[#059669] font-bold">(Aktif)</span>}
-              </div>
-              <p className="text-[11px] text-[#047857]/80 mt-1 leading-relaxed">
-                Pembina rombel, presensi siswa &amp; surat panggilan ortu.
-              </p>
-            </div>
-          </div>
-
-          {/* Card 3: Guru */}
-          <div 
-            onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Guru' ? 'ALL' : 'Guru')}
-            className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden group ${
-              selectedRoleFilter === 'Guru'
-                ? 'bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE] to-[#BAE6FD] border-2 border-[#0284C7] shadow-sm -translate-y-1'
-                : 'bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE]/70 to-[#BAE6FD]/40 border border-[#7DD3FC]/70 hover:border-[#38BDF8] shadow-xs hover:-translate-y-1'
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#0284C7] to-[#38BDF8] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
-                <GraduationCap className="w-5 h-5" />
-              </div>
-              <span className="text-2xl font-black text-[#0369A1]">{roleCounts.guru}</span>
-            </div>
-            <div className="mt-3">
-              <div className="text-xs font-black text-[#0369A1] flex items-center gap-1.5">
-                <span>3. Guru</span>
-                {selectedRoleFilter === 'Guru' && <span className="text-[10px] text-[#0284C7] font-bold">(Aktif)</span>}
-              </div>
-              <p className="text-[11px] text-[#0369A1]/80 mt-1 leading-relaxed">
-                Guru Mapel, Guru Piket gerbang &amp; Guru BK disiplin.
-              </p>
-            </div>
-          </div>
-
-          {/* Card 4: Tendik */}
-          <div 
-            onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Tendik' ? 'ALL' : 'Tendik')}
-            className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden group ${
-              selectedRoleFilter === 'Tendik'
-                ? 'bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7] to-[#FDE68A] border-2 border-[#D97706] shadow-sm -translate-y-1'
-                : 'bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7]/70 to-[#FDE68A]/40 border border-[#FCD34D]/70 hover:border-[#F59E0B] shadow-xs hover:-translate-y-1'
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#D97706] to-[#F59E0B] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
-                <Briefcase className="w-5 h-5" />
-              </div>
-              <span className="text-2xl font-black text-[#B45309]">{roleCounts.tendik}</span>
-            </div>
-            <div className="mt-3">
-              <div className="text-xs font-black text-[#B45309] flex items-center gap-1.5">
-                <span>4. Tendik</span>
-                {selectedRoleFilter === 'Tendik' && <span className="text-[10px] text-[#D97706] font-bold">(Aktif)</span>}
-              </div>
-              <p className="text-[11px] text-[#B45309]/80 mt-1 leading-relaxed">
-                Tata Usaha, staf kesiswaan, persuratan &amp; verifikasi arsip.
-              </p>
-            </div>
+            <button
+              type="button"
+              onClick={() => setActiveMainTab('matrix')}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                activeMainTab === 'matrix'
+                  ? 'bg-[#0284C7] text-white shadow-xs'
+                  : 'text-[#334155] hover:bg-white/60'
+              }`}
+            >
+              <ShieldCheck className="w-4 h-4" />
+              <span>Pengaturan Matriks Hak Akses Role</span>
+            </button>
           </div>
         </div>
+
+        {activeMainTab === 'users' && (
+          /* 4 Role Summary Cards */
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 pt-6 border-t border-sky-100/50">
+            {/* Card 1: Admin */}
+            <div 
+              onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Admin' ? 'ALL' : 'Admin')}
+              className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden group ${
+                selectedRoleFilter === 'Admin'
+                  ? 'bg-gradient-to-br from-[#FAF5FF] via-[#F3E8FF] to-[#DDD6FE] border-2 border-[#7C3AED] shadow-sm -translate-y-1'
+                  : 'bg-gradient-to-br from-[#FAF5FF] via-[#F3E8FF]/70 to-[#DDD6FE]/40 border border-[#DDD6FE]/70 hover:border-[#A855F7] shadow-xs hover:-translate-y-1'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#7C3AED] to-[#A855F7] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+                <span className="text-2xl font-black text-[#6D28D9]">{roleCounts.admin}</span>
+              </div>
+              <div className="mt-3">
+                <div className="text-xs font-black text-[#6D28D9] flex items-center gap-1.5">
+                  <span>1. Administrator</span>
+                  {selectedRoleFilter === 'Admin' && <span className="text-[10px] text-[#7C3AED] font-bold">(Aktif)</span>}
+                </div>
+                <p className="text-[11px] text-[#6D28D9]/80 mt-1 leading-relaxed">
+                  Hak penuh sistem, data master, aturan poin &amp; akun.
+                </p>
+              </div>
+            </div>
+
+            {/* Card 2: Wali Kelas */}
+            <div 
+              onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Wali Kelas' ? 'ALL' : 'Wali Kelas')}
+              className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden group ${
+                selectedRoleFilter === 'Wali Kelas'
+                  ? 'bg-gradient-to-br from-[#ECFDF5] via-[#D1FAE5] to-[#A7F3D0] border-2 border-[#059669] shadow-sm -translate-y-1'
+                  : 'bg-gradient-to-br from-[#ECFDF5] via-[#D1FAE5]/70 to-[#A7F3D0]/40 border border-[#6EE7B7]/70 hover:border-[#10B981] shadow-xs hover:-translate-y-1'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#059669] to-[#10B981] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
+                  <UserCheck className="w-5 h-5" />
+                </div>
+                <span className="text-2xl font-black text-[#047857]">{roleCounts.waliKelas}</span>
+              </div>
+              <div className="mt-3">
+                <div className="text-xs font-black text-[#047857] flex items-center gap-1.5">
+                  <span>2. Wali Kelas</span>
+                  {selectedRoleFilter === 'Wali Kelas' && <span className="text-[10px] text-[#059669] font-bold">(Aktif)</span>}
+                </div>
+                <p className="text-[11px] text-[#047857]/80 mt-1 leading-relaxed">
+                  Pembina rombel, presensi siswa &amp; surat panggilan ortu.
+                </p>
+              </div>
+            </div>
+
+            {/* Card 3: Guru */}
+            <div 
+              onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Guru' ? 'ALL' : 'Guru')}
+              className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden group ${
+                selectedRoleFilter === 'Guru'
+                  ? 'bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE] to-[#BAE6FD] border-2 border-[#0284C7] shadow-sm -translate-y-1'
+                  : 'bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE]/70 to-[#BAE6FD]/40 border border-[#7DD3FC]/70 hover:border-[#38BDF8] shadow-xs hover:-translate-y-1'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#0284C7] to-[#38BDF8] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
+                  <GraduationCap className="w-5 h-5" />
+                </div>
+                <span className="text-2xl font-black text-[#0369A1]">{roleCounts.guru}</span>
+              </div>
+              <div className="mt-3">
+                <div className="text-xs font-black text-[#0369A1] flex items-center gap-1.5">
+                  <span>3. Guru</span>
+                  {selectedRoleFilter === 'Guru' && <span className="text-[10px] text-[#0284C7] font-bold">(Aktif)</span>}
+                </div>
+                <p className="text-[11px] text-[#0369A1]/80 mt-1 leading-relaxed">
+                  Guru Mapel, Guru Piket gerbang &amp; Guru BK disiplin.
+                </p>
+              </div>
+            </div>
+
+            {/* Card 4: Tendik */}
+            <div 
+              onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Tendik' ? 'ALL' : 'Tendik')}
+              className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden group ${
+                selectedRoleFilter === 'Tendik'
+                  ? 'bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7] to-[#FDE68A] border-2 border-[#D97706] shadow-sm -translate-y-1'
+                  : 'bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7]/70 to-[#FDE68A]/40 border border-[#FCD34D]/70 hover:border-[#F59E0B] shadow-xs hover:-translate-y-1'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#D97706] to-[#F59E0B] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
+                  <Briefcase className="w-5 h-5" />
+                </div>
+                <span className="text-2xl font-black text-[#B45309]">{roleCounts.tendik}</span>
+              </div>
+              <div className="mt-3">
+                <div className="text-xs font-black text-[#B45309] flex items-center gap-1.5">
+                  <span>4. Tendik</span>
+                  {selectedRoleFilter === 'Tendik' && <span className="text-[10px] text-[#D97706] font-bold">(Aktif)</span>}
+                </div>
+                <p className="text-[11px] text-[#B45309]/80 mt-1 leading-relaxed">
+                  Tata Usaha, staf kesiswaan, persuratan &amp; verifikasi arsip.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Filters and Controls */}
-      <div className="bg-white/80 backdrop-blur-xl rounded-[28px] sm:rounded-[32px] border border-white/60 p-4 sm:p-5 shadow-sm space-y-4">
+      {activeMainTab === 'users' && (
+        <>
+          {/* Filters and Controls */}
+          <div className="bg-white/80 backdrop-blur-xl rounded-[28px] sm:rounded-[32px] border border-white/60 p-4 sm:p-5 shadow-sm space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           {/* Search bar */}
           <div className="relative flex-1 max-w-md">
@@ -965,6 +1033,18 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           </table>
         </div>
       </div>
+      </>
+      )}
+
+      {activeMainTab === 'matrix' && (
+        <RoleMatrixSettingsView
+          matrix={roleMatrix}
+          onSaveMatrix={onUpdateRoleMatrix || (() => {})}
+          onResetMatrix={onResetRoleMatrix}
+          currentRole={currentUser?.role}
+          totalUsersPerRole={roleCountsGrouped}
+        />
+      )}
 
       {/* ========================================================================= */}
       {/* MODAL 1: TAMBAH PENGGUNA BARU */}

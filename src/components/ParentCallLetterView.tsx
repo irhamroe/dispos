@@ -41,7 +41,9 @@ import {
   ParentCallLetterData
 } from '../utils/exportUtils';
 import { sortClasses, sortStudents } from '../utils/sortUtils';
+import { checkActionPermission, initialRoleMatrix } from '../data/roleMatrixData';
 import { getGoogleDriveDirectImageUrl } from '../services/googleDriveService';
+import { AdminUser, RoleMatrixMap } from '../types';
 
 interface ParentCallLetterViewProps {
   students: Student[];
@@ -52,6 +54,8 @@ interface ParentCallLetterViewProps {
   onUpdateSchoolProfile?: (profile: Partial<SchoolProfile>) => void;
   currentUserName: string;
   enablePointsSystem?: boolean;
+  currentUser?: AdminUser | null;
+  roleMatrix?: RoleMatrixMap;
 }
 
 export const ParentCallLetterView: React.FC<ParentCallLetterViewProps> = ({
@@ -63,7 +67,11 @@ export const ParentCallLetterView: React.FC<ParentCallLetterViewProps> = ({
   onUpdateSchoolProfile,
   currentUserName,
   enablePointsSystem = true,
+  currentUser,
+  roleMatrix = initialRoleMatrix,
 }) => {
+  const canCreate = checkActionPermission(currentUser?.role, 'parent_call_create', roleMatrix);
+  const canPrint = checkActionPermission(currentUser?.role, 'parent_call_print', roleMatrix);
   // Filters for student selection
   const [selectedClass, setSelectedClass] = useState<string>('ALL');
   const [onlyWithViolations, setOnlyWithViolations] = useState<boolean>(true);

@@ -660,7 +660,7 @@ export const exportAttendanceToPdf = (
             data.cell.styles.fontStyle = 'bold';
           } else if (rawVal === 'D') {
             data.cell.styles.fillColor = [243, 232, 255]; // Soft Purple
-            data.cell.textColor = [107, 33, 168];
+            data.cell.styles.textColor = [107, 33, 168];
             data.cell.styles.fontStyle = 'bold';
           }
         }

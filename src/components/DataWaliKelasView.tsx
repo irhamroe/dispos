@@ -15,9 +15,10 @@ import {
   Briefcase,
   Layers
 } from 'lucide-react';
-import { Student, WaliKelasTeacher } from '../types';
+import { Student, WaliKelasTeacher, AdminUser, RoleMatrixMap } from '../types';
 import { RombelClass } from '../data/initialData';
 import { sortClasses, sortWaliKelas } from '../utils/sortUtils';
+import { checkActionPermission, initialRoleMatrix } from '../data/roleMatrixData';
 
 interface DataWaliKelasViewProps {
   waliKelasList: WaliKelasTeacher[];
@@ -27,6 +28,8 @@ interface DataWaliKelasViewProps {
   onAddWaliKelas?: (newTeacher: WaliKelasTeacher) => void;
   onDeleteWaliKelas?: (teacherId: string) => void;
   onViewClassStudents: (className: string) => void;
+  currentUser?: AdminUser | null;
+  roleMatrix?: RoleMatrixMap;
 }
 
 export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
@@ -37,7 +40,10 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
   onAddWaliKelas,
   onDeleteWaliKelas,
   onViewClassStudents,
+  currentUser,
+  roleMatrix = initialRoleMatrix,
 }) => {
+  const canManageWali = checkActionPermission(currentUser?.role, 'walikelas_manage', roleMatrix);
   const [selectedGrade, setSelectedGrade] = useState<'ALL' | 'X' | 'XI' | 'XII'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [editingTeacher, setEditingTeacher] = useState<WaliKelasTeacher | null>(null);
@@ -173,13 +179,12 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
           </div>
         </div>
 
-        {onAddWaliKelas && (
+        {canManageWali && onAddWaliKelas && (
           <button
             type="button"
             id="btn-add-walikelas"
             onClick={() => setIsAddModalOpen(true)}
             className="px-5 py-3 bg-gradient-to-br from-[#E0F2FE] to-[#0284C7] hover:from-[#9333EA] hover:to-[#6D28D9] text-white rounded-2xl text-xs font-extrabold transition-all shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none flex items-center gap-2 cursor-pointer self-start md:self-auto"
-            
           >
             <Plus className="w-4 h-4" />
             <span>Tambah Wali Kelas</span>
@@ -374,16 +379,18 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
                             <Eye className="w-3.5 h-3.5" />
                             <span>Siswa</span>
                           </button>
-                          <button
-                            type="button"
-                            id={`btn-edit-wali-${t.id}`}
-                            onClick={() => handleOpenEdit(t)}
-                            title="Edit Data Wali Kelas"
-                            className="p-2 bg-white hover:bg-amber-50 text-[#334155] hover:text-amber-700 rounded-xl shadow-xs hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
-                          >
-                            <Edit3 className="w-4 h-4" />
-                          </button>
-                          {onDeleteWaliKelas && (
+                          {canManageWali && (
+                            <button
+                              type="button"
+                              id={`btn-edit-wali-${t.id}`}
+                              onClick={() => handleOpenEdit(t)}
+                              title="Edit Data Wali Kelas"
+                              className="p-2 bg-white hover:bg-amber-50 text-[#334155] hover:text-amber-700 rounded-xl shadow-xs hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
+                            >
+                              <Edit3 className="w-4 h-4" />
+                            </button>
+                          )}
+                          {canManageWali && onDeleteWaliKelas && (
                             <button
                               type="button"
                               id={`btn-delete-wali-${t.id}`}

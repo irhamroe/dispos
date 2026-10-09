@@ -34,6 +34,7 @@ export const COLLECTIONS = {
   USERS: 'users',
   SCHOOL_PROFILE: 'schoolProfile',
   STUDENT_PERMITS: 'studentPermits',
+  ROLE_MATRIX: 'roleMatrix',
 };
 
 // =======================

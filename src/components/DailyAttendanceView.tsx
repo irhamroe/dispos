@@ -11,10 +11,11 @@ import {
   RefreshCw, 
   AlertCircle 
 } from 'lucide-react';
-import { AttendanceRecord, AttendanceStatus, LetterStatus, Student } from '../types';
+import { AttendanceRecord, AttendanceStatus, LetterStatus, Student, AdminUser, RoleMatrixMap } from '../types';
 import { RombelClass } from '../data/initialData';
 import { formatDateIndonesian, getTodayDateString } from '../utils/exportUtils';
 import { sortClasses, sortStudents } from '../utils/sortUtils';
+import { checkActionPermission, initialRoleMatrix } from '../data/roleMatrixData';
 import { MdCard, MdBadge, MdButton } from './md3';
 
 interface DailyAttendanceViewProps {
@@ -26,6 +27,8 @@ interface DailyAttendanceViewProps {
   onSaveAttendance: (updatedRecords: AttendanceRecord[]) => void;
   onOpenQuickDiscipline: (student: Student, defaultViolation: string) => void;
   currentUserName: string;
+  currentUser?: AdminUser | null;
+  roleMatrix?: RoleMatrixMap;
 }
 
 export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
@@ -37,6 +40,8 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
   onSaveAttendance,
   onOpenQuickDiscipline,
   currentUserName,
+  currentUser,
+  roleMatrix = initialRoleMatrix,
 }) => {
   const [selectedGrade, setSelectedGrade] = useState<'X' | 'XI' | 'XII'>('X');
   const [selectedClass, setSelectedClass] = useState<string>('X-1');
@@ -138,7 +143,13 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
     return { h, i, s, a, d, suratLengkap, suratBelum, total: classStudents.length };
   }, [classStudents, draftRecords]);
 
+  const canInputAll = checkActionPermission(currentUser?.role, 'attendance_input_all', roleMatrix);
+  const canInputOwn = checkActionPermission(currentUser?.role, 'attendance_input_own', roleMatrix);
+  const canVerifyLetter = checkActionPermission(currentUser?.role, 'attendance_verify_letter', roleMatrix);
+  const canEditCurrentClass = canInputAll || (canInputOwn && currentUser?.assignedClass === selectedClass);
+
   const handleStatusChange = (studentId: string, status: AttendanceStatus) => {
+    if (!canEditCurrentClass) return;
     setDraftRecords((prev) => {
       const existing = prev[studentId] || { status: 'H', notes: '' };
       let newHasLetter = existing.hasLetter;
@@ -159,6 +170,7 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
   };
 
   const handleLetterToggle = (studentId: string, letterState: LetterStatus) => {
+    if (!canEditCurrentClass || !canVerifyLetter) return;
     setDraftRecords((prev) => {
       const existing = prev[studentId] || { status: 'H', notes: '' };
       return {
@@ -172,6 +184,7 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
   };
 
   const handleMarkAllHadir = () => {
+    if (!canEditCurrentClass) return;
     setDraftRecords((prev) => {
       const next = { ...prev };
       classStudents.forEach((st) => {
@@ -211,6 +224,10 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
   const [toastMessage, setToastMessage] = useState('');
 
   const handleSave = () => {
+    if (!canEditCurrentClass) {
+      alert('Anda tidak memiliki wewenang untuk menyimpan presensi kelas ini.');
+      return;
+    }
     const updated: AttendanceRecord[] = classStudents.map((student) => {
       const draft = draftRecords[student.id] || { status: 'H', notes: '' };
       const existing = attendanceRecords.find(
@@ -221,13 +238,14 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
         studentId: student.id,
         studentName: student.name,
         nisn: student.nisn,
+        classId: student.classId,
         className: selectedClass,
         date: selectedDate,
         status: draft.status,
         hasLetter: draft.hasLetter,
         notes: draft.notes,
+        timeRecorded: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
         recordedBy: currentUserName,
-        timestamp: new Date().toISOString(),
       };
     });
 
@@ -328,6 +346,25 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
         </div>
       </MdCard>
 
+      {/* Access Restriction Banner */}
+      {!canEditCurrentClass && (
+        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+          <div className="flex items-center gap-2.5 font-medium">
+            <AlertCircle className="w-5 h-5 text-amber-600 shrink-0" />
+            <span>
+              {canInputOwn && currentUser?.assignedClass ? (
+                <><strong>Mode Lihat Saja:</strong> Akun Anda berstatus <strong>{currentUser.role}</strong> dengan rombel binaan <strong>Kelas {currentUser.assignedClass}</strong>. Anda hanya memiliki wewenang menginput/mengubah presensi untuk kelas binaan Anda sendiri.</>
+              ) : (
+                <><strong>Mode Lihat Saja:</strong> Peran akun Anda (<strong>{currentUser?.role || 'Pengguna'}</strong>) dibatasi untuk melihat rekapitulasi data presensi dan tidak memiliki hak akses mengubah/menyimpan absensi harian.</>
+              )}
+            </span>
+          </div>
+          <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-amber-200 text-amber-900 border border-amber-300 self-start sm:self-auto shrink-0">
+            Akses Input Terkunci
+          </span>
+        </div>
+      )}
+
       {/* Save Success Toast */}
       {saveToast && (
         <div className="p-4 rounded-2xl bg-[#C8E6C9] text-[#1B5E20] text-xs flex items-center justify-between shadow-sm">
@@ -342,7 +379,7 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
       )}
 
       {/* Banner Notifikasi Ada Perubahan Data Presensi */}
-      {isUpdateMode && (
+      {isUpdateMode && canEditCurrentClass && (
         <div className="p-4 rounded-2xl bg-[#FFE0B2] text-[#E65100] text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
           <div className="flex items-center gap-2.5 font-medium">
             <AlertCircle className="w-5 h-5 text-[#E65100] shrink-0" />
@@ -625,10 +662,13 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
             variant={isUpdateMode ? 'tonal' : 'filled'}
             size="lg"
             id="bottom-save-btn"
+            disabled={!canEditCurrentClass}
             onClick={handleSave}
             icon={isUpdateMode ? <RefreshCw className="w-4 h-4" /> : hasSavedRecords && !hasChanges ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
           >
-            {isUpdateMode ? (
+            {!canEditCurrentClass ? (
+              <span>Akses Simpan Terkunci (Mode Lihat Saja)</span>
+            ) : isUpdateMode ? (
               <span>Update Presensi Kelas {selectedClass}</span>
             ) : hasSavedRecords && !hasChanges ? (
               <span>Presensi Kelas {selectedClass} Tersimpan</span>

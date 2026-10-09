@@ -27,9 +27,10 @@ import {
   Loader2,
   UserCheck
 } from 'lucide-react';
-import { Student, DisciplineRecord, AttendanceRecord } from '../types';
+import { Student, DisciplineRecord, AttendanceRecord, AdminUser, RoleMatrixMap } from '../types';
 import { RombelClass } from '../data/initialData';
 import { sortClasses, sortStudents } from '../utils/sortUtils';
+import { checkActionPermission, initialRoleMatrix } from '../data/roleMatrixData';
 import { 
   uploadFileToGoogleDrive, 
   isGoogleDriveConfigured, 
@@ -50,6 +51,8 @@ interface StudentMasterViewProps {
   onResetToDefaultStudents?: () => Promise<void> | void;
   initialClassFilter?: string;
   enablePointsSystem?: boolean;
+  currentUser?: AdminUser | null;
+  roleMatrix?: RoleMatrixMap;
 }
 
 export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
@@ -63,7 +66,10 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
   onResetToDefaultStudents,
   initialClassFilter,
   enablePointsSystem = true,
+  currentUser,
+  roleMatrix = initialRoleMatrix,
 }) => {
+  const canManageStudents = checkActionPermission(currentUser?.role, 'students_manage', roleMatrix);
   const [isSyncing, setIsSyncing] = useState(false);
   const [selectedClass, setSelectedClass] = useState(initialClassFilter || 'ALL');
   const [selectedGrade, setSelectedGrade] = useState<'ALL' | 'X' | 'XI' | 'XII'>(() => {
@@ -366,16 +372,22 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
         </div>
 
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-          <button
-            type="button"
-            id="add-student-btn"
-            onClick={() => setIsAddModalOpen(true)}
-            className="w-full md:w-auto px-5 py-3 rounded-2xl bg-gradient-to-br from-[#E0F2FE] to-[#0284C7] hover:from-[#9333EA] hover:to-[#6D28D9] text-white font-extrabold text-xs transition-all shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none flex items-center justify-center gap-2 cursor-pointer"
-            
-          >
-            <UserPlus className="w-4 h-4" />
-            <span>Tambah Siswa Baru</span>
-          </button>
+          {canManageStudents ? (
+            <button
+              type="button"
+              id="add-student-btn"
+              onClick={() => setIsAddModalOpen(true)}
+              className="w-full md:w-auto px-5 py-3 rounded-2xl bg-gradient-to-br from-[#E0F2FE] to-[#0284C7] hover:from-[#9333EA] hover:to-[#6D28D9] text-white font-extrabold text-xs transition-all shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <UserPlus className="w-4 h-4" />
+              <span>Tambah Siswa Baru</span>
+            </button>
+          ) : (
+            <span className="px-4 py-2.5 rounded-2xl bg-slate-100 border border-slate-200 text-slate-500 font-bold text-xs flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-amber-500" />
+              <span>Akses Kelola Siswa Dibatasi (Mode Lihat)</span>
+            </span>
+          )}
         </div>
       </div>
 
@@ -672,15 +684,17 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                           >
                             <Eye className="w-4 h-4" />
                           </button>
-                          <button
-                            type="button"
-                            onClick={() => handleOpenEdit(s)}
-                            className="p-2 rounded-xl bg-white hover:bg-amber-50 text-[#334155] hover:text-amber-700 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
-                            title="Edit Data Siswa"
-                          >
-                            <Edit3 className="w-4 h-4" />
-                          </button>
-                          {onDeleteStudent && (
+                          {canManageStudents && (
+                            <button
+                              type="button"
+                              onClick={() => handleOpenEdit(s)}
+                              className="p-2 rounded-xl bg-white hover:bg-amber-50 text-[#334155] hover:text-amber-700 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
+                              title="Edit Data Siswa"
+                            >
+                              <Edit3 className="w-4 h-4" />
+                            </button>
+                          )}
+                          {canManageStudents && onDeleteStudent && (
                             <button
                               type="button"
                               onClick={() => handleDeleteStudent(s)}
