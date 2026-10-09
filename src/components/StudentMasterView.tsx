@@ -70,11 +70,32 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
   roleMatrix = initialRoleMatrix,
 }) => {
   const canManageStudents = checkActionPermission(currentUser?.role, 'students_manage', roleMatrix);
+  const isWaliKelas = currentUser?.role === 'Wali Kelas';
+  const assignedClass = currentUser?.assignedClass;
+
+  const isHomeroomStudent = (s: Student) => {
+    if (isWaliKelas && assignedClass) {
+      return s.className === assignedClass;
+    }
+    return false;
+  };
+
+  const canEditStudent = (s: Student) => {
+    return canManageStudents || isHomeroomStudent(s);
+  };
+
   const [isSyncing, setIsSyncing] = useState(false);
-  const [selectedClass, setSelectedClass] = useState(initialClassFilter || 'ALL');
+  const [selectedClass, setSelectedClass] = useState(() => {
+    if (initialClassFilter) return initialClassFilter;
+    if (currentUser?.role === 'Wali Kelas' && currentUser?.assignedClass) {
+      return currentUser.assignedClass;
+    }
+    return 'ALL';
+  });
   const [selectedGrade, setSelectedGrade] = useState<'ALL' | 'X' | 'XI' | 'XII'>(() => {
-    if (initialClassFilter && initialClassFilter !== 'ALL') {
-      const found = classes.find((c) => c.name === initialClassFilter);
+    const targetClass = initialClassFilter || (currentUser?.role === 'Wali Kelas' ? currentUser?.assignedClass : undefined);
+    if (targetClass && targetClass !== 'ALL') {
+      const found = classes.find((c) => c.name === targetClass);
       if (found) return found.grade;
     }
     return 'ALL';
@@ -382,6 +403,11 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
               <UserPlus className="w-4 h-4" />
               <span>Tambah Siswa Baru</span>
             </button>
+          ) : isWaliKelas && assignedClass ? (
+            <div className="px-4 py-2.5 rounded-2xl bg-sky-50 border border-sky-200 text-[#0284C7] font-bold text-xs flex items-center gap-2 shadow-xs">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+              <span>Mode Wali Kelas (Hak Edit Siswa {assignedClass})</span>
+            </div>
           ) : (
             <span className="px-4 py-2.5 rounded-2xl bg-slate-100 border border-slate-200 text-slate-500 font-bold text-xs flex items-center gap-2">
               <AlertCircle className="w-4 h-4 text-amber-500" />
@@ -390,6 +416,43 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
           )}
         </div>
       </div>
+
+      {/* Wali Kelas Special Guidance Banner */}
+      {isWaliKelas && assignedClass && (
+        <div className="p-4 sm:p-5 rounded-[28px] bg-gradient-to-r from-[#E0F2FE] via-[#BAE6FD]/40 to-white border border-[#0284C7]/30 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-in fade-in">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#0284C7] to-[#38BDF8] text-white flex items-center justify-center shadow-xs shrink-0">
+              <GraduationCap className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-black text-[#0F172A]">
+                  Akses Kelola Siswa Rombel {assignedClass}
+                </h3>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800">
+                  Wali Kelas Aktif
+                </span>
+              </div>
+              <p className="text-xs text-[#334155] mt-0.5 leading-relaxed">
+                Anda dapat mengedit dan melengkapi data seluruh siswa di rombel <strong>{assignedClass}</strong> (NISN, Nama, Kontak Siswa/Ortu, Alamat Domisili, dan Foto Profil).
+              </p>
+            </div>
+          </div>
+          {selectedClass !== assignedClass && (
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedClass(assignedClass);
+                const found = classes.find((c) => c.name === assignedClass);
+                if (found) setSelectedGrade(found.grade);
+              }}
+              className="px-4 py-2 bg-[#0284C7] hover:bg-[#0369A1] text-white font-black text-xs rounded-xl shadow-xs active:scale-95 transition-all cursor-pointer shrink-0"
+            >
+              Fokuskan ke Kelas {assignedClass}
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Quick Summary Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -684,12 +747,12 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                           >
                             <Eye className="w-4 h-4" />
                           </button>
-                          {canManageStudents && (
+                          {canEditStudent(s) && (
                             <button
                               type="button"
                               onClick={() => handleOpenEdit(s)}
                               className="p-2 rounded-xl bg-white hover:bg-amber-50 text-[#334155] hover:text-amber-700 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
-                              title="Edit Data Siswa"
+                              title={isHomeroomStudent(s) ? `Lengkapi & Edit Data Siswa Binaan (${s.className})` : 'Edit Data Siswa'}
                             >
                               <Edit3 className="w-4 h-4" />
                             </button>
@@ -1029,7 +1092,14 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                   <Edit3 className="w-6 h-6 text-amber-400" />
                 </div>
                 <div>
-                  <h3 className="font-black text-base" >Edit Data &amp; Foto Siswa</h3>
+                  <h3 className="font-black text-base flex items-center gap-2" >
+                    <span>Edit Data &amp; Foto Siswa</span>
+                    {isHomeroomStudent(editingStudent) && (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-400 text-emerald-950">
+                        Rombel {editingStudent.className}
+                      </span>
+                    )}
+                  </h3>
                   <p className="text-xs text-slate-300">NISN: {editingStudent.nisn} • {editingStudent.name}</p>
                 </div>
               </div>

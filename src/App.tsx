@@ -47,6 +47,7 @@ import { DataWaliKelasView } from './components/DataWaliKelasView';
 import { UserManagementView } from './components/UserManagementView';
 import { RoleMatrixSettingsView } from './components/RoleMatrixSettingsView';
 import { FirebaseConfigModal } from './components/FirebaseConfigModal';
+import { UserProfileModal } from './components/UserProfileModal';
 import { isFirebaseConfigured } from './services/firebase';
 import {
   fetchAllDocuments,
@@ -594,6 +595,7 @@ export default function App() {
   // Cross-view quick action states (e.g. going from attendance to discipline modal)
   const [initialStudentForDisc, setInitialStudentForDisc] = useState<Student | null>(null);
   const [initialViolationForDisc, setInitialViolationForDisc] = useState<string>('');
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   // Persist state to localStorage
   useEffect(() => {
@@ -662,6 +664,29 @@ export default function App() {
     if (currentUser?.id === updated.id) {
       setCurrentUser(updated);
     }
+    // If it's a Wali Kelas, sync with waliKelasList
+    if (updated.role === 'Wali Kelas' && updated.assignedClass) {
+      setWaliKelasList((prev) =>
+        prev.map((w) => {
+          if (w.className === updated.assignedClass || (updated.nip && w.nip === updated.nip)) {
+            const updatedW: WaliKelasTeacher = {
+              ...w,
+              name: updated.name,
+              nip: updated.nip || w.nip,
+              phone: updated.phone || w.phone,
+              email: updated.email || w.email,
+              className: updated.assignedClass || w.className,
+            };
+            saveDocument(COLLECTIONS.WALI_KELAS, updatedW).catch(() => {});
+            return updatedW;
+          }
+          return w;
+        })
+      );
+      setClasses((prev) =>
+        prev.map((c) => (c.name === updated.assignedClass ? { ...c, homeroom: updated.name } : c))
+      );
+    }
   };
 
   const handleDeleteUser = (userId: string) => {
@@ -724,6 +749,26 @@ export default function App() {
     setClasses((prev) =>
       prev.map((c) => (c.name === updated.className ? { ...c, homeroom: updated.name } : c))
     );
+
+    // Sync currentUser if it's the current logged in Wali Kelas
+    if (
+      currentUser &&
+      (currentUser.nip === updated.nip ||
+       currentUser.assignedClass === updated.className ||
+       currentUser.name.toLowerCase() === updated.name.toLowerCase())
+    ) {
+      const updatedUser: AdminUser = {
+        ...currentUser,
+        name: updated.name,
+        nip: updated.nip,
+        phone: updated.phone,
+        email: updated.email || currentUser.email,
+        assignedClass: updated.className,
+      };
+      setCurrentUser(updatedUser);
+      setUsers((prev) => prev.map((u) => (u.id === updatedUser.id ? updatedUser : u)));
+      saveDocument(COLLECTIONS.USERS, updatedUser).catch(() => {});
+    }
   };
 
   const handleAddWaliKelas = (newTeacher: WaliKelasTeacher) => {
@@ -893,6 +938,7 @@ export default function App() {
         onOpenFirebaseModal={() => setIsFirebaseModalOpen(true)}
         totalPendingPermits={totalPendingPermits}
         onNavigatePermits={() => handleSelectTab('layanan-izin-siswa')}
+        onEditProfile={() => setIsProfileModalOpen(true)}
       />
 
       <div className="flex-1 flex relative z-10 print:block print:p-0 print:m-0">
@@ -1160,6 +1206,14 @@ export default function App() {
           if (synced.studentPermits) setStudentPermits(synced.studentPermits);
           setIsFirebaseConnected(true);
         }}
+      />
+
+      {/* User Profile Modal (Edit Data & Profil Sendiri) */}
+      <UserProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        currentUser={currentUser}
+        onUpdateUser={handleUpdateUser}
       />
     </div>
   );

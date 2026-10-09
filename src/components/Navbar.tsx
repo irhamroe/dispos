@@ -21,6 +21,7 @@ interface NavbarProps {
   onOpenFirebaseModal?: () => void;
   totalPendingPermits?: number;
   onNavigatePermits?: () => void;
+  onEditProfile?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -33,6 +34,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenFirebaseModal,
   totalPendingPermits = 0,
   onNavigatePermits,
+  onEditProfile,
 }) => {
   return (
     <header 
@@ -131,21 +133,27 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* User Profile Card & Logout */}
             {currentUser ? (
-              <div className="flex items-center space-x-2.5 sm:space-x-3 pl-2 sm:pl-3 border-l border-[#CBD5E1]">
-                <div className="flex items-center space-x-2 sm:space-x-2.5">
+              <div className="flex items-center space-x-2 sm:space-x-2.5 pl-2 sm:pl-3 border-l border-[#CBD5E1]">
+                <button
+                  type="button"
+                  id="navbar-profile-btn"
+                  onClick={onEditProfile}
+                  title="Klik untuk melihat dan melengkapi Profil Saya"
+                  className="flex items-center space-x-2 sm:space-x-2.5 p-1 pr-2 rounded-full hover:bg-sky-100/70 active:scale-95 transition-all duration-200 cursor-pointer text-left group"
+                >
                   {currentUser.photoUrl ? (
                     <img
                       src={currentUser.photoUrl}
                       alt={currentUser.name}
-                      className="w-10 h-10 rounded-full object-cover shadow-xs border border-white"
+                      className="w-10 h-10 rounded-full object-cover shadow-xs border-2 border-white group-hover:border-[#0284C7] transition-all"
                     />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-[#0284C7] text-white flex items-center justify-center font-medium text-xs shadow-xs">
+                    <div className="w-10 h-10 rounded-full bg-[#0284C7] group-hover:bg-[#0369A1] text-white flex items-center justify-center font-bold text-xs shadow-xs transition-colors">
                       {currentUser.avatar || currentUser.name.slice(0, 2).toUpperCase()}
                     </div>
                   )}
                   <div className="hidden sm:block text-left">
-                    <p className="text-xs font-medium text-[#0F172A] leading-tight">
+                    <p className="text-xs font-bold text-[#0F172A] leading-tight group-hover:text-[#0284C7] transition-colors truncate max-w-[130px]">
                       {currentUser.name}
                     </p>
                     <div className="flex items-center space-x-1 mt-0.5">
@@ -156,7 +164,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       </span>
                     </div>
                   </div>
-                </div>
+                </button>
 
                 <button
                   id="navbar-logout-btn"

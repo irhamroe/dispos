@@ -295,11 +295,17 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
                 filteredTeachers.map((t, idx) => {
                   const cleanPhone = t.phone.replace(/[^0-9]/g, '');
                   const waNumber = cleanPhone.startsWith('0') ? '62' + cleanPhone.slice(1) : cleanPhone;
+                  const isCurrentWali = currentUser?.role === 'Wali Kelas' && (
+                    currentUser.assignedClass === t.className ||
+                    (currentUser.nip && currentUser.nip === t.nip) ||
+                    currentUser.name.toLowerCase() === t.name.toLowerCase()
+                  );
+                  const canEditThisWali = canManageWali || isCurrentWali;
 
                   return (
                     <tr
                       key={t.id}
-                      className="hover:bg-sky-50/30 transition-colors"
+                      className={`transition-colors ${isCurrentWali ? 'bg-sky-50/70 hover:bg-sky-50' : 'hover:bg-sky-50/30'}`}
                     >
                       {/* No */}
                       <td className="py-4 px-4 text-center font-bold text-[#334155]">
@@ -312,6 +318,11 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
                           <div className="font-black text-[#0F172A] text-sm leading-tight" >
                             {t.name}
                           </div>
+                          {isCurrentWali && (
+                            <span className="px-2 py-0.5 rounded-full text-[9.5px] font-black bg-[#0284C7] text-white shadow-xs">
+                              Akun Anda
+                            </span>
+                          )}
                           <span
                             className={`px-2 py-0.5 rounded-lg text-[10px] font-black shadow-xs shrink-0 ${
                               t.status === 'PNS'
@@ -379,12 +390,12 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
                             <Eye className="w-3.5 h-3.5" />
                             <span>Siswa</span>
                           </button>
-                          {canManageWali && (
+                          {canEditThisWali && (
                             <button
                               type="button"
                               id={`btn-edit-wali-${t.id}`}
                               onClick={() => handleOpenEdit(t)}
-                              title="Edit Data Wali Kelas"
+                              title={isCurrentWali ? "Lengkapi & Edit Data Profil Anda" : "Edit Data Wali Kelas"}
                               className="p-2 bg-white hover:bg-amber-50 text-[#334155] hover:text-amber-700 rounded-xl shadow-xs hover:-translate-y-0.5 active:scale-[0.92] transition-all cursor-pointer"
                             >
                               <Edit3 className="w-4 h-4" />
