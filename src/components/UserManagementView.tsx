@@ -48,7 +48,6 @@ interface UserManagementViewProps {
   roleMatrix?: RoleMatrixMap;
   onUpdateRoleMatrix?: (matrix: RoleMatrixMap) => void;
   onResetRoleMatrix?: () => void;
-  initialTab?: 'users' | 'matrix';
 }
 
 export const UserManagementView: React.FC<UserManagementViewProps> = ({
@@ -60,22 +59,10 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
   currentUser,
   classes,
   roleMatrix = initialRoleMatrix,
-  onUpdateRoleMatrix,
-  onResetRoleMatrix,
-  initialTab = 'users',
 }) => {
-  // Main view tab: 'users' or 'matrix'
-  const [activeMainTab, setActiveMainTab] = useState<'users' | 'matrix'>(initialTab);
-
   const canManageUsers = checkActionPermission(currentUser?.role, 'users_manage', roleMatrix);
   const canResetPassword = checkActionPermission(currentUser?.role, 'users_reset_password', roleMatrix);
   const canManageMatrix = checkActionPermission(currentUser?.role, 'matrix_manage', roleMatrix);
-
-  React.useEffect(() => {
-    if (initialTab) {
-      setActiveMainTab(initialTab);
-    }
-  }, [initialTab]);
 
   // Filters & Search
   const [selectedRoleFilter, setSelectedRoleFilter] = useState<string>('ALL');
@@ -535,19 +522,6 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           <div className="flex flex-wrap items-center gap-3">
             <button
               type="button"
-              onClick={() => setActiveMainTab('matrix')}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 font-extrabold text-xs rounded-2xl transition-all duration-200 cursor-pointer border shadow-xs hover:-translate-y-0.5 active:scale-[0.92] ${
-                activeMainTab === 'matrix'
-                  ? 'bg-[#0284C7] text-white border-[#0284C7]'
-                  : 'bg-white/90 hover:bg-white text-[#0F172A] border-white/60'
-              }`}
-            >
-              <ShieldCheck className="w-4 h-4 text-[#0284C7]" />
-              <span>Matriks Izin Role</span>
-            </button>
-
-            <button
-              type="button"
               onClick={handleExportCSV}
               className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/90 hover:bg-white text-[#0F172A] font-extrabold text-xs rounded-2xl transition-all duration-200 cursor-pointer border border-white/60 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none"
             >
@@ -569,40 +543,8 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           </div>
         </div>
 
-        {/* Tab Switcher: Daftar Pengguna vs Pengaturan Matriks Hak Akses */}
-        <div className="flex items-center gap-2 mt-6 pt-6 border-t border-sky-100/50">
-          <div className="flex items-center gap-2 p-1.5 bg-[#E2F1FD] rounded-2xl w-fit">
-            <button
-              type="button"
-              onClick={() => setActiveMainTab('users')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
-                activeMainTab === 'users'
-                  ? 'bg-[#0284C7] text-white shadow-xs'
-                  : 'text-[#334155] hover:bg-white/60'
-              }`}
-            >
-              <Users className="w-4 h-4" />
-              <span>Daftar Akun Pengguna ({users.length})</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveMainTab('matrix')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
-                activeMainTab === 'matrix'
-                  ? 'bg-[#0284C7] text-white shadow-xs'
-                  : 'text-[#334155] hover:bg-white/60'
-              }`}
-            >
-              <ShieldCheck className="w-4 h-4" />
-              <span>Pengaturan Matriks Hak Akses Role</span>
-            </button>
-          </div>
-        </div>
-
-        {activeMainTab === 'users' && (
-          /* 4 Role Summary Cards */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 pt-6 border-t border-sky-100/50">
+        {/* 4 Role Summary Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 pt-6 border-t border-sky-100/50">
             {/* Card 1: Admin */}
             <div 
               onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Admin' ? 'ALL' : 'Admin')}
@@ -707,13 +649,10 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
 
-      {activeMainTab === 'users' && (
-        <>
-          {/* Filters and Controls */}
-          <div className="bg-white/80 backdrop-blur-xl rounded-[28px] sm:rounded-[32px] border border-white/60 p-4 sm:p-5 shadow-sm space-y-4">
+      {/* Filters and Controls */}
+      <div className="bg-white/80 backdrop-blur-xl rounded-[28px] sm:rounded-[32px] border border-white/60 p-4 sm:p-5 shadow-sm space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           {/* Search bar */}
           <div className="relative flex-1 max-w-md">
@@ -1033,18 +972,6 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           </table>
         </div>
       </div>
-      </>
-      )}
-
-      {activeMainTab === 'matrix' && (
-        <RoleMatrixSettingsView
-          matrix={roleMatrix}
-          onSaveMatrix={onUpdateRoleMatrix || (() => {})}
-          onResetMatrix={onResetRoleMatrix}
-          currentRole={currentUser?.role}
-          totalUsersPerRole={roleCountsGrouped}
-        />
-      )}
 
       {/* ========================================================================= */}
       {/* MODAL 1: TAMBAH PENGGUNA BARU */}
@@ -1910,166 +1837,6 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                   
                 >
                   Tutup Profil
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ========================================================================= */}
-      {/* MODAL 6: MATRIKS HAK AKSES ROLE */}
-      {/* ========================================================================= */}
-      {isMatrixModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/40 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[32px] max-w-3xl w-full max-h-[90vh] flex flex-col shadow-sm border border-white/80 overflow-hidden">
-            <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-[#0284C7] to-[#4F46E5] text-white flex items-center justify-between shadow-sm">
-              <div>
-                <h3 className="font-black text-lg flex items-center gap-2.5" >
-                  <ShieldCheck className="w-5 h-5 text-purple-200" />
-                  <span>Matriks Hak Akses &amp; Kewenangan Multi-Role</span>
-                </h3>
-                <p className="text-xs text-purple-100 mt-0.5">
-                  Daftar izin operasional berdasarkan 4 tingkatan peran di SMAN 1 Batu.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsMatrixModalOpen(false)}
-                className="w-9 h-9 rounded-2xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all shadow-xs hover:-translate-y-0.5 active:scale-90 cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="p-6 sm:p-8 overflow-y-auto text-xs space-y-4">
-              <div className="rounded-2xl border border-white/80 overflow-hidden shadow-none">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="bg-[#F8FAFC] border-b border-sky-100 text-[#334155] font-black text-[11px]" >
-                      <th className="p-3.5">Fitur / Modul Aplikasi</th>
-                      <th className="p-3.5 text-center text-sky-900">1. Admin</th>
-                      <th className="p-3.5 text-center text-teal-900">2. Wali Kelas</th>
-                      <th className="p-3.5 text-center text-sky-900">3. Guru</th>
-                      <th className="p-3.5 text-center text-amber-900">4. Tendik</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-purple-100/40 text-[11px] bg-white/80">
-                    {[
-                      {
-                        feature: 'Dashboard Statistik & Grafik Kehadiran',
-                        admin: 'Penuh (36 Rombel)',
-                        wali: 'Penuh (36 Rombel)',
-                        guru: 'Penuh (36 Rombel)',
-                        tendik: 'Penuh (36 Rombel)',
-                      },
-                      {
-                        feature: 'Input Presensi Harian (H, I, S, A, D)',
-                        admin: 'Penuh Semua Kelas',
-                        wali: 'Kelas Binaan & Piket',
-                        guru: 'Piket Harian & KBM',
-                        tendik: 'Verifikasi & Monitoring',
-                      },
-                      {
-                        feature: 'Rekap Presensi & Ekspor Excel/PDF',
-                        admin: 'Penuh Semua Kelas',
-                        wali: 'Penuh Rombel Sendiri',
-                        guru: 'Lihat & Filter',
-                        tendik: 'Penuh untuk Arsip TU',
-                      },
-                      {
-                        feature: 'Rekap Surat Izin Sakit / Surat Dokter',
-                        admin: 'Penuh',
-                        wali: 'Penuh Kelas Binaan',
-                        guru: 'Lihat',
-                        tendik: 'Penuh (Pelayanan Surat)',
-                      },
-                      {
-                        feature: 'Pencatatan Pelanggaran Siswa & Poin',
-                        admin: 'Penuh (Tambah/Edit/Hapus)',
-                        wali: 'Penuh (Semua Siswa)',
-                        guru: 'Penuh (Input Pelanggaran)',
-                        tendik: 'Terbatas (Bantu Catat)',
-                      },
-                      {
-                        feature: 'Tagihan Pembinaan / Restitusi Siswa',
-                        admin: 'Penuh & Verifikasi',
-                        wali: 'Penuh Kelas Binaan',
-                        guru: 'Pendampingan Pembinaan',
-                        tendik: 'Arsip Dokumen',
-                      },
-                      {
-                        feature: 'Penerbitan Surat Panggilan Orang Tua',
-                        admin: 'Penuh + TTD Digital',
-                        wali: 'Penuh Buat & TTD Wali',
-                        guru: 'Rekomendasi Kasus',
-                        tendik: 'Distribusi & Arsip',
-                      },
-                      {
-                        feature: 'Katalog Aturan & Bobot Poin Pelanggaran',
-                        admin: 'Penuh (Kelola Aturan)',
-                        wali: 'Lihat Katalog',
-                        guru: 'Lihat Katalog',
-                        tendik: 'Lihat Katalog',
-                      },
-                      {
-                        feature: 'Master Data Siswa (~1.300 Siswa)',
-                        admin: 'Penuh (Tambah/Edit/Hapus)',
-                        wali: 'Lihat & Edit Murid Binaan',
-                        guru: 'Lihat Data Siswa',
-                        tendik: 'Verifikasi Dapodik',
-                      },
-                      {
-                        feature: 'Master Data Kelas (36 Rombel)',
-                        admin: 'Penuh (Kelola Rombel)',
-                        wali: 'Lihat Data Kelas',
-                        guru: 'Lihat Data Kelas',
-                        tendik: 'Lihat Data Kelas',
-                      },
-                      {
-                        feature: 'Manajemen Pengguna & Multi-Role',
-                        admin: 'Penuh (Kelola Semua User)',
-                        wali: 'Nonaktif',
-                        guru: 'Nonaktif',
-                        tendik: 'Nonaktif',
-                      },
-                    ].map((row, idx) => (
-                      <tr key={idx} className="hover:bg-sky-50/40">
-                        <td className="p-3.5 font-bold text-[#0F172A]">{row.feature}</td>
-                        <td className="p-3.5 text-center">
-                          <span className="px-2.5 py-1 rounded-xl bg-sky-50 text-sky-900 font-extrabold text-[10px] border border-sky-200 shadow-xs" >
-                            {row.admin}
-                          </span>
-                        </td>
-                        <td className="p-3.5 text-center">
-                          <span className="px-2.5 py-1 rounded-xl bg-teal-50 text-teal-900 font-extrabold text-[10px] border border-teal-200 shadow-xs" >
-                            {row.wali}
-                          </span>
-                        </td>
-                        <td className="p-3.5 text-center">
-                          <span className="px-2.5 py-1 rounded-xl bg-sky-50 text-sky-900 font-extrabold text-[10px] border border-sky-200 shadow-xs" >
-                            {row.guru}
-                          </span>
-                        </td>
-                        <td className="p-3.5 text-center">
-                          <span className="px-2.5 py-1 rounded-xl bg-amber-50 text-amber-900 font-extrabold text-[10px] border border-amber-200 shadow-xs" >
-                            {row.tendik}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              <div className="pt-3 border-t border-sky-100/50 flex items-center justify-end">
-                <button
-                  type="button"
-                  onClick={() => setIsMatrixModalOpen(false)}
-                  className="px-6 py-2.5 bg-gradient-to-br from-[#E0F2FE] to-[#0284C7] hover:from-[#9333EA] hover:to-[#6D28D9] text-white rounded-2xl font-black cursor-pointer shadow-xs hover:-translate-y-0.5 active:scale-95 transition-all"
-                  
-                >
-                  Tutup Matriks
                 </button>
               </div>
             </div>

@@ -45,6 +45,7 @@ import { StudentMasterView } from './components/StudentMasterView';
 import { DataKelasView } from './components/DataKelasView';
 import { DataWaliKelasView } from './components/DataWaliKelasView';
 import { UserManagementView } from './components/UserManagementView';
+import { RoleMatrixSettingsView } from './components/RoleMatrixSettingsView';
 import { FirebaseConfigModal } from './components/FirebaseConfigModal';
 import { isFirebaseConfigured } from './services/firebase';
 import {
@@ -1102,7 +1103,7 @@ export default function App() {
             />
           )}
 
-          {(currentTab === 'manajemen-user' || currentTab === 'matriks-role') && (
+          {currentTab === 'manajemen-user' && (
             <UserManagementView
               users={users}
               onAddUser={handleAddUser}
@@ -1114,7 +1115,21 @@ export default function App() {
               roleMatrix={roleMatrix}
               onUpdateRoleMatrix={handleUpdateRoleMatrix}
               onResetRoleMatrix={handleResetRoleMatrix}
-              initialTab={currentTab === 'matriks-role' ? 'matrix' : 'users'}
+            />
+          )}
+
+          {currentTab === 'matriks-role' && (
+            <RoleMatrixSettingsView
+              matrix={roleMatrix}
+              onSaveMatrix={handleUpdateRoleMatrix}
+              onResetMatrix={handleResetRoleMatrix}
+              currentRole={currentUser?.role}
+              totalUsersPerRole={{
+                'Admin': users.filter(u => u.role === 'Admin' || u.role === 'Administrator').length,
+                'Wali Kelas': users.filter(u => u.role === 'Wali Kelas').length,
+                'Guru': users.filter(u => u.role === 'Guru' || u.role === 'Guru Piket' || u.role === 'Guru BK').length,
+                'Tendik': users.filter(u => u.role === 'Tendik').length,
+              }}
             />
           )}
         </main>
