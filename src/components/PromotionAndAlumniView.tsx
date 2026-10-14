@@ -100,6 +100,12 @@ export const PromotionAndAlumniView: React.FC<PromotionAndAlumniViewProps> = ({
   const fileInputXtoXIRef = useRef<HTMLInputElement>(null);
   const fileInputNewGradeXRef = useRef<HTMLInputElement>(null);
 
+  // Step 4 (New Grade X import) State
+  const [isImportGradeXModalOpen, setIsImportGradeXModalOpen] = useState(false);
+  const [previewGradeXStudents, setPreviewGradeXStudents] = useState<Student[]>([]);
+  const [importGradeXMode, setImportGradeXMode] = useState<'append' | 'replace'>('append');
+  const [importGradeXWarnings, setImportGradeXWarnings] = useState<string[]>([]);
+
   // Statistics
   const activeStudents = useMemo(() => students.filter((s) => s.status !== 'Lulus' && s.grade !== 'Alumni'), [students]);
   const gradeXIIStudents = useMemo(() => activeStudents.filter((s) => s.grade === 'XII'), [activeStudents]);
@@ -512,6 +518,178 @@ export const PromotionAndAlumniView: React.FC<PromotionAndAlumniViewProps> = ({
     const ws = XLSX.utils.json_to_sheet(rows);
     XLSX.utils.book_append_sheet(wb, ws, 'Arsip_Alumni_3_Tahun');
     XLSX.writeFile(wb, `Arsip_Alumni_SMAN1Batu_${selectedGraduationYear === 'ALL' ? 'Semua_Angkatan' : selectedGraduationYear.replace('/', '-')}_${new Date().toISOString().slice(0, 10)}.xlsx`);
+  };
+
+  // ==========================================
+  // ACTION: DOWNLOAD TEMPLATE SISWA BARU KELAS X
+  // ==========================================
+  const handleDownloadGradeXTemplate = () => {
+    const rows = [
+      {
+        'No': 1,
+        'NISN': '0091234561',
+        'Nama Lengkap': 'Aditya Pratama',
+        'Rombel Kelas X': 'X-1',
+        'Jenis Kelamin (L/P)': 'L',
+        'No HP Siswa': '081234567891',
+        'No HP Orang Tua': '081298765431',
+        'Alamat Domisili': 'Jl. Panglima Sudirman No. 10, Batu',
+      },
+      {
+        'No': 2,
+        'NISN': '0091234562',
+        'Nama Lengkap': 'Bella Safitri',
+        'Rombel Kelas X': 'X-1',
+        'Jenis Kelamin (L/P)': 'P',
+        'No HP Siswa': '081234567892',
+        'No HP Orang Tua': '081298765432',
+        'Alamat Domisili': 'Jl. Diponegoro No. 25, Batu',
+      },
+      {
+        'No': 3,
+        'NISN': '0091234563',
+        'Nama Lengkap': 'Candra Wijaya',
+        'Rombel Kelas X': 'X-2',
+        'Jenis Kelamin (L/P)': 'L',
+        'No HP Siswa': '081234567893',
+        'No HP Orang Tua': '081298765433',
+        'Alamat Domisili': 'Jl. Bromo No. 5, Batu',
+      },
+    ];
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(rows);
+    XLSX.utils.book_append_sheet(wb, ws, 'Template_Siswa_Kelas_X');
+    XLSX.writeFile(wb, `Template_Impor_Siswa_Baru_Kelas_X_SMAN1Batu.xlsx`);
+  };
+
+  // ==========================================
+  // ACTION: UPLOAD EXCEL SISWA BARU KELAS X
+  // ==========================================
+  const handleUploadGradeXExcel = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsProcessing(true);
+    try {
+      const data = await file.arrayBuffer();
+      const workbook = XLSX.read(data);
+      const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+      const json: any[] = XLSX.utils.sheet_to_json(firstSheet);
+
+      if (!json || json.length === 0) {
+        throw new Error('File Excel kosong atau format tidak sesuai.');
+      }
+
+      const warnings: string[] = [];
+      const parsedList: Student[] = [];
+      const existingNisns = new Set(students.map((s) => s.nisn));
+      const seenFileNisns = new Set<string>();
+
+      json.forEach((row, idx) => {
+        const findVal = (keys: string[]) => {
+          const matched = Object.keys(row).find((k) =>
+            keys.some((key) => k.toLowerCase().replace(/[^a-z0-9]/g, '').includes(key.toLowerCase().replace(/[^a-z0-9]/g, '')))
+          );
+          return matched ? String(row[matched] || '').trim() : '';
+        };
+
+        const rawNisn = findVal(['nisn', 'nis', 'noinduk']);
+        const rawName = findVal(['nama lengkap', 'namasiswa', 'nama']);
+        const rawClass = findVal(['rombel kelas x', 'rombel', 'kelas', 'kelas x']);
+        const rawGender = findVal(['jenis kelamin', 'jk', 'gender', 'sex']).toUpperCase();
+        const rawPhone = findVal(['no hp siswa', 'hpsiswa', 'telpsiswa', 'telepon']);
+        const rawParentPhone = findVal(['no hp orang tua', 'hportu', 'hporangtua', 'teleponortu']);
+        const rawAddress = findVal(['alamat domisili', 'alamat', 'tempat tinggal']);
+
+        if (!rawNisn || !rawName) {
+          warnings.push(`Baris ${idx + 2}: Dilewati karena NISN atau Nama kosong.`);
+          return;
+        }
+
+        if (seenFileNisns.has(rawNisn)) {
+          warnings.push(`Baris ${idx + 2}: NISN ${rawNisn} duplikat di dalam berkas Excel.`);
+          return;
+        }
+        seenFileNisns.add(rawNisn);
+
+        if (existingNisns.has(rawNisn)) {
+          warnings.push(`Baris ${idx + 2}: NISN ${rawNisn} (${rawName}) sudah terdaftar di database.`);
+        }
+
+        let normalizedClass = rawClass.toUpperCase().replace(/\s+/g, '-').replace(/X(?=[0-9])/i, 'X-');
+        if (/^[0-9]+$/.test(normalizedClass)) {
+          normalizedClass = `X-${normalizedClass}`;
+        }
+        if (!normalizedClass.startsWith('X-')) {
+          normalizedClass = 'X-1';
+        }
+
+        const matchedClassObj = classesX.find((c) => c.name.toLowerCase() === normalizedClass.toLowerCase());
+        const classId = matchedClassObj?.id || `c-x-${normalizedClass.replace('X-', '')}`;
+        const gender = (rawGender === 'P' || rawGender.startsWith('PEREMPUAN')) ? 'P' : 'L';
+
+        const newStudent: Student = {
+          id: `std-x-${Date.now()}-${idx}-${Math.random().toString(36).substring(2, 6)}`,
+          nisn: rawNisn,
+          name: rawName,
+          className: normalizedClass,
+          classId: classId,
+          grade: 'X',
+          gender,
+          phone: rawPhone || undefined,
+          parentPhone: rawParentPhone || undefined,
+          address: rawAddress || undefined,
+          status: 'Aktif',
+          academicYearJoined: schoolProfile.academicYear,
+        };
+
+        parsedList.push(newStudent);
+      });
+
+      if (parsedList.length === 0) {
+        throw new Error('Tidak ada baris data siswa yang valid ditemukan dalam berkas Excel.');
+      }
+
+      setPreviewGradeXStudents(parsedList);
+      setImportGradeXWarnings(warnings);
+      setIsImportGradeXModalOpen(true);
+    } catch (err: any) {
+      showError('Gagal memproses file Excel: ' + (err?.message || 'Format tidak valid'));
+    } finally {
+      setIsProcessing(false);
+      if (e.target) e.target.value = '';
+    }
+  };
+
+  // ==========================================
+  // ACTION: CONFIRM IMPORT SISWA KELAS X
+  // ==========================================
+  const handleConfirmImportGradeX = async () => {
+    if (previewGradeXStudents.length === 0) return;
+
+    setIsProcessing(true);
+    try {
+      let nextStudents: Student[];
+
+      if (importGradeXMode === 'replace') {
+        const nonGradeX = students.filter((s) => s.grade !== 'X' || s.status === 'Lulus');
+        nextStudents = [...nonGradeX, ...previewGradeXStudents];
+      } else {
+        const incomingNisns = new Set(previewGradeXStudents.map((s) => s.nisn));
+        const filteredExisting = students.filter((s) => !incomingNisns.has(s.nisn));
+        nextStudents = [...filteredExisting, ...previewGradeXStudents];
+      }
+
+      await onBatchUpdateStudents(nextStudents);
+      setIsImportGradeXModalOpen(false);
+      showSuccess(`Berhasil mengimpor dan menambahkan ${previewGradeXStudents.length} siswa baru kelas X ke sistem!`);
+      setPreviewGradeXStudents([]);
+    } catch (err: any) {
+      showError('Gagal menyimpan siswa baru: ' + (err?.message || 'Error'));
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -1209,28 +1387,100 @@ export const PromotionAndAlumniView: React.FC<PromotionAndAlumniViewProps> = ({
           </div>
 
           {/* STEP 4: PENERIMAAN SISWA BARU KELAS X */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-4">
-            <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
-              <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-700 flex items-center justify-center font-black text-sm border border-emerald-200">
-                4
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-700 flex items-center justify-center font-black text-sm border border-emerald-200">
+                  4
+                </div>
+                <div>
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
+                    <span>Tahap 4: Impor &amp; Penerimaan Siswa Baru Kelas X</span>
+                    <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800">
+                      Saat Ini: {gradeXStudents.length} Siswa
+                    </span>
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium">
+                    Unggah daftar siswa baru angkatan kelas X langsung melalui berkas spreadsheet Excel (.xlsx).
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-base sm:text-lg font-black text-slate-900">
-                  Tahap 4: Masukkan Siswa Baru Kelas X (Angkatan Baru)
-                </h3>
-                <p className="text-xs text-slate-500 font-medium">
-                  Setelah kelas XII lulus dan kelas X-XI naik kelas, masukkan data siswa baru kelas X melalui menu Data Siswa atau impor Excel.
+
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={handleDownloadGradeXTemplate}
+                  className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Unduh Format Excel Siswa X</span>
+                </button>
+
+                <input
+                  type="file"
+                  ref={fileInputNewGradeXRef}
+                  accept=".xlsx, .xls"
+                  onChange={handleUploadGradeXExcel}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  disabled={isProcessing}
+                  onClick={() => fileInputNewGradeXRef.current?.click()}
+                  className="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black text-xs rounded-xl shadow-md shadow-emerald-600/20 active:scale-95 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  <Upload className="w-4 h-4" />
+                  <span>Unggah Berkas Excel Siswa Baru</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Petunjuk Format & Panduan */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/60 space-y-2">
+                <span className="text-xs font-black text-slate-900 flex items-center gap-1.5">
+                  <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+                  <span>Kolom Utama Wajib</span>
+                </span>
+                <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
+                  Pastikan terdapat kolom <strong>NISN</strong>, <strong>Nama Lengkap</strong>, dan <strong>Rombel Kelas X</strong> (misal: X-1, X-2, s.d. X-12).
+                </p>
+              </div>
+
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/60 space-y-2">
+                <span className="text-xs font-black text-slate-900 flex items-center gap-1.5">
+                  <UserCheck className="w-4 h-4 text-sky-600" />
+                  <span>Kolom Opsional / Pelengkap</span>
+                </span>
+                <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
+                  Kolom <strong>Jenis Kelamin (L/P)</strong>, <strong>No HP Siswa</strong>, <strong>No HP Orang Tua</strong>, dan <strong>Alamat Domisili</strong>.
+                </p>
+              </div>
+
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/60 space-y-2">
+                <span className="text-xs font-black text-slate-900 flex items-center gap-1.5">
+                  <ShieldAlert className="w-4 h-4 text-indigo-600" />
+                  <span>Otomatisasi Sistem</span>
+                </span>
+                <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
+                  Siswa yang diimpor otomatis berstatus <strong>Aktif</strong>, terhubung ke rombel kelas X, dan terdaftar pada tahun ajaran aktif <strong>{schoolProfile.academicYear}</strong>.
                 </p>
               </div>
             </div>
 
-            <div className="p-4 bg-emerald-50/70 rounded-2xl border border-emerald-200/80 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <Info className="w-5 h-5 text-emerald-600 shrink-0" />
-                <p className="text-xs text-emerald-950 font-medium leading-relaxed">
-                  Format impor siswa baru mendukung kolom: <strong>NISN, Nama, Rombel (X-1 s.d. X-12), Jenis Kelamin, No HP Ortu, dan Alamat</strong>. 
-                  Dapat ditambahkan melalui menu <strong>Data Siswa</strong>.
-                </p>
+            {/* Rombel Distribution Strip */}
+            <div className="space-y-2 pt-2">
+              <span className="text-xs font-bold text-slate-600 block">Distribusi Siswa Kelas X Saat Ini (Total {gradeXStudents.length} Siswa):</span>
+              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2.5">
+                {classesX.map((c) => {
+                  const cnt = gradeXStudents.filter((s) => s.className === c.name).length;
+                  return (
+                    <div key={c.id} className="p-2.5 bg-slate-50 rounded-xl border border-slate-200/80 text-center">
+                      <span className="text-[10px] text-slate-500 font-bold block">{c.name}</span>
+                      <span className="text-xs font-black text-slate-800">{cnt} Siswa</span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -1740,6 +1990,167 @@ export const PromotionAndAlumniView: React.FC<PromotionAndAlumniViewProps> = ({
                   <p className="text-slate-600 font-mono text-[11px]">NIP. {schoolProfile.principalNip}</p>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL: PRATINJAU IMPOR SISWA BARU KELAS X */}
+      {/* ========================================================= */}
+      {isImportGradeXModalOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl border border-slate-100 space-y-6 max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-black">
+                  <FileSpreadsheet className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base sm:text-lg font-black text-slate-900">
+                    Konfirmasi &amp; Pratinjau Siswa Baru Kelas X
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium">
+                    Ditemukan <strong>{previewGradeXStudents.length} calon siswa</strong> dari berkas Excel
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsImportGradeXModalOpen(false)}
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="overflow-y-auto space-y-4 pr-1">
+              {/* Warnings if any */}
+              {importGradeXWarnings.length > 0 && (
+                <div className="p-3.5 bg-amber-50 rounded-2xl border border-amber-200/80 text-xs text-amber-900 space-y-1">
+                  <span className="font-bold flex items-center gap-1.5 text-amber-800">
+                    <AlertTriangle className="w-4 h-4 text-amber-600" />
+                    <span>Catatan Validasi Berkas:</span>
+                  </span>
+                  <ul className="list-disc pl-5 text-[11px] text-amber-700 max-h-24 overflow-y-auto space-y-0.5">
+                    {importGradeXWarnings.map((w, idx) => (
+                      <li key={idx}>{w}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Mode Selection */}
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                <span className="text-xs font-black text-slate-800 block">Metode Penyimpanan ke Sistem:</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  <label className={`flex items-start gap-2.5 p-3 rounded-xl border cursor-pointer transition-all ${
+                    importGradeXMode === 'append' ? 'bg-white border-emerald-500 shadow-xs' : 'bg-transparent border-slate-200'
+                  }`}>
+                    <input
+                      type="radio"
+                      name="importMode"
+                      value="append"
+                      checked={importGradeXMode === 'append'}
+                      onChange={() => setImportGradeXMode('append')}
+                      className="mt-0.5 text-emerald-600 focus:ring-emerald-500"
+                    />
+                    <div>
+                      <span className="font-bold text-slate-800 block">Tambahkan ke Data yang Ada</span>
+                      <span className="text-[11px] text-slate-500">Siswa baru akan digabungkan dengan data siswa yang sudah ada saat ini.</span>
+                    </div>
+                  </label>
+
+                  <label className={`flex items-start gap-2.5 p-3 rounded-xl border cursor-pointer transition-all ${
+                    importGradeXMode === 'replace' ? 'bg-white border-rose-500 shadow-xs' : 'bg-transparent border-slate-200'
+                  }`}>
+                    <input
+                      type="radio"
+                      name="importMode"
+                      value="replace"
+                      checked={importGradeXMode === 'replace'}
+                      onChange={() => setImportGradeXMode('replace')}
+                      className="mt-0.5 text-rose-600 focus:ring-rose-500"
+                    />
+                    <div>
+                      <span className="font-bold text-rose-800 block">Timpa Siswa Kelas X Lama</span>
+                      <span className="text-[11px] text-slate-500">Menghapus data kelas X aktif sebelumnya dan menggantikannya dengan siswa baru ini.</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              {/* Quick Summary Counts */}
+              <div className="grid grid-cols-3 gap-3 text-center text-xs">
+                <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200/80">
+                  <span className="text-[10px] text-emerald-700 font-bold block">Total Siswa</span>
+                  <span className="text-base font-black text-emerald-950">{previewGradeXStudents.length} Siswa</span>
+                </div>
+                <div className="p-3 bg-sky-50 rounded-xl border border-sky-200/80">
+                  <span className="text-[10px] text-sky-700 font-bold block">Laki-laki (L)</span>
+                  <span className="text-base font-black text-sky-950">
+                    {previewGradeXStudents.filter((s) => s.gender === 'L').length} Siswa
+                  </span>
+                </div>
+                <div className="p-3 bg-pink-50 rounded-xl border border-pink-200/80">
+                  <span className="text-[10px] text-pink-700 font-bold block">Perempuan (P)</span>
+                  <span className="text-base font-black text-pink-950">
+                    {previewGradeXStudents.filter((s) => s.gender === 'P').length} Siswi
+                  </span>
+                </div>
+              </div>
+
+              {/* Table Preview */}
+              <div className="space-y-1.5">
+                <span className="text-xs font-bold text-slate-700 block">Pratinjau Daftar Siswa Baru:</span>
+                <div className="max-h-60 overflow-y-auto rounded-xl border border-slate-200/80">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="bg-slate-100 text-slate-600 font-black uppercase text-[10px]">
+                        <th className="py-2.5 px-3 w-10 text-center">No</th>
+                        <th className="py-2.5 px-3">NISN</th>
+                        <th className="py-2.5 px-3">Nama Lengkap</th>
+                        <th className="py-2.5 px-3">Rombel</th>
+                        <th className="py-2.5 px-3 text-center">L/P</th>
+                        <th className="py-2.5 px-3">No HP Ortu</th>
+                        <th className="py-2.5 px-3">Alamat</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {previewGradeXStudents.map((s, idx) => (
+                        <tr key={s.id} className="hover:bg-slate-50">
+                          <td className="py-2 px-3 text-center text-slate-400 font-bold">{idx + 1}</td>
+                          <td className="py-2 px-3 font-mono font-bold text-slate-700">{s.nisn}</td>
+                          <td className="py-2 px-3 font-black text-slate-900">{s.name}</td>
+                          <td className="py-2 px-3 font-bold text-emerald-700">{s.className}</td>
+                          <td className="py-2 px-3 text-center font-bold">{s.gender}</td>
+                          <td className="py-2 px-3 text-slate-500">{s.parentPhone || '-'}</td>
+                          <td className="py-2 px-3 text-slate-500 truncate max-w-[150px]">{s.address || '-'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => setIsImportGradeXModalOpen(false)}
+                className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors cursor-pointer"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                disabled={isProcessing || previewGradeXStudents.length === 0}
+                onClick={handleConfirmImportGradeX}
+                className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-md shadow-emerald-600/20 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              >
+                {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                <span>Konfirmasi &amp; Simpan {previewGradeXStudents.length} Siswa Baru</span>
+              </button>
             </div>
           </div>
         </div>
