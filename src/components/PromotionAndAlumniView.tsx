@@ -862,7 +862,7 @@ export const PromotionAndAlumniView: React.FC<PromotionAndAlumniViewProps> = ({
                 </div>
                 <div>
                   <h3 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
-                    <span>Tahap 2: Kenaikan Kelas XI $\rightarrow$ Kelas XII</span>
+                    <span>Tahap 2: Kenaikan Kelas XI → Kelas XII</span>
                     <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-sky-100 text-sky-800">
                       {gradeXIStudents.length} Siswa Tersedia
                     </span>
@@ -914,7 +914,7 @@ export const PromotionAndAlumniView: React.FC<PromotionAndAlumniViewProps> = ({
                     <h4 className="text-sm font-black text-sky-950">Mode Formasi Tetap (1-ke-1 Mapping Otomatis)</h4>
                     <p className="text-xs text-sky-800/90 mt-0.5 leading-relaxed">
                       Seluruh siswa di rombel XI akan langsung dipromosikan ke rombel XII yang bersesuaian 
-                      (contoh: seluruh siswa rombel <strong>XI-1 $\rightarrow$ XII-1</strong>, <strong>XI-2 $\rightarrow$ XII-2</strong>, dst).
+                      (contoh: seluruh siswa rombel <strong>XI-1 → XII-1</strong>, <strong>XI-2 → XII-2</strong>, dst).
                       Catatan pelanggaran dan ID siswa tidak berubah sama sekali.
                     </p>
                   </div>
@@ -1124,7 +1124,7 @@ export const PromotionAndAlumniView: React.FC<PromotionAndAlumniViewProps> = ({
                 </div>
                 <div>
                   <h3 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
-                    <span>Tahap 3: Kenaikan Kelas X $\rightarrow$ Kelas XI (Formasi Berpencar / Peminatan)</span>
+                    <span>Tahap 3: Kenaikan Kelas X → Kelas XI (Formasi Berpencar / Peminatan)</span>
                     <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-purple-100 text-purple-800">
                       {gradeXStudents.length} Siswa Tersedia
                     </span>
