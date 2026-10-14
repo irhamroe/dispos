@@ -18,6 +18,7 @@ import {
   Mail, 
   ShieldCheck, 
   DoorOpen,
+  GraduationCap,
   X 
 } from 'lucide-react';
 
@@ -36,6 +37,7 @@ export type NavTab =
   | 'data-siswa' 
   | 'data-kelas' 
   | 'data-walikelas'
+  | 'kenaikan-kelas'
   | 'manajemen-user'
   | 'matriks-role';
 
@@ -79,6 +81,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     currentTab === 'data-siswa' || 
     currentTab === 'data-kelas' || 
     currentTab === 'data-walikelas' ||
+    currentTab === 'kenaikan-kelas' ||
     currentTab === 'manajemen-user' ||
     currentTab === 'matriks-role' ||
     currentTab === 'students';
@@ -239,6 +242,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
       iconBg: 'bg-[#F59E0B] text-white',
       inactiveIconBg: 'bg-[#FEF3C7] text-[#D97706]',
       badge: '36 Guru',
+    },
+    {
+      id: 'kenaikan-kelas' as NavTab,
+      label: 'Kenaikan Kelas & Alumni',
+      sublabel: 'Kelulusan XII, acak XI-XII & arsip 3 thn',
+      icon: GraduationCap,
+      iconBg: 'bg-[#6366F1] text-white',
+      inactiveIconBg: 'bg-[#EEF2FF] text-[#4F46E5]',
+      badge: 'Alumni & Rombel',
     },
     {
       id: 'manajemen-user' as NavTab,

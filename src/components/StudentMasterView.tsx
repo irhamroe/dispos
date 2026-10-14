@@ -92,7 +92,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
     }
     return 'ALL';
   });
-  const [selectedGrade, setSelectedGrade] = useState<'ALL' | 'X' | 'XI' | 'XII'>(() => {
+  const [selectedGrade, setSelectedGrade] = useState<'ALL' | 'X' | 'XI' | 'XII' | 'Alumni'>(() => {
     const targetClass = initialClassFilter || (currentUser?.role === 'Wali Kelas' ? currentUser?.assignedClass : undefined);
     if (targetClass && targetClass !== 'ALL') {
       const found = classes.find((c) => c.name === targetClass);
@@ -527,8 +527,8 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
           {/* Filters */}
           <div className="flex flex-wrap items-center gap-3">
             {/* Grade Filter */}
-            <div className="flex bg-[#E2F1FD] p-1.5 rounded-2xl shadow-none text-xs gap-1 font-bold">
-              {(['ALL', 'X', 'XI', 'XII'] as const).map((grade) => (
+            <div className="flex flex-wrap bg-[#E2F1FD] p-1.5 rounded-2xl shadow-none text-xs gap-1 font-bold">
+              {(['ALL', 'X', 'XI', 'XII', 'Alumni'] as const).map((grade) => (
                 <button
                   key={grade}
                   type="button"
@@ -542,9 +542,8 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                       ? 'bg-gradient-to-br from-[#E0F2FE] to-[#0284C7] text-white shadow-xs -translate-y-0.5'
                       : 'text-[#334155] hover:text-[#0F172A]'
                   }`}
-                  
                 >
-                  {grade === 'ALL' ? 'Semua' : `Kelas ${grade}`}
+                  {grade === 'ALL' ? 'Semua' : grade === 'Alumni' ? 'Alumni' : `Kelas ${grade}`}
                 </button>
               ))}
             </div>

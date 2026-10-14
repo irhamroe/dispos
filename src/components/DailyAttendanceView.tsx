@@ -66,7 +66,7 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
   };
 
   const classStudents = useMemo(() => {
-    return sortStudents(students.filter((s) => s.className === selectedClass));
+    return sortStudents(students.filter((s) => s.className === selectedClass && s.status !== 'Lulus' && s.grade !== 'Alumni'));
   }, [students, selectedClass]);
 
   const currentClassInfo = useMemo(() => {

@@ -254,12 +254,12 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
 
   // Students in selected edit class
   const studentsInEditClass = React.useMemo(() => {
-    return sortStudents(students.filter((s) => s.className === editClass));
+    return sortStudents(students.filter((s) => s.className === editClass && s.status !== 'Lulus' && s.grade !== 'Alumni'));
   }, [students, editClass]);
 
   // Students in currently selected class in modal
   const studentsInSelectedClass = React.useMemo(() => {
-    return sortStudents(students.filter((s) => s.className === selectedClass));
+    return sortStudents(students.filter((s) => s.className === selectedClass && s.status !== 'Lulus' && s.grade !== 'Alumni'));
   }, [students, selectedClass]);
 
   // Whenever selectedClass changes, automatically set first student

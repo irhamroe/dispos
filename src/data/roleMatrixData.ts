@@ -113,6 +113,13 @@ export const NAV_TAB_DEFINITIONS: NavTabPermissionMeta[] = [
     iconName: 'UserCheck',
   },
   {
+    id: 'kenaikan-kelas',
+    label: 'Kenaikan Kelas & Alumni',
+    category: 'Master Data',
+    description: 'Proses kelulusan kelas XII, promosi/acak rombel XI-XII, dan arsip data alumni 3 tahun',
+    iconName: 'GraduationCap',
+  },
+  {
     id: 'manajemen-user',
     label: 'Manajemen Pengguna',
     category: 'Master Data',
@@ -292,6 +299,7 @@ export const initialRoleMatrix: RoleMatrixMap = {
       'data-siswa',
       'data-kelas',
       'data-walikelas',
+      'kenaikan-kelas',
       'manajemen-user',
       'matriks-role',
     ],
@@ -430,6 +438,7 @@ export const initialRoleMatrix: RoleMatrixMap = {
       'data-siswa',
       'data-kelas',
       'data-walikelas',
+      'kenaikan-kelas',
     ],
     actionPermissions: {
       attendance_input_all: false,

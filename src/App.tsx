@@ -44,6 +44,7 @@ import { ParentCallLetterView } from './components/ParentCallLetterView';
 import { StudentMasterView } from './components/StudentMasterView';
 import { DataKelasView } from './components/DataKelasView';
 import { DataWaliKelasView } from './components/DataWaliKelasView';
+import { PromotionAndAlumniView } from './components/PromotionAndAlumniView';
 import { UserManagementView } from './components/UserManagementView';
 import { RoleMatrixSettingsView } from './components/RoleMatrixSettingsView';
 import { FirebaseConfigModal } from './components/FirebaseConfigModal';
@@ -846,6 +847,15 @@ export default function App() {
     saveStudent(updatedStudent).catch(() => {});
   };
 
+  // Batch update students (for promotion, reshuffle, or graduation)
+  const handleBatchUpdateStudents = async (updatedStudents: Student[]) => {
+    setStudents(updatedStudents);
+    localStorage.setItem('app_sman1batu_students_v2', JSON.stringify(updatedStudents));
+    if (isFirebaseConfigured()) {
+      await batchSaveDocuments(COLLECTIONS.STUDENTS, updatedStudents);
+    }
+  };
+
   // Reset / Force sync to official 1,274 students list
   const handleResetToDefaultStudents = async () => {
     setStudents(initialStudents);
@@ -1146,6 +1156,20 @@ export default function App() {
               onViewClassStudents={handleViewClassStudents}
               currentUser={currentUser}
               roleMatrix={roleMatrix}
+            />
+          )}
+
+          {currentTab === 'kenaikan-kelas' && (
+            <PromotionAndAlumniView
+              students={students}
+              classes={classes}
+              disciplineRecords={disciplineRecords}
+              schoolProfile={schoolProfile}
+              currentUser={currentUser}
+              roleMatrix={roleMatrix}
+              onBatchUpdateStudents={handleBatchUpdateStudents}
+              onUpdateSchoolProfile={handleUpdateSchoolProfile}
+              enablePointsSystem={enablePointsSystem}
             />
           )}
 

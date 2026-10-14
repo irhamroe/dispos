@@ -2,19 +2,28 @@ export type AttendanceStatus = 'H' | 'S' | 'I' | 'A' | 'D';
 
 export type LetterStatus = 'Sudah Ada Surat' | 'Belum Ada Surat';
 
+export interface StudentClassHistory {
+  grade: 'X' | 'XI' | 'XII';
+  className: string;
+  academicYear: string;
+}
+
 export interface Student {
   id: string;
   nisn: string;
   name: string;
   classId: string;
   className: string;
-  grade: 'X' | 'XI' | 'XII';
+  grade: 'X' | 'XI' | 'XII' | 'Alumni';
   gender: 'L' | 'P';
   phone?: string;
   parentPhone?: string;
   address?: string;
   photoUrl?: string;
-  status: 'Aktif' | 'Nonaktif';
+  status: 'Aktif' | 'Nonaktif' | 'Lulus' | 'Mutasi';
+  graduationYear?: string;
+  academicYearJoined?: string;
+  classHistory?: StudentClassHistory[];
 }
 
 export interface AttendanceRecord {
