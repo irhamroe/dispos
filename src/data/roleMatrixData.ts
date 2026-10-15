@@ -474,6 +474,54 @@ export const initialRoleMatrix: RoleMatrixMap = {
     updatedBy: 'Sistem Standar',
   },
 
+  Wakasek: {
+    role: 'Wakasek',
+    label: 'Wakil Kepala Sekolah (Waka)',
+    description: 'Persetujuan akhir perizinan siswa keluar sekolah (Tahap 3), pemantauan KBM, disiplin, kesiswaan, kurikulum, humas, dan sarpras.',
+    badgeClass: 'bg-indigo-100 text-indigo-800 border-indigo-200',
+    iconName: 'Award',
+    allowedTabs: [
+      'dashboard',
+      'attendance',
+      'recap',
+      'rekap-surat-izin',
+      'layanan-izin-siswa',
+      'discipline',
+      'rekap-pelanggaran',
+      'tagihan-pembinaan',
+      'surat-panggilan',
+      'aturan-pelanggaran',
+      'data-siswa',
+      'data-kelas',
+      'data-walikelas',
+    ],
+    actionPermissions: {
+      attendance_input_all: false,
+      attendance_input_own: false,
+      attendance_export: true,
+      attendance_verify_letter: true,
+      discipline_create: true,
+      discipline_edit: true,
+      discipline_delete: false,
+      discipline_coaching: true,
+      discipline_export: true,
+      permit_approve: true,
+      permit_create_manual: true,
+      permit_delete: false,
+      parent_call_create: true,
+      parent_call_print: true,
+      rules_manage: false,
+      students_manage: false,
+      classes_manage: false,
+      walikelas_manage: false,
+      users_manage: false,
+      users_reset_password: false,
+      matrix_manage: false,
+    },
+    lastUpdated: '2026-01-01',
+    updatedBy: 'Sistem Standar',
+  },
+
   Satpam: {
     role: 'Satpam',
     label: 'Petugas Keamanan (Satpam / Security)',
@@ -519,6 +567,7 @@ export const normalizeRole = (rawRole?: string): UserRole => {
   if (!rawRole) return 'Guru';
   if (rawRole === 'Admin' || rawRole === 'Administrator') return 'Admin';
   if (rawRole === 'Wali Kelas') return 'Wali Kelas';
+  if (rawRole === 'Wakasek' || rawRole === 'Wakil Kepala Sekolah') return 'Wakasek';
   if (rawRole === 'Tendik' || rawRole === 'Tata Usaha' || rawRole === 'Staf TU') return 'Tendik';
   if (rawRole === 'Satpam' || rawRole === 'Security' || rawRole === 'Petugas Keamanan') return 'Satpam';
   return 'Guru';

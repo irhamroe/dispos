@@ -30,6 +30,7 @@ import {
 import { Student, DisciplineRecord, AttendanceRecord, AdminUser, RoleMatrixMap } from '../types';
 import { RombelClass } from '../data/initialData';
 import { sortClasses, sortStudents } from '../utils/sortUtils';
+import { formatNameTitleCase } from '../utils/formatUtils';
 import { checkActionPermission, initialRoleMatrix } from '../data/roleMatrixData';
 import { 
   uploadFileToGoogleDrive, 
@@ -256,7 +257,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
     const newStudent: Student = {
       id: `s-${Date.now()}`,
       nisn: newNisn.trim(),
-      name: newName.trim(),
+      name: formatNameTitleCase(newName),
       classId: newClassId,
       className: chosenClass?.name || 'X-1',
       grade,
@@ -304,7 +305,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
     const updatedStudent: Student = {
       ...editingStudent,
       nisn: editNisn.trim(),
-      name: editName.trim(),
+      name: formatNameTitleCase(editName),
       classId: editClassId,
       className: chosenClass?.name || editingStudent.className,
       grade,

@@ -79,7 +79,7 @@ export interface DisciplineRecord {
   coachingEvidenceFileName?: string;
 }
 
-export type UserRole = 'Admin' | 'Wali Kelas' | 'Guru' | 'Tendik' | 'Satpam';
+export type UserRole = 'Admin' | 'Wali Kelas' | 'Guru' | 'Wakasek' | 'Tendik' | 'Satpam';
 
 export interface AdminUser {
   id: string;

@@ -27,6 +27,7 @@ import {
 } from './types';
 import { initialRoleMatrix, checkTabAccess } from './data/roleMatrixData';
 import { sortClasses, sortStudents, sortWaliKelas, sortDisciplineRecords, sortViolationRules } from './utils/sortUtils';
+import { formatNameTitleCase } from './utils/formatUtils';
 import { Navbar } from './components/Navbar';
 import { Sidebar, NavTab } from './components/Sidebar';
 import { LoginScreen } from './components/LoginScreen';
@@ -140,7 +141,7 @@ export default function App() {
           parsed[0]?.name === initialStudents[0]?.name &&
           parsed.some((s: any) => s.name === 'Adelia Cahyani' && s.nisn === '0109898696')
         ) {
-          return sortStudents(parsed);
+          return sortStudents(parsed.map((s: Student) => ({ ...s, name: formatNameTitleCase(s.name) })));
         }
       }
       const sorted = sortStudents(initialStudents);
@@ -248,7 +249,8 @@ export default function App() {
       localStorage.removeItem('app_sman1batu_users_v5');
       localStorage.removeItem('app_sman1batu_users_v6');
       localStorage.removeItem('app_sman1batu_users_v7');
-      const saved = localStorage.getItem('app_sman1batu_users_v8');
+      localStorage.removeItem('app_sman1batu_users_v8');
+      const saved = localStorage.getItem('app_sman1batu_users_v9');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (
@@ -257,12 +259,14 @@ export default function App() {
           parsed.some((u) => u.name === 'Anis Dyah Wahyuti, S.Pd') &&
           parsed.some((u) => u.name === 'Hermawanto, S.Pd, M.Pd') &&
           parsed.some((u) => u.name === 'Anto Dwi Cahyono, S.Pd., M.M.') &&
+          parsed.some((u) => u.name === 'Harris Arfianto') &&
+          parsed.some((u) => u.role === 'Wakasek') &&
           parsed.some((u) => u.username === 'satpam' || u.role === 'Satpam')
         ) {
-          return parsed;
+          return parsed.map((u: AdminUser) => ({ ...u, name: formatNameTitleCase(u.name) }));
         }
       }
-      localStorage.setItem('app_sman1batu_users_v8', JSON.stringify(initialUsers));
+      localStorage.setItem('app_sman1batu_users_v9', JSON.stringify(initialUsers));
       return initialUsers;
     } catch {
       return initialUsers;
@@ -276,7 +280,10 @@ export default function App() {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed?.Admin && parsed?.['Wali Kelas'] && parsed?.Guru && parsed?.Tendik) {
-          return parsed;
+          return {
+            ...initialRoleMatrix,
+            ...parsed,
+          };
         }
       }
       localStorage.setItem('app_sman1batu_role_matrix_v1', JSON.stringify(initialRoleMatrix));
@@ -333,7 +340,12 @@ export default function App() {
       const saved = localStorage.getItem('app_sman1batu_student_permits_v1');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map((p: StudentPermitRecord) => ({
+            ...p,
+            studentName: formatNameTitleCase(p.studentName),
+          }));
+        }
       }
       localStorage.setItem('app_sman1batu_student_permits_v1', JSON.stringify(initialStudentPermits));
       return initialStudentPermits;
@@ -347,6 +359,7 @@ export default function App() {
     const isMultiStage = permitData.type === 'Keluar Sekolah' || permitData.type === 'Keluar Kelas';
     const newRecord: StudentPermitRecord = {
       ...permitData,
+      studentName: formatNameTitleCase(permitData.studentName),
       id: ('id' in permitData && permitData.id) ? permitData.id : `PERMIT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
       currentApprovalStep: isMultiStage ? (permitData.currentApprovalStep || 'ADMIN') : permitData.currentApprovalStep,
       createdAt: ('createdAt' in permitData && permitData.createdAt) ? permitData.createdAt : new Date().toISOString(),
@@ -468,6 +481,8 @@ export default function App() {
           !remoteUsers.some((u) => u.name === 'Anis Dyah Wahyuti, S.Pd') ||
           !remoteUsers.some((u) => u.name === 'Heny Nurmayanto, S.Sn') ||
           !remoteUsers.some((u) => u.name === 'Anto Dwi Cahyono, S.Pd., M.M.') ||
+          !remoteUsers.some((u) => u.name === 'Harris Arfianto') ||
+          !remoteUsers.some((u) => u.role === 'Wakasek') ||
           !remoteUsers.some((u) => u.username === 'satpam' || u.role === 'Satpam') ||
           remoteUsers.some((u) => u.username === 'walikelas' || u.username === 'operator')
         );
@@ -519,7 +534,7 @@ export default function App() {
     // 1. Realtime Students subscription (HP <-> Laptop sync)
     const unsubStudents = subscribeToCollection<Student>(COLLECTIONS.STUDENTS, (data) => {
       if (data && data.length > 0) {
-        setStudents(sortStudents(data));
+        setStudents(sortStudents(data.map((s) => ({ ...s, name: formatNameTitleCase(s.name) }))));
       }
     });
 
@@ -561,7 +576,7 @@ export default function App() {
     // 7. Realtime Users subscription
     const unsubUsers = subscribeToCollection<AdminUser>(COLLECTIONS.USERS, (data) => {
       if (data && data.length > 0) {
-        setUsers(data);
+        setUsers(data.map((u) => ({ ...u, name: formatNameTitleCase(u.name) })));
       }
     });
 
@@ -576,11 +591,13 @@ export default function App() {
     // 9. Realtime Student Permits subscription (Instant multi-device sync between HP & Laptop)
     const unsubPermits = subscribeToCollection<StudentPermitRecord>(COLLECTIONS.STUDENT_PERMITS, (data) => {
       if (data) {
-        const sorted = [...data].sort((a, b) => {
-          const timeA = a.createdAt ? new Date(a.createdAt).getTime() : new Date(`${a.date}T${a.timeSubmitted || '00:00'}:00`).getTime() || 0;
-          const timeB = b.createdAt ? new Date(b.createdAt).getTime() : new Date(`${b.date}T${b.timeSubmitted || '00:00'}:00`).getTime() || 0;
-          return timeB - timeA;
-        });
+        const sorted = [...data]
+          .map((p) => ({ ...p, studentName: formatNameTitleCase(p.studentName) }))
+          .sort((a, b) => {
+            const timeA = a.createdAt ? new Date(a.createdAt).getTime() : new Date(`${a.date}T${a.timeSubmitted || '00:00'}:00`).getTime() || 0;
+            const timeB = b.createdAt ? new Date(b.createdAt).getTime() : new Date(`${b.date}T${b.timeSubmitted || '00:00'}:00`).getTime() || 0;
+            return timeB - timeA;
+          });
         setStudentPermits(sorted);
         localStorage.setItem('app_sman1batu_student_permits_v1', JSON.stringify(sorted));
       }
@@ -667,7 +684,7 @@ export default function App() {
   }, [enablePointsSystem]);
 
   useEffect(() => {
-    localStorage.setItem('app_sman1batu_users_v8', JSON.stringify(users));
+    localStorage.setItem('app_sman1batu_users_v9', JSON.stringify(users));
   }, [users]);
 
   // Login handler
@@ -685,15 +702,17 @@ export default function App() {
 
   // User Management handlers (Multi-Role: Admin, Wali Kelas, Guru, Tendik)
   const handleAddUser = (newUser: AdminUser) => {
-    setUsers((prev) => [newUser, ...prev]);
-    saveDocument(COLLECTIONS.USERS, newUser).catch(() => {});
+    const formatted = { ...newUser, name: formatNameTitleCase(newUser.name) };
+    setUsers((prev) => [formatted, ...prev]);
+    saveDocument(COLLECTIONS.USERS, formatted).catch(() => {});
   };
 
   const handleUpdateUser = (updated: AdminUser) => {
-    setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)));
-    saveDocument(COLLECTIONS.USERS, updated).catch(() => {});
-    if (currentUser?.id === updated.id) {
-      setCurrentUser(updated);
+    const formatted = { ...updated, name: formatNameTitleCase(updated.name) };
+    setUsers((prev) => prev.map((u) => (u.id === formatted.id ? formatted : u)));
+    saveDocument(COLLECTIONS.USERS, formatted).catch(() => {});
+    if (currentUser?.id === formatted.id) {
+      setCurrentUser(formatted);
     }
     // If it's a Wali Kelas, sync with waliKelasList
     if (updated.role === 'Wali Kelas' && updated.assignedClass) {
@@ -865,16 +884,18 @@ export default function App() {
 
   // Add new student
   const handleAddStudent = (newStudent: Student) => {
-    setStudents((prev) => [...prev, newStudent]);
-    saveStudent(newStudent).catch(() => {});
+    const formatted = { ...newStudent, name: formatNameTitleCase(newStudent.name) };
+    setStudents((prev) => [...prev, formatted]);
+    saveStudent(formatted).catch(() => {});
   };
 
   // Update existing student
   const handleUpdateStudent = (updatedStudent: Student) => {
+    const formatted = { ...updatedStudent, name: formatNameTitleCase(updatedStudent.name) };
     setStudents((prev) =>
-      prev.map((s) => (s.id === updatedStudent.id ? updatedStudent : s))
+      prev.map((s) => (s.id === formatted.id ? formatted : s))
     );
-    saveStudent(updatedStudent).catch(() => {});
+    saveStudent(formatted).catch(() => {});
   };
 
   // Batch update students (for promotion, reshuffle, or graduation)

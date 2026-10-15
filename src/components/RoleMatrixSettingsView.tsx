@@ -29,7 +29,8 @@ import {
   Mail,
   Users,
   KeyRound,
-  Filter
+  Filter,
+  Award
 } from 'lucide-react';
 import { RoleMatrixMap, UserRole, ActionPermissionKey, RolePermissionConfig } from '../types';
 import {
@@ -77,7 +78,7 @@ export const RoleMatrixSettingsView: React.FC<RoleMatrixSettingsViewProps> = ({
     }, 3500);
   };
 
-  const rolesList: UserRole[] = ['Admin', 'Wali Kelas', 'Guru', 'Tendik', 'Satpam'];
+  const rolesList: UserRole[] = ['Admin', 'Wali Kelas', 'Guru', 'Wakasek', 'Tendik', 'Satpam'];
 
   const roleMetaInfo = (role: UserRole) => {
     switch (role) {
@@ -104,6 +105,14 @@ export const RoleMatrixSettingsView: React.FC<RoleMatrixSettingsViewProps> = ({
           gradient: 'from-sky-600 to-blue-600',
           icon: GraduationCap,
           desc: 'Piket harian, input pelanggaran tata tertib & verifikasi izin.',
+        };
+      case 'Wakasek':
+        return {
+          label: 'Wakil Kepala Sekolah',
+          badgeClass: 'bg-indigo-100 text-indigo-800 border-indigo-200',
+          gradient: 'from-indigo-600 to-violet-600',
+          icon: Award,
+          desc: 'Persetujuan izin keluar sekolah tahap 3, Kesiswaan, Kurikulum, Humas, Sarpras.',
         };
       case 'Tendik':
         return {

@@ -35,6 +35,7 @@ import { Student, SchoolProfile, StudentPermitRecord, StudentPermitType, Approva
 import { RombelClass } from '../data/initialData';
 import { formatDateIndonesian, formatDayAndDateIndonesian, getTodayDateString } from '../utils/exportUtils';
 import { sortClasses, sortStudents } from '../utils/sortUtils';
+import { formatNameTitleCase } from '../utils/formatUtils';
 
 interface PublicStudentPermitViewProps {
   schoolProfile: SchoolProfile;
@@ -164,7 +165,7 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const finalStudentName = selectedStudent?.name || customStudentName.trim();
+    const finalStudentName = formatNameTitleCase(selectedStudent?.name || customStudentName.trim());
     if (!finalStudentName) {
       alert('Silakan pilih atau masukkan nama siswa.');
       return;

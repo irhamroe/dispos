@@ -43,6 +43,7 @@ import {
 } from '../types';
 import { RombelClass } from '../data/initialData';
 import { sortClasses, sortStudents } from '../utils/sortUtils';
+import { formatNameTitleCase } from '../utils/formatUtils';
 import { formatDateIndonesian, getTodayDateString, getTodayIndonesian } from '../utils/exportUtils';
 import { getGoogleDriveDirectImageUrl } from '../services/googleDriveService';
 
@@ -632,7 +633,7 @@ export const PromotionAndAlumniView: React.FC<PromotionAndAlumniViewProps> = ({
         const newStudent: Student = {
           id: `std-x-${Date.now()}-${idx}-${Math.random().toString(36).substring(2, 6)}`,
           nisn: rawNisn,
-          name: rawName,
+          name: formatNameTitleCase(rawName),
           className: normalizedClass,
           classId: classId,
           grade: 'X',
