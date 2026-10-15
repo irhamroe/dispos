@@ -255,13 +255,8 @@ export default function App() {
         const parsed = JSON.parse(saved);
         if (
           Array.isArray(parsed) && 
-          parsed.length >= initialUsers.length && 
-          parsed.some((u) => u.name === 'Anis Dyah Wahyuti, S.Pd') &&
-          parsed.some((u) => u.name === 'Hermawanto, S.Pd, M.Pd') &&
-          parsed.some((u) => u.name === 'Anto Dwi Cahyono, S.Pd., M.M.') &&
-          parsed.some((u) => u.name === 'Harris Arfianto') &&
-          parsed.some((u) => u.role === 'Wakasek') &&
-          parsed.some((u) => u.username === 'satpam' || u.role === 'Satpam')
+          parsed.length > 0 && 
+          parsed.some((u: AdminUser) => u.username === 'admin')
         ) {
           return parsed.map((u: AdminUser) => ({ ...u, name: formatNameTitleCase(u.name) }));
         }
@@ -477,13 +472,6 @@ export default function App() {
         }
 
         const isStaleUsers = remoteUsers.length > 0 && (
-          remoteUsers.length < initialUsers.length ||
-          !remoteUsers.some((u) => u.name === 'Anis Dyah Wahyuti, S.Pd') ||
-          !remoteUsers.some((u) => u.name === 'Heny Nurmayanto, S.Sn') ||
-          !remoteUsers.some((u) => u.name === 'Anto Dwi Cahyono, S.Pd., M.M.') ||
-          !remoteUsers.some((u) => u.name === 'Harris Arfianto') ||
-          !remoteUsers.some((u) => u.role === 'Wakasek') ||
-          !remoteUsers.some((u) => u.username === 'satpam' || u.role === 'Satpam') ||
           remoteUsers.some((u) => u.username === 'walikelas' || u.username === 'operator')
         );
         if (remoteUsers.length === 0 || isStaleUsers) {
@@ -700,11 +688,39 @@ export default function App() {
     setCurrentUser(null);
   };
 
-  // User Management handlers (Multi-Role: Admin, Wali Kelas, Guru, Tendik)
+  // User Management handlers (Multi-Role: Admin, Wali Kelas, Guru, Wakasek, Tendik, Satpam)
   const handleAddUser = (newUser: AdminUser) => {
     const formatted = { ...newUser, name: formatNameTitleCase(newUser.name) };
     setUsers((prev) => [formatted, ...prev]);
     saveDocument(COLLECTIONS.USERS, formatted).catch(() => {});
+    if (formatted.role === 'Wali Kelas' && formatted.assignedClass) {
+      setClasses((prev) =>
+        prev.map((c) => (c.name === formatted.assignedClass ? { ...c, homeroom: formatted.name } : c))
+      );
+      setWaliKelasList((prev) => {
+        const existingIdx = prev.findIndex((w) => w.className === formatted.assignedClass);
+        if (existingIdx !== -1) {
+          const next = [...prev];
+          next[existingIdx] = {
+            ...next[existingIdx],
+            name: formatted.name,
+            nip: formatted.nip || next[existingIdx].nip,
+          };
+          return next;
+        }
+        return [
+          ...prev,
+          {
+            id: `wk-${Date.now()}`,
+            name: formatted.name,
+            nip: formatted.nip || '-',
+            phone: formatted.phone || '-',
+            email: formatted.email || `${formatted.username}@sman1batu.sch.id`,
+            className: formatted.assignedClass || '',
+          },
+        ];
+      });
+    }
   };
 
   const handleUpdateUser = (updated: AdminUser) => {
@@ -740,8 +756,14 @@ export default function App() {
   };
 
   const handleDeleteUser = (userId: string) => {
+    const target = users.find((u) => u.id === userId);
     setUsers((prev) => prev.filter((u) => u.id !== userId));
     deleteDocument(COLLECTIONS.USERS, userId).catch(() => {});
+    if (target?.role === 'Wali Kelas' && target.assignedClass) {
+      setClasses((prev) =>
+        prev.map((c) => (c.name === target.assignedClass ? { ...c, homeroom: '-' } : c))
+      );
+    }
   };
 
   const handleSwitchUser = (targetUser: AdminUser) => {

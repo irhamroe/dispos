@@ -30,7 +30,11 @@ import {
   Building,
   User,
   AlertTriangle,
-  Award
+  Award,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight
 } from 'lucide-react';
 import { AdminUser, UserRole, RoleMatrixMap } from '../types';
 import { RombelClass } from '../data/initialData';
@@ -65,11 +69,16 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
   const canManageUsers = checkActionPermission(currentUser?.role, 'users_manage', roleMatrix);
   const canResetPassword = checkActionPermission(currentUser?.role, 'users_reset_password', roleMatrix);
   const canManageMatrix = checkActionPermission(currentUser?.role, 'matrix_manage', roleMatrix);
+  const isAdmin = currentUser?.role === 'Admin' || currentUser?.role === 'Administrator' || canManageUsers;
 
   // Filters & Search
   const [selectedRoleFilter, setSelectedRoleFilter] = useState<string>('ALL');
   const [selectedStatusFilter, setSelectedStatusFilter] = useState<'ALL' | 'Aktif' | 'Nonaktif'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Pagination state (10, 25, 50, or -1 for All)
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
 
   // Modals state
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -99,6 +108,8 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
   const [editNip, setEditNip] = useState('');
   const [editAssignedClass, setEditAssignedClass] = useState('');
   const [editDepartment, setEditDepartment] = useState('');
+  const [editPassword, setEditPassword] = useState('');
+  const [showEditPassword, setShowEditPassword] = useState(false);
   const [editStatus, setEditStatus] = useState<'Aktif' | 'Nonaktif'>('Aktif');
   const [editPhotoUrl, setEditPhotoUrl] = useState('');
   const [editPhotoMode, setEditPhotoMode] = useState<'upload' | 'url'>('upload');
@@ -257,6 +268,37 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
     });
   }, [users, selectedRoleFilter, selectedStatusFilter, searchQuery]);
 
+  // Reset page to 1 when filters or pageSize change
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedRoleFilter, selectedStatusFilter, searchQuery, pageSize]);
+
+  // Pagination calculations
+  const totalItems = filteredUsers.length;
+  const effectivePageSize = pageSize === -1 ? (totalItems || 1) : pageSize;
+  const totalPages = Math.max(1, Math.ceil(totalItems / effectivePageSize));
+  const safeCurrentPage = Math.min(Math.max(1, currentPage), totalPages);
+  const startIndex = (safeCurrentPage - 1) * effectivePageSize;
+  const endIndex = pageSize === -1 ? totalItems : Math.min(startIndex + effectivePageSize, totalItems);
+
+  const paginatedUsers = useMemo(() => {
+    if (pageSize === -1) return filteredUsers;
+    return filteredUsers.slice(startIndex, endIndex);
+  }, [filteredUsers, startIndex, endIndex, pageSize]);
+
+  const getPageNumbers = (current: number, total: number) => {
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    if (current <= 3) {
+      return [1, 2, 3, 4, '...', total];
+    }
+    if (current >= total - 2) {
+      return [1, '...', total - 3, total - 2, total - 1, total];
+    }
+    return [1, '...', current - 1, current, current + 1, '...', total];
+  };
+
   // Handle Photo upload in Add Modal
   const handleAddFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -321,6 +363,8 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
     setEditNip(user.nip || '');
     setEditAssignedClass(user.assignedClass || '');
     setEditDepartment(user.department || '');
+    setEditPassword('');
+    setShowEditPassword(false);
     setEditStatus(user.status || 'Aktif');
     setEditPhotoUrl(user.photoUrl || '');
     setEditPhotoMode(user.photoUrl?.startsWith('data:') ? 'upload' : 'url');
@@ -425,6 +469,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       avatar: initials || editingUser.avatar || 'US',
       photoUrl: editPhotoUrl.trim() || undefined,
       status: editStatus,
+      ...(editPassword.trim() ? { password: editPassword.trim() } : {}),
     };
 
     onUpdateUser(updated);
@@ -545,11 +590,13 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               <span>Manajemen Pengguna &amp; Multi-Role</span>
             </h1>
             <p className="text-xs sm:text-sm text-[#334155] mt-2 max-w-2xl leading-relaxed">
-              Kelola akun seluruh sivitas sekolah berdasarkan 4 peran utama: 
+              Kelola akun seluruh sivitas sekolah berdasarkan multi-role: 
               <strong className="text-[#0F172A] font-bold"> Admin</strong>, 
               <strong className="text-[#0F172A] font-bold"> Wali Kelas</strong> (36 Rombel), 
-              <strong className="text-[#0F172A] font-bold"> Guru</strong> (Piket / Mapel / BK), dan 
-              <strong className="text-[#0F172A] font-bold"> Tendik</strong> (Tenaga Kependidikan / Tata Usaha).
+              <strong className="text-[#0F172A] font-bold"> Guru</strong>, 
+              <strong className="text-[#0F172A] font-bold"> Wakasek</strong>, 
+              <strong className="text-[#0F172A] font-bold"> Tendik</strong>, dan 
+              <strong className="text-[#0F172A] font-bold"> Satpam</strong>.
             </p>
           </div>
 
@@ -813,10 +860,13 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
         </div>
 
         {/* Results summary bar */}
-        <div className="flex items-center justify-between text-[11px] text-[#334155] pt-3 border-t border-sky-100/50">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] text-[#334155] pt-3 border-t border-sky-100/50">
           <div>
-            Menampilkan <strong className="text-[#0F172A] font-extrabold">{filteredUsers.length}</strong> dari{' '}
-            <strong className="text-[#0F172A] font-extrabold">{users.length}</strong> total akun terdaftar
+            Menampilkan <strong className="text-[#0F172A] font-extrabold">{totalItems === 0 ? 0 : startIndex + 1} - {endIndex}</strong> dari{' '}
+            <strong className="text-[#0F172A] font-extrabold">{filteredUsers.length}</strong> pengguna
+            {filteredUsers.length !== users.length && (
+              <span className="text-[#0284C7] font-semibold ml-1">(difilter dari {users.length} total akun)</span>
+            )}
           </div>
           <div className="flex items-center gap-3 font-semibold">
             <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
@@ -856,10 +906,11 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                   </td>
                 </tr>
               ) : (
-                filteredUsers.map((user, idx) => {
+                paginatedUsers.map((user, idx) => {
                   const roleMeta = getRoleBadge(user.role);
                   const RoleIcon = roleMeta.icon;
                   const isCurrent = user.id === currentUser?.id;
+                  const rowNumber = startIndex + idx + 1;
 
                   return (
                     <tr 
@@ -870,7 +921,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     >
                       {/* 1. No */}
                       <td className="py-4 px-4 text-center font-mono text-[#334155]/60 font-bold text-[11px]">
-                        {idx + 1}
+                        {rowNumber}
                       </td>
 
                       {/* 2. Avatar & Name */}
@@ -1059,6 +1110,108 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
             </tbody>
           </table>
         </div>
+
+        {/* Pagination Controls Footer */}
+        <div className="p-4 sm:p-5 bg-[#F8FAFC]/90 border-t border-sky-100/60 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs">
+          <div className="flex flex-wrap items-center gap-3 text-[#334155]">
+            <span>
+              Menampilkan <strong className="text-[#0F172A] font-extrabold">{totalItems === 0 ? 0 : startIndex + 1}</strong> - <strong className="text-[#0F172A] font-extrabold">{endIndex}</strong> dari <strong className="text-[#0F172A] font-extrabold">{totalItems}</strong> pengguna
+            </span>
+            <span className="text-slate-300 hidden sm:inline">•</span>
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-bold text-[#334155]">Tampilkan:</span>
+              <select
+                value={pageSize}
+                onChange={(e) => {
+                  setPageSize(Number(e.target.value));
+                  setCurrentPage(1);
+                }}
+                className="px-2.5 py-1.5 bg-[#E2F1FD] rounded-xl text-[#0F172A] font-extrabold shadow-none focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-[#0284C7]/30 cursor-pointer transition-all text-xs"
+              >
+                <option value={10}>10 / halaman</option>
+                <option value={25}>25 / halaman</option>
+                <option value={50}>50 / halaman</option>
+                <option value={-1}>Semua ({totalItems})</option>
+              </select>
+            </div>
+          </div>
+
+          {totalPages > 1 && (
+            <div className="flex items-center gap-1.5 self-center md:self-auto">
+              {/* First Page */}
+              <button
+                type="button"
+                disabled={safeCurrentPage === 1}
+                onClick={() => setCurrentPage(1)}
+                title="Halaman Pertama"
+                className="p-2 rounded-xl bg-white border border-slate-200/80 shadow-xs hover:bg-sky-50 text-[#0F172A] disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer hover:-translate-y-0.5 active:scale-95"
+              >
+                <ChevronsLeft className="w-4 h-4 text-[#334155]" />
+              </button>
+
+              {/* Prev Page */}
+              <button
+                type="button"
+                disabled={safeCurrentPage === 1}
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                title="Halaman Sebelumnya"
+                className="p-2 rounded-xl bg-white border border-slate-200/80 shadow-xs hover:bg-sky-50 text-[#0F172A] disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer hover:-translate-y-0.5 active:scale-95"
+              >
+                <ChevronLeft className="w-4 h-4 text-[#334155]" />
+              </button>
+
+              {/* Page Number Buttons with Smart Windowing */}
+              <div className="flex items-center gap-1 px-1">
+                {getPageNumbers(safeCurrentPage, totalPages).map((p, pIdx) => {
+                  if (p === '...') {
+                    return (
+                      <span key={`ellipsis-${pIdx}`} className="px-2 py-1 text-slate-400 font-bold">
+                        ...
+                      </span>
+                    );
+                  }
+                  const isCurrent = p === safeCurrentPage;
+                  return (
+                    <button
+                      key={`page-${p}`}
+                      type="button"
+                      onClick={() => setCurrentPage(Number(p))}
+                      className={`min-w-8 h-8 px-2.5 rounded-xl font-black text-xs transition-all cursor-pointer ${
+                        isCurrent
+                          ? 'bg-gradient-to-r from-[#0284C7] to-[#0369A1] text-white shadow-xs scale-105'
+                          : 'bg-white border border-slate-200/80 text-[#334155] hover:bg-sky-50 hover:text-[#0284C7]'
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Next Page */}
+              <button
+                type="button"
+                disabled={safeCurrentPage === totalPages}
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                title="Halaman Berikutnya"
+                className="p-2 rounded-xl bg-white border border-slate-200/80 shadow-xs hover:bg-sky-50 text-[#0F172A] disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer hover:-translate-y-0.5 active:scale-95"
+              >
+                <ChevronRight className="w-4 h-4 text-[#334155]" />
+              </button>
+
+              {/* Last Page */}
+              <button
+                type="button"
+                disabled={safeCurrentPage === totalPages}
+                onClick={() => setCurrentPage(totalPages)}
+                title="Halaman Terakhir"
+                className="p-2 rounded-xl bg-white border border-slate-200/80 shadow-xs hover:bg-sky-50 text-[#0F172A] disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer hover:-translate-y-0.5 active:scale-95"
+              >
+                <ChevronsRight className="w-4 h-4 text-[#334155]" />
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* ========================================================================= */}
@@ -1075,7 +1228,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                   <span>Tambah Pengguna Baru</span>
                 </h3>
                 <p className="text-xs text-purple-100 mt-0.5">
-                  Tentukan peran (Admin, Wali Kelas, Guru, Tendik) dan data kredensial akun.
+                  Tentukan peran (Admin, Wali Kelas, Guru, Wakasek, Tendik, Satpam) dan data kredensial akun.
                 </p>
               </div>
               <button
@@ -1139,9 +1292,19 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                       <strong className="text-sky-700">Hak Akses Guru:</strong> Input absensi harian / tugas piket gerbang, dan pencatatan pelanggaran disiplin siswa saat jam KBM / lingkungan sekolah.
                     </>
                   )}
+                  {newRole === 'Wakasek' && (
+                    <>
+                      <strong className="text-indigo-700">Hak Akses Wakasek:</strong> Verifikasi tingkat lanjut surat izin keluar sekolah, koordinasi bidang kesiswaan, kurikulum, humas, dan sarana prasarana.
+                    </>
+                  )}
                   {newRole === 'Tendik' && (
                     <>
                       <strong className="text-amber-700">Hak Akses Tendik:</strong> Pelayanan administrasi tata usaha, rekapitulasi izin/sakit, cetak bukti surat resmi kesiswaan, dan verifikasi arsip.
+                    </>
+                  )}
+                  {newRole === 'Satpam' && (
+                    <>
+                      <strong className="text-slate-800">Hak Akses Satpam:</strong> Pemeriksaan e-Surat izin keluar sekolah di pos gerbang, verifikasi QR code izin siswa, dan pemantauan siswa izin.
                     </>
                   )}
                 </div>
@@ -1230,29 +1393,32 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                 </div>
               )}
 
-              {newRole === 'Guru' && (
+              {newRole !== 'Wali Kelas' && (
                 <div>
                   <label className="font-extrabold text-[#0F172A] block mb-1.5" >
-                    Mata Pelajaran / Tugas Tambahan
+                    {newRole === 'Guru'
+                      ? 'Mata Pelajaran / Tugas Piket'
+                      : newRole === 'Wakasek'
+                      ? 'Bidang Wakasek (Kesiswaan, Kurikulum, Humas, Sarpras)'
+                      : newRole === 'Tendik'
+                      ? 'Unit / Sub-bagian Tenaga Kependidikan'
+                      : newRole === 'Satpam'
+                      ? 'Penugasan / Pos Keamanan Gerbang'
+                      : 'Jabatan / Deskripsi Penugasan Admin'}
                   </label>
                   <input
                     type="text"
-                    placeholder="Contoh: Guru Matematika & Piket Harian / Guru BK"
-                    value={newDepartment}
-                    onChange={(e) => setNewDepartment(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl text-xs font-semibold text-[#0F172A] placeholder-[#334155]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#0284C7]/20 transition-all duration-200"
-                  />
-                </div>
-              )}
-
-              {newRole === 'Tendik' && (
-                <div>
-                  <label className="font-extrabold text-[#0F172A] block mb-1.5" >
-                    Unit / Sub-bagian Tenaga Kependidikan
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Contoh: Tata Usaha / Kesiswaan / Sarpras / Kepegawaian"
+                    placeholder={
+                      newRole === 'Guru'
+                        ? 'Contoh: Guru Matematika & Piket Harian / Guru BK'
+                        : newRole === 'Wakasek'
+                        ? 'Contoh: Waka Kesiswaan / Waka Kurikulum / Waka Humas / Waka Sarpras'
+                        : newRole === 'Tendik'
+                        ? 'Contoh: Tata Usaha / Kepegawaian / Kesiswaan'
+                        : newRole === 'Satpam'
+                        ? 'Contoh: Pos Gerbang Utama / Satpam Outsourcing'
+                        : 'Contoh: Administrator Utama Sistem'
+                    }
                     value={newDepartment}
                     onChange={(e) => setNewDepartment(e.target.value)}
                     className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl text-xs font-semibold text-[#0F172A] placeholder-[#334155]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-[#0284C7]/20 transition-all duration-200"
@@ -1543,24 +1709,65 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                 </div>
               )}
 
-              {(editRole === 'Guru' || editRole === 'Tendik' || editRole === 'Admin') && (
+              {editRole !== 'Wali Kelas' && (
                 <div>
                   <label className="font-extrabold text-[#0F172A] block mb-1.5" >
                     {editRole === 'Guru'
                       ? 'Mata Pelajaran / Tugas Piket'
+                      : editRole === 'Wakasek'
+                      ? 'Bidang Wakasek (Kesiswaan, Kurikulum, Humas, Sarpras)'
                       : editRole === 'Tendik'
                       ? 'Bidang / Unit Kerja Tendik'
-                      : 'Jabatan / Deskripsi Penugasan'}
+                      : editRole === 'Satpam'
+                      ? 'Penugasan / Pos Keamanan Gerbang'
+                      : 'Jabatan / Deskripsi Penugasan Admin'}
                   </label>
                   <input
                     type="text"
                     value={editDepartment}
                     onChange={(e) => setEditDepartment(e.target.value)}
-                    placeholder="Contoh: Guru Matematika / Tata Usaha & Kesiswaan"
+                    placeholder={
+                      editRole === 'Guru'
+                        ? 'Contoh: Guru Matematika & Piket Harian / Guru BK'
+                        : editRole === 'Wakasek'
+                        ? 'Contoh: Waka Kesiswaan / Waka Kurikulum / Waka Humas / Waka Sarpras'
+                        : editRole === 'Tendik'
+                        ? 'Contoh: Tata Usaha / Kepegawaian / Kesiswaan'
+                        : editRole === 'Satpam'
+                        ? 'Contoh: Pos Gerbang Utama / Satpam Outsourcing'
+                        : 'Contoh: Administrator Utama Sistem'
+                    }
                     className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl text-xs font-semibold text-[#0F172A] placeholder-[#334155]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
                   />
                 </div>
               )}
+
+              {/* Password Baru (Opsional) */}
+              <div className="p-4 bg-sky-50/70 border border-sky-100/80 rounded-[24px] space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="font-extrabold text-[#0F172A] text-xs flex items-center gap-1.5">
+                    <KeyRound className="w-3.5 h-3.5 text-[#0284C7]" />
+                    <span>Ubah Password Akun (Opsional)</span>
+                  </label>
+                  <span className="text-[10px] text-[#334155]/70 font-medium">Kosongkan jika tidak ingin diubah</span>
+                </div>
+                <div className="relative">
+                  <input
+                    type={showEditPassword ? 'text' : 'password'}
+                    placeholder="Masukkan password baru untuk mengganti..."
+                    value={editPassword}
+                    onChange={(e) => setEditPassword(e.target.value)}
+                    className="w-full pl-4 pr-10 py-2.5 bg-white border border-sky-200/80 rounded-2xl text-xs font-mono text-[#0F172A] focus:outline-hidden focus:ring-4 focus:ring-[#0284C7]/20"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowEditPassword(!showEditPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#334155]/60 hover:text-[#0F172A] cursor-pointer"
+                  >
+                    {showEditPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
 
               {/* Status */}
               <div>
