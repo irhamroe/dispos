@@ -247,7 +247,8 @@ export default function App() {
       localStorage.removeItem('app_sman1batu_users_v4');
       localStorage.removeItem('app_sman1batu_users_v5');
       localStorage.removeItem('app_sman1batu_users_v6');
-      const saved = localStorage.getItem('app_sman1batu_users_v7');
+      localStorage.removeItem('app_sman1batu_users_v7');
+      const saved = localStorage.getItem('app_sman1batu_users_v8');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (
@@ -255,12 +256,13 @@ export default function App() {
           parsed.length >= initialUsers.length && 
           parsed.some((u) => u.name === 'Anis Dyah Wahyuti, S.Pd') &&
           parsed.some((u) => u.name === 'Hermawanto, S.Pd, M.Pd') &&
+          parsed.some((u) => u.name === 'Anto Dwi Cahyono, S.Pd., M.M.') &&
           parsed.some((u) => u.username === 'satpam' || u.role === 'Satpam')
         ) {
           return parsed;
         }
       }
-      localStorage.setItem('app_sman1batu_users_v7', JSON.stringify(initialUsers));
+      localStorage.setItem('app_sman1batu_users_v8', JSON.stringify(initialUsers));
       return initialUsers;
     } catch {
       return initialUsers;
@@ -465,6 +467,7 @@ export default function App() {
           remoteUsers.length < initialUsers.length ||
           !remoteUsers.some((u) => u.name === 'Anis Dyah Wahyuti, S.Pd') ||
           !remoteUsers.some((u) => u.name === 'Heny Nurmayanto, S.Sn') ||
+          !remoteUsers.some((u) => u.name === 'Anto Dwi Cahyono, S.Pd., M.M.') ||
           !remoteUsers.some((u) => u.username === 'satpam' || u.role === 'Satpam') ||
           remoteUsers.some((u) => u.username === 'walikelas' || u.username === 'operator')
         );
@@ -664,7 +667,7 @@ export default function App() {
   }, [enablePointsSystem]);
 
   useEffect(() => {
-    localStorage.setItem('app_sman1batu_users_v7', JSON.stringify(users));
+    localStorage.setItem('app_sman1batu_users_v8', JSON.stringify(users));
   }, [users]);
 
   // Login handler
