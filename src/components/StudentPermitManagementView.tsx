@@ -1657,7 +1657,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
             </div>
 
             {/* Modal Actions */}
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center justify-between pt-2 gap-2 flex-wrap">
               <button
                 type="button"
                 onClick={() => setViewingPermit(null)}
@@ -1666,14 +1666,37 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                 Tutup
               </button>
 
-              <button
-                type="button"
-                onClick={() => window.print()}
-                className="px-5 py-2 bg-[#0284C7] hover:bg-[#0369A1] text-white rounded-xl text-xs font-bold shadow-md cursor-pointer flex items-center gap-1.5"
-              >
-                <Printer className="w-4 h-4" />
-                <span>Cetak E-Surat Izin</span>
-              </button>
+              <div className="flex items-center gap-2">
+                {viewingPermit.status === 'Disetujui' && viewingPermit.type === 'Keluar Sekolah' && viewingPermit.willReturn === 'Kembali' && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const nowTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                      handleMarkReturned(viewingPermit);
+                      setViewingPermit({
+                        ...viewingPermit,
+                        status: 'Kembali',
+                        actualReturnTime: nowTime,
+                        updatedAt: new Date().toISOString(),
+                      });
+                    }}
+                    className="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold shadow-md cursor-pointer flex items-center gap-1.5 active:scale-95 transition-all"
+                    title="Tandai siswa telah kembali ke sekolah"
+                  >
+                    <Check className="w-4 h-4" />
+                    <span>Siswa Kembali</span>
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  className="px-5 py-2 bg-[#0284C7] hover:bg-[#0369A1] text-white rounded-xl text-xs font-bold shadow-md cursor-pointer flex items-center gap-1.5"
+                >
+                  <Printer className="w-4 h-4" />
+                  <span>Cetak E-Surat Izin</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

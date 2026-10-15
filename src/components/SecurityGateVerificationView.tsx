@@ -51,7 +51,7 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
   }, []);
 
   const [selectedDate, setSelectedDate] = useState<string>(todayDate);
-  const [statusFilter, setStatusFilter] = useState<'ALL' | 'Disetujui' | 'Menunggu' | 'Ditolak'>('ALL');
+  const [statusFilter, setStatusFilter] = useState<'ALL' | 'Disetujui' | 'Kembali' | 'Menunggu' | 'Ditolak'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPermitForInspection, setSelectedPermitForInspection] = useState<StudentPermitRecord | null>(null);
   const [qrCodeSearch, setQrCodeSearch] = useState('');
@@ -93,6 +93,7 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
   const stats = useMemo(() => {
     const listForDate = keluarSekolahPermits.filter((p) => p.date === selectedDate);
     const approved = listForDate.filter((p) => p.status === 'Disetujui');
+    const returned = listForDate.filter((p) => p.status === 'Kembali' || p.status === 'Sudah Kembali');
     const pending = listForDate.filter((p) => p.status === 'Menunggu');
     const rejected = listForDate.filter((p) => p.status === 'Ditolak');
     const passedGate = listForDate.filter((p) => p.securityChecked);
@@ -100,6 +101,7 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
     return {
       total: listForDate.length,
       approved: approved.length,
+      returned: returned.length,
       pending: pending.length,
       rejected: rejected.length,
       passedGate: passedGate.length,
@@ -113,7 +115,13 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
       if (selectedDate && p.date !== selectedDate) return false;
 
       // Status filter
-      if (statusFilter !== 'ALL' && p.status !== statusFilter) return false;
+      if (statusFilter !== 'ALL') {
+        if (statusFilter === 'Kembali') {
+          if (p.status !== 'Kembali' && p.status !== 'Sudah Kembali') return false;
+        } else if (p.status !== statusFilter) {
+          return false;
+        }
+      }
 
       // Search Query
       if (searchQuery.trim()) {
@@ -171,6 +179,32 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
       showToast(`Pencatatan Gerbang Berhasil: ${permit.studentName} telah melewati pos satpam pukul ${nowTime} WIB.`);
     } else {
       showToast(`Tanda lewat gerbang untuk ${permit.studentName} telah dibatalkan.`);
+    }
+
+    if (selectedPermitForInspection && selectedPermitForInspection.id === permit.id) {
+      setSelectedPermitForInspection(updated);
+    }
+  };
+
+  // Handle Mark Returned by Satpam
+  const handleMarkReturned = (permit: StudentPermitRecord) => {
+    if (!onUpdatePermit) return;
+
+    const isReturned = permit.status === 'Kembali' || permit.status === 'Sudah Kembali';
+    const nowTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+    const updated: StudentPermitRecord = {
+      ...permit,
+      status: isReturned ? 'Disetujui' : 'Kembali',
+      actualReturnTime: isReturned ? undefined : nowTime,
+      updatedAt: new Date().toISOString(),
+    };
+
+    onUpdatePermit(updated);
+    if (!isReturned) {
+      showToast(`Pencatatan Siswa Kembali: ${permit.studentName} telah kembali ke sekolah pukul ${nowTime} WIB.`);
+    } else {
+      showToast(`Status kembali untuk ${permit.studentName} telah dibatalkan (kembali ke Disetujui).`);
     }
 
     if (selectedPermitForInspection && selectedPermitForInspection.id === permit.id) {
@@ -247,23 +281,23 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
         </div>
       </div>
 
-      {/* 4 Summary Counters */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* 5 Summary Counters */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
         {/* Card 1: Total Pengajuan Hari Ini */}
         <div 
           onClick={() => setStatusFilter('ALL')}
-          className={`p-5 rounded-[26px] bg-white border transition-all cursor-pointer shadow-xs hover:shadow-md ${
+          className={`p-4 sm:p-5 rounded-[26px] bg-white border transition-all cursor-pointer shadow-xs hover:shadow-md ${
             statusFilter === 'ALL' ? 'border-sky-500 ring-2 ring-sky-200' : 'border-slate-200 hover:border-slate-300'
           }`}
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Izin Keluar</span>
-            <div className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700">
-              <DoorOpen className="w-5 h-5" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700">
+              <DoorOpen className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-3xl font-black text-slate-900">{stats.total}</span>
+            <span className="text-2xl sm:text-3xl font-black text-slate-900">{stats.total}</span>
             <span className="text-xs text-slate-500 font-medium">Siswa terdata</span>
           </div>
           <p className="text-[11px] text-slate-500 mt-1">Seluruh pengajuan izin keluar sekolah hari ini.</p>
@@ -272,53 +306,76 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
         {/* Card 2: Resmi Disetujui (BOLEH KELUAR) */}
         <div 
           onClick={() => setStatusFilter('Disetujui')}
-          className={`p-5 rounded-[26px] bg-gradient-to-br from-emerald-50 via-white to-teal-50 border transition-all cursor-pointer shadow-xs hover:shadow-md ${
+          className={`p-4 sm:p-5 rounded-[26px] bg-gradient-to-br from-emerald-50 via-white to-teal-50 border transition-all cursor-pointer shadow-xs hover:shadow-md ${
             statusFilter === 'Disetujui' ? 'border-emerald-500 ring-2 ring-emerald-200' : 'border-emerald-200 hover:border-emerald-400'
           }`}
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-extrabold text-emerald-800 uppercase tracking-wider flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              <span>Boleh Keluar Gerbang</span>
+              <span>Boleh Keluar</span>
             </span>
-            <div className="w-9 h-9 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-xs">
-              <Check className="w-5 h-5" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-xs">
+              <Check className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-3xl font-black text-emerald-700">{stats.approved}</span>
+            <span className="text-2xl sm:text-3xl font-black text-emerald-700">{stats.approved}</span>
             <span className="text-xs text-emerald-800 font-bold">Lengkap 3 Tahap</span>
           </div>
           <p className="text-[11px] text-emerald-700 mt-1">Disahkan Admin, Guru Mapel, dan Wakasek.</p>
         </div>
 
-        {/* Card 3: Dalam Proses (BELUM BOLEH KELUAR) */}
+        {/* Card 3: Siswa Sudah Kembali */}
+        <div 
+          onClick={() => setStatusFilter('Kembali')}
+          className={`p-4 sm:p-5 rounded-[26px] bg-gradient-to-br from-sky-50 via-white to-blue-50 border transition-all cursor-pointer shadow-xs hover:shadow-md ${
+            statusFilter === 'Kembali' ? 'border-sky-500 ring-2 ring-sky-200' : 'border-sky-200 hover:border-sky-400'
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-extrabold text-sky-800 uppercase tracking-wider flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-sky-600" />
+              <span>Sudah Kembali</span>
+            </span>
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-sky-600 text-white flex items-center justify-center shadow-xs">
+              <Check className="w-4 h-4 sm:w-5 sm:h-5" />
+            </div>
+          </div>
+          <div className="mt-3 flex items-baseline gap-2">
+            <span className="text-2xl sm:text-3xl font-black text-sky-700">{stats.returned}</span>
+            <span className="text-xs text-sky-800 font-bold">Masuk Sekolah</span>
+          </div>
+          <p className="text-[11px] text-sky-700 mt-1">Siswa telah kembali ke sekolah via gerbang.</p>
+        </div>
+
+        {/* Card 4: Dalam Proses (BELUM BOLEH KELUAR) */}
         <div 
           onClick={() => setStatusFilter('Menunggu')}
-          className={`p-5 rounded-[26px] bg-gradient-to-br from-amber-50 via-white to-orange-50 border transition-all cursor-pointer shadow-xs hover:shadow-md ${
+          className={`p-4 sm:p-5 rounded-[26px] bg-gradient-to-br from-amber-50 via-white to-orange-50 border transition-all cursor-pointer shadow-xs hover:shadow-md ${
             statusFilter === 'Menunggu' ? 'border-amber-500 ring-2 ring-amber-200' : 'border-amber-200 hover:border-amber-400'
           }`}
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-extrabold text-amber-800 uppercase tracking-wider flex items-center gap-1.5">
               <Clock className="w-4 h-4 text-amber-600" />
-              <span>Masih Dalam Proses</span>
+              <span>Dalam Proses</span>
             </span>
-            <div className="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-xs animate-pulse">
-              <AlertCircle className="w-5 h-5" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-xs animate-pulse">
+              <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-3xl font-black text-amber-700">{stats.pending}</span>
+            <span className="text-2xl sm:text-3xl font-black text-amber-700">{stats.pending}</span>
             <span className="text-xs text-amber-800 font-bold">Tahan / Belum Sah</span>
           </div>
           <p className="text-[11px] text-amber-700 mt-1">Jangan izinkan keluar sampai disahkan lengkap.</p>
         </div>
 
-        {/* Card 4: Ditolak */}
+        {/* Card 5: Ditolak */}
         <div 
           onClick={() => setStatusFilter('Ditolak')}
-          className={`p-5 rounded-[26px] bg-gradient-to-br from-rose-50 via-white to-red-50 border transition-all cursor-pointer shadow-xs hover:shadow-md ${
+          className={`p-4 sm:p-5 rounded-[26px] bg-gradient-to-br from-rose-50 via-white to-red-50 border transition-all cursor-pointer shadow-xs hover:shadow-md ${
             statusFilter === 'Ditolak' ? 'border-rose-500 ring-2 ring-rose-200' : 'border-rose-200 hover:border-rose-400'
           }`}
         >
@@ -327,12 +384,12 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
               <XCircle className="w-4 h-4 text-rose-600" />
               <span>Izin Ditolak</span>
             </span>
-            <div className="w-9 h-9 rounded-xl bg-rose-500 text-white flex items-center justify-center shadow-xs">
-              <X className="w-5 h-5" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-rose-500 text-white flex items-center justify-center shadow-xs">
+              <X className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-3xl font-black text-rose-700">{stats.rejected}</span>
+            <span className="text-2xl sm:text-3xl font-black text-rose-700">{stats.rejected}</span>
             <span className="text-xs text-rose-800 font-bold">Dilarang Keluar</span>
           </div>
           <p className="text-[11px] text-rose-700 mt-1">Permohonan izin tidak disetujui Admin Disiplin Positif.</p>
@@ -386,6 +443,7 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
           {[
             { id: 'ALL', label: `Semua (${stats.total})` },
             { id: 'Disetujui', label: `Boleh Keluar (${stats.approved})`, activeClass: 'bg-emerald-600 text-white shadow-xs' },
+            { id: 'Kembali', label: `Sudah Kembali (${stats.returned})`, activeClass: 'bg-sky-600 text-white shadow-xs' },
             { id: 'Menunggu', label: `Dalam Proses (${stats.pending})`, activeClass: 'bg-amber-600 text-white shadow-xs' },
             { id: 'Ditolak', label: `Ditolak (${stats.rejected})`, activeClass: 'bg-rose-600 text-white shadow-xs' },
           ].map((chip) => {
@@ -438,6 +496,7 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
           <div className="divide-y divide-slate-100">
             {filteredList.map((permit, idx) => {
               const isApproved = permit.status === 'Disetujui';
+              const isReturned = permit.status === 'Kembali' || permit.status === 'Sudah Kembali';
               const isPending = permit.status === 'Menunggu';
               const isRejected = permit.status === 'Ditolak';
 
@@ -453,7 +512,7 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
                 <div 
                   key={permit.id}
                   className={`p-5 transition-all flex flex-col lg:flex-row lg:items-center justify-between gap-4 hover:bg-slate-50/70 ${
-                    isApproved ? 'bg-emerald-50/20' : isPending ? 'bg-amber-50/20' : 'bg-rose-50/20'
+                    isApproved ? 'bg-emerald-50/20' : isReturned ? 'bg-sky-50/25' : isPending ? 'bg-amber-50/20' : 'bg-rose-50/20'
                   }`}
                 >
                   {/* Left: Student Identity & Info */}
@@ -483,6 +542,12 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
                           <span className="px-2 py-0.5 rounded-lg text-[10px] font-black bg-indigo-100 text-indigo-800 border border-indigo-200 flex items-center gap-1">
                             <Check className="w-3 h-3 text-indigo-600" />
                             <span>Telah Lewat Gerbang ({permit.securityCheckedAt})</span>
+                          </span>
+                        )}
+                        {isReturned && (
+                          <span className="px-2 py-0.5 rounded-lg text-[10px] font-black bg-sky-100 text-sky-800 border border-sky-300 flex items-center gap-1">
+                            <CheckCircle2 className="w-3 h-3 text-sky-600" />
+                            <span>Sudah Kembali ({permit.actualReturnTime} WIB)</span>
                           </span>
                         )}
                       </div>
@@ -546,12 +611,22 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
                   </div>
 
                   {/* Right: Security Gate Status & Action */}
-                  <div className="flex items-center gap-3 shrink-0 justify-between lg:justify-end pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-100">
+                  <div className="flex items-center gap-2.5 shrink-0 justify-between lg:justify-end pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-100 flex-wrap">
                     <div className="text-right">
                       {isApproved ? (
                         <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 text-white font-black text-xs shadow-sm">
                           <CheckCircle2 className="w-4 h-4" />
                           <span>BOLEH KELUAR</span>
+                        </div>
+                      ) : isReturned ? (
+                        <div className="inline-flex flex-col items-end">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-600 text-white font-black text-xs shadow-sm">
+                            <CheckCircle2 className="w-4 h-4" />
+                            <span>SUDAH KEMBALI</span>
+                          </span>
+                          <span className="text-[10px] text-sky-700 font-bold mt-0.5">
+                            Pukul {permit.actualReturnTime || '-'} WIB
+                          </span>
                         </div>
                       ) : isPending ? (
                         <div className="inline-flex flex-col items-end">
@@ -571,23 +646,53 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
                       )}
                     </div>
 
+                    {/* Tombol Siswa Kembali Khusus Keluar Sekolah yang Akan Kembali */}
+                    {isApproved && permit.willReturn === 'Kembali' && (
+                      <button
+                        type="button"
+                        onClick={() => handleMarkReturned(permit)}
+                        className="px-3 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl font-black text-xs shadow-xs cursor-pointer active:scale-95 transition-all flex items-center gap-1.5"
+                        title="Tandai siswa telah kembali ke sekolah melalui gerbang pos satpam"
+                      >
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Siswa Kembali</span>
+                      </button>
+                    )}
+
+                    {/* Tombol Batalkan Status Kembali jika keliru */}
+                    {isReturned && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (confirm(`Batalkan status kembali untuk siswa ${permit.studentName}?`)) {
+                            handleMarkReturned(permit);
+                          }
+                        }}
+                        className="px-2.5 py-1.5 bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-300 rounded-xl font-bold text-[11px] transition-all cursor-pointer flex items-center gap-1"
+                        title="Klik untuk membatalkan tanda kembali jika keliru"
+                      >
+                        <CheckCircle2 className="w-3.5 h-3.5 text-sky-600" />
+                        <span>Batal Kembali</span>
+                      </button>
+                    )}
+
                     {/* Tombol Periksa e-Surat */}
                     <button
                       type="button"
                       onClick={() => setSelectedPermitForInspection(permit)}
-                      className="px-4 py-2.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-all shadow-xs hover:shadow flex items-center gap-1.5 cursor-pointer"
+                      className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-all shadow-xs hover:shadow flex items-center gap-1.5 cursor-pointer"
                     >
                       <Eye className="w-4 h-4 text-sky-400" />
-                      <span>Periksa e-Surat</span>
+                      <span>Periksa</span>
                     </button>
 
                     {/* Quick Gate Check Button */}
-                    {isApproved && (
+                    {(isApproved || isReturned) && (
                       <button
                         type="button"
                         onClick={() => handleToggleGatePass(permit)}
                         title={permit.securityChecked ? "Batalkan tanda lewat" : "Catat siswa lewat gerbang"}
-                        className={`p-2.5 rounded-2xl border transition-all cursor-pointer ${
+                        className={`p-2 rounded-xl border transition-all cursor-pointer ${
                           permit.securityChecked 
                             ? 'bg-indigo-50 border-indigo-300 text-indigo-700 hover:bg-indigo-100' 
                             : 'bg-emerald-50 border-emerald-300 text-emerald-800 hover:bg-emerald-100'
@@ -638,6 +743,8 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
               <div className={`p-4 rounded-2xl border-2 flex items-center justify-between gap-4 ${
                 selectedPermitForInspection.status === 'Disetujui'
                   ? 'bg-emerald-50 border-emerald-400 text-emerald-950'
+                  : (selectedPermitForInspection.status === 'Kembali' || selectedPermitForInspection.status === 'Sudah Kembali')
+                  ? 'bg-sky-50 border-sky-400 text-sky-950'
                   : selectedPermitForInspection.status === 'Menunggu'
                   ? 'bg-amber-50 border-amber-400 text-amber-950'
                   : 'bg-rose-50 border-rose-400 text-rose-950'
@@ -646,11 +753,15 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
                   <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shrink-0 ${
                     selectedPermitForInspection.status === 'Disetujui' 
                       ? 'bg-emerald-600' 
+                      : (selectedPermitForInspection.status === 'Kembali' || selectedPermitForInspection.status === 'Sudah Kembali')
+                      ? 'bg-sky-600'
                       : selectedPermitForInspection.status === 'Menunggu' 
                       ? 'bg-amber-500' 
                       : 'bg-rose-600'
                   }`}>
                     {selectedPermitForInspection.status === 'Disetujui' ? (
+                      <CheckCircle2 className="w-7 h-7" />
+                    ) : (selectedPermitForInspection.status === 'Kembali' || selectedPermitForInspection.status === 'Sudah Kembali') ? (
                       <CheckCircle2 className="w-7 h-7" />
                     ) : selectedPermitForInspection.status === 'Menunggu' ? (
                       <Clock className="w-7 h-7" />
@@ -665,6 +776,8 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
                     <div className="text-base font-black">
                       {selectedPermitForInspection.status === 'Disetujui'
                         ? '✓ RESMI DIIZINKAN KELUAR GERBANG'
+                        : (selectedPermitForInspection.status === 'Kembali' || selectedPermitForInspection.status === 'Sudah Kembali')
+                        ? '✓ SISWA TELAH KEMBALI KE SEKOLAH'
                         : selectedPermitForInspection.status === 'Menunggu'
                         ? '⏳ TAHAN! MASIH DALAM PROSES PERSETUJUAN'
                         : '✕ DITOLAK! DILARANG KELUAR SEKOLAH'}
@@ -672,6 +785,8 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
                     <div className="text-xs mt-0.5 opacity-90">
                       {selectedPermitForInspection.status === 'Disetujui'
                         ? 'Surat izin ini sah dan telah lengkap ditandatangani oleh Admin, Guru Mapel / Wali Kelas, dan Wakil Kepala Sekolah.'
+                        : (selectedPermitForInspection.status === 'Kembali' || selectedPermitForInspection.status === 'Sudah Kembali')
+                        ? `Siswa telah dicatat kembali ke sekolah pada pukul ${selectedPermitForInspection.actualReturnTime || '-'} WIB.`
                         : selectedPermitForInspection.status === 'Menunggu'
                         ? 'Siswa belum menyelesaikan seluruh tahapan pengesahan resmi. Harap arahkan siswa kembali ke pos Tim Disiplin Positif.'
                         : 'Permohonan izin keluar telah ditolak oleh Tim Disiplin Positif sekolah.'}
@@ -679,19 +794,48 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
                   </div>
                 </div>
 
-                {selectedPermitForInspection.status === 'Disetujui' && (
-                  <button
-                    type="button"
-                    onClick={() => handleToggleGatePass(selectedPermitForInspection)}
-                    className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
-                      selectedPermitForInspection.securityChecked
-                        ? 'bg-indigo-600 text-white shadow-xs'
-                        : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs'
-                    }`}
-                  >
-                    {selectedPermitForInspection.securityChecked ? '✓ Tercatat Keluar' : 'Catat Lewat Gerbang'}
-                  </button>
-                )}
+                <div className="flex items-center gap-2 flex-wrap">
+                  {/* Tombol Siswa Kembali Khusus Keluar Sekolah yang Akan Kembali */}
+                  {selectedPermitForInspection.status === 'Disetujui' && selectedPermitForInspection.willReturn === 'Kembali' && (
+                    <button
+                      type="button"
+                      onClick={() => handleMarkReturned(selectedPermitForInspection)}
+                      className="px-3.5 py-2 rounded-xl text-xs font-black bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition-all cursor-pointer shrink-0 flex items-center gap-1.5 active:scale-95"
+                      title="Klik untuk mencatat siswa telah kembali ke sekolah"
+                    >
+                      <Check className="w-4 h-4" />
+                      <span>Siswa Kembali</span>
+                    </button>
+                  )}
+
+                  {selectedPermitForInspection.status === 'Disetujui' && (
+                    <button
+                      type="button"
+                      onClick={() => handleToggleGatePass(selectedPermitForInspection)}
+                      className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
+                        selectedPermitForInspection.securityChecked
+                          ? 'bg-indigo-600 text-white shadow-xs'
+                          : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs'
+                      }`}
+                    >
+                      {selectedPermitForInspection.securityChecked ? '✓ Tercatat Keluar' : 'Catat Lewat Gerbang'}
+                    </button>
+                  )}
+
+                  {(selectedPermitForInspection.status === 'Kembali' || selectedPermitForInspection.status === 'Sudah Kembali') && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (confirm(`Batalkan status siswa sudah kembali untuk ${selectedPermitForInspection.studentName}?`)) {
+                          handleMarkReturned(selectedPermitForInspection);
+                        }
+                      }}
+                      className="px-3 py-1.5 rounded-xl text-xs font-bold bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 transition-all cursor-pointer shrink-0"
+                    >
+                      Batalkan Status Kembali
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* Digital Certificate Pass Card */}
@@ -715,9 +859,11 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
                   <span className={`inline-block px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wide border ${
                     selectedPermitForInspection.status === 'Disetujui'
                       ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                      : (selectedPermitForInspection.status === 'Kembali' || selectedPermitForInspection.status === 'Sudah Kembali')
+                      ? 'bg-sky-100 text-sky-900 border-sky-300'
                       : 'bg-amber-100 text-amber-900 border-amber-300'
                   }`}>
-                    SURAT IZIN KELUAR SEKOLAH ({selectedPermitForInspection.status.toUpperCase()})
+                    SURAT IZIN KELUAR SEKOLAH ({selectedPermitForInspection.status === 'Kembali' ? 'SUDAH KEMBALI' : selectedPermitForInspection.status.toUpperCase()})
                   </span>
                 </div>
 
@@ -768,10 +914,10 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
                   </div>
                 </div>
 
-                {/* Lembar 3 Tahap Pengesahan */}
+                {/* Lembar Pengesahan */}
                 <div className="pt-2 border-t-2 border-slate-900 font-sans space-y-2">
                   <div className="text-[10px] font-black uppercase text-slate-700 tracking-wider text-center">
-                    LEMBAR PENGESAHAN 3 TAHAP BERURUTAN
+                    LEMBAR PENGESAHAN
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
