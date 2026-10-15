@@ -28,9 +28,16 @@ import {
   Bell,
   Check,
   XCircle,
-  RotateCcw
+  RotateCcw,
+  Zap,
+  ShieldAlert,
+  Award,
+  Lock,
+  Unlock,
+  AlertTriangle,
+  Clock4
 } from 'lucide-react';
-import { Student, SchoolProfile, StudentPermitRecord, StudentPermitType, StudentPermitStatus, AdminUser, RoleMatrixMap } from '../types';
+import { Student, SchoolProfile, StudentPermitRecord, StudentPermitType, StudentPermitStatus, AdminUser, RoleMatrixMap, ApprovalStep } from '../types';
 import { RombelClass } from '../data/initialData';
 import { formatDateIndonesian, formatDayAndDateIndonesian, getTodayDateString, getTodayIndonesian } from '../utils/exportUtils';
 import { sortClasses } from '../utils/sortUtils';
@@ -46,10 +53,20 @@ interface StudentPermitManagementViewProps {
   onDeletePermit: (permitId: string) => void;
   onOpenPublicPortal: () => void;
   currentUser?: AdminUser | null;
+  users?: AdminUser[];
   roleMatrix?: RoleMatrixMap;
 }
 
 type ManagementMainTab = 'PENDING' | 'APPROVED_RECAP' | 'REJECTED' | 'ALL_HISTORY';
+type StageFilterType = 'ALL' | 'ADMIN' | 'GURU_MAPEL' | 'WAKASEK' | 'DONE';
+
+interface StageApprovalModalState {
+  permit: StudentPermitRecord;
+  stage: 'ADMIN' | 'GURU_MAPEL' | 'WAKASEK';
+  approverName: string;
+  approverRole: string;
+  notes: string;
+}
 
 export const StudentPermitManagementView: React.FC<StudentPermitManagementViewProps> = ({
   permits,
@@ -61,16 +78,40 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
   onDeletePermit,
   onOpenPublicPortal,
   currentUser,
+  users = [],
   roleMatrix = initialRoleMatrix,
 }) => {
   const canApprove = checkActionPermission(currentUser?.role, 'permit_approve', roleMatrix);
   const canCreateManual = checkActionPermission(currentUser?.role, 'permit_create_manual', roleMatrix);
   const canDelete = checkActionPermission(currentUser?.role, 'permit_delete', roleMatrix);
+
+  // Role detection helpers
+  const isAdmin = currentUser?.role === 'Admin' || currentUser?.role === 'Administrator';
+  const isWakasek = isAdmin || currentUser?.role === 'Wakasek' || currentUser?.role === 'Wakil Kepala Sekolah' || 
+    (currentUser?.department || '').toLowerCase().includes('wakasek') || 
+    (currentUser?.department || '').toLowerCase().includes('wakil kepala');
+  const isGuru = isAdmin || isWakasek || currentUser?.role === 'Guru' || currentUser?.role === 'Wali Kelas' || 
+    currentUser?.role === 'Guru Piket' || currentUser?.role === 'Guru BK';
+
+  // Helper to determine active step for a permit (Keluar Sekolah: 3 tahap, Keluar Kelas: 2 tahap)
+  const getApprovalStep = (p: StudentPermitRecord): ApprovalStep => {
+    if (p.type === 'Dispensasi Seragam') return 'DONE';
+    if (p.status === 'Disetujui' || p.status === 'Kembali' || p.status === 'Sudah Kembali') return 'DONE';
+    if (p.currentApprovalStep) return p.currentApprovalStep;
+    if (!p.adminApproval?.approved) return 'ADMIN';
+    if (!p.teacherApproval?.approved) return 'GURU_MAPEL';
+    if (p.type === 'Keluar Sekolah') {
+      if (!p.wakasekApproval?.approved) return 'WAKASEK';
+    }
+    return 'DONE';
+  };
+
   // Main view tab (Pending vs Approved Recap vs Rejected vs All)
   const [mainTab, setMainTab] = useState<ManagementMainTab>('PENDING');
 
   // Secondary filters
   const [selectedTypeFilter, setSelectedTypeFilter] = useState<'ALL' | StudentPermitType>('ALL');
+  const [selectedStageFilter, setSelectedStageFilter] = useState<StageFilterType>('ALL');
   const [selectedClassFilter, setSelectedClassFilter] = useState<string>('ALL');
   const [selectedDate, setSelectedDate] = useState<string>(() => getTodayDateString());
   const [useDateFilter, setUseDateFilter] = useState<boolean>(false);
@@ -81,6 +122,9 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
 
   // Modal: View & Print Single Permit
   const [viewingPermit, setViewingPermit] = useState<StudentPermitRecord | null>(null);
+
+  // Modal: Sequential Stage Approval (Tahap 1 Admin / Tahap 2 Guru Mapel / Tahap 3 Wakasek)
+  const [approvingStage, setApprovingStage] = useState<StageApprovalModalState | null>(null);
 
   // Modal: Reject Permit with Reason Note
   const [rejectingPermit, setRejectingPermit] = useState<StudentPermitRecord | null>(null);
@@ -99,7 +143,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
     }
   }, [pendingPermits.length]);
 
-  // Filtered Permits according to active mainTab
+  // Filtered Permits according to active mainTab and sub-filters
   const filteredPermits = useMemo(() => {
     return permits.filter((p) => {
       // 1. Filter by Main Tab
@@ -111,13 +155,19 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
       // 2. Filter by Type
       if (selectedTypeFilter !== 'ALL' && p.type !== selectedTypeFilter) return false;
 
-      // 3. Filter by Class
+      // 3. Filter by 3-Stage Approval (Khusus Keluar Sekolah)
+      if (selectedStageFilter !== 'ALL') {
+        const step = getApprovalStep(p);
+        if (step !== selectedStageFilter) return false;
+      }
+
+      // 4. Filter by Class
       if (selectedClassFilter !== 'ALL' && p.className !== selectedClassFilter) return false;
 
-      // 4. Filter by Date (if checkbox is active)
+      // 5. Filter by Date (if checkbox is active)
       if (useDateFilter && p.date !== selectedDate) return false;
 
-      // 5. Filter by Search Query
+      // 6. Filter by Search Query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         const matchName = p.studentName.toLowerCase().includes(q);
@@ -129,7 +179,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
 
       return true;
     });
-  }, [permits, mainTab, selectedTypeFilter, selectedClassFilter, useDateFilter, selectedDate, searchQuery]);
+  }, [permits, mainTab, selectedTypeFilter, selectedStageFilter, selectedClassFilter, useDateFilter, selectedDate, searchQuery]);
 
   // Quick Metrics for Today
   const todayDate = getTodayDateString();
@@ -139,15 +189,146 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
   const todayUniform = todayPermits.filter((p) => p.type === 'Dispensasi Seragam').length;
   const todayPending = pendingPermits.filter((p) => p.date === todayDate).length;
 
-  // Actions
+  // Standar Single Approval (Khusus Dispensasi Seragam - Hanya Perlu Persetujuan Admin Saja)
   const handleApprove = (permit: StudentPermitRecord) => {
     const updated: StudentPermitRecord = {
       ...permit,
       status: 'Disetujui',
-      approvedBy: currentUserName,
+      approvedBy: `${currentUserName} (Admin)`,
       approvedAt: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+      updatedAt: new Date().toISOString(),
     };
     onUpdatePermit(updated);
+  };
+
+  // 3-STAGE SEQUENTIAL APPROVAL HANDLERS (Khusus Izin Keluar Sekolah)
+  const handleOpenApproveStage = (permit: StudentPermitRecord, stage: 'ADMIN' | 'GURU_MAPEL' | 'WAKASEK') => {
+    let defaultApprover = currentUserName;
+    let defaultRole = 'Admin Piket';
+    let defaultNotes = '';
+
+    if (stage === 'ADMIN') {
+      defaultApprover = currentUserName || 'Admin';
+      defaultRole = 'Administrator Piket';
+      defaultNotes = 'Permohonan izin keluar telah diverifikasi di meja piket.';
+    } else if (stage === 'GURU_MAPEL') {
+      defaultRole = `Guru Mata Pelajaran ${permit.subject || ''}`.trim();
+      // Cari nama guru mapel dari daftar users jika ada
+      const foundTeacher = users.find((u) => 
+        (u.department || '').toLowerCase().includes((permit.subject || '').toLowerCase())
+      );
+      if (foundTeacher) {
+        defaultApprover = foundTeacher.name;
+      } else if (currentUser?.role === 'Guru' || currentUser?.role === 'Wali Kelas') {
+        defaultApprover = currentUserName;
+      } else {
+        defaultApprover = currentUserName;
+      }
+      defaultNotes = `Materi KBM mata pelajaran ${permit.subject || 'saat ini'} telah dikoordinasikan.`;
+    } else if (stage === 'WAKASEK') {
+      // Waka tidak harus Waka Kesiswaan, namun semua Waka (Kesiswaan, Kurikulum, Humas, Sarpras)
+      let defaultRole = 'Wakil Kepala Sekolah';
+      
+      const wakasekUsers = users.filter((u) => 
+        u.role === 'Wakasek' || 
+        u.role === 'Wakil Kepala Sekolah' || 
+        (u.department || '').toLowerCase().includes('wakasek') || 
+        (u.department || '').toLowerCase().includes('wakil kepala')
+      );
+
+      const isCurrentWakasek = currentUser && (
+        currentUser.role === 'Wakasek' || 
+        currentUser.role === 'Wakil Kepala Sekolah' || 
+        (currentUser.department || '').toLowerCase().includes('wakasek') || 
+        (currentUser.department || '').toLowerCase().includes('wakil kepala') ||
+        (currentUser.department || '').toLowerCase().includes('waka')
+      );
+
+      if (isCurrentWakasek) {
+        defaultApprover = currentUserName;
+        defaultRole = currentUser.department || 'Wakil Kepala Sekolah';
+      } else if (wakasekUsers.length > 0) {
+        // Prioritas Waka Kesiswaan atau Waka pertama di daftar
+        const wakaKesiswaan = wakasekUsers.find(u => (u.department || '').toLowerCase().includes('kesiswaan'));
+        const chosenWaka = wakaKesiswaan || wakasekUsers[0];
+        defaultApprover = chosenWaka.name;
+        defaultRole = chosenWaka.department || 'Wakil Kepala Sekolah';
+      } else {
+        defaultApprover = 'Anis Dyah Wahyuti, S.Pd';
+        defaultRole = 'Wakil Kepala Sekolah Bidang Kesiswaan';
+      }
+      defaultNotes = 'Disetujui izin keluar sekolah dan tercatat di buku kendali.';
+    }
+
+    setApprovingStage({
+      permit,
+      stage,
+      approverName: defaultApprover,
+      approverRole: defaultRole,
+      notes: defaultNotes,
+    });
+  };
+
+  const handleConfirmApproveStage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!approvingStage) return;
+
+    const { permit, stage, approverName, approverRole, notes } = approvingStage;
+    const nowTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    let updated: StudentPermitRecord = { ...permit };
+
+    if (stage === 'ADMIN') {
+      updated = {
+        ...updated,
+        adminApproval: {
+          approved: true,
+          approvedBy: approverName.trim() || currentUserName,
+          approvedAt: nowTime,
+          roleTitle: approverRole,
+          notes: notes.trim() || undefined,
+        },
+        currentApprovalStep: 'GURU_MAPEL', // Maju ke Tahap 2: Guru Mapel
+        status: 'Menunggu',
+        updatedAt: new Date().toISOString(),
+      };
+    } else if (stage === 'GURU_MAPEL') {
+      const isKeluarKelas = permit.type === 'Keluar Kelas';
+      updated = {
+        ...updated,
+        teacherApproval: {
+          approved: true,
+          approvedBy: approverName.trim() || currentUserName,
+          approvedAt: nowTime,
+          roleTitle: approverRole,
+          notes: notes.trim() || undefined,
+        },
+        currentApprovalStep: isKeluarKelas ? 'DONE' : 'WAKASEK', // Keluar Kelas: Selesai (2 tahap), Keluar Sekolah: Maju ke Tahap 3 (Wakasek)
+        status: isKeluarKelas ? 'Disetujui' : 'Menunggu',
+        approvedBy: isKeluarKelas ? `${approverName.trim() || currentUserName} (Guru Mapel)` : updated.approvedBy,
+        approvedAt: isKeluarKelas ? nowTime : updated.approvedAt,
+        updatedAt: new Date().toISOString(),
+      };
+    } else if (stage === 'WAKASEK') {
+      // Tahap 3 Selesai -> Seluruh 3 tahap lengkap, Izin Resmi Disetujui
+      updated = {
+        ...updated,
+        wakasekApproval: {
+          approved: true,
+          approvedBy: approverName.trim() || currentUserName,
+          approvedAt: nowTime,
+          roleTitle: approverRole,
+          notes: notes.trim() || undefined,
+        },
+        currentApprovalStep: 'DONE',
+        status: 'Disetujui',
+        approvedBy: `${approverName.trim() || currentUserName} (Wakasek)`,
+        approvedAt: nowTime,
+        updatedAt: new Date().toISOString(),
+      };
+    }
+
+    onUpdatePermit(updated);
+    setApprovingStage(null);
   };
 
   const handleOpenRejectModal = (permit: StudentPermitRecord) => {
@@ -159,12 +340,21 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
     e.preventDefault();
     if (!rejectingPermit) return;
 
+    const currentStep = getApprovalStep(rejectingPermit);
     const updated: StudentPermitRecord = {
       ...rejectingPermit,
       status: 'Ditolak',
+      rejectedAtStep: currentStep,
+      rejectedBy: currentUserName,
       approvedBy: currentUserName,
       approvedAt: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
-      rejectionReason: rejectionReasonInput.trim() || 'Permohonan izin tidak disetujui oleh guru piket / kesiswaan',
+      rejectionReason: rejectionReasonInput.trim() || `Permohonan izin tidak disetujui pada ${
+        rejectingPermit.type === 'Dispensasi Seragam' ? 'Pemeriksaan Administrator' :
+        currentStep === 'ADMIN' ? 'Tahap 1 (Admin)' : 
+        currentStep === 'GURU_MAPEL' ? 'Tahap 2 (Guru Mapel)' : 
+        currentStep === 'WAKASEK' ? 'Tahap 3 (Wakasek)' : 'Pemeriksaan Administrator'
+      }`,
+      updatedAt: new Date().toISOString(),
     };
     onUpdatePermit(updated);
     setRejectingPermit(null);
@@ -176,6 +366,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
       ...permit,
       status: 'Kembali',
       actualReturnTime: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+      updatedAt: new Date().toISOString(),
     };
     onUpdatePermit(updated);
   };
@@ -195,28 +386,55 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
       'Keperluan / Alasan', 
       'Status Kembali / Atribut Seragam', 
       'Status Persetujuan', 
+      'Tahap Persetujuan',
+      'Persetujuan Admin (Tahap 1)',
+      'Persetujuan Guru Mapel (Tahap 2)',
+      'Persetujuan Wakasek (Tahap 3)',
       'Diverifikasi Oleh',
       'Waktu Disetujui',
       'Catatan / Alasan Penolakan'
     ];
     
-    const rows = filteredPermits.map((p, idx) => [
-      idx + 1,
-      `"${p.type}"`,
-      `"${p.date}"`,
-      `"${p.timeSubmitted}"`,
-      `"${p.studentName.replace(/"/g, '""')}"`,
-      `"${p.className}"`,
-      `"${p.nisn || '-'}"`,
-      `"${p.subject || '-'}"`,
-      `"${p.lessonHour || '-'}"`,
-      `"${p.reason.replace(/"/g, '""')}"`,
-      `"${p.type === 'Keluar Sekolah' ? (p.willReturn || '-') : p.type === 'Dispensasi Seragam' ? (p.uniformViolationType || '-') : '-'}"`,
-      `"${p.status}"`,
-      `"${p.approvedBy || '-'}"`,
-      `"${p.approvedAt || '-'}"`,
-      `"${p.rejectionReason ? p.rejectionReason.replace(/"/g, '""') : '-'}"`,
-    ]);
+    const rows = filteredPermits.map((p, idx) => {
+      const step = getApprovalStep(p);
+      const stageText = p.type === 'Keluar Sekolah'
+        ? p.status === 'Disetujui' || p.status === 'Kembali'
+          ? 'Lengkap (3 Tahap Selesai)'
+          : step === 'ADMIN'
+          ? 'Tahap 1/3 (Menunggu Admin)'
+          : step === 'GURU_MAPEL'
+          ? 'Tahap 2/3 (Menunggu Guru Mapel)'
+          : 'Tahap 3/3 (Menunggu Wakasek)'
+        : p.type === 'Keluar Kelas'
+        ? p.status === 'Disetujui' || p.status === 'Kembali'
+          ? 'Lengkap (2 Tahap Selesai)'
+          : step === 'ADMIN'
+          ? 'Tahap 1/2 (Menunggu Admin)'
+          : 'Tahap 2/2 (Menunggu Guru Mapel)'
+        : p.status;
+
+      return [
+        idx + 1,
+        `"${p.type}"`,
+        `"${p.date}"`,
+        `"${p.timeSubmitted}"`,
+        `"${p.studentName.replace(/"/g, '""')}"`,
+        `"${p.className}"`,
+        `"${p.nisn || '-'}"`,
+        `"${p.subject || '-'}"`,
+        `"${p.lessonHour || '-'}"`,
+        `"${p.reason.replace(/"/g, '""')}"`,
+        `"${p.type === 'Keluar Sekolah' ? (p.willReturn || '-') : p.type === 'Dispensasi Seragam' ? (p.uniformViolationType || '-') : '-'}"`,
+        `"${p.status}"`,
+        `"${stageText}"`,
+        `"${p.adminApproval?.approved ? `Disetujui oleh ${p.adminApproval.approvedBy} (${p.adminApproval.approvedAt})` : '-'}"`,
+        `"${p.teacherApproval?.approved ? `Disetujui oleh ${p.teacherApproval.approvedBy} (${p.teacherApproval.approvedAt})` : '-'}"`,
+        `"${p.wakasekApproval?.approved ? `Disetujui oleh ${p.wakasekApproval.approvedBy} (${p.wakasekApproval.approvedAt})` : '-'}"`,
+        `"${p.approvedBy || '-'}"`,
+        `"${p.approvedAt || '-'}"`,
+        `"${p.rejectionReason ? p.rejectionReason.replace(/"/g, '""') : '-'}"`,
+      ];
+    });
 
     const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
     const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -477,8 +695,8 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
           </button>
         </div>
 
-        {/* Sub-Filters: Type, Class, Date & Search */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs pt-1">
+        {/* Sub-Filters: Type, Stage, Class, Date & Search */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 text-xs pt-1">
           {/* Filter Kategori Izin */}
           <div className="bg-[#E2F1FD] px-3.5 py-2 rounded-2xl border border-white/40 flex items-center gap-2">
             <span className="font-bold text-[#334155] shrink-0">Kategori:</span>
@@ -491,6 +709,22 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
               <option value="Keluar Sekolah">Izin Keluar Sekolah</option>
               <option value="Keluar Kelas">Izin Keluar Kelas</option>
               <option value="Dispensasi Seragam">Dispensasi Seragam</option>
+            </select>
+          </div>
+
+          {/* Filter Tahap Persetujuan (Keluar Sekolah & Keluar Kelas) */}
+          <div className="bg-[#E2F1FD] px-3.5 py-2 rounded-2xl border border-white/40 flex items-center gap-2">
+            <span className="font-bold text-[#334155] shrink-0">Tahap:</span>
+            <select
+              value={selectedStageFilter}
+              onChange={(e) => setSelectedStageFilter(e.target.value as any)}
+              className="bg-transparent font-extrabold text-[#0F172A] focus:outline-hidden cursor-pointer w-full"
+            >
+              <option value="ALL">Semua Tahap</option>
+              <option value="ADMIN">Tahap 1: Menunggu Admin</option>
+              <option value="GURU_MAPEL">Tahap 2: Menunggu Guru Mapel</option>
+              <option value="WAKASEK">Tahap 3: Menunggu Wakasek (Khusus KS)</option>
+              <option value="DONE">✓ Selesai / Disetujui</option>
             </select>
           </div>
 
@@ -537,7 +771,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#64748B]" />
             <input
               type="text"
-              placeholder="Cari nama siswa, NISN, keperluan..."
+              placeholder="Cari nama, NISN, mapel..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-4 py-2 bg-[#E2F1FD] rounded-2xl text-xs text-[#0F172A] placeholder-[#64748B] focus:outline-hidden focus:bg-white focus:ring-2 focus:ring-sky-500 font-medium"
@@ -678,63 +912,307 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                         )}
                       </td>
 
-                      {/* Status Izin */}
+                      {/* Status Izin & Tahap Persetujuan */}
                       <td className="py-4 px-4 text-center">
-                        {p.status === 'Menunggu' && (
-                          <span className="px-2.5 py-1 rounded-xl text-[11px] font-black bg-rose-100 text-rose-900 border border-rose-300 inline-flex items-center gap-1 animate-pulse">
-                            <Clock className="w-3.5 h-3.5 text-rose-700" />
-                            <span>Menunggu</span>
-                          </span>
-                        )}
-                        {p.status === 'Disetujui' && (
-                          <div className="space-y-0.5">
-                            <span className="px-2.5 py-1 rounded-xl text-[11px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300 inline-flex items-center gap-1">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
-                              <span>Disetujui</span>
-                            </span>
-                            {p.approvedBy && (
-                              <div className="text-[10px] text-slate-500 font-medium">oleh {p.approvedBy}</div>
+                        {p.type === 'Keluar Sekolah' ? (
+                          <div className="space-y-1.5 flex flex-col items-center">
+                            {p.status === 'Menunggu' && (() => {
+                              const step = getApprovalStep(p);
+                              return (
+                                <div className="space-y-1.5 flex flex-col items-center w-full">
+                                  <span className={`px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider inline-flex items-center gap-1 shadow-2xs ${
+                                    step === 'ADMIN'
+                                      ? 'bg-amber-100 text-amber-900 border border-amber-300 animate-pulse'
+                                      : step === 'GURU_MAPEL'
+                                      ? 'bg-violet-100 text-violet-900 border border-violet-300 animate-pulse'
+                                      : 'bg-indigo-100 text-indigo-900 border border-indigo-300 animate-pulse'
+                                  }`}>
+                                    <Clock className="w-3 h-3" />
+                                    <span>
+                                      {step === 'ADMIN' && 'Tahap 1/3: Menunggu Admin'}
+                                      {step === 'GURU_MAPEL' && 'Tahap 2/3: Menunggu Guru Mapel'}
+                                      {step === 'WAKASEK' && 'Tahap 3/3: Menunggu Wakasek'}
+                                    </span>
+                                  </span>
+
+                                  {/* Stepper visual 3 tahap */}
+                                  <div className="flex items-center justify-center gap-1 text-[9px] font-black text-slate-500 w-full pt-0.5">
+                                    <span className={`px-1.5 py-0.5 rounded-md flex items-center gap-0.5 ${
+                                      p.adminApproval?.approved 
+                                        ? 'bg-emerald-100 text-emerald-800 font-black' 
+                                        : step === 'ADMIN' 
+                                        ? 'bg-amber-200 text-amber-900 ring-1 ring-amber-400 font-black' 
+                                        : 'bg-slate-100 text-slate-400'
+                                    }`}>
+                                      {p.adminApproval?.approved ? '✓ Admin' : '1. Admin'}
+                                    </span>
+                                    <span>›</span>
+                                    <span className={`px-1.5 py-0.5 rounded-md flex items-center gap-0.5 ${
+                                      p.teacherApproval?.approved 
+                                        ? 'bg-emerald-100 text-emerald-800 font-black' 
+                                        : step === 'GURU_MAPEL' 
+                                        ? 'bg-violet-200 text-violet-900 ring-1 ring-violet-400 font-black' 
+                                        : 'bg-slate-100 text-slate-400'
+                                    }`}>
+                                      {p.teacherApproval?.approved ? '✓ Guru' : '2. Guru'}
+                                    </span>
+                                    <span>›</span>
+                                    <span className={`px-1.5 py-0.5 rounded-md flex items-center gap-0.5 ${
+                                      p.wakasekApproval?.approved 
+                                        ? 'bg-emerald-100 text-emerald-800 font-black' 
+                                        : step === 'WAKASEK' 
+                                        ? 'bg-indigo-200 text-indigo-900 ring-1 ring-indigo-400 font-black' 
+                                        : 'bg-slate-100 text-slate-400'
+                                    }`}>
+                                      {p.wakasekApproval?.approved ? '✓ Wakasek' : '3. Wakasek'}
+                                    </span>
+                                  </div>
+                                </div>
+                              );
+                            })()}
+
+                            {p.status === 'Disetujui' && (
+                              <div className="space-y-0.5 text-center">
+                                <span className="px-2.5 py-1 rounded-xl text-[11px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300 inline-flex items-center gap-1">
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
+                                  <span>Disetujui Penuh (3 Tahap)</span>
+                                </span>
+                                <div className="text-[10px] text-slate-500 font-medium">
+                                  Admin • Guru • Wakasek
+                                </div>
+                              </div>
+                            )}
+
+                            {p.status === 'Kembali' && (
+                              <span className="px-2.5 py-1 rounded-xl text-[11px] font-black bg-sky-100 text-sky-900 border border-sky-300 inline-flex items-center gap-1">
+                                <CheckCircle2 className="w-3.5 h-3.5 text-sky-700" />
+                                <span>Sudah Kembali</span>
+                              </span>
+                            )}
+
+                            {p.status === 'Ditolak' && (
+                              <div className="space-y-0.5">
+                                <span className="px-2.5 py-1 rounded-xl text-[11px] font-black bg-slate-200 text-slate-800 border border-slate-300 inline-flex items-center gap-1">
+                                  <X className="w-3.5 h-3.5 text-rose-700" />
+                                  <span>Ditolak</span>
+                                </span>
+                                {p.rejectedAtStep && (
+                                  <div className="text-[10px] text-rose-600 font-bold">
+                                    pada {p.rejectedAtStep === 'ADMIN' ? 'Tahap 1 Admin' : p.rejectedAtStep === 'GURU_MAPEL' ? 'Tahap 2 Guru Mapel' : 'Tahap 3 Wakasek'}
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        ) : p.type === 'Keluar Kelas' ? (
+                          <div className="space-y-1.5 flex flex-col items-center">
+                            {p.status === 'Menunggu' && (() => {
+                              const step = getApprovalStep(p);
+                              return (
+                                <div className="space-y-1.5 flex flex-col items-center w-full">
+                                  <span className={`px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider inline-flex items-center gap-1 shadow-2xs ${
+                                    step === 'ADMIN'
+                                      ? 'bg-amber-100 text-amber-900 border border-amber-300 animate-pulse'
+                                      : 'bg-violet-100 text-violet-900 border border-violet-300 animate-pulse'
+                                  }`}>
+                                    <Clock className="w-3 h-3" />
+                                    <span>
+                                      {step === 'ADMIN' ? 'Tahap 1/2: Menunggu Admin' : 'Tahap 2/2: Menunggu Guru Mapel'}
+                                    </span>
+                                  </span>
+
+                                  {/* Stepper visual 2 tahap */}
+                                  <div className="flex items-center justify-center gap-1 text-[9px] font-black text-slate-500 w-full pt-0.5">
+                                    <span className={`px-1.5 py-0.5 rounded-md flex items-center gap-0.5 ${
+                                      p.adminApproval?.approved 
+                                        ? 'bg-emerald-100 text-emerald-800 font-black' 
+                                        : step === 'ADMIN' 
+                                        ? 'bg-amber-200 text-amber-900 ring-1 ring-amber-400 font-black' 
+                                        : 'bg-slate-100 text-slate-400'
+                                    }`}>
+                                      {p.adminApproval?.approved ? '✓ Admin' : '1. Admin'}
+                                    </span>
+                                    <span>›</span>
+                                    <span className={`px-1.5 py-0.5 rounded-md flex items-center gap-0.5 ${
+                                      p.teacherApproval?.approved 
+                                        ? 'bg-emerald-100 text-emerald-800 font-black' 
+                                        : step === 'GURU_MAPEL' 
+                                        ? 'bg-violet-200 text-violet-900 ring-1 ring-violet-400 font-black' 
+                                        : 'bg-slate-100 text-slate-400'
+                                    }`}>
+                                      {p.teacherApproval?.approved ? '✓ Guru' : '2. Guru'}
+                                    </span>
+                                  </div>
+                                </div>
+                              );
+                            })()}
+
+                            {p.status === 'Disetujui' && (
+                              <div className="space-y-0.5 text-center">
+                                <span className="px-2.5 py-1 rounded-xl text-[11px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300 inline-flex items-center gap-1">
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
+                                  <span>Disetujui Penuh (2 Tahap)</span>
+                                </span>
+                                <div className="text-[10px] text-slate-500 font-medium">
+                                  Admin • Guru Mapel
+                                </div>
+                              </div>
+                            )}
+
+                            {p.status === 'Kembali' && (
+                              <span className="px-2.5 py-1 rounded-xl text-[11px] font-black bg-sky-100 text-sky-900 border border-sky-300 inline-flex items-center gap-1">
+                                <CheckCircle2 className="w-3.5 h-3.5 text-sky-700" />
+                                <span>Sudah Kembali</span>
+                              </span>
+                            )}
+
+                            {p.status === 'Ditolak' && (
+                              <div className="space-y-0.5">
+                                <span className="px-2.5 py-1 rounded-xl text-[11px] font-black bg-slate-200 text-slate-800 border border-slate-300 inline-flex items-center gap-1">
+                                  <X className="w-3.5 h-3.5 text-rose-700" />
+                                  <span>Ditolak</span>
+                                </span>
+                                {p.rejectedAtStep && (
+                                  <div className="text-[10px] text-rose-600 font-bold">
+                                    pada {p.rejectedAtStep === 'ADMIN' ? 'Tahap 1 Admin' : 'Tahap 2 Guru Mapel'}
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          // Dispensasi Seragam (Hanya Persetujuan Admin Saja)
+                          <div>
+                            {p.status === 'Menunggu' && (
+                              <div className="space-y-0.5 text-center">
+                                <span className="px-2.5 py-1 rounded-xl text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-300 inline-flex items-center gap-1 animate-pulse">
+                                  <Clock className="w-3.5 h-3.5 text-amber-700" />
+                                  <span>Menunggu Admin</span>
+                                </span>
+                                <div className="text-[9px] text-slate-500 font-medium">Khusus Otorisasi Admin</div>
+                              </div>
+                            )}
+                            {p.status === 'Disetujui' && (
+                              <div className="space-y-0.5 text-center">
+                                <span className="px-2.5 py-1 rounded-xl text-[11px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300 inline-flex items-center gap-1">
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
+                                  <span>Disetujui Admin</span>
+                                </span>
+                                {p.approvedBy && (
+                                  <div className="text-[10px] text-slate-500 font-medium">oleh {p.approvedBy}</div>
+                                )}
+                              </div>
+                            )}
+                            {p.status === 'Kembali' && (
+                              <span className="px-2.5 py-1 rounded-xl text-[11px] font-black bg-sky-100 text-sky-900 border border-sky-300 inline-flex items-center gap-1">
+                                <CheckCircle2 className="w-3.5 h-3.5 text-sky-700" />
+                                <span>Sudah Kembali</span>
+                              </span>
+                            )}
+                            {p.status === 'Ditolak' && (
+                              <div className="space-y-0.5 text-center">
+                                <span className="px-2.5 py-1 rounded-xl text-[11px] font-black bg-slate-200 text-slate-800 border border-slate-300 inline-flex items-center gap-1">
+                                  <X className="w-3.5 h-3.5 text-rose-700" />
+                                  <span>Ditolak Admin</span>
+                                </span>
+                              </div>
                             )}
                           </div>
                         )}
-                        {p.status === 'Kembali' && (
-                          <span className="px-2.5 py-1 rounded-xl text-[11px] font-black bg-sky-100 text-sky-900 border border-sky-300 inline-flex items-center gap-1">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-sky-700" />
-                            <span>Sudah Kembali</span>
-                          </span>
-                        )}
-                        {p.status === 'Ditolak' && (
-                          <span className="px-2.5 py-1 rounded-xl text-[11px] font-black bg-slate-200 text-slate-800 border border-slate-300 inline-flex items-center gap-1">
-                            <X className="w-3.5 h-3.5 text-rose-700" />
-                            <span>Ditolak</span>
-                          </span>
-                        )}
                       </td>
 
-                      {/* Keputusan & Aksi Guru Piket */}
+                      {/* Keputusan & Aksi Bertahap */}
                       <td className="py-4 px-4 text-center">
                         <div className="flex items-center justify-center gap-1.5 flex-wrap">
-                          {/* JIKA STATUS MENUNGGU: TAMPILKAN TOMBOL KEPUTUSAN SETUJUI / TOLAK */}
+                          {/* JIKA STATUS MENUNGGU */}
                           {p.status === 'Menunggu' && (
                             <>
-                              <button
-                                type="button"
-                                onClick={() => handleApprove(p)}
-                                className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black text-xs shadow-xs cursor-pointer active:scale-95 transition-all flex items-center gap-1"
-                                title="Setujui dan masukkan ke Rekap Izin Resmi"
-                              >
-                                <Check className="w-3.5 h-3.5" />
-                                <span>Setujui</span>
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => handleOpenRejectModal(p)}
-                                className="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl font-black text-xs shadow-xs cursor-pointer active:scale-95 transition-all flex items-center gap-1"
-                                title="Tolak permohonan izin"
-                              >
-                                <X className="w-3.5 h-3.5" />
-                                <span>Tolak</span>
-                              </button>
+                              {(p.type === 'Keluar Sekolah' || p.type === 'Keluar Kelas') ? (() => {
+                                const step = getApprovalStep(p);
+                                const isKeluarKelas = p.type === 'Keluar Kelas';
+                                return (
+                                  <div className="flex items-center justify-center gap-1.5 flex-wrap">
+                                    {/* Tahap 1: Admin */}
+                                    {step === 'ADMIN' && (
+                                      <button
+                                        type="button"
+                                        onClick={() => handleOpenApproveStage(p, 'ADMIN')}
+                                        disabled={!canApprove && !isAdmin}
+                                        className="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black text-[11px] shadow-xs cursor-pointer active:scale-95 transition-all flex items-center gap-1 disabled:opacity-40"
+                                        title={`Tahap 1: Setujui verifikasi awal oleh Admin (${isKeluarKelas ? 'Tahap 1/2' : 'Tahap 1/3'})`}
+                                      >
+                                        <ShieldCheck className="w-3.5 h-3.5" />
+                                        <span>Setujui Tahap 1 (Admin)</span>
+                                      </button>
+                                    )}
+
+                                    {/* Tahap 2: Guru Mapel */}
+                                    {step === 'GURU_MAPEL' && (
+                                      <button
+                                        type="button"
+                                        onClick={() => handleOpenApproveStage(p, 'GURU_MAPEL')}
+                                        disabled={!isGuru && !isAdmin}
+                                        className="px-2.5 py-1.5 bg-violet-600 hover:bg-violet-500 text-white rounded-xl font-black text-[11px] shadow-xs cursor-pointer active:scale-95 transition-all flex items-center gap-1 disabled:opacity-40"
+                                        title={isKeluarKelas 
+                                          ? `Tahap 2/2 (Final): Setujui izin keluar kelas oleh Guru Mata Pelajaran ${p.subject || ''}`
+                                          : `Tahap 2/3: Setujui oleh Guru Mata Pelajaran ${p.subject || ''}`}
+                                      >
+                                        <School className="w-3.5 h-3.5" />
+                                        <span>{isKeluarKelas ? 'Setujui Tahap 2 (Guru Mapel - Final)' : 'Setujui Tahap 2 (Guru Mapel)'}</span>
+                                      </button>
+                                    )}
+
+                                    {/* Tahap 3: Wakasek (Khusus Keluar Sekolah) */}
+                                    {!isKeluarKelas && step === 'WAKASEK' && (
+                                      <button
+                                        type="button"
+                                        onClick={() => handleOpenApproveStage(p, 'WAKASEK')}
+                                        disabled={!isWakasek && !isAdmin}
+                                        className="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-[11px] shadow-xs cursor-pointer active:scale-95 transition-all flex items-center gap-1 disabled:opacity-40"
+                                        title="Tahap 3/3: Pengesahan final oleh Wakil Kepala Sekolah"
+                                      >
+                                        <Award className="w-3.5 h-3.5" />
+                                        <span>Setujui Tahap 3 (Wakasek)</span>
+                                      </button>
+                                    )}
+
+                                    {/* Tombol Tolak */}
+                                    <button
+                                      type="button"
+                                      onClick={() => handleOpenRejectModal(p)}
+                                      className="px-2.5 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl font-black text-[11px] shadow-xs cursor-pointer active:scale-95 transition-all flex items-center gap-1"
+                                      title="Tolak permohonan izin ini"
+                                    >
+                                      <X className="w-3.5 h-3.5" />
+                                      <span>Tolak</span>
+                                    </button>
+                                  </div>
+                                );
+                              })() : (
+                                // Dispensasi Seragam (Hanya Perlu Persetujuan Admin Saja)
+                                <>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleApprove(p)}
+                                    disabled={!isAdmin}
+                                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black text-xs shadow-xs cursor-pointer active:scale-95 transition-all flex items-center gap-1 disabled:opacity-40"
+                                    title={isAdmin ? "Setujui izin seragam (khusus Admin)" : "Hanya Administrator yang berwenang menyetujui izin dispensasi seragam"}
+                                  >
+                                    <Check className="w-3.5 h-3.5" />
+                                    <span>Setujui (Admin)</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleOpenRejectModal(p)}
+                                    disabled={!isAdmin}
+                                    className="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl font-black text-xs shadow-xs cursor-pointer active:scale-95 transition-all flex items-center gap-1 disabled:opacity-40"
+                                    title={isAdmin ? "Tolak permohonan izin" : "Hanya Administrator yang berwenang menolak izin dispensasi seragam"}
+                                  >
+                                    <X className="w-3.5 h-3.5" />
+                                    <span>Tolak</span>
+                                  </button>
+                                </>
+                              )}
                             </>
                           )}
 
@@ -946,6 +1424,151 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                 </div>
               </div>
 
+              {/* Khusus Izin Keluar Sekolah: Tampilkan 3 Tahap Pengesahan Resmi */}
+              {viewingPermit.type === 'Keluar Sekolah' && (
+                <div className="pt-2 border-t-2 border-slate-900 font-sans space-y-2.5">
+                  <div className="text-[10px] font-black uppercase text-slate-700 tracking-wider text-center">
+                    LEMBAR PENGESAHAN 3 TAHAP (ADMIN • GURU MATA PELAJARAN • WAKASEK)
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    {/* Kotak 1: Admin */}
+                    <div className={`p-2.5 rounded-xl border text-center space-y-1 ${
+                      viewingPermit.adminApproval?.approved 
+                        ? 'bg-emerald-50/70 border-emerald-300' 
+                        : 'bg-slate-50 border-slate-200'
+                    }`}>
+                      <div className="text-[10px] font-black text-slate-700 uppercase">1. Admin Piket</div>
+                      <div className={`text-[10px] font-bold ${viewingPermit.adminApproval?.approved ? 'text-emerald-700' : 'text-slate-400'}`}>
+                        {viewingPermit.adminApproval?.approved ? '✓ Telah Diverifikasi' : '⏳ Menunggu'}
+                      </div>
+                      <div className="font-black text-xs text-slate-900 underline pt-1 truncate">
+                        {viewingPermit.adminApproval?.approvedBy || '-'}
+                      </div>
+                      <div className="text-[9px] text-slate-500">
+                        {viewingPermit.adminApproval?.approvedAt ? `${viewingPermit.adminApproval.approvedAt} WIB` : '-'}
+                      </div>
+                      {viewingPermit.adminApproval?.notes && (
+                        <div className="text-[9px] text-slate-600 italic border-t border-slate-200/60 pt-1">
+                          "{viewingPermit.adminApproval.notes}"
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Kotak 2: Guru Mata Pelajaran */}
+                    <div className={`p-2.5 rounded-xl border text-center space-y-1 ${
+                      viewingPermit.teacherApproval?.approved 
+                        ? 'bg-violet-50/70 border-violet-300' 
+                        : 'bg-slate-50 border-slate-200'
+                    }`}>
+                      <div className="text-[10px] font-black text-slate-700 uppercase">2. Guru Mata Pelajaran</div>
+                      <div className="text-[9px] text-slate-500 font-semibold truncate" title={viewingPermit.subject}>
+                        {viewingPermit.subject || 'Mapel Saat Ini'}
+                      </div>
+                      <div className={`text-[10px] font-bold ${viewingPermit.teacherApproval?.approved ? 'text-emerald-700' : 'text-slate-400'}`}>
+                        {viewingPermit.teacherApproval?.approved ? '✓ Telah Disetujui' : '⏳ Menunggu'}
+                      </div>
+                      <div className="font-black text-xs text-slate-900 underline pt-1 truncate">
+                        {viewingPermit.teacherApproval?.approvedBy || '-'}
+                      </div>
+                      <div className="text-[9px] text-slate-500">
+                        {viewingPermit.teacherApproval?.approvedAt ? `${viewingPermit.teacherApproval.approvedAt} WIB` : '-'}
+                      </div>
+                      {viewingPermit.teacherApproval?.notes && (
+                        <div className="text-[9px] text-slate-600 italic border-t border-slate-200/60 pt-1">
+                          "{viewingPermit.teacherApproval.notes}"
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Kotak 3: Wakil Kepala Sekolah */}
+                    <div className={`p-2.5 rounded-xl border text-center space-y-1 ${
+                      viewingPermit.wakasekApproval?.approved 
+                        ? 'bg-indigo-50/70 border-indigo-300' 
+                        : 'bg-slate-50 border-slate-200'
+                    }`}>
+                      <div className="text-[10px] font-black text-slate-700 uppercase">3. Wakil Kepala Sekolah</div>
+                      <div className="text-[9px] text-slate-500 font-semibold truncate" title={viewingPermit.wakasekApproval?.roleTitle}>
+                        {viewingPermit.wakasekApproval?.roleTitle ? viewingPermit.wakasekApproval.roleTitle.replace('Wakil Kepala Sekolah ', '') : 'Semua Bidang Waka'}
+                      </div>
+                      <div className={`text-[10px] font-bold ${viewingPermit.wakasekApproval?.approved ? 'text-emerald-700' : 'text-slate-400'}`}>
+                        {viewingPermit.wakasekApproval?.approved ? '✓ Telah Disahkan' : '⏳ Menunggu'}
+                      </div>
+                      <div className="font-black text-xs text-slate-900 underline pt-1 truncate">
+                        {viewingPermit.wakasekApproval?.approvedBy || '-'}
+                      </div>
+                      <div className="text-[9px] text-slate-500">
+                        {viewingPermit.wakasekApproval?.approvedAt ? `${viewingPermit.wakasekApproval.approvedAt} WIB` : '-'}
+                      </div>
+                      {viewingPermit.wakasekApproval?.notes && (
+                        <div className="text-[9px] text-slate-600 italic border-t border-slate-200/60 pt-1">
+                          "{viewingPermit.wakasekApproval.notes}"
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {viewingPermit.type === 'Keluar Kelas' && (
+                <div className="pt-2 border-t-2 border-slate-900 font-sans space-y-2.5">
+                  <div className="text-[10px] font-black uppercase text-slate-700 tracking-wider text-center">
+                    LEMBAR PENGESAHAN 2 TAHAP (ADMIN • GURU MATA PELAJARAN)
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {/* Kotak 1: Admin */}
+                    <div className={`p-2.5 rounded-xl border text-center space-y-1 ${
+                      viewingPermit.adminApproval?.approved 
+                        ? 'bg-emerald-50/70 border-emerald-300' 
+                        : 'bg-slate-50 border-slate-200'
+                    }`}>
+                      <div className="text-[10px] font-black text-slate-700 uppercase">1. Admin Piket</div>
+                      <div className={`text-[10px] font-bold ${viewingPermit.adminApproval?.approved ? 'text-emerald-700' : 'text-slate-400'}`}>
+                        {viewingPermit.adminApproval?.approved ? '✓ Telah Diverifikasi' : '⏳ Menunggu'}
+                      </div>
+                      <div className="font-black text-xs text-slate-900 underline pt-1 truncate">
+                        {viewingPermit.adminApproval?.approvedBy || '-'}
+                      </div>
+                      <div className="text-[9px] text-slate-500">
+                        {viewingPermit.adminApproval?.approvedAt ? `${viewingPermit.adminApproval.approvedAt} WIB` : '-'}
+                      </div>
+                      {viewingPermit.adminApproval?.notes && (
+                        <div className="text-[9px] text-slate-600 italic border-t border-slate-200/60 pt-1">
+                          "{viewingPermit.adminApproval.notes}"
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Kotak 2: Guru Mata Pelajaran */}
+                    <div className={`p-2.5 rounded-xl border text-center space-y-1 ${
+                      viewingPermit.teacherApproval?.approved 
+                        ? 'bg-violet-50/70 border-violet-300' 
+                        : 'bg-slate-50 border-slate-200'
+                    }`}>
+                      <div className="text-[10px] font-black text-slate-700 uppercase">2. Guru Mata Pelajaran (Pengesah)</div>
+                      <div className="text-[9px] text-slate-500 font-semibold truncate" title={viewingPermit.subject}>
+                        {viewingPermit.subject || 'Mapel Saat Ini'}
+                      </div>
+                      <div className={`text-[10px] font-bold ${viewingPermit.teacherApproval?.approved ? 'text-emerald-700' : 'text-slate-400'}`}>
+                        {viewingPermit.teacherApproval?.approved ? '✓ Telah Disetujui (Selesai)' : '⏳ Menunggu'}
+                      </div>
+                      <div className="font-black text-xs text-slate-900 underline pt-1 truncate">
+                        {viewingPermit.teacherApproval?.approvedBy || '-'}
+                      </div>
+                      <div className="text-[9px] text-slate-500">
+                        {viewingPermit.teacherApproval?.approvedAt ? `${viewingPermit.teacherApproval.approvedAt} WIB` : '-'}
+                      </div>
+                      {viewingPermit.teacherApproval?.notes && (
+                        <div className="text-[9px] text-slate-600 italic border-t border-slate-200/60 pt-1">
+                          "{viewingPermit.teacherApproval.notes}"
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Status Box */}
               <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between font-sans">
                 <div>
@@ -980,6 +1603,224 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                 <span>Cetak E-Surat Izin</span>
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 4: KONFIRMASI PERSETUJUAN BERTAHAP (TAHAP 1 / 2 / 3) */}
+      {approvingStage && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-[32px] p-6 sm:p-7 max-w-lg w-full shadow-2xl border border-white space-y-4 animate-in fade-in zoom-in-95 my-8">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white ${
+                  approvingStage.stage === 'ADMIN' ? 'bg-emerald-600' :
+                  approvingStage.stage === 'GURU_MAPEL' ? 'bg-violet-600' : 'bg-indigo-600'
+                }`}>
+                  {approvingStage.stage === 'ADMIN' && <ShieldCheck className="w-5 h-5" />}
+                  {approvingStage.stage === 'GURU_MAPEL' && <School className="w-5 h-5" />}
+                  {approvingStage.stage === 'WAKASEK' && <Award className="w-5 h-5" />}
+                </div>
+                <div>
+                  <h3 className="font-black text-sm text-[#0F172A]">
+                    {approvingStage.stage === 'ADMIN' && (approvingStage.permit.type === 'Keluar Kelas' ? 'Persetujuan Tahap 1/2: Admin Piket' : 'Persetujuan Tahap 1/3: Admin Piket')}
+                    {approvingStage.stage === 'GURU_MAPEL' && (approvingStage.permit.type === 'Keluar Kelas' ? 'Persetujuan Tahap 2/2 (Final): Guru Mata Pelajaran' : 'Persetujuan Tahap 2/3: Guru Mata Pelajaran')}
+                    {approvingStage.stage === 'WAKASEK' && 'Persetujuan Tahap 3/3: Wakil Kepala Sekolah'}
+                  </h3>
+                  <p className="text-[11px] text-slate-500 font-medium">
+                    {approvingStage.stage === 'ADMIN' && 'Verifikasi permohonan awal di posko meja piket'}
+                    {approvingStage.stage === 'GURU_MAPEL' && (approvingStage.permit.type === 'Keluar Kelas' ? `Persetujuan final izin meninggalkan kelas pada mapel ${approvingStage.permit.subject || ''}` : `Persetujuan izin meninggalkan KBM ${approvingStage.permit.subject || ''}`)}
+                    {approvingStage.stage === 'WAKASEK' && 'Pengesahan izin keluar gerbang sekolah'}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setApprovingStage(null)}
+                className="p-1 text-slate-400 hover:text-slate-700 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Rincian Permohonan */}
+            <div className="bg-[#E2F1FD]/60 border border-sky-100 rounded-2xl p-4 space-y-2 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="font-black text-slate-900 text-sm uppercase">{approvingStage.permit.studentName}</span>
+                <span className="px-2 py-0.5 rounded-md bg-sky-100 text-sky-800 font-bold">{approvingStage.permit.className}</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-600 pt-1 border-t border-sky-200/50">
+                <div>
+                  <span className="font-bold text-slate-700">Mata Pelajaran:</span> {approvingStage.permit.subject || '-'}
+                </div>
+                <div>
+                  <span className="font-bold text-slate-700">Jam Ke-:</span> {approvingStage.permit.lessonHour || '-'}
+                </div>
+              </div>
+              <div className="text-[11px] text-slate-700 italic pt-1 border-t border-sky-200/50">
+                <b>Keperluan:</b> "{approvingStage.permit.reason}"
+              </div>
+            </div>
+
+            {/* Riwayat Tahap Sebelumnya */}
+            {approvingStage.stage !== 'ADMIN' && (
+              <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5 text-xs">
+                <div className="text-[10px] font-black uppercase text-slate-500 tracking-wider">
+                  Riwayat Persetujuan Sebelumnya:
+                </div>
+                {approvingStage.permit.adminApproval?.approved && (
+                  <div className="flex items-center gap-2 text-emerald-800 font-bold text-[11px]">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Tahap 1 Admin disetujui oleh: <b>{approvingStage.permit.adminApproval.approvedBy}</b> ({approvingStage.permit.adminApproval.approvedAt} WIB)</span>
+                  </div>
+                )}
+                {approvingStage.stage === 'WAKASEK' && approvingStage.permit.teacherApproval?.approved && (
+                  <div className="flex items-center gap-2 text-violet-800 font-bold text-[11px]">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-violet-600 shrink-0" />
+                    <span>Tahap 2 Guru Mapel disetujui oleh: <b>{approvingStage.permit.teacherApproval.approvedBy}</b> ({approvingStage.permit.teacherApproval.approvedAt} WIB)</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Form Input Penyetuju */}
+            <form onSubmit={handleConfirmApproveStage} className="space-y-3 text-xs">
+              <div>
+                <label className="block font-bold text-[#0F172A] mb-1">
+                  Nama Penyetuju <span className="text-rose-500">*</span>
+                </label>
+                {/* Jika Guru Mapel, sediakan opsi dropdown guru dari master users */}
+                {approvingStage.stage === 'GURU_MAPEL' && users.length > 0 ? (
+                  <div className="space-y-1.5">
+                    <select
+                      value={users.some(u => u.name === approvingStage.approverName) ? approvingStage.approverName : '__custom__'}
+                      onChange={(e) => {
+                        if (e.target.value === '__custom__') {
+                          setApprovingStage({ ...approvingStage, approverName: '' });
+                        } else {
+                          setApprovingStage({ ...approvingStage, approverName: e.target.value });
+                        }
+                      }}
+                      className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-slate-200 rounded-xl font-bold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-violet-500"
+                    >
+                      <option value={currentUserName}>{currentUserName} (Akun Aktif Saat Ini)</option>
+                      <optgroup label="Daftar Guru / Tenaga Pendidik">
+                        {users.filter(u => u.role === 'Guru' || u.role === 'Wali Kelas').map((u) => (
+                          <option key={u.id} value={u.name}>
+                            {u.name} {u.department ? `(${u.department})` : ''}
+                          </option>
+                        ))}
+                      </optgroup>
+                      <option value="__custom__">-- Ketik Nama Guru Lainnya Secara Manual --</option>
+                    </select>
+
+                    <input
+                      type="text"
+                      required
+                      placeholder="Atau ketik nama lengkap guru mapel..."
+                      value={approvingStage.approverName}
+                      onChange={(e) => setApprovingStage({ ...approvingStage, approverName: e.target.value })}
+                      className="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-violet-500"
+                    />
+                  </div>
+                ) : approvingStage.stage === 'WAKASEK' && users.length > 0 ? (
+                  <div className="space-y-1.5">
+                    <select
+                      value={users.some(u => u.name === approvingStage.approverName) ? approvingStage.approverName : '__custom__'}
+                      onChange={(e) => {
+                        if (e.target.value === '__custom__') {
+                          setApprovingStage({ ...approvingStage, approverName: '' });
+                        } else {
+                          const selectedUser = users.find(u => u.name === e.target.value);
+                          setApprovingStage({ 
+                            ...approvingStage, 
+                            approverName: e.target.value,
+                            approverRole: selectedUser?.department || approvingStage.approverRole
+                          });
+                        }
+                      }}
+                      className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-slate-200 rounded-xl font-bold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+                    >
+                      <option value={currentUserName}>{currentUserName} (Akun Aktif Saat Ini)</option>
+                      <optgroup label="4 Wakil Kepala Sekolah (Semua Waka Berwenang)">
+                        {users.filter(u => u.role === 'Wakasek' || (u.department || '').toLowerCase().includes('wakasek') || (u.department || '').toLowerCase().includes('wakil kepala')).map((u) => (
+                          <option key={u.id} value={u.name}>
+                            {u.name} — {u.department || 'Wakil Kepala Sekolah'}
+                          </option>
+                        ))}
+                      </optgroup>
+                      <option value="__custom__">-- Ketik Nama Wakasek Lainnya Secara Manual --</option>
+                    </select>
+
+                    <input
+                      type="text"
+                      required
+                      placeholder="Atau ketik nama lengkap wakil kepala sekolah..."
+                      value={approvingStage.approverName}
+                      onChange={(e) => setApprovingStage({ ...approvingStage, approverName: e.target.value })}
+                      className="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+                    />
+                  </div>
+                ) : (
+                  <input
+                    type="text"
+                    required
+                    value={approvingStage.approverName}
+                    onChange={(e) => setApprovingStage({ ...approvingStage, approverName: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-slate-200 rounded-xl font-bold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-sky-500"
+                  />
+                )}
+              </div>
+
+              <div>
+                <label className="block font-bold text-[#0F172A] mb-1">
+                  Jabatan / Wewenang
+                </label>
+                <input
+                  type="text"
+                  value={approvingStage.approverRole}
+                  onChange={(e) => setApprovingStage({ ...approvingStage, approverRole: e.target.value })}
+                  className="w-full px-3.5 py-2 bg-[#F8FAFC] border border-slate-200 rounded-xl font-semibold text-slate-700 focus:outline-hidden text-xs"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-[#0F172A] mb-1">
+                  Catatan / Disposisi (Opsional)
+                </label>
+                <textarea
+                  rows={2}
+                  value={approvingStage.notes}
+                  onChange={(e) => setApprovingStage({ ...approvingStage, notes: e.target.value })}
+                  placeholder="Misal: Tugas KBM telah diberikan, Wajib kembali sebelum jam 12.00..."
+                  className="w-full px-3.5 py-2 bg-[#F8FAFC] border border-slate-200 rounded-xl text-xs text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-sky-500 font-medium"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setApprovingStage(null)}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className={`px-5 py-2 rounded-xl text-xs font-black text-white shadow-sm cursor-pointer flex items-center gap-1.5 transition-all ${
+                    approvingStage.stage === 'ADMIN' ? 'bg-emerald-600 hover:bg-emerald-500' :
+                    approvingStage.stage === 'GURU_MAPEL' ? 'bg-violet-600 hover:bg-violet-500' : 'bg-indigo-600 hover:bg-indigo-500'
+                  }`}
+                >
+                  <Check className="w-4 h-4" />
+                  <span>
+                    {approvingStage.stage === 'ADMIN' && 'Sahkan Tahap 1 (Lanjut ke Guru Mapel)'}
+                    {approvingStage.stage === 'GURU_MAPEL' && (approvingStage.permit.type === 'Keluar Kelas' ? 'Sahkan Tahap 2 (Final - Terbitkan Izin)' : 'Sahkan Tahap 2 (Lanjut ke Wakasek)')}
+                    {approvingStage.stage === 'WAKASEK' && 'Sahkan Tahap 3 (Terbitkan Izin Resmi)'}
+                  </span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

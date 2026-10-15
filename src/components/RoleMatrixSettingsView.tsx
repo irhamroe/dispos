@@ -77,7 +77,7 @@ export const RoleMatrixSettingsView: React.FC<RoleMatrixSettingsViewProps> = ({
     }, 3500);
   };
 
-  const rolesList: UserRole[] = ['Admin', 'Wali Kelas', 'Guru', 'Tendik'];
+  const rolesList: UserRole[] = ['Admin', 'Wali Kelas', 'Guru', 'Tendik', 'Satpam'];
 
   const roleMetaInfo = (role: UserRole) => {
     switch (role) {
@@ -112,6 +112,14 @@ export const RoleMatrixSettingsView: React.FC<RoleMatrixSettingsViewProps> = ({
           gradient: 'from-amber-600 to-orange-600',
           icon: Briefcase,
           desc: 'Tata Usaha, arsip persuratan, verifikasi data induk & pelaporan.',
+        };
+      case 'Satpam':
+        return {
+          label: 'Satpam / Security',
+          badgeClass: 'bg-slate-800 text-white border-slate-700',
+          gradient: 'from-slate-700 to-slate-900',
+          icon: ShieldCheck,
+          desc: 'Petugas keamanan gerbang & pemeriksaan e-surat izin keluar sekolah.',
         };
     }
   };

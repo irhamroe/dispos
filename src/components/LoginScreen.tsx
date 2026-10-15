@@ -70,15 +70,41 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
         return;
       }
 
+      // Direct check for Satpam / Security (username: satpam / security, password: satpam)
+      if ((rawInputUser === 'satpam' || rawInputUser === 'security') && (rawInputPass === 'satpam' || rawInputPass === 'security')) {
+        setIsLoading(false);
+        const satpamUser = users.find((u) => u.username.toLowerCase() === 'satpam' || u.role === 'Satpam');
+        if (satpamUser) {
+          onLoginSuccess(satpamUser);
+        } else {
+          onLoginSuccess({
+            id: 'usr-security-satpam',
+            username: 'satpam',
+            name: 'Petugas Keamanan (Satpam)',
+            role: 'Satpam',
+            nip: 'STP-SMAN1BATU-01',
+            department: 'Pos Keamanan Gerbang Utama',
+            avatar: 'SP',
+            status: 'Aktif',
+            password: 'satpam',
+          });
+        }
+        return;
+      }
+
       // 2. Check matched user from users list
       const foundInUsers = users.find((u) => {
         const uName = u.username.trim().replace(/\s+/g, '').toLowerCase();
         const uRawName = u.username.trim().toLowerCase();
         const uNip = (u.nip || '').trim().replace(/\s+/g, '').toLowerCase();
+        const isWakasekAlias = cleanInputUser === 'wakasek' && (u.id === 'usr-waka-kesiswaan' || (u.department || '').toLowerCase().includes('kesiswaan'));
+        const isSatpamAlias = (cleanInputUser === 'satpam' || cleanInputUser === 'security') && (u.role === 'Satpam' || (u.department || '').toLowerCase().includes('keamanan'));
         return (
           uName === cleanInputUser ||
           uRawName === rawInputUser ||
-          uNip === cleanInputUser
+          uNip === cleanInputUser ||
+          isWakasekAlias ||
+          isSatpamAlias
         );
       });
 
@@ -97,6 +123,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
           cleanInputPass === expectedPass ||
           rawInputPass === rawExpectedPass ||
           cleanInputPass === nipClean ||
+          (cleanInputUser === 'wakasek' && (rawInputPass === 'wakasek123' || cleanInputPass === nipClean)) ||
           (foundInUsers.role === 'Admin' && rawInputPass === 'smabadispos')
         ) {
           setIsLoading(false);

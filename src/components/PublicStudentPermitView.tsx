@@ -26,9 +26,12 @@ import {
   RefreshCw,
   Search,
   XCircle,
-  Clock4
+  Clock4,
+  Zap,
+  Lock,
+  ShieldAlert
 } from 'lucide-react';
-import { Student, SchoolProfile, StudentPermitRecord, StudentPermitType } from '../types';
+import { Student, SchoolProfile, StudentPermitRecord, StudentPermitType, ApprovalStep } from '../types';
 import { RombelClass } from '../data/initialData';
 import { formatDateIndonesian, formatDayAndDateIndonesian, getTodayDateString } from '../utils/exportUtils';
 import { sortClasses, sortStudents } from '../utils/sortUtils';
@@ -55,6 +58,22 @@ const LESSON_HOUR_OPTIONS = [
   'Jam ke-8 s/d 9',
   'Jam ke-9 s/d 10',
 ];
+
+const getApprovalStep = (permit: StudentPermitRecord): ApprovalStep => {
+  if (permit.type === 'Dispensasi Seragam') return 'DONE';
+  if (permit.status === 'Disetujui' || permit.status === 'Kembali' || permit.status === 'Sudah Kembali') {
+    return 'DONE';
+  }
+  if (permit.currentApprovalStep) {
+    return permit.currentApprovalStep;
+  }
+  if (!permit.adminApproval?.approved) return 'ADMIN';
+  if (!permit.teacherApproval?.approved) return 'GURU_MAPEL';
+  if (permit.type === 'Keluar Sekolah') {
+    if (!permit.wakasekApproval?.approved) return 'WAKASEK';
+  }
+  return 'DONE';
+};
 
 export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = ({
   schoolProfile,
@@ -110,6 +129,11 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
     }
     return null;
   }, [activePermitId, permits, localSubmittedPermit]);
+
+  const activeApprovalStep = useMemo(() => {
+    if (!activePermit) return 'ADMIN';
+    return getApprovalStep(activePermit);
+  }, [activePermit]);
 
   // Filter students in the selected class for form
   const classStudents = useMemo(() => {
@@ -174,6 +198,7 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
       startDate: activeTab === 'Dispensasi Seragam' ? startDate : undefined,
       estimatedEndDate: activeTab === 'Dispensasi Seragam' ? estimatedEndDate : undefined,
       status: 'Menunggu',
+      currentApprovalStep: (activeTab === 'Keluar Sekolah' || activeTab === 'Keluar Kelas') ? 'ADMIN' : undefined,
       qrVerificationCode: qrCode,
     };
 
@@ -335,20 +360,45 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
             {activePermit.status === 'Menunggu' && (
               <div className="bg-white rounded-[32px] p-6 sm:p-8 shadow-2xl border border-white space-y-6 animate-in fade-in zoom-in-95">
                 {/* Header Menunggu */}
-                <div className="p-5 bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 text-white rounded-2xl shadow-md flex items-center justify-between gap-4">
+                {/* Header Menunggu */}
+                <div className={`p-5 text-white rounded-2xl shadow-md flex items-center justify-between gap-4 ${
+                  activePermit.type === 'Keluar Sekolah'
+                    ? 'bg-gradient-to-r from-blue-700 via-indigo-700 to-sky-700'
+                    : activePermit.type === 'Keluar Kelas'
+                    ? 'bg-gradient-to-r from-teal-700 via-emerald-700 to-cyan-700'
+                    : 'bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500'
+                }`}>
                   <div className="flex items-center gap-3.5">
                     <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center shrink-0 animate-pulse">
                       <Clock4 className="w-7 h-7 text-white" />
                     </div>
                     <div>
                       <div className="text-[10px] uppercase font-black tracking-wider text-amber-200 bg-black/15 px-2 py-0.5 rounded-md inline-block">
-                        Status: Menunggu Persetujuan
+                        {activePermit.type === 'Keluar Sekolah'
+                          ? `Alur 3 Tahap (${activeApprovalStep === 'ADMIN' ? 'Tahap 1: Admin' : activeApprovalStep === 'GURU_MAPEL' ? 'Tahap 2: Guru Mapel' : activeApprovalStep === 'WAKASEK' ? 'Tahap 3: Wakasek' : 'Selesai'})`
+                          : activePermit.type === 'Keluar Kelas'
+                          ? `Alur 2 Tahap (${activeApprovalStep === 'ADMIN' ? 'Tahap 1: Admin' : 'Tahap 2: Guru Mapel'})`
+                          : 'Status: Menunggu Persetujuan Admin'}
                       </div>
                       <h2 className="text-base sm:text-lg font-black mt-0.5">
-                        Permohonan Izin Terkirim ke Guru Piket
+                        {activePermit.type === 'Keluar Sekolah'
+                          ? (activeApprovalStep === 'ADMIN' 
+                              ? 'Tahap 1: Menunggu Otorisasi Admin / Piket' 
+                              : activeApprovalStep === 'GURU_MAPEL' 
+                              ? `Tahap 2: Menunggu Guru Mapel (${activePermit.subject || 'Mapel'})` 
+                              : 'Tahap 3: Menunggu Pengesahan Wakasek (Semua Waka)')
+                          : activePermit.type === 'Keluar Kelas'
+                          ? (activeApprovalStep === 'ADMIN'
+                              ? 'Tahap 1: Menunggu Otorisasi Admin / Piket'
+                              : `Tahap 2: Menunggu Guru Mapel (${activePermit.subject || 'Mapel'})`)
+                          : 'Permohonan Izin Terkirim ke Administrator'}
                       </h2>
-                      <p className="text-xs text-amber-100">
-                        Silakan menghadap Guru Piket di Meja Piket untuk mendapatkan persetujuan.
+                      <p className="text-xs text-sky-100">
+                        {activePermit.type === 'Keluar Sekolah'
+                          ? 'Izin Keluar Sekolah memerlukan 3 tahap urut: 1. Admin Piket → 2. Guru Mapel → 3. Wakil Kepala Sekolah (Semua Waka Berwenang).'
+                          : activePermit.type === 'Keluar Kelas'
+                          ? 'Izin Keluar Kelas memerlukan 2 tahap urut: 1. Admin Piket → 2. Guru Mata Pelajaran.'
+                          : 'Izin dispensasi seragam hanya memerlukan persetujuan langsung dari Administrator / Petugas Meja Piket.'}
                       </p>
                     </div>
                   </div>
@@ -363,6 +413,201 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                   </button>
                 </div>
 
+                {/* Stepper Visual 3 Tahap Persetujuan Berurutan Khusus Izin Keluar Sekolah */}
+                {activePermit.type === 'Keluar Sekolah' && (
+                  <div className="p-4 sm:p-5 bg-gradient-to-br from-slate-50 to-sky-50/60 rounded-2xl border-2 border-sky-200/80 space-y-3.5 font-sans">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-slate-800">
+                        <Layers className="w-4 h-4 text-sky-600" />
+                        <span>Alur Persetujuan Bertahap (3 Tahap Urut)</span>
+                      </div>
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-sky-100 text-sky-800 border border-sky-200">
+                        Wajib Urut: 1 → 2 → 3
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+                      {/* Step 1: Admin */}
+                      <div className={`p-3 rounded-xl border transition-all ${
+                        activePermit.adminApproval?.approved
+                          ? 'bg-emerald-50 border-emerald-300 text-emerald-950 shadow-2xs'
+                          : activeApprovalStep === 'ADMIN'
+                          ? 'bg-amber-50 border-amber-300 text-amber-950 shadow-xs ring-2 ring-amber-400/40'
+                          : 'bg-slate-100 border-slate-200 text-slate-400'
+                      }`}>
+                        <div className="flex items-center justify-between text-xs font-black mb-1">
+                          <span className="flex items-center gap-1">
+                            <span className="w-4 h-4 rounded-full bg-slate-900/10 flex items-center justify-center text-[10px]">1</span>
+                            Admin Piket
+                          </span>
+                          {activePermit.adminApproval?.approved ? (
+                            <span className="text-emerald-700 font-bold text-[11px] flex items-center gap-0.5">
+                              <Check className="w-3.5 h-3.5" /> Selesai
+                            </span>
+                          ) : (
+                            <span className="text-amber-700 font-bold text-[10px] animate-pulse">Sedang Proses</span>
+                          )}
+                        </div>
+                        <div className="text-[11px] font-semibold truncate">
+                          {activePermit.adminApproval?.approvedBy || 'Petugas Meja Piket'}
+                        </div>
+                        <div className="text-[10px] text-slate-500 mt-0.5">
+                          {activePermit.adminApproval?.approvedAt ? `${activePermit.adminApproval.approvedAt} WIB` : 'Menunggu verifikasi meja piket'}
+                        </div>
+                      </div>
+
+                      {/* Step 2: Guru Mapel */}
+                      <div className={`p-3 rounded-xl border transition-all ${
+                        activePermit.teacherApproval?.approved
+                          ? 'bg-emerald-50 border-emerald-300 text-emerald-950 shadow-2xs'
+                          : activeApprovalStep === 'GURU_MAPEL'
+                          ? 'bg-amber-50 border-amber-300 text-amber-950 shadow-xs ring-2 ring-amber-400/40'
+                          : 'bg-slate-100/80 border-slate-200 text-slate-400'
+                      }`}>
+                        <div className="flex items-center justify-between text-xs font-black mb-1">
+                          <span className="flex items-center gap-1">
+                            <span className="w-4 h-4 rounded-full bg-slate-900/10 flex items-center justify-center text-[10px]">2</span>
+                            Guru Mapel
+                          </span>
+                          {activePermit.teacherApproval?.approved ? (
+                            <span className="text-emerald-700 font-bold text-[11px] flex items-center gap-0.5">
+                              <Check className="w-3.5 h-3.5" /> Selesai
+                            </span>
+                          ) : activeApprovalStep === 'GURU_MAPEL' ? (
+                            <span className="text-amber-700 font-bold text-[10px] animate-pulse">Sedang Proses</span>
+                          ) : (
+                            <span className="text-slate-400 text-[10px] flex items-center gap-0.5">
+                              <Lock className="w-3 h-3" /> Terkunci
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-[11px] font-semibold truncate" title={activePermit.subject}>
+                          {activePermit.teacherApproval?.approvedBy || activePermit.subject || 'Guru Pengajar Mapel'}
+                        </div>
+                        <div className="text-[10px] text-slate-500 mt-0.5">
+                          {activePermit.teacherApproval?.approvedAt ? `${activePermit.teacherApproval.approvedAt} WIB` : (activePermit.adminApproval?.approved ? 'Menunggu persetujuan guru mapel' : 'Menunggu Tahap 1 Selesai')}
+                        </div>
+                      </div>
+
+                      {/* Step 3: Wakasek */}
+                      <div className={`p-3 rounded-xl border transition-all ${
+                        activePermit.wakasekApproval?.approved
+                          ? 'bg-emerald-50 border-emerald-300 text-emerald-950 shadow-2xs'
+                          : activeApprovalStep === 'WAKASEK'
+                          ? 'bg-amber-50 border-amber-300 text-amber-950 shadow-xs ring-2 ring-amber-400/40'
+                          : 'bg-slate-100/80 border-slate-200 text-slate-400'
+                      }`}>
+                        <div className="flex items-center justify-between text-xs font-black mb-1">
+                          <span className="flex items-center gap-1">
+                            <span className="w-4 h-4 rounded-full bg-slate-900/10 flex items-center justify-center text-[10px]">3</span>
+                            Wakil Kepala Sekolah
+                          </span>
+                          {activePermit.wakasekApproval?.approved ? (
+                            <span className="text-emerald-700 font-bold text-[11px] flex items-center gap-0.5">
+                              <Check className="w-3.5 h-3.5" /> Selesai
+                            </span>
+                          ) : activeApprovalStep === 'WAKASEK' ? (
+                            <span className="text-amber-700 font-bold text-[10px] animate-pulse">Sedang Proses</span>
+                          ) : (
+                            <span className="text-slate-400 text-[10px] flex items-center gap-0.5">
+                              <Lock className="w-3 h-3" /> Terkunci
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-[11px] font-semibold truncate">
+                          {activePermit.wakasekApproval?.approvedBy 
+                            ? `${activePermit.wakasekApproval.approvedBy} (${activePermit.wakasekApproval.roleTitle ? activePermit.wakasekApproval.roleTitle.replace('Wakil Kepala Sekolah ', '') : 'Wakasek'})` 
+                            : 'Semua Bidang Waka Berwenang'}
+                        </div>
+                        <div className="text-[10px] text-slate-500 mt-0.5">
+                          {activePermit.wakasekApproval?.approvedAt 
+                            ? `${activePermit.wakasekApproval.approvedAt} WIB` 
+                            : (activePermit.teacherApproval?.approved ? 'Menunggu pengesahan salah satu Wakasek' : 'Menunggu Tahap 1 & 2 Selesai')}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Stepper Visual 2 Tahap Persetujuan Berurutan Khusus Izin Keluar Kelas */}
+                {activePermit.type === 'Keluar Kelas' && (
+                  <div className="p-4 sm:p-5 bg-gradient-to-br from-slate-50 to-emerald-50/60 rounded-2xl border-2 border-emerald-200/80 space-y-3.5 font-sans">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-slate-800">
+                        <Layers className="w-4 h-4 text-emerald-600" />
+                        <span>Alur Persetujuan Bertahap (2 Tahap Urut)</span>
+                      </div>
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200">
+                        Wajib Urut: 1. Admin → 2. Guru Mapel
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                      {/* Step 1: Admin */}
+                      <div className={`p-3 rounded-xl border transition-all ${
+                        activePermit.adminApproval?.approved
+                          ? 'bg-emerald-50 border-emerald-300 text-emerald-950 shadow-2xs'
+                          : activeApprovalStep === 'ADMIN'
+                          ? 'bg-amber-50 border-amber-300 text-amber-950 shadow-xs ring-2 ring-amber-400/40'
+                          : 'bg-slate-100 border-slate-200 text-slate-400'
+                      }`}>
+                        <div className="flex items-center justify-between text-xs font-black mb-1">
+                          <span className="flex items-center gap-1">
+                            <span className="w-4 h-4 rounded-full bg-slate-900/10 flex items-center justify-center text-[10px]">1</span>
+                            Admin Piket
+                          </span>
+                          {activePermit.adminApproval?.approved ? (
+                            <span className="text-emerald-700 font-bold text-[11px] flex items-center gap-0.5">
+                              <Check className="w-3.5 h-3.5" /> Selesai
+                            </span>
+                          ) : (
+                            <span className="text-amber-700 font-bold text-[10px] animate-pulse">Sedang Proses</span>
+                          )}
+                        </div>
+                        <div className="text-[11px] font-semibold truncate">
+                          {activePermit.adminApproval?.approvedBy || 'Petugas Meja Piket'}
+                        </div>
+                        <div className="text-[10px] text-slate-500 mt-0.5">
+                          {activePermit.adminApproval?.approvedAt ? `${activePermit.adminApproval.approvedAt} WIB` : 'Menunggu verifikasi meja piket'}
+                        </div>
+                      </div>
+
+                      {/* Step 2: Guru Mapel */}
+                      <div className={`p-3 rounded-xl border transition-all ${
+                        activePermit.teacherApproval?.approved
+                          ? 'bg-emerald-50 border-emerald-300 text-emerald-950 shadow-2xs'
+                          : activeApprovalStep === 'GURU_MAPEL'
+                          ? 'bg-amber-50 border-amber-300 text-amber-950 shadow-xs ring-2 ring-amber-400/40'
+                          : 'bg-slate-100/80 border-slate-200 text-slate-400'
+                      }`}>
+                        <div className="flex items-center justify-between text-xs font-black mb-1">
+                          <span className="flex items-center gap-1">
+                            <span className="w-4 h-4 rounded-full bg-slate-900/10 flex items-center justify-center text-[10px]">2</span>
+                            Guru Mata Pelajaran (Pengesah)
+                          </span>
+                          {activePermit.teacherApproval?.approved ? (
+                            <span className="text-emerald-700 font-bold text-[11px] flex items-center gap-0.5">
+                              <Check className="w-3.5 h-3.5" /> Selesai
+                            </span>
+                          ) : activeApprovalStep === 'GURU_MAPEL' ? (
+                            <span className="text-amber-700 font-bold text-[10px] animate-pulse">Sedang Proses</span>
+                          ) : (
+                            <span className="text-slate-400 text-[10px] flex items-center gap-0.5">
+                              <Lock className="w-3 h-3" /> Terkunci
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-[11px] font-semibold truncate" title={activePermit.subject}>
+                          {activePermit.teacherApproval?.approvedBy || activePermit.subject || 'Guru Pengajar Mapel'}
+                        </div>
+                        <div className="text-[10px] text-slate-500 mt-0.5">
+                          {activePermit.teacherApproval?.approvedAt ? `${activePermit.teacherApproval.approvedAt} WIB` : (activePermit.adminApproval?.approved ? 'Menunggu persetujuan guru mapel' : 'Menunggu Tahap 1 Selesai')}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Status Notice Box */}
                 <div className="p-4 bg-sky-50 rounded-2xl border border-sky-200 flex items-start gap-3">
                   <AlertCircle className="w-5 h-5 text-sky-600 shrink-0 mt-0.5" />
@@ -370,7 +615,11 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                     <strong className="text-slate-900 font-bold block mb-0.5">
                       Surat Izin Resmi Belum Terbit
                     </strong>
-                    Surat izin resmi dan kode verifikasi hanya akan ditampilkan di layar handphone ini setelah permohonan disetujui oleh Guru Piket / Admin. Halaman ini akan otomatis diperbarui begitu disetujui.
+                    {activePermit.type === 'Keluar Sekolah'
+                      ? 'Surat izin resmi dan kode verifikasi QR hanya akan diterbitkan di layar ini setelah seluruh 3 tahapan persetujuan (Admin, Guru Mapel, dan Wakasek) selesai disahkan. Halaman ini akan otomatis diperbarui begitu disetujui.'
+                      : activePermit.type === 'Keluar Kelas'
+                      ? 'Surat izin resmi dan kode verifikasi QR hanya akan diterbitkan di layar ini setelah 2 tahapan persetujuan (Admin dan Guru Mata Pelajaran) selesai disahkan. Halaman ini akan otomatis diperbarui begitu disetujui.'
+                      : 'Surat izin resmi dan kode verifikasi QR hanya akan diterbitkan setelah diverifikasi dan disetujui langsung oleh Administrator / Petugas Meja Piket.'}
                   </div>
                 </div>
 
@@ -579,8 +828,129 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                     </div>
                   </div>
 
+                  {/* Khusus Izin Keluar Sekolah: 3 Tahap Pengesahan Resmi */}
+                  {activePermit.type === 'Keluar Sekolah' && (
+                    <div className="pt-2 border-t-2 border-slate-900 font-sans space-y-2">
+                      <div className="text-[10px] font-black uppercase text-slate-700 tracking-wider text-center">
+                        LEMBAR PENGESAHAN 3 TAHAP (ADMIN • GURU MATA PELAJARAN • WAKASEK)
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        {/* Kotak 1: Admin */}
+                        <div className={`p-2.5 rounded-xl border text-center space-y-1 ${
+                          activePermit.adminApproval?.approved 
+                            ? 'bg-emerald-50/70 border-emerald-300' 
+                            : 'bg-slate-50 border-slate-200'
+                        }`}>
+                          <div className="text-[10px] font-black text-slate-700 uppercase">1. Admin Piket</div>
+                          <div className={`text-[10px] font-bold ${activePermit.adminApproval?.approved ? 'text-emerald-700' : 'text-slate-400'}`}>
+                            {activePermit.adminApproval?.approved ? '✓ Telah Diverifikasi' : '⏳ Menunggu'}
+                          </div>
+                          <div className="font-black text-xs text-slate-900 underline pt-1 truncate">
+                            {activePermit.adminApproval?.approvedBy || activePermit.approvedBy || '-'}
+                          </div>
+                          <div className="text-[9px] text-slate-500">
+                            {activePermit.adminApproval?.approvedAt ? `${activePermit.adminApproval.approvedAt} WIB` : (activePermit.approvedAt ? `${activePermit.approvedAt} WIB` : '-')}
+                          </div>
+                        </div>
+
+                        {/* Kotak 2: Guru Mata Pelajaran */}
+                        <div className={`p-2.5 rounded-xl border text-center space-y-1 ${
+                          activePermit.teacherApproval?.approved 
+                            ? 'bg-violet-50/70 border-violet-300' 
+                            : 'bg-slate-50 border-slate-200'
+                        }`}>
+                          <div className="text-[10px] font-black text-slate-700 uppercase">2. Guru Mata Pelajaran</div>
+                          <div className="text-[9px] text-slate-500 font-semibold truncate" title={activePermit.subject}>
+                            {activePermit.subject || 'Mapel Saat Ini'}
+                          </div>
+                          <div className={`text-[10px] font-bold ${activePermit.teacherApproval?.approved ? 'text-emerald-700' : 'text-slate-400'}`}>
+                            {activePermit.teacherApproval?.approved ? '✓ Telah Disetujui' : '⏳ Menunggu'}
+                          </div>
+                          <div className="font-black text-xs text-slate-900 underline pt-1 truncate">
+                            {activePermit.teacherApproval?.approvedBy || '-'}
+                          </div>
+                          <div className="text-[9px] text-slate-500">
+                            {activePermit.teacherApproval?.approvedAt ? `${activePermit.teacherApproval.approvedAt} WIB` : '-'}
+                          </div>
+                        </div>
+
+                        {/* Kotak 3: Wakil Kepala Sekolah */}
+                        <div className={`p-2.5 rounded-xl border text-center space-y-1 ${
+                          activePermit.wakasekApproval?.approved 
+                            ? 'bg-indigo-50/70 border-indigo-300' 
+                            : 'bg-slate-50 border-slate-200'
+                        }`}>
+                          <div className="text-[10px] font-black text-slate-700 uppercase">3. Wakil Kepala Sekolah</div>
+                          <div className="text-[9px] text-slate-500 font-semibold truncate" title={activePermit.wakasekApproval?.roleTitle || 'Semua Bidang Waka'}>
+                            {activePermit.wakasekApproval?.roleTitle || 'Semua Bidang Waka'}
+                          </div>
+                          <div className={`text-[10px] font-bold ${activePermit.wakasekApproval?.approved ? 'text-emerald-700' : 'text-slate-400'}`}>
+                            {activePermit.wakasekApproval?.approved ? '✓ Telah Disahkan' : '⏳ Menunggu'}
+                          </div>
+                          <div className="font-black text-xs text-slate-900 underline pt-1 truncate">
+                            {activePermit.wakasekApproval?.approvedBy || '-'}
+                          </div>
+                          <div className="text-[9px] text-slate-500">
+                            {activePermit.wakasekApproval?.approvedAt ? `${activePermit.wakasekApproval.approvedAt} WIB` : '-'}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Khusus Izin Keluar Kelas: 2 Tahap Pengesahan Resmi */}
+                  {activePermit.type === 'Keluar Kelas' && (
+                    <div className="pt-2 border-t-2 border-slate-900 font-sans space-y-2">
+                      <div className="text-[10px] font-black uppercase text-slate-700 tracking-wider text-center">
+                        LEMBAR PENGESAHAN 2 TAHAP (ADMIN • GURU MATA PELAJARAN)
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {/* Kotak 1: Admin */}
+                        <div className={`p-2.5 rounded-xl border text-center space-y-1 ${
+                          activePermit.adminApproval?.approved 
+                            ? 'bg-emerald-50/70 border-emerald-300' 
+                            : 'bg-slate-50 border-slate-200'
+                        }`}>
+                          <div className="text-[10px] font-black text-slate-700 uppercase">1. Admin Piket</div>
+                          <div className={`text-[10px] font-bold ${activePermit.adminApproval?.approved ? 'text-emerald-700' : 'text-slate-400'}`}>
+                            {activePermit.adminApproval?.approved ? '✓ Telah Diverifikasi' : '⏳ Menunggu'}
+                          </div>
+                          <div className="font-black text-xs text-slate-900 underline pt-1 truncate">
+                            {activePermit.adminApproval?.approvedBy || activePermit.approvedBy || '-'}
+                          </div>
+                          <div className="text-[9px] text-slate-500">
+                            {activePermit.adminApproval?.approvedAt ? `${activePermit.adminApproval.approvedAt} WIB` : (activePermit.approvedAt ? `${activePermit.approvedAt} WIB` : '-')}
+                          </div>
+                        </div>
+
+                        {/* Kotak 2: Guru Mata Pelajaran */}
+                        <div className={`p-2.5 rounded-xl border text-center space-y-1 ${
+                          activePermit.teacherApproval?.approved 
+                            ? 'bg-violet-50/70 border-violet-300' 
+                            : 'bg-slate-50 border-slate-200'
+                        }`}>
+                          <div className="text-[10px] font-black text-slate-700 uppercase">2. Guru Mata Pelajaran (Pengesah)</div>
+                          <div className="text-[9px] text-slate-500 font-semibold truncate" title={activePermit.subject}>
+                            {activePermit.subject || 'Mapel Saat Ini'}
+                          </div>
+                          <div className={`text-[10px] font-bold ${activePermit.teacherApproval?.approved ? 'text-emerald-700' : 'text-slate-400'}`}>
+                            {activePermit.teacherApproval?.approved ? '✓ Telah Disetujui' : '⏳ Menunggu'}
+                          </div>
+                          <div className="font-black text-xs text-slate-900 underline pt-1 truncate">
+                            {activePermit.teacherApproval?.approvedBy || '-'}
+                          </div>
+                          <div className="text-[9px] text-slate-500">
+                            {activePermit.teacherApproval?.approvedAt ? `${activePermit.teacherApproval.approvedAt} WIB` : '-'}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Status & QR Verifikasi */}
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 font-sans">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 font-sans border-t border-slate-200">
                     <div className="flex items-center gap-3">
                       <div className="w-16 h-16 p-1.5 bg-white border border-slate-300 rounded-xl shadow-2xs flex items-center justify-center">
                         <QrCode className="w-full h-full text-slate-900" />
@@ -588,20 +958,35 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                       <div className="text-left text-xs">
                         <div className="text-[10px] text-slate-500 uppercase font-bold">Verifikasi Disiplin Positif</div>
                         <div className="text-xs font-mono font-bold text-emerald-800">
-                          DISETUJUI OLEH {activePermit.approvedBy ? activePermit.approvedBy.toUpperCase() : 'DISIPLIN POSITIF'}
+                          {activePermit.type === 'Keluar Sekolah'
+                            ? '3-STAGE DIGITAL VALIDATED'
+                            : activePermit.type === 'Keluar Kelas'
+                            ? '2-STAGE DIGITAL VALIDATED'
+                            : `DISETUJUI OLEH ${activePermit.approvedBy ? activePermit.approvedBy.toUpperCase() : 'DISIPLIN POSITIF'}`}
+                        </div>
+                        <div className="text-[9px] text-slate-500 font-mono mt-0.5">
+                          {activePermit.qrVerificationCode}
                         </div>
                       </div>
                     </div>
 
                     <div className="text-right text-xs">
-                      <div className="text-slate-600">Disiplin Positif</div>
+                      <div className="text-slate-600">
+                        {activePermit.type === 'Keluar Sekolah' 
+                          ? (activePermit.wakasekApproval?.roleTitle || 'Wakil Kepala Sekolah') 
+                          : activePermit.type === 'Dispensasi Seragam'
+                          ? 'Persetujuan Administrator'
+                          : 'Disiplin Positif'}
+                      </div>
                       <div className="h-8 flex items-center justify-end">
                         <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-black rounded border border-emerald-300 uppercase">
                           VERIFIED
                         </span>
                       </div>
                       <div className="font-bold underline text-slate-900">
-                        {activePermit.approvedBy || 'Petugas Piket Harian'}
+                        {activePermit.type === 'Keluar Sekolah'
+                          ? (activePermit.wakasekApproval?.approvedBy || activePermit.approvedBy || 'Wakil Kepala Sekolah')
+                          : (activePermit.approvedBy || 'Administrator Piket')}
                       </div>
                     </div>
                   </div>
@@ -762,17 +1147,27 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                       </div>
 
                       <div className="flex items-center gap-3 shrink-0">
-                        <span className={`px-3 py-1 rounded-xl text-[11px] font-black border ${
+                        <span className={`px-3 py-1 rounded-xl text-[11px] font-black border flex items-center gap-1 ${
                           p.status === 'Disetujui' || p.status === 'Kembali'
                             ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
                             : p.status === 'Menunggu'
-                            ? 'bg-amber-100 text-amber-900 border-amber-300 animate-pulse'
+                            ? 'bg-amber-100 text-amber-900 border-amber-300'
                             : 'bg-rose-100 text-rose-900 border-rose-300'
                         }`}>
                           {p.status === 'Disetujui' || p.status === 'Kembali'
                             ? '✓ Disetujui'
                             : p.status === 'Menunggu'
-                            ? '⏳ Menunggu'
+                            ? (p.type === 'Keluar Sekolah'
+                                ? (getApprovalStep(p) === 'ADMIN' 
+                                    ? '⏳ Tahap 1: Admin' 
+                                    : getApprovalStep(p) === 'GURU_MAPEL' 
+                                    ? '⏳ Tahap 2: Guru Mapel' 
+                                    : '⏳ Tahap 3: Wakasek')
+                                : p.type === 'Keluar Kelas'
+                                ? (getApprovalStep(p) === 'ADMIN'
+                                    ? '⏳ Tahap 1: Admin'
+                                    : '⏳ Tahap 2: Guru Mapel')
+                                : '⏳ Menunggu')
                             : '✕ Ditolak'}
                         </span>
                         <ChevronRight className="w-4 h-4 text-slate-400" />

@@ -143,12 +143,28 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           icon: GraduationCap,
           desc: 'Piket harian, KBM & input pelanggaran',
         };
+      case 'Wakasek':
+      case 'Wakil Kepala Sekolah':
+        return {
+          label: 'Wakasek',
+          badgeClass: 'bg-indigo-100 text-indigo-800 border-indigo-200',
+          icon: Award,
+          desc: 'Wakil Kepala Sekolah (Kesiswaan, Kurikulum, Humas, Sarpras)',
+        };
       case 'Tendik':
         return {
           label: 'Tendik',
           badgeClass: 'bg-amber-100 text-amber-800 border-amber-200',
           icon: Briefcase,
           desc: 'Tata Usaha, administrasi & persuratan',
+        };
+      case 'Satpam':
+      case 'Security':
+        return {
+          label: 'Satpam',
+          badgeClass: 'bg-slate-900 text-white border-slate-700',
+          icon: ShieldCheck,
+          desc: 'Petugas keamanan pos gerbang & verifikasi izin keluar',
         };
       default:
         return {
@@ -168,6 +184,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       waliKelas: 0,
       guru: 0,
       tendik: 0,
+      satpam: 0,
       aktif: 0,
     };
 
@@ -175,8 +192,9 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       const r = u.role;
       if (r === 'Admin' || r === 'Administrator') counts.admin++;
       else if (r === 'Wali Kelas') counts.waliKelas++;
-      else if (r === 'Guru' || r === 'Guru Piket' || r === 'Guru BK') counts.guru++;
+      else if (r === 'Guru' || r === 'Guru Piket' || r === 'Guru BK' || r === 'Wakasek' || r === 'Wakil Kepala Sekolah') counts.guru++;
       else if (r === 'Tendik') counts.tendik++;
+      else if (r === 'Satpam' || r === 'Security') counts.satpam++;
 
       if (u.status === 'Aktif') counts.aktif++;
     });
@@ -190,6 +208,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       'Wali Kelas': roleCounts.waliKelas,
       'Guru': roleCounts.guru,
       'Tendik': roleCounts.tendik,
+      'Satpam': roleCounts.satpam,
     };
   }, [roleCounts]);
 
@@ -203,9 +222,11 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
         } else if (selectedRoleFilter === 'Wali Kelas') {
           if (u.role !== 'Wali Kelas') return false;
         } else if (selectedRoleFilter === 'Guru') {
-          if (u.role !== 'Guru' && u.role !== 'Guru Piket' && u.role !== 'Guru BK') return false;
+          if (u.role !== 'Guru' && u.role !== 'Guru Piket' && u.role !== 'Guru BK' && u.role !== 'Wakasek' && u.role !== 'Wakil Kepala Sekolah') return false;
         } else if (selectedRoleFilter === 'Tendik') {
           if (u.role !== 'Tendik') return false;
+        } else if (selectedRoleFilter === 'Satpam') {
+          if (u.role !== 'Satpam' && u.role !== 'Security') return false;
         }
       }
 
@@ -285,6 +306,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
     if (user.role === 'Admin' || user.role === 'Administrator') normalizedRole = 'Admin';
     else if (user.role === 'Wali Kelas') normalizedRole = 'Wali Kelas';
     else if (user.role === 'Tendik') normalizedRole = 'Tendik';
+    else if (user.role === 'Satpam' || user.role === 'Security') normalizedRole = 'Satpam';
     else normalizedRole = 'Guru';
     setEditRole(normalizedRole);
 
@@ -326,9 +348,11 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       assignedClass: newRole === 'Wali Kelas' ? newAssignedClass : undefined,
       department: newRole === 'Tendik' 
         ? (newDepartment.trim() || 'Staf Tata Usaha') 
-        : newRole === 'Guru' 
-          ? (newDepartment.trim() || 'Guru Mata Pelajaran') 
-          : newDepartment.trim(),
+        : newRole === 'Satpam'
+          ? (newDepartment.trim() || 'Pos Keamanan Gerbang Utama')
+          : newRole === 'Guru' 
+            ? (newDepartment.trim() || 'Guru Mata Pelajaran') 
+            : newDepartment.trim(),
       avatar: initials || 'US',
       photoUrl: newPhotoUrl.trim() || undefined,
       status: newStatus,
@@ -543,8 +567,8 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           </div>
         </div>
 
-        {/* 4 Role Summary Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 pt-6 border-t border-sky-100/50">
+        {/* 5 Role Summary Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 mt-6 pt-6 border-t border-sky-100/50">
             {/* Card 1: Admin */}
             <div 
               onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Admin' ? 'ALL' : 'Admin')}
@@ -645,6 +669,32 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                 </div>
                 <p className="text-[11px] text-[#B45309]/80 mt-1 leading-relaxed">
                   Tata Usaha, staf kesiswaan, persuratan &amp; verifikasi arsip.
+                </p>
+              </div>
+            </div>
+
+            {/* Card 5: Satpam */}
+            <div 
+              onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Satpam' ? 'ALL' : 'Satpam')}
+              className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden group ${
+                selectedRoleFilter === 'Satpam'
+                  ? 'bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300 border-2 border-slate-800 shadow-sm -translate-y-1'
+                  : 'bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200/60 border border-slate-300 hover:border-slate-500 shadow-xs hover:-translate-y-1'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-slate-800 to-slate-900 text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+                <span className="text-2xl font-black text-slate-900">{roleCounts.satpam}</span>
+              </div>
+              <div className="mt-3">
+                <div className="text-xs font-black text-slate-900 flex items-center gap-1.5">
+                  <span>5. Satpam</span>
+                  {selectedRoleFilter === 'Satpam' && <span className="text-[10px] text-slate-800 font-bold">(Aktif)</span>}
+                </div>
+                <p className="text-[11px] text-slate-700/80 mt-1 leading-relaxed">
+                  Pos gerbang &amp; verifikasi e-surat izin keluar sekolah.
                 </p>
               </div>
             </div>
@@ -1006,12 +1056,13 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                 <label className="font-extrabold text-[#0F172A] block text-xs" >
                   Pilih Peran Akun (Role) <span className="text-rose-500">*</span>
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
                   {[
                     { id: 'Admin' as UserRole, label: 'Admin', icon: ShieldCheck },
                     { id: 'Wali Kelas' as UserRole, label: 'Wali Kelas', icon: UserCheck },
                     { id: 'Guru' as UserRole, label: 'Guru', icon: GraduationCap },
                     { id: 'Tendik' as UserRole, label: 'Tendik', icon: Briefcase },
+                    { id: 'Satpam' as UserRole, label: 'Satpam', icon: ShieldCheck },
                   ].map((r) => {
                     const Icon = r.icon;
                     const isSelected = newRole === r.id;
@@ -1357,12 +1408,13 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                 <label className="font-extrabold text-[#0F172A] block text-xs" >
                   Peran Akun (Role) <span className="text-rose-500">*</span>
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
                   {[
                     { id: 'Admin' as UserRole, label: 'Admin', icon: ShieldCheck },
                     { id: 'Wali Kelas' as UserRole, label: 'Wali Kelas', icon: UserCheck },
                     { id: 'Guru' as UserRole, label: 'Guru', icon: GraduationCap },
                     { id: 'Tendik' as UserRole, label: 'Tendik', icon: Briefcase },
+                    { id: 'Satpam' as UserRole, label: 'Satpam', icon: ShieldCheck },
                   ].map((r) => {
                     const Icon = r.icon;
                     const isSelected = editRole === r.id;

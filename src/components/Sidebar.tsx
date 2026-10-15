@@ -28,6 +28,7 @@ export type NavTab =
   | 'recap' 
   | 'rekap-surat-izin'
   | 'layanan-izin-siswa'
+  | 'pos-keamanan'
   | 'discipline' 
   | 'rekap-pelanggaran'
   | 'tagihan-pembinaan'
@@ -201,6 +202,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
       activeBg: 'bg-[#F0F9FF] text-[#0284C7] shadow-xs',
       badge: (totalPendingPermits && totalPendingPermits > 0) ? `${totalPendingPermits} Menunggu` : 'QR Publik',
       badgeBg: (totalPendingPermits && totalPendingPermits > 0) ? 'bg-[#FFDAD6] text-[#410002]' : 'bg-[#E0F2FE] text-[#0369A1]',
+    },
+    {
+      id: 'pos-keamanan' as NavTab,
+      label: 'Pos Satpam & Gerbang',
+      sublabel: 'Pemeriksaan izin keluar sekolah',
+      icon: ShieldCheck,
+      iconBg: 'bg-[#0F172A] text-white',
+      inactiveIconBg: 'bg-[#F1F5F9] text-[#0F172A]',
+      activeBg: 'bg-[#F8FAFC] text-[#0F172A] shadow-xs',
+      badge: 'Pos Satpam',
+      badgeBg: 'bg-[#E2E8F0] text-[#0F172A]',
     },
     {
       id: 'aturan-pelanggaran' as NavTab,

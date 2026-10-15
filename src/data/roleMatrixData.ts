@@ -83,6 +83,13 @@ export const NAV_TAB_DEFINITIONS: NavTabPermissionMeta[] = [
     iconName: 'DoorOpen',
   },
   {
+    id: 'pos-keamanan',
+    label: 'Pos Satpam & Gerbang',
+    category: 'Disiplin Positif',
+    description: 'Pemeriksaan e-Surat izin keluar sekolah siswa di pos keamanan gerbang sekolah',
+    iconName: 'ShieldCheck',
+  },
+  {
     id: 'aturan-pelanggaran',
     label: 'Manajemen Aturan',
     category: 'Disiplin Positif',
@@ -466,16 +473,54 @@ export const initialRoleMatrix: RoleMatrixMap = {
     lastUpdated: '2026-01-01',
     updatedBy: 'Sistem Standar',
   },
+
+  Satpam: {
+    role: 'Satpam',
+    label: 'Petugas Keamanan (Satpam / Security)',
+    description: 'Pemeriksaan e-surat siswa izin keluar sekolah dan verifikasi akses keluar gerbang sekolah.',
+    badgeClass: 'bg-slate-800 text-white border-slate-700',
+    iconName: 'ShieldCheck',
+    allowedTabs: [
+      'pos-keamanan',
+      'layanan-izin-siswa',
+    ],
+    actionPermissions: {
+      attendance_input_all: false,
+      attendance_input_own: false,
+      attendance_export: false,
+      attendance_verify_letter: false,
+      discipline_create: false,
+      discipline_edit: false,
+      discipline_delete: false,
+      discipline_coaching: false,
+      discipline_export: false,
+      permit_approve: false,
+      permit_create_manual: false,
+      permit_delete: false,
+      parent_call_create: false,
+      parent_call_print: false,
+      rules_manage: false,
+      students_manage: false,
+      classes_manage: false,
+      walikelas_manage: false,
+      users_manage: false,
+      users_reset_password: false,
+      matrix_manage: false,
+    },
+    lastUpdated: '2026-01-01',
+    updatedBy: 'Sistem Standar',
+  },
 };
 
 /**
- * Normalizes any role string into one of standard 4 keys
+ * Normalizes any role string into one of standard keys
  */
 export const normalizeRole = (rawRole?: string): UserRole => {
   if (!rawRole) return 'Guru';
   if (rawRole === 'Admin' || rawRole === 'Administrator') return 'Admin';
   if (rawRole === 'Wali Kelas') return 'Wali Kelas';
   if (rawRole === 'Tendik' || rawRole === 'Tata Usaha' || rawRole === 'Staf TU') return 'Tendik';
+  if (rawRole === 'Satpam' || rawRole === 'Security' || rawRole === 'Petugas Keamanan') return 'Satpam';
   return 'Guru';
 };
 

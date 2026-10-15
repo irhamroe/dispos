@@ -79,13 +79,13 @@ export interface DisciplineRecord {
   coachingEvidenceFileName?: string;
 }
 
-export type UserRole = 'Admin' | 'Wali Kelas' | 'Guru' | 'Tendik';
+export type UserRole = 'Admin' | 'Wali Kelas' | 'Guru' | 'Tendik' | 'Satpam';
 
 export interface AdminUser {
   id: string;
   username: string;
   name: string;
-  role: UserRole | 'Administrator' | 'Guru Piket' | 'Guru BK';
+  role: UserRole | 'Administrator' | 'Guru Piket' | 'Guru BK' | 'Wakasek' | 'Wakil Kepala Sekolah' | 'Satpam' | 'Security';
   email?: string;
   phone?: string;
   nip?: string;
@@ -157,6 +157,16 @@ export type StudentPermitType = 'Keluar Sekolah' | 'Keluar Kelas' | 'Dispensasi 
 
 export type StudentPermitStatus = 'Menunggu' | 'Disetujui' | 'Ditolak' | 'Kembali' | 'Sudah Kembali' | 'Menunggu Persetujuan';
 
+export type ApprovalStep = 'ADMIN' | 'GURU_MAPEL' | 'WAKASEK' | 'DONE';
+
+export interface SingleApprovalStageInfo {
+  approved: boolean;
+  approvedBy: string;
+  approvedAt: string;
+  roleTitle?: string;
+  notes?: string;
+}
+
 export interface StudentPermitRecord {
   id: string;
   permitNumber: string; // Misal: IZIN-20261007-001
@@ -190,6 +200,20 @@ export interface StudentPermitRecord {
   qrVerificationCode?: string;
   createdAt?: string;
   updatedAt?: string;
+
+  // 3 Tahap Persetujuan (Khusus Izin Keluar Sekolah: Admin -> Guru Mapel -> Wakasek)
+  currentApprovalStep?: ApprovalStep; // 'ADMIN' -> 'GURU_MAPEL' -> 'WAKASEK' -> 'DONE'
+  adminApproval?: SingleApprovalStageInfo; // Tahap 1: Admin
+  teacherApproval?: SingleApprovalStageInfo; // Tahap 2: Guru Mata Pelajaran
+  wakasekApproval?: SingleApprovalStageInfo; // Tahap 3: Wakil Kepala Sekolah
+  rejectedAtStep?: ApprovalStep;
+  rejectedBy?: string;
+
+  // Verifikasi Pos Keamanan / Satpam Gerbang Sekolah
+  securityChecked?: boolean;
+  securityCheckedAt?: string;
+  securityCheckedBy?: string;
+  securityNotes?: string;
 }
 
 export type PermissionCategory = 

@@ -36,6 +36,7 @@ import { RecapAttendanceView } from './components/RecapAttendanceView';
 import { PermissionLetterRecapView } from './components/PermissionLetterRecapView';
 import { PublicStudentPermitView } from './components/PublicStudentPermitView';
 import { StudentPermitManagementView } from './components/StudentPermitManagementView';
+import { SecurityGateVerificationView } from './components/SecurityGateVerificationView';
 import { DisciplineView } from './components/DisciplineView';
 import { DisciplineRecapView } from './components/DisciplineRecapView';
 import { DisciplineDebtView } from './components/DisciplineDebtView';
@@ -125,20 +126,25 @@ export default function App() {
     }
   });
 
-  // Students state (36 Rombel, 1,274 students)
+  // Students state (36 Rombel, 1,274 students with updated official NISN)
   const [students, setStudents] = useState<Student[]>(() => {
     try {
       localStorage.removeItem('app_sman1batu_students');
-      localStorage.removeItem('app_sman1batu_discipline');
-      const saved = localStorage.getItem('app_sman1batu_students_v2');
+      localStorage.removeItem('app_sman1batu_students_v2');
+      const saved = localStorage.getItem('app_sman1batu_students_v3');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length === initialStudents.length && parsed[0]?.name === initialStudents[0]?.name) {
+        if (
+          Array.isArray(parsed) && 
+          parsed.length === initialStudents.length && 
+          parsed[0]?.name === initialStudents[0]?.name &&
+          parsed.some((s: any) => s.name === 'Adelia Cahyani' && s.nisn === '0109898696')
+        ) {
           return sortStudents(parsed);
         }
       }
       const sorted = sortStudents(initialStudents);
-      localStorage.setItem('app_sman1batu_students_v2', JSON.stringify(sorted));
+      localStorage.setItem('app_sman1batu_students_v3', JSON.stringify(sorted));
       return sorted;
     } catch {
       return sortStudents(initialStudents);
@@ -233,20 +239,28 @@ export default function App() {
     });
   };
 
-  // Users state (Multi-Role: Admin + 36 Wali Kelas + Guru Mapel)
+  // Users state (Multi-Role: Admin + 36 Wali Kelas + Guru Mapel + 4 Wakasek)
   const [users, setUsers] = useState<AdminUser[]>(() => {
     try {
       localStorage.removeItem('app_sman1batu_users');
       localStorage.removeItem('app_sman1batu_users_v2');
       localStorage.removeItem('app_sman1batu_users_v4');
-      const saved = localStorage.getItem('app_sman1batu_users_v5');
+      localStorage.removeItem('app_sman1batu_users_v5');
+      localStorage.removeItem('app_sman1batu_users_v6');
+      const saved = localStorage.getItem('app_sman1batu_users_v7');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length >= initialUsers.length && parsed.some((u) => u.name === 'Panji Penatas, S.Pd')) {
+        if (
+          Array.isArray(parsed) && 
+          parsed.length >= initialUsers.length && 
+          parsed.some((u) => u.name === 'Anis Dyah Wahyuti, S.Pd') &&
+          parsed.some((u) => u.name === 'Hermawanto, S.Pd, M.Pd') &&
+          parsed.some((u) => u.username === 'satpam' || u.role === 'Satpam')
+        ) {
           return parsed;
         }
       }
-      localStorage.setItem('app_sman1batu_users_v5', JSON.stringify(initialUsers));
+      localStorage.setItem('app_sman1batu_users_v7', JSON.stringify(initialUsers));
       return initialUsers;
     } catch {
       return initialUsers;
@@ -287,7 +301,12 @@ export default function App() {
   };
 
   // Navigation and view states
-  const [currentTab, setCurrentTab] = useState<NavTab>('dashboard');
+  const [currentTab, setCurrentTab] = useState<NavTab>(() => {
+    if (currentUser?.role === 'Satpam' || currentUser?.role === 'Security') {
+      return 'pos-keamanan';
+    }
+    return 'dashboard';
+  });
   const [selectedDate, setSelectedDate] = useState<string>(() => getTodayDateString());
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [selectedClassForStudentView, setSelectedClassForStudentView] = useState<string | undefined>(undefined);
@@ -323,9 +342,11 @@ export default function App() {
 
   // Create new permit (Public form submission)
   const handleCreateStudentPermit = (permitData: StudentPermitRecord | Omit<StudentPermitRecord, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const isMultiStage = permitData.type === 'Keluar Sekolah' || permitData.type === 'Keluar Kelas';
     const newRecord: StudentPermitRecord = {
       ...permitData,
       id: ('id' in permitData && permitData.id) ? permitData.id : `PERMIT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      currentApprovalStep: isMultiStage ? (permitData.currentApprovalStep || 'ADMIN') : permitData.currentApprovalStep,
       createdAt: ('createdAt' in permitData && permitData.createdAt) ? permitData.createdAt : new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -408,11 +429,12 @@ export default function App() {
 
         const isStaleStudentData = remoteStudents.length > 0 && (
           remoteStudents.length !== initialStudents.length ||
-          !remoteStudents.some((s) => s.name === 'Ailin Chaya Agatha')
+          !remoteStudents.some((s) => s.name === 'Ailin Chaya Agatha') ||
+          !remoteStudents.some((s) => s.name === 'Adelia Cahyani' && s.nisn === '0109898696')
         );
 
         if (remoteStudents.length === 0 || isStaleStudentData) {
-          console.log('Syncing real student dataset (1,274 students) to Cloud Firestore...');
+          console.log('Syncing updated real student dataset with official NISN (1,274 students) to Cloud Firestore...');
           await deleteAllDocumentsInCollection(COLLECTIONS.STUDENTS);
           await batchSaveDocuments(COLLECTIONS.STUDENTS, initialStudents);
           setStudents(sortStudents(initialStudents));
@@ -441,7 +463,9 @@ export default function App() {
 
         const isStaleUsers = remoteUsers.length > 0 && (
           remoteUsers.length < initialUsers.length ||
-          !remoteUsers.some((u) => u.name === 'Panji Penatas, S.Pd') ||
+          !remoteUsers.some((u) => u.name === 'Anis Dyah Wahyuti, S.Pd') ||
+          !remoteUsers.some((u) => u.name === 'Heny Nurmayanto, S.Sn') ||
+          !remoteUsers.some((u) => u.username === 'satpam' || u.role === 'Satpam') ||
           remoteUsers.some((u) => u.username === 'walikelas' || u.username === 'operator')
         );
         if (remoteUsers.length === 0 || isStaleUsers) {
@@ -616,7 +640,7 @@ export default function App() {
   }, [waliKelasList]);
 
   useEffect(() => {
-    localStorage.setItem('app_sman1batu_students_v2', JSON.stringify(students));
+    localStorage.setItem('app_sman1batu_students_v3', JSON.stringify(students));
   }, [students]);
 
   useEffect(() => {
@@ -640,12 +664,15 @@ export default function App() {
   }, [enablePointsSystem]);
 
   useEffect(() => {
-    localStorage.setItem('app_sman1batu_users_v5', JSON.stringify(users));
+    localStorage.setItem('app_sman1batu_users_v7', JSON.stringify(users));
   }, [users]);
 
   // Login handler
   const handleLoginSuccess = (user: AdminUser) => {
     setCurrentUser(user);
+    if (user.role === 'Satpam' || user.role === 'Security') {
+      setCurrentTab('pos-keamanan');
+    }
   };
 
   // Logout handler
@@ -859,7 +886,7 @@ export default function App() {
   // Reset / Force sync to official 1,274 students list
   const handleResetToDefaultStudents = async () => {
     setStudents(initialStudents);
-    localStorage.setItem('app_sman1batu_students_v2', JSON.stringify(initialStudents));
+    localStorage.setItem('app_sman1batu_students_v3', JSON.stringify(initialStudents));
     if (isFirebaseConfigured()) {
       await deleteAllDocumentsInCollection(COLLECTIONS.STUDENTS);
       await batchSaveDocuments(COLLECTIONS.STUDENTS, initialStudents);
@@ -1029,6 +1056,7 @@ export default function App() {
               schoolProfile={schoolProfile}
               currentUserName={currentUser.name}
               currentUser={currentUser}
+              users={users}
               roleMatrix={roleMatrix}
               onUpdatePermit={(updated) => {
                 setStudentPermits((prev) => {
@@ -1040,6 +1068,23 @@ export default function App() {
               }}
               onDeletePermit={handleDeleteStudentPermit}
               onOpenPublicPortal={() => setIsPublicPermitOpen(true)}
+            />
+          )}
+
+          {currentTab === 'pos-keamanan' && (
+            <SecurityGateVerificationView
+              permits={studentPermits}
+              schoolProfile={schoolProfile}
+              currentUserName={currentUser.name}
+              currentUser={currentUser}
+              onUpdatePermit={(updated) => {
+                setStudentPermits((prev) => {
+                  const next = prev.map((p) => p.id === updated.id ? updated : p);
+                  localStorage.setItem('app_sman1batu_student_permits_v1', JSON.stringify(next));
+                  return next;
+                });
+                saveStudentPermit(updated).catch((e) => console.warn('Failed to sync permit update to Cloud Firestore:', e));
+              }}
             />
           )}
 
