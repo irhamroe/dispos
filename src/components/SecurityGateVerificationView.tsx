@@ -444,7 +444,7 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
               // Determine current stage if still in progress
               let pendingStageLabel = 'Tahap 1: Admin Piket';
               if (permit.adminApproval?.approved && !permit.teacherApproval?.approved) {
-                pendingStageLabel = `Tahap 2: Guru Mapel (${permit.subject || 'Mapel'})`;
+                pendingStageLabel = permit.subject ? `Tahap 2: Guru Mapel (${permit.subject}) / Wali Kelas` : 'Tahap 2: Guru Mapel / Wali Kelas';
               } else if (permit.adminApproval?.approved && permit.teacherApproval?.approved && !permit.wakasekApproval?.approved) {
                 pendingStageLabel = 'Tahap 3: Wakil Kepala Sekolah';
               }
@@ -523,13 +523,13 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
                         <div>{permit.adminApproval?.approved ? '✓ Sah' : '⏳'}</div>
                       </div>
 
-                      {/* Tahap 2: Guru Mapel */}
+                      {/* Tahap 2: Guru Mapel / Wali Kelas */}
                       <div className={`p-1.5 rounded-lg text-center font-bold ${
                         permit.teacherApproval?.approved
                           ? 'bg-emerald-100 text-emerald-900 border border-emerald-200'
                           : 'bg-slate-100 text-slate-400'
                       }`}>
-                        <div className="text-[9px]">2. Mapel</div>
+                        <div className="text-[9px]">2. Guru/Wali</div>
                         <div>{permit.teacherApproval?.approved ? '✓ Sah' : '⏳'}</div>
                       </div>
 
@@ -671,7 +671,7 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
                     </div>
                     <div className="text-xs mt-0.5 opacity-90">
                       {selectedPermitForInspection.status === 'Disetujui'
-                        ? 'Surat izin ini sah dan telah lengkap ditandatangani oleh Admin, Guru Mapel, dan Wakil Kepala Sekolah.'
+                        ? 'Surat izin ini sah dan telah lengkap ditandatangani oleh Admin, Guru Mapel / Wali Kelas, dan Wakil Kepala Sekolah.'
                         : selectedPermitForInspection.status === 'Menunggu'
                         ? 'Siswa belum menyelesaikan seluruh tahapan pengesahan resmi. Harap arahkan siswa kembali ke meja piket.'
                         : 'Permohonan izin keluar telah ditolak oleh petugas piket sekolah.'}
@@ -793,15 +793,15 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
                       </div>
                     </div>
 
-                    {/* Kotak 2: Guru Mapel */}
+                    {/* Kotak 2: Guru Mapel / Wali Kelas */}
                     <div className={`p-2.5 rounded-xl border text-center space-y-1 ${
                       selectedPermitForInspection.teacherApproval?.approved 
                         ? 'bg-violet-50/80 border-violet-300' 
                         : 'bg-slate-50 border-slate-200'
                     }`}>
-                      <div className="text-[10px] font-black text-slate-700 uppercase">2. Guru Mapel</div>
+                      <div className="text-[10px] font-black text-slate-700 uppercase">2. Guru Mapel / Wali Kelas</div>
                       <div className="text-[9px] text-slate-500 font-semibold truncate" title={selectedPermitForInspection.subject}>
-                        {selectedPermitForInspection.subject || 'Guru Pengajar'}
+                        {selectedPermitForInspection.subject || 'Guru Mapel / Wali Kelas'}
                       </div>
                       <div className={`text-[10px] font-bold ${selectedPermitForInspection.teacherApproval?.approved ? 'text-emerald-700' : 'text-slate-400'}`}>
                         {selectedPermitForInspection.teacherApproval?.approved ? '✓ Disetujui' : '⏳ Menunggu'}

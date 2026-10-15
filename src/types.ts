@@ -201,10 +201,10 @@ export interface StudentPermitRecord {
   createdAt?: string;
   updatedAt?: string;
 
-  // 3 Tahap Persetujuan (Khusus Izin Keluar Sekolah: Admin -> Guru Mapel -> Wakasek)
+  // 3 Tahap Persetujuan (Khusus Izin Keluar Sekolah: Admin -> Guru Mapel / Wali Kelas -> Wakasek)
   currentApprovalStep?: ApprovalStep; // 'ADMIN' -> 'GURU_MAPEL' -> 'WAKASEK' -> 'DONE'
   adminApproval?: SingleApprovalStageInfo; // Tahap 1: Admin
-  teacherApproval?: SingleApprovalStageInfo; // Tahap 2: Guru Mata Pelajaran
+  teacherApproval?: SingleApprovalStageInfo; // Tahap 2: Guru Mata Pelajaran / Wali Kelas
   wakasekApproval?: SingleApprovalStageInfo; // Tahap 3: Wakil Kepala Sekolah
   rejectedAtStep?: ApprovalStep;
   rejectedBy?: string;

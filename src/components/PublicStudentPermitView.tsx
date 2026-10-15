@@ -376,9 +376,9 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                     <div>
                       <div className="text-[10px] uppercase font-black tracking-wider text-amber-200 bg-black/15 px-2 py-0.5 rounded-md inline-block">
                         {activePermit.type === 'Keluar Sekolah'
-                          ? `Alur 3 Tahap (${activeApprovalStep === 'ADMIN' ? 'Tahap 1: Admin' : activeApprovalStep === 'GURU_MAPEL' ? 'Tahap 2: Guru Mapel' : activeApprovalStep === 'WAKASEK' ? 'Tahap 3: Wakasek' : 'Selesai'})`
+                          ? `Alur 3 Tahap (${activeApprovalStep === 'ADMIN' ? 'Tahap 1: Admin' : activeApprovalStep === 'GURU_MAPEL' ? 'Tahap 2: Guru/Wali' : activeApprovalStep === 'WAKASEK' ? 'Tahap 3: Wakasek' : 'Selesai'})`
                           : activePermit.type === 'Keluar Kelas'
-                          ? `Alur 2 Tahap (${activeApprovalStep === 'ADMIN' ? 'Tahap 1: Admin' : 'Tahap 2: Guru Mapel'})`
+                          ? `Alur 2 Tahap (${activeApprovalStep === 'ADMIN' ? 'Tahap 1: Admin' : 'Tahap 2: Guru/Wali'})`
                           : 'Status: Menunggu Persetujuan Admin'}
                       </div>
                       <h2 className="text-base sm:text-lg font-black mt-0.5">
@@ -386,19 +386,19 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                           ? (activeApprovalStep === 'ADMIN' 
                               ? 'Tahap 1: Menunggu Otorisasi Admin / Piket' 
                               : activeApprovalStep === 'GURU_MAPEL' 
-                              ? `Tahap 2: Menunggu Guru Mapel (${activePermit.subject || 'Mapel'})` 
+                              ? `Tahap 2: Menunggu Guru Mapel (${activePermit.subject || 'Mapel'}) / Wali Kelas` 
                               : 'Tahap 3: Menunggu Pengesahan Wakasek (Semua Waka)')
                           : activePermit.type === 'Keluar Kelas'
                           ? (activeApprovalStep === 'ADMIN'
                               ? 'Tahap 1: Menunggu Otorisasi Admin / Piket'
-                              : `Tahap 2: Menunggu Guru Mapel (${activePermit.subject || 'Mapel'})`)
+                              : `Tahap 2: Menunggu Guru Mapel (${activePermit.subject || 'Mapel'}) / Wali Kelas`)
                           : 'Permohonan Izin Terkirim ke Administrator'}
                       </h2>
                       <p className="text-xs text-sky-100">
                         {activePermit.type === 'Keluar Sekolah'
-                          ? 'Izin Keluar Sekolah memerlukan 3 tahap urut: 1. Admin Piket → 2. Guru Mapel → 3. Wakil Kepala Sekolah (Semua Waka Berwenang).'
+                          ? 'Izin Keluar Sekolah memerlukan 3 tahap urut: 1. Admin Piket → 2. Guru Mapel / Wali Kelas → 3. Wakil Kepala Sekolah (Semua Waka Berwenang).'
                           : activePermit.type === 'Keluar Kelas'
-                          ? 'Izin Keluar Kelas memerlukan 2 tahap urut: 1. Admin Piket → 2. Guru Mata Pelajaran.'
+                          ? 'Izin Keluar Kelas memerlukan 2 tahap urut: 1. Admin Piket → 2. Guru Mata Pelajaran / Wali Kelas.'
                           : 'Izin dispensasi seragam hanya memerlukan persetujuan langsung dari Administrator / Petugas Meja Piket.'}
                       </p>
                     </div>
@@ -457,7 +457,7 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                         </div>
                       </div>
 
-                      {/* Step 2: Guru Mapel */}
+                      {/* Step 2: Guru Mapel / Wali Kelas */}
                       <div className={`p-3 rounded-xl border transition-all ${
                         activePermit.teacherApproval?.approved
                           ? 'bg-emerald-50 border-emerald-300 text-emerald-950 shadow-2xs'
@@ -468,7 +468,7 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                         <div className="flex items-center justify-between text-xs font-black mb-1">
                           <span className="flex items-center gap-1">
                             <span className="w-4 h-4 rounded-full bg-slate-900/10 flex items-center justify-center text-[10px]">2</span>
-                            Guru Mapel
+                            Guru Mapel / Wali
                           </span>
                           {activePermit.teacherApproval?.approved ? (
                             <span className="text-emerald-700 font-bold text-[11px] flex items-center gap-0.5">
@@ -483,10 +483,10 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                           )}
                         </div>
                         <div className="text-[11px] font-semibold truncate" title={activePermit.subject}>
-                          {activePermit.teacherApproval?.approvedBy || activePermit.subject || 'Guru Pengajar Mapel'}
+                          {activePermit.teacherApproval?.approvedBy || activePermit.subject || 'Guru Mapel / Wali Kelas'}
                         </div>
                         <div className="text-[10px] text-slate-500 mt-0.5">
-                          {activePermit.teacherApproval?.approvedAt ? `${activePermit.teacherApproval.approvedAt} WIB` : (activePermit.adminApproval?.approved ? 'Menunggu persetujuan guru mapel' : 'Menunggu Tahap 1 Selesai')}
+                          {activePermit.teacherApproval?.approvedAt ? `${activePermit.teacherApproval.approvedAt} WIB` : (activePermit.adminApproval?.approved ? 'Menunggu persetujuan guru mapel / wali kelas' : 'Menunggu Tahap 1 Selesai')}
                         </div>
                       </div>
 
@@ -539,7 +539,7 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                         <span>Alur Persetujuan Bertahap (2 Tahap Urut)</span>
                       </div>
                       <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200">
-                        Wajib Urut: 1. Admin → 2. Guru Mapel
+                        Wajib Urut: 1. Admin → 2. Guru Mapel / Wali Kelas
                       </span>
                     </div>
 
@@ -573,7 +573,7 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                         </div>
                       </div>
 
-                      {/* Step 2: Guru Mapel */}
+                      {/* Step 2: Guru Mapel / Wali Kelas */}
                       <div className={`p-3 rounded-xl border transition-all ${
                         activePermit.teacherApproval?.approved
                           ? 'bg-emerald-50 border-emerald-300 text-emerald-950 shadow-2xs'
@@ -584,7 +584,7 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                         <div className="flex items-center justify-between text-xs font-black mb-1">
                           <span className="flex items-center gap-1">
                             <span className="w-4 h-4 rounded-full bg-slate-900/10 flex items-center justify-center text-[10px]">2</span>
-                            Guru Mata Pelajaran (Pengesah)
+                            Guru Mapel / Wali Kelas (Pengesah)
                           </span>
                           {activePermit.teacherApproval?.approved ? (
                             <span className="text-emerald-700 font-bold text-[11px] flex items-center gap-0.5">
@@ -599,10 +599,10 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                           )}
                         </div>
                         <div className="text-[11px] font-semibold truncate" title={activePermit.subject}>
-                          {activePermit.teacherApproval?.approvedBy || activePermit.subject || 'Guru Pengajar Mapel'}
+                          {activePermit.teacherApproval?.approvedBy || activePermit.subject || 'Guru Mapel / Wali Kelas'}
                         </div>
                         <div className="text-[10px] text-slate-500 mt-0.5">
-                          {activePermit.teacherApproval?.approvedAt ? `${activePermit.teacherApproval.approvedAt} WIB` : (activePermit.adminApproval?.approved ? 'Menunggu persetujuan guru mapel' : 'Menunggu Tahap 1 Selesai')}
+                          {activePermit.teacherApproval?.approvedAt ? `${activePermit.teacherApproval.approvedAt} WIB` : (activePermit.adminApproval?.approved ? 'Menunggu persetujuan guru mapel / wali kelas' : 'Menunggu Tahap 1 Selesai')}
                         </div>
                       </div>
                     </div>
@@ -617,9 +617,9 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                       Surat Izin Resmi Belum Terbit
                     </strong>
                     {activePermit.type === 'Keluar Sekolah'
-                      ? 'Surat izin resmi dan kode verifikasi QR hanya akan diterbitkan di layar ini setelah seluruh 3 tahapan persetujuan (Admin, Guru Mapel, dan Wakasek) selesai disahkan. Halaman ini akan otomatis diperbarui begitu disetujui.'
+                      ? 'Surat izin resmi dan kode verifikasi QR hanya akan diterbitkan di layar ini setelah seluruh 3 tahapan persetujuan (Admin, Guru Mapel / Wali Kelas, dan Wakasek) selesai disahkan. Halaman ini akan otomatis diperbarui begitu disetujui.'
                       : activePermit.type === 'Keluar Kelas'
-                      ? 'Surat izin resmi dan kode verifikasi QR hanya akan diterbitkan di layar ini setelah 2 tahapan persetujuan (Admin dan Guru Mata Pelajaran) selesai disahkan. Halaman ini akan otomatis diperbarui begitu disetujui.'
+                      ? 'Surat izin resmi dan kode verifikasi QR hanya akan diterbitkan di layar ini setelah 2 tahapan persetujuan (Admin dan Guru Mapel / Wali Kelas) selesai disahkan. Halaman ini akan otomatis diperbarui begitu disetujui.'
                       : 'Surat izin resmi dan kode verifikasi QR hanya akan diterbitkan setelah diverifikasi dan disetujui langsung oleh Administrator / Petugas Meja Piket.'}
                   </div>
                 </div>
@@ -833,7 +833,7 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                   {activePermit.type === 'Keluar Sekolah' && (
                     <div className="pt-2 border-t-2 border-slate-900 font-sans space-y-2">
                       <div className="text-[10px] font-black uppercase text-slate-700 tracking-wider text-center">
-                        LEMBAR PENGESAHAN 3 TAHAP (ADMIN • GURU MATA PELAJARAN • WAKASEK)
+                        LEMBAR PENGESAHAN 3 TAHAP (ADMIN • GURU MAPEL / WALI KELAS • WAKASEK)
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -855,15 +855,15 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                           </div>
                         </div>
 
-                        {/* Kotak 2: Guru Mata Pelajaran */}
+                        {/* Kotak 2: Guru Mapel / Wali Kelas */}
                         <div className={`p-2.5 rounded-xl border text-center space-y-1 ${
                           activePermit.teacherApproval?.approved 
                             ? 'bg-violet-50/70 border-violet-300' 
                             : 'bg-slate-50 border-slate-200'
                         }`}>
-                          <div className="text-[10px] font-black text-slate-700 uppercase">2. Guru Mata Pelajaran</div>
+                          <div className="text-[10px] font-black text-slate-700 uppercase">2. Guru Mapel / Wali Kelas</div>
                           <div className="text-[9px] text-slate-500 font-semibold truncate" title={activePermit.subject}>
-                            {activePermit.subject || 'Mapel Saat Ini'}
+                            {activePermit.subject || 'Guru Mapel / Wali Kelas'}
                           </div>
                           <div className={`text-[10px] font-bold ${activePermit.teacherApproval?.approved ? 'text-emerald-700' : 'text-slate-400'}`}>
                             {activePermit.teacherApproval?.approved ? '✓ Telah Disetujui' : '⏳ Menunggu'}
@@ -904,7 +904,7 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                   {activePermit.type === 'Keluar Kelas' && (
                     <div className="pt-2 border-t-2 border-slate-900 font-sans space-y-2">
                       <div className="text-[10px] font-black uppercase text-slate-700 tracking-wider text-center">
-                        LEMBAR PENGESAHAN 2 TAHAP (ADMIN • GURU MATA PELAJARAN)
+                        LEMBAR PENGESAHAN 2 TAHAP (ADMIN • GURU MAPEL / WALI KELAS)
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -926,15 +926,15 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                           </div>
                         </div>
 
-                        {/* Kotak 2: Guru Mata Pelajaran */}
+                        {/* Kotak 2: Guru Mapel / Wali Kelas */}
                         <div className={`p-2.5 rounded-xl border text-center space-y-1 ${
                           activePermit.teacherApproval?.approved 
                             ? 'bg-violet-50/70 border-violet-300' 
                             : 'bg-slate-50 border-slate-200'
                         }`}>
-                          <div className="text-[10px] font-black text-slate-700 uppercase">2. Guru Mata Pelajaran (Pengesah)</div>
+                          <div className="text-[10px] font-black text-slate-700 uppercase">2. Guru Mapel / Wali Kelas (Pengesah)</div>
                           <div className="text-[9px] text-slate-500 font-semibold truncate" title={activePermit.subject}>
-                            {activePermit.subject || 'Mapel Saat Ini'}
+                            {activePermit.subject || 'Mapel / Wali Kelas'}
                           </div>
                           <div className={`text-[10px] font-bold ${activePermit.teacherApproval?.approved ? 'text-emerald-700' : 'text-slate-400'}`}>
                             {activePermit.teacherApproval?.approved ? '✓ Telah Disetujui' : '⏳ Menunggu'}
@@ -1162,12 +1162,12 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                                 ? (getApprovalStep(p) === 'ADMIN' 
                                     ? '⏳ Tahap 1: Admin' 
                                     : getApprovalStep(p) === 'GURU_MAPEL' 
-                                    ? '⏳ Tahap 2: Guru Mapel' 
+                                    ? '⏳ Tahap 2: Guru/Wali' 
                                     : '⏳ Tahap 3: Wakasek')
                                 : p.type === 'Keluar Kelas'
                                 ? (getApprovalStep(p) === 'ADMIN'
                                     ? '⏳ Tahap 1: Admin'
-                                    : '⏳ Tahap 2: Guru Mapel')
+                                    : '⏳ Tahap 2: Guru/Wali')
                                 : '⏳ Menunggu')
                             : '✕ Ditolak'}
                         </span>
