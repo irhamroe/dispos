@@ -57,6 +57,19 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
   const [qrCodeSearch, setQrCodeSearch] = useState('');
   const [gateActionToast, setGateActionToast] = useState<string | null>(null);
 
+  // Hak Akses Verifikasi Siswa Kembali: Hanya Admin dan Satpam yang berwenang
+  const isAdmin = currentUser?.role === 'Admin' || 
+    currentUser?.role === 'Administrator' || 
+    currentUser?.role === 'Guru Piket' || 
+    currentUser?.role === 'Guru BK';
+  const isSatpam = currentUser?.role === 'Satpam' || 
+    currentUser?.role === 'Security' || 
+    (currentUser?.role as string) === 'Petugas Keamanan' || 
+    (currentUser?.department || '').toLowerCase().includes('satpam') || 
+    (currentUser?.department || '').toLowerCase().includes('security') ||
+    !currentUser;
+  const canVerifyReturn = isAdmin || isSatpam;
+
   // Helper date formatter
   const formatDateIndonesian = (dateStr?: string) => {
     if (!dateStr) return '-';
@@ -186,8 +199,12 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
     }
   };
 
-  // Handle Mark Returned by Satpam
+  // Handle Mark Returned by Satpam or Admin
   const handleMarkReturned = (permit: StudentPermitRecord) => {
+    if (!canVerifyReturn) {
+      alert('Hanya Admin dan Petugas Keamanan (Satpam) yang berwenang memverifikasi siswa kembali ke sekolah.');
+      return;
+    }
     if (!onUpdatePermit) return;
 
     const isReturned = permit.status === 'Kembali' || permit.status === 'Sudah Kembali';
@@ -646,8 +663,8 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
                       )}
                     </div>
 
-                    {/* Tombol Siswa Kembali Khusus Keluar Sekolah yang Akan Kembali */}
-                    {isApproved && permit.willReturn === 'Kembali' && (
+                    {/* Tombol Siswa Kembali Khusus Keluar Sekolah yang Akan Kembali (Khusus Admin & Satpam) */}
+                    {canVerifyReturn && isApproved && permit.willReturn === 'Kembali' && (
                       <button
                         type="button"
                         onClick={() => handleMarkReturned(permit)}
@@ -659,8 +676,8 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
                       </button>
                     )}
 
-                    {/* Tombol Batalkan Status Kembali jika keliru */}
-                    {isReturned && (
+                    {/* Tombol Batalkan Status Kembali jika keliru (Khusus Admin & Satpam) */}
+                    {canVerifyReturn && isReturned && (
                       <button
                         type="button"
                         onClick={() => {
@@ -1028,13 +1045,27 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
                 <span>Cetak Lembar Izin</span>
               </button>
 
-              <button
-                type="button"
-                onClick={() => setSelectedPermitForInspection(null)}
-                className="px-6 py-2.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs transition-all cursor-pointer shadow-sm"
-              >
-                Tutup Pemeriksaan
-              </button>
+              <div className="flex items-center gap-2">
+                {canVerifyReturn && selectedPermitForInspection.status === 'Disetujui' && selectedPermitForInspection.willReturn === 'Kembali' && (
+                  <button
+                    type="button"
+                    onClick={() => handleMarkReturned(selectedPermitForInspection)}
+                    className="px-4 py-2.5 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white font-extrabold text-xs transition-all cursor-pointer shadow-sm flex items-center gap-1.5 active:scale-95"
+                    title="Tandai siswa telah kembali ke sekolah (khusus Admin & Satpam)"
+                  >
+                    <Check className="w-4 h-4" />
+                    <span>Siswa Kembali</span>
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedPermitForInspection(null)}
+                  className="px-6 py-2.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs transition-all cursor-pointer shadow-sm"
+                >
+                  Tutup Pemeriksaan
+                </button>
+              </div>
             </div>
           </div>
         </div>

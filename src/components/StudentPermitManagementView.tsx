@@ -95,6 +95,14 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
   const isGuruMapel = currentUser?.role === 'Guru';
   const isGuruOrWali = isGuruMapel || isWaliKelas || isWakasek;
   const isAdminDisiplin = (isAdmin || currentUser?.role === 'Guru Piket' || currentUser?.role === 'Guru BK') && !isWakasek;
+  const isSatpam = currentUser?.role === 'Satpam' || 
+    currentUser?.role === 'Security' || 
+    (currentUser?.role as string) === 'Petugas Keamanan' || 
+    (currentUser?.department || '').toLowerCase().includes('satpam') || 
+    (currentUser?.department || '').toLowerCase().includes('security');
+
+  // Khusus tombol 'Siswa Kembali': Hanya Admin dan Satpam saja yang berwenang
+  const canVerifyReturn = isAdmin || isAdminDisiplin || isSatpam;
 
   // Per-Stage Permission Checks (Pemisahan kewenangan tegas antar tahap):
   // Tahap 1: Khusus Admin Disiplin Positif (Admin, Guru Piket, Guru BK) - Wakasek TIDAK BISA menyetujui Tahap 1
@@ -408,6 +416,10 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
   };
 
   const handleMarkReturned = (permit: StudentPermitRecord) => {
+    if (!canVerifyReturn) {
+      alert('Hanya Admin dan Petugas Keamanan (Satpam) yang berwenang memverifikasi siswa kembali ke sekolah.');
+      return;
+    }
     const updated: StudentPermitRecord = {
       ...permit,
       status: 'Kembali',
@@ -1288,13 +1300,13 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                             </>
                           )}
 
-                          {/* JIKA SUDAH DISETUJUI & KELUAR SEKOLAH (KEMBALI): TOMBOL TANDAI KEMBALI */}
-                          {p.status === 'Disetujui' && p.type === 'Keluar Sekolah' && p.willReturn === 'Kembali' && (
+                          {/* JIKA SUDAH DISETUJUI & KELUAR SEKOLAH (KEMBALI): TOMBOL TANDAI KEMBALI (HANYA ADMIN & SATPAM) */}
+                          {canVerifyReturn && p.status === 'Disetujui' && p.type === 'Keluar Sekolah' && p.willReturn === 'Kembali' && (
                             <button
                               type="button"
                               onClick={() => handleMarkReturned(p)}
                               className="px-2.5 py-1 bg-sky-600 hover:bg-sky-500 text-white rounded-xl font-bold text-[11px] shadow-xs cursor-pointer active:scale-95 transition-all flex items-center gap-1"
-                              title="Tandai siswa telah kembali ke sekolah"
+                              title="Tandai siswa telah kembali ke sekolah (khusus Admin & Satpam)"
                             >
                               <Check className="w-3 h-3" />
                               <span>Siswa Kembali</span>
@@ -1667,7 +1679,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
               </button>
 
               <div className="flex items-center gap-2">
-                {viewingPermit.status === 'Disetujui' && viewingPermit.type === 'Keluar Sekolah' && viewingPermit.willReturn === 'Kembali' && (
+                {canVerifyReturn && viewingPermit.status === 'Disetujui' && viewingPermit.type === 'Keluar Sekolah' && viewingPermit.willReturn === 'Kembali' && (
                   <button
                     type="button"
                     onClick={() => {
@@ -1681,7 +1693,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                       });
                     }}
                     className="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold shadow-md cursor-pointer flex items-center gap-1.5 active:scale-95 transition-all"
-                    title="Tandai siswa telah kembali ke sekolah"
+                    title="Tandai siswa telah kembali ke sekolah (khusus Admin & Satpam)"
                   >
                     <Check className="w-4 h-4" />
                     <span>Siswa Kembali</span>
@@ -1784,330 +1796,28 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                 <label className="block font-bold text-[#0F172A] mb-1">
                   Nama Penyetuju <span className="text-rose-500">*</span>
                 </label>
-                {/* Jika Admin Disiplin Positif, sediakan opsi dropdown admin / guru piket / guru BK jika ada */}
-                {approvingStage.stage === 'ADMIN' && users.length > 0 ? (
-                  <div className="space-y-1.5">
-                    <select
-                      value={users.some(u => u.name === approvingStage.approverName) ? approvingStage.approverName : '__custom__'}
-                      onChange={(e) => {
-                        if (e.target.value === '__custom__') {
-                          setApprovingStage({ ...approvingStage, approverName: '' });
-                        } else {
-                          const selectedUser = users.find(u => u.name === e.target.value);
-                          let newRole = approvingStage.approverRole;
-                          if (selectedUser?.role === 'Admin' || selectedUser?.role === 'Administrator') {
-                            newRole = selectedUser.department || 'Admin Disiplin Positif';
-                          } else if (selectedUser?.role === 'Guru Piket') {
-                            newRole = selectedUser.department || 'Guru Piket / Tim Disiplin Positif';
-                          } else if (selectedUser?.role === 'Guru BK') {
-                            newRole = selectedUser.department || 'Guru BK / Konselor Disiplin Positif';
-                          } else {
-                            newRole = selectedUser?.department || selectedUser?.role || 'Admin Disiplin Positif';
-                          }
-                          setApprovingStage({ 
-                            ...approvingStage, 
-                            approverName: e.target.value,
-                            approverRole: newRole
-                          });
-                        }
-                      }}
-                      className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-slate-200 rounded-xl font-bold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-emerald-500"
-                    >
-                      <option value={currentUserName}>{currentUserName} (Akun Aktif Saat Ini)</option>
-                      <optgroup label="Tim Disiplin Positif">
-                        {users.filter(u => u.role === 'Admin' || u.role === 'Administrator' || u.role === 'Guru Piket' || u.role === 'Guru BK').map((u) => (
-                          <option key={u.id} value={u.name}>
-                            {u.name} — {u.department || u.role}
-                          </option>
-                        ))}
-                      </optgroup>
-                      <option value="__custom__">-- Ketik Nama Petugas Secara Manual --</option>
-                    </select>
-
-                    <input
-                      type="text"
-                      required
-                      placeholder="Atau ketik nama petugas disiplin positif..."
-                      value={approvingStage.approverName}
-                      onChange={(e) => setApprovingStage({ ...approvingStage, approverName: e.target.value })}
-                      className="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-emerald-500"
-                    />
-                  </div>
-                ) : approvingStage.stage === 'GURU_MAPEL' && users.length > 0 ? (
-                  <div className="space-y-1.5">
-                    <select
-                      value={users.some(u => u.name === approvingStage.approverName) ? approvingStage.approverName : '__custom__'}
-                      onChange={(e) => {
-                        if (e.target.value === '__custom__') {
-                          setApprovingStage({ ...approvingStage, approverName: '' });
-                        } else {
-                          const selectedUser = users.find(u => u.name === e.target.value);
-                          let newRole = approvingStage.approverRole;
-                          if (selectedUser?.role === 'Wali Kelas') {
-                            newRole = `Wali Kelas ${selectedUser.assignedClass || approvingStage.permit.className || ''}`.trim();
-                          } else if (selectedUser?.role === 'Guru') {
-                            newRole = selectedUser.department ? `Guru ${selectedUser.department}` : `Guru Mata Pelajaran ${approvingStage.permit.subject || ''}`.trim();
-                          } else if (selectedUser?.role === 'Wakasek' || (selectedUser?.department || '').toLowerCase().includes('wakil')) {
-                            newRole = selectedUser.department || 'Wakil Kepala Sekolah';
-                          }
-                          setApprovingStage({ 
-                            ...approvingStage, 
-                            approverName: e.target.value,
-                            approverRole: newRole
-                          });
-                        }
-                      }}
-                      className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-slate-200 rounded-xl font-bold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-violet-500"
-                    >
-                      <option value={currentUserName}>{currentUserName} (Akun Aktif Saat Ini)</option>
-                      {isWakasek && (
-                        <optgroup label="Wakil Kepala Sekolah (Sebagai Guru Mata Pelajaran / Pimpinan)">
-                          {users.filter(u => u.role === 'Wakasek' || (u.department || '').toLowerCase().includes('wakasek') || (u.department || '').toLowerCase().includes('wakil kepala')).map((u) => (
-                            <option key={u.id} value={u.name}>
-                              {u.name} — {u.department || 'Wakil Kepala Sekolah'}
-                            </option>
-                          ))}
-                        </optgroup>
-                      )}
-                      <optgroup label="Wali Kelas">
-                        {users.filter(u => u.role === 'Wali Kelas').map((u) => (
-                          <option key={u.id} value={u.name}>
-                            {u.name} {u.assignedClass ? `— Wali Kelas ${u.assignedClass}` : ''}
-                          </option>
-                        ))}
-                      </optgroup>
-                      <optgroup label="Daftar Guru Mata Pelajaran">
-                        {users.filter(u => u.role === 'Guru').map((u) => (
-                          <option key={u.id} value={u.name}>
-                            {u.name} {u.department ? `(${u.department})` : ''}
-                          </option>
-                        ))}
-                      </optgroup>
-                      <option value="__custom__">-- Ketik Nama Guru / Wali Kelas Secara Manual --</option>
-                    </select>
-
-                    <input
-                      type="text"
-                      required
-                      placeholder="Atau ketik nama lengkap guru mapel / wali kelas..."
-                      value={approvingStage.approverName}
-                      onChange={(e) => setApprovingStage({ ...approvingStage, approverName: e.target.value })}
-                      className="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-violet-500"
-                    />
-                  </div>
-                ) : approvingStage.stage === 'WAKASEK' && users.length > 0 ? (
-                  <div className="space-y-1.5">
-                    <select
-                      value={users.some(u => u.name === approvingStage.approverName) ? approvingStage.approverName : '__custom__'}
-                      onChange={(e) => {
-                        if (e.target.value === '__custom__') {
-                          setApprovingStage({ ...approvingStage, approverName: '' });
-                        } else {
-                          const selectedUser = users.find(u => u.name === e.target.value);
-                          setApprovingStage({ 
-                            ...approvingStage, 
-                            approverName: e.target.value,
-                            approverRole: selectedUser?.department || approvingStage.approverRole
-                          });
-                        }
-                      }}
-                      className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-slate-200 rounded-xl font-bold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
-                    >
-                      <option value={currentUserName}>{currentUserName} (Akun Aktif Saat Ini)</option>
-                      <optgroup label="4 Wakil Kepala Sekolah (Semua Waka Berwenang)">
-                        {users.filter(u => u.role === 'Wakasek' || (u.department || '').toLowerCase().includes('wakasek') || (u.department || '').toLowerCase().includes('wakil kepala')).map((u) => (
-                          <option key={u.id} value={u.name}>
-                            {u.name} — {u.department || 'Wakil Kepala Sekolah'}
-                          </option>
-                        ))}
-                      </optgroup>
-                      <option value="__custom__">-- Ketik Nama Wakasek Lainnya Secara Manual --</option>
-                    </select>
-
-                    <input
-                      type="text"
-                      required
-                      placeholder="Atau ketik nama lengkap wakil kepala sekolah..."
-                      value={approvingStage.approverName}
-                      onChange={(e) => setApprovingStage({ ...approvingStage, approverName: e.target.value })}
-                      className="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
-                    />
-                  </div>
-                ) : (
-                  <input
-                    type="text"
-                    required
-                    value={approvingStage.approverName}
-                    onChange={(e) => setApprovingStage({ ...approvingStage, approverName: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-slate-200 rounded-xl font-bold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-sky-500"
-                  />
-                )}
+                <input
+                  type="text"
+                  required
+                  value={approvingStage.approverName}
+                  onChange={(e) => setApprovingStage({ ...approvingStage, approverName: e.target.value })}
+                  placeholder="Nama penyetuju..."
+                  className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-slate-200 rounded-xl font-bold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-sky-500"
+                />
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="block font-bold text-[#0F172A]">
-                    Jabatan / Wewenang <span className="text-rose-500">*</span>
-                  </label>
-                  {/* Quick-pill buttons untuk ganti peran seketika */}
-                  <div className="flex items-center gap-1 flex-wrap justify-end">
-                    {isWakasek && (
-                      <button
-                        type="button"
-                        onClick={() => setApprovingStage({
-                          ...approvingStage,
-                          approverRole: currentUser?.department || 'Wakil Kepala Sekolah'
-                        })}
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-colors ${
-                          approvingStage.approverRole === (currentUser?.department || 'Wakil Kepala Sekolah')
-                            ? 'bg-indigo-600 text-white'
-                            : 'bg-indigo-100 hover:bg-indigo-200 text-indigo-800'
-                        }`}
-                        title="Gunakan jabatan Wakasek akun saat ini"
-                      >
-                        + {currentUser?.department ? currentUser.department.replace('Wakil Kepala Sekolah ', 'Waka ') : 'Waka'}
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => setApprovingStage({
-                        ...approvingStage,
-                        approverRole: `Guru Mata Pelajaran ${approvingStage.permit.subject || ''}`.trim()
-                      })}
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-colors ${
-                        approvingStage.approverRole.startsWith('Guru Mata Pelajaran') || approvingStage.approverRole.startsWith('Guru')
-                          ? 'bg-violet-600 text-white'
-                          : 'bg-violet-100 hover:bg-violet-200 text-violet-800'
-                      }`}
-                      title="Gunakan peran sebagai Guru Mata Pelajaran"
-                    >
-                      + Guru Mapel {approvingStage.permit.subject ? `(${approvingStage.permit.subject})` : ''}
-                    </button>
-                    {approvingStage.permit.className && (
-                      <button
-                        type="button"
-                        onClick={() => setApprovingStage({
-                          ...approvingStage,
-                          approverRole: `Wali Kelas ${approvingStage.permit.className || ''}`.trim()
-                        })}
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-colors ${
-                          approvingStage.approverRole.startsWith('Wali Kelas')
-                            ? 'bg-emerald-600 text-white'
-                            : 'bg-emerald-100 hover:bg-emerald-200 text-emerald-800'
-                        }`}
-                        title="Gunakan peran sebagai Wali Kelas"
-                      >
-                        + Wali Kelas
-                      </button>
-                    )}
-                    {(isAdmin || isAdminDisiplin) && approvingStage.stage === 'ADMIN' && (
-                      <button
-                        type="button"
-                        onClick={() => setApprovingStage({
-                          ...approvingStage,
-                          approverRole: 'Admin Disiplin Positif'
-                        })}
-                        className="px-2 py-0.5 rounded bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-[10px] font-bold cursor-pointer transition-colors"
-                      >
-                        + Admin Disiplin Positif
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  {/* Dropdown Pilihan Jabatan / Wewenang */}
-                  <select
-                    value={
-                      [
-                        currentUser?.department,
-                        'Wakil Kepala Sekolah',
-                        'Admin Disiplin Positif',
-                        'Guru Piket / Tim Disiplin Positif',
-                        'Guru BK / Konselor Disiplin Positif',
-                        `Guru Mata Pelajaran ${approvingStage.permit.subject || ''}`.trim(),
-                        'Guru Mata Pelajaran',
-                        `Wali Kelas ${approvingStage.permit.className || ''}`.trim(),
-                        'Wali Kelas',
-                        ...schoolSubjects.map((s) => `Guru Mata Pelajaran ${s}`),
-                        ...users.filter((u) => u.role === 'Wakasek').map((u) => u.department || 'Wakil Kepala Sekolah'),
-                      ].includes(approvingStage.approverRole)
-                        ? approvingStage.approverRole
-                        : '__custom__'
-                    }
-                    onChange={(e) => {
-                      if (e.target.value === '__custom__') {
-                        // Tetap pada nilai yang sedang ada dan fokus ke input teks di bawahnya
-                      } else {
-                        setApprovingStage({
-                          ...approvingStage,
-                          approverRole: e.target.value,
-                        });
-                      }
-                    }}
-                    className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-slate-200 rounded-xl font-bold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
-                  >
-                    {/* Grup 1: Jabatan Wakasek (Otomatis dari Akun Login) */}
-                    {(isWakasek || currentUser?.department?.toLowerCase().includes('wakil')) && (
-                      <optgroup label="Jabatan Wakasek (Akun Login Anda)">
-                        <option value={currentUser?.department || 'Wakil Kepala Sekolah'}>
-                          {currentUser?.department || 'Wakil Kepala Sekolah'} (Otomatis Sesuai Akun Login)
-                        </option>
-                        {users.filter((u) => u.role === 'Wakasek' && u.name !== currentUser?.name).map((u) => (
-                          <option key={u.id} value={u.department || 'Wakil Kepala Sekolah'}>
-                            {u.department || 'Wakil Kepala Sekolah'} ({u.name})
-                          </option>
-                        ))}
-                      </optgroup>
-                    )}
-
-                    {/* Grup 2: Dropdown Pilihan Guru Mata Pelajaran (Wakasek juga guru mapel) */}
-                    <optgroup label="Dropdown Pilihan: Guru Mata Pelajaran">
-                      {approvingStage.permit.subject && (
-                        <option value={`Guru Mata Pelajaran ${approvingStage.permit.subject}`}>
-                          Guru Mata Pelajaran {approvingStage.permit.subject} (Sesuai Jam Pelajaran Izin)
-                        </option>
-                      )}
-                      <option value="Guru Mata Pelajaran">Guru Mata Pelajaran (Umum)</option>
-                      {schoolSubjects.map((subj) => (
-                        <option key={subj} value={`Guru Mata Pelajaran ${subj}`}>
-                          Guru Mata Pelajaran {subj}
-                        </option>
-                      ))}
-                    </optgroup>
-
-                    {/* Grup 3: Dropdown Pilihan Wali Kelas */}
-                    <optgroup label="Dropdown Pilihan: Wali Kelas">
-                      {approvingStage.permit.className && (
-                        <option value={`Wali Kelas ${approvingStage.permit.className}`}>
-                          Wali Kelas {approvingStage.permit.className} (Sesuai Kelas Siswa)
-                        </option>
-                      )}
-                      <option value="Wali Kelas">Wali Kelas</option>
-                    </optgroup>
-
-                    {/* Grup 4: Tim Disiplin Positif */}
-                    {(approvingStage.stage === 'ADMIN' || isAdmin || isAdminDisiplin) && (
-                      <optgroup label="Tim Disiplin Positif">
-                        <option value="Admin Disiplin Positif">Admin Disiplin Positif</option>
-                        <option value="Guru Piket / Tim Disiplin Positif">Guru Piket / Tim Disiplin Positif</option>
-                        <option value="Guru BK / Konselor Disiplin Positif">Guru BK / Konselor Disiplin Positif</option>
-                      </optgroup>
-                    )}
-
-                    <option value="__custom__">-- Ketik Jabatan Secara Manual di Bawah --</option>
-                  </select>
-
-                  {/* Input Teks Jabatan (Langsung dapat diedit) */}
-                  <input
-                    type="text"
-                    required
-                    value={approvingStage.approverRole}
-                    onChange={(e) => setApprovingStage({ ...approvingStage, approverRole: e.target.value })}
-                    placeholder="Atau ketik/edit jabatan penyetuju secara manual..."
-                    className="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
-                  />
-                </div>
+                <label className="block font-bold text-[#0F172A] mb-1">
+                  Jabatan / Wewenang <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={approvingStage.approverRole}
+                  onChange={(e) => setApprovingStage({ ...approvingStage, approverRole: e.target.value })}
+                  placeholder="Jabatan atau wewenang penyetuju..."
+                  className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-slate-200 rounded-xl font-bold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-sky-500"
+                />
               </div>
 
               <div>
