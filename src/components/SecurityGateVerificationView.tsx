@@ -335,7 +335,7 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
             <span className="text-3xl font-black text-rose-700">{stats.rejected}</span>
             <span className="text-xs text-rose-800 font-bold">Dilarang Keluar</span>
           </div>
-          <p className="text-[11px] text-rose-700 mt-1">Permohonan izin tidak disetujui petugas piket.</p>
+          <p className="text-[11px] text-rose-700 mt-1">Permohonan izin tidak disetujui Admin Disiplin Positif.</p>
         </div>
       </div>
 
@@ -442,7 +442,7 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
               const isRejected = permit.status === 'Ditolak';
 
               // Determine current stage if still in progress
-              let pendingStageLabel = 'Tahap 1: Admin Piket';
+              let pendingStageLabel = 'Tahap 1: Admin Disiplin Positif';
               if (permit.adminApproval?.approved && !permit.teacherApproval?.approved) {
                 pendingStageLabel = permit.subject ? `Tahap 2: Guru Mapel (${permit.subject}) / Wali Kelas` : 'Tahap 2: Guru Mapel / Wali Kelas';
               } else if (permit.adminApproval?.approved && permit.teacherApproval?.approved && !permit.wakasekApproval?.approved) {
@@ -673,8 +673,8 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
                       {selectedPermitForInspection.status === 'Disetujui'
                         ? 'Surat izin ini sah dan telah lengkap ditandatangani oleh Admin, Guru Mapel / Wali Kelas, dan Wakil Kepala Sekolah.'
                         : selectedPermitForInspection.status === 'Menunggu'
-                        ? 'Siswa belum menyelesaikan seluruh tahapan pengesahan resmi. Harap arahkan siswa kembali ke meja piket.'
-                        : 'Permohonan izin keluar telah ditolak oleh petugas piket sekolah.'}
+                        ? 'Siswa belum menyelesaikan seluruh tahapan pengesahan resmi. Harap arahkan siswa kembali ke pos Tim Disiplin Positif.'
+                        : 'Permohonan izin keluar telah ditolak oleh Tim Disiplin Positif sekolah.'}
                     </div>
                   </div>
                 </div>
@@ -781,7 +781,7 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
                         ? 'bg-emerald-50/80 border-emerald-300' 
                         : 'bg-slate-50 border-slate-200'
                     }`}>
-                      <div className="text-[10px] font-black text-slate-700 uppercase">1. Admin Piket</div>
+                      <div className="text-[10px] font-black text-slate-700 uppercase">1. Admin Disiplin Positif</div>
                       <div className={`text-[10px] font-bold ${selectedPermitForInspection.adminApproval?.approved ? 'text-emerald-700' : 'text-slate-400'}`}>
                         {selectedPermitForInspection.adminApproval?.approved ? '✓ Diverifikasi' : '⏳ Menunggu'}
                       </div>

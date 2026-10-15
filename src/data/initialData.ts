@@ -904,8 +904,8 @@ export const initialStudentPermits: StudentPermitRecord[] = [
       approved: true,
       approvedBy: 'Admin',
       approvedAt: '09:16',
-      roleTitle: 'Administrator Piket',
-      notes: 'Surat rujukan dokter telah diverifikasi di meja piket',
+      roleTitle: 'Admin Disiplin Positif',
+      notes: 'Surat rujukan dokter telah diverifikasi oleh Tim Disiplin Positif',
     },
     teacherApproval: {
       approved: true,
@@ -943,8 +943,8 @@ export const initialStudentPermits: StudentPermitRecord[] = [
       approved: true,
       approvedBy: 'Admin',
       approvedAt: '10:31',
-      roleTitle: 'Administrator Piket',
-      notes: 'Permohonan izin ke perpustakaan telah diverifikasi di posko meja piket',
+      roleTitle: 'Admin Disiplin Positif',
+      notes: 'Permohonan izin ke perpustakaan telah diverifikasi oleh Tim Disiplin Positif',
     },
     teacherApproval: {
       approved: true,

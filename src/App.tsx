@@ -383,7 +383,7 @@ export default function App() {
           const modRecord: StudentPermitRecord = {
             ...p,
             status,
-            reviewedBy: reviewedBy || currentUser?.name || 'Petugas Piket / Guru Dispos',
+            reviewedBy: reviewedBy || currentUser?.name || 'Admin Disiplin Positif',
             rejectionReason: rejectionReason !== undefined ? rejectionReason : p.rejectionReason,
             actualReturnTime: status === 'Sudah Kembali' 
               ? new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) 

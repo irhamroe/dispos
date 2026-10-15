@@ -384,22 +384,22 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                       <h2 className="text-base sm:text-lg font-black mt-0.5">
                         {activePermit.type === 'Keluar Sekolah'
                           ? (activeApprovalStep === 'ADMIN' 
-                              ? 'Tahap 1: Menunggu Otorisasi Admin / Piket' 
+                              ? 'Tahap 1: Menunggu Otorisasi Admin Disiplin Positif' 
                               : activeApprovalStep === 'GURU_MAPEL' 
                               ? `Tahap 2: Menunggu Guru Mapel (${activePermit.subject || 'Mapel'}) / Wali Kelas` 
                               : 'Tahap 3: Menunggu Pengesahan Wakasek (Semua Waka)')
                           : activePermit.type === 'Keluar Kelas'
                           ? (activeApprovalStep === 'ADMIN'
-                              ? 'Tahap 1: Menunggu Otorisasi Admin / Piket'
+                              ? 'Tahap 1: Menunggu Otorisasi Admin Disiplin Positif'
                               : `Tahap 2: Menunggu Guru Mapel (${activePermit.subject || 'Mapel'}) / Wali Kelas`)
-                          : 'Permohonan Izin Terkirim ke Administrator'}
+                          : 'Permohonan Izin Terkirim ke Tim Disiplin Positif'}
                       </h2>
                       <p className="text-xs text-sky-100">
                         {activePermit.type === 'Keluar Sekolah'
-                          ? 'Izin Keluar Sekolah memerlukan 3 tahap urut: 1. Admin Piket → 2. Guru Mapel / Wali Kelas → 3. Wakil Kepala Sekolah (Semua Waka Berwenang).'
+                          ? 'Izin Keluar Sekolah memerlukan 3 tahap urut: 1. Admin Disiplin Positif → 2. Guru Mapel / Wali Kelas → 3. Wakil Kepala Sekolah (Semua Waka Berwenang).'
                           : activePermit.type === 'Keluar Kelas'
-                          ? 'Izin Keluar Kelas memerlukan 2 tahap urut: 1. Admin Piket → 2. Guru Mata Pelajaran / Wali Kelas.'
-                          : 'Izin dispensasi seragam hanya memerlukan persetujuan langsung dari Administrator / Petugas Meja Piket.'}
+                          ? 'Izin Keluar Kelas memerlukan 2 tahap urut: 1. Admin Disiplin Positif → 2. Guru Mata Pelajaran / Wali Kelas.'
+                          : 'Izin dispensasi seragam hanya memerlukan persetujuan langsung dari Tim Disiplin Positif.'}
                       </p>
                     </div>
                   </div>
@@ -439,7 +439,7 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                         <div className="flex items-center justify-between text-xs font-black mb-1">
                           <span className="flex items-center gap-1">
                             <span className="w-4 h-4 rounded-full bg-slate-900/10 flex items-center justify-center text-[10px]">1</span>
-                            Admin Piket
+                            Admin Disiplin Positif
                           </span>
                           {activePermit.adminApproval?.approved ? (
                             <span className="text-emerald-700 font-bold text-[11px] flex items-center gap-0.5">
@@ -450,10 +450,10 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                           )}
                         </div>
                         <div className="text-[11px] font-semibold truncate">
-                          {activePermit.adminApproval?.approvedBy || 'Petugas Meja Piket'}
+                          {activePermit.adminApproval?.approvedBy || 'Admin Disiplin Positif'}
                         </div>
                         <div className="text-[10px] text-slate-500 mt-0.5">
-                          {activePermit.adminApproval?.approvedAt ? `${activePermit.adminApproval.approvedAt} WIB` : 'Menunggu verifikasi meja piket'}
+                          {activePermit.adminApproval?.approvedAt ? `${activePermit.adminApproval.approvedAt} WIB` : 'Menunggu verifikasi Tim Disiplin Positif'}
                         </div>
                       </div>
 
@@ -555,7 +555,7 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                         <div className="flex items-center justify-between text-xs font-black mb-1">
                           <span className="flex items-center gap-1">
                             <span className="w-4 h-4 rounded-full bg-slate-900/10 flex items-center justify-center text-[10px]">1</span>
-                            Admin Piket
+                            Admin Disiplin Positif
                           </span>
                           {activePermit.adminApproval?.approved ? (
                             <span className="text-emerald-700 font-bold text-[11px] flex items-center gap-0.5">
@@ -566,10 +566,10 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                           )}
                         </div>
                         <div className="text-[11px] font-semibold truncate">
-                          {activePermit.adminApproval?.approvedBy || 'Petugas Meja Piket'}
+                          {activePermit.adminApproval?.approvedBy || 'Admin Disiplin Positif'}
                         </div>
                         <div className="text-[10px] text-slate-500 mt-0.5">
-                          {activePermit.adminApproval?.approvedAt ? `${activePermit.adminApproval.approvedAt} WIB` : 'Menunggu verifikasi meja piket'}
+                          {activePermit.adminApproval?.approvedAt ? `${activePermit.adminApproval.approvedAt} WIB` : 'Menunggu verifikasi Tim Disiplin Positif'}
                         </div>
                       </div>
 
@@ -620,7 +620,7 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                       ? 'Surat izin resmi dan kode verifikasi QR hanya akan diterbitkan di layar ini setelah seluruh 3 tahapan persetujuan (Admin, Guru Mapel / Wali Kelas, dan Wakasek) selesai disahkan. Halaman ini akan otomatis diperbarui begitu disetujui.'
                       : activePermit.type === 'Keluar Kelas'
                       ? 'Surat izin resmi dan kode verifikasi QR hanya akan diterbitkan di layar ini setelah 2 tahapan persetujuan (Admin dan Guru Mapel / Wali Kelas) selesai disahkan. Halaman ini akan otomatis diperbarui begitu disetujui.'
-                      : 'Surat izin resmi dan kode verifikasi QR hanya akan diterbitkan setelah diverifikasi dan disetujui langsung oleh Administrator / Petugas Meja Piket.'}
+                      : 'Surat izin resmi dan kode verifikasi QR hanya akan diterbitkan setelah diverifikasi dan disetujui langsung oleh Admin Disiplin Positif.'}
                   </div>
                 </div>
 
@@ -843,7 +843,7 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                             ? 'bg-emerald-50/70 border-emerald-300' 
                             : 'bg-slate-50 border-slate-200'
                         }`}>
-                          <div className="text-[10px] font-black text-slate-700 uppercase">1. Admin Piket</div>
+                          <div className="text-[10px] font-black text-slate-700 uppercase">1. Admin Disiplin Positif</div>
                           <div className={`text-[10px] font-bold ${activePermit.adminApproval?.approved ? 'text-emerald-700' : 'text-slate-400'}`}>
                             {activePermit.adminApproval?.approved ? '✓ Telah Diverifikasi' : '⏳ Menunggu'}
                           </div>
@@ -914,7 +914,7 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                             ? 'bg-emerald-50/70 border-emerald-300' 
                             : 'bg-slate-50 border-slate-200'
                         }`}>
-                          <div className="text-[10px] font-black text-slate-700 uppercase">1. Admin Piket</div>
+                          <div className="text-[10px] font-black text-slate-700 uppercase">1. Admin Disiplin Positif</div>
                           <div className={`text-[10px] font-bold ${activePermit.adminApproval?.approved ? 'text-emerald-700' : 'text-slate-400'}`}>
                             {activePermit.adminApproval?.approved ? '✓ Telah Diverifikasi' : '⏳ Menunggu'}
                           </div>
@@ -987,7 +987,7 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                       <div className="font-bold underline text-slate-900">
                         {activePermit.type === 'Keluar Sekolah'
                           ? (activePermit.wakasekApproval?.approvedBy || activePermit.approvedBy || 'Wakil Kepala Sekolah')
-                          : (activePermit.approvedBy || 'Administrator Piket')}
+                          : (activePermit.approvedBy || 'Admin Disiplin Positif')}
                       </div>
                     </div>
                   </div>
@@ -1029,7 +1029,7 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
                     <div>
                       <h2 className="text-sm sm:text-base font-black">Permohonan Izin Ditolak</h2>
                       <p className="text-xs text-rose-100">
-                        Permohonan izin tidak dapat disetujui oleh Guru Piket / Kesiswaan.
+                        Permohonan izin tidak dapat disetujui oleh Tim Disiplin Positif / Kesiswaan.
                       </p>
                     </div>
                   </div>
@@ -1037,13 +1037,13 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
 
                 <div className="p-4 bg-rose-50 rounded-2xl border border-rose-200 space-y-2 text-xs">
                   <span className="font-black text-rose-900 uppercase tracking-wider block text-[11px]">
-                    Alasan Penolakan dari Guru Piket:
+                    Alasan Penolakan dari Admin Disiplin Positif:
                   </span>
                   <p className="text-rose-800 font-semibold italic bg-white p-3 rounded-xl border border-rose-100">
                     "{activePermit.rejectionReason || 'Permohonan izin tidak memenuhi persyaratan atau alasan tidak dapat diterima.'}"
                   </p>
                   <div className="text-[11px] text-slate-500 pt-1">
-                    Diverifikasi oleh: <strong className="text-slate-800">{activePermit.approvedBy || 'Guru Piket'}</strong> ({activePermit.approvedAt || '-'} WIB)
+                    Diverifikasi oleh: <strong className="text-slate-800">{activePermit.approvedBy || 'Admin Disiplin Positif'}</strong> ({activePermit.approvedAt || '-'} WIB)
                   </div>
                 </div>
 
@@ -1636,7 +1636,7 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
         <div className="text-center text-xs text-sky-200/80 space-y-1">
           <p>© 2026 {schoolProfile.name} • Sistem Informasi Presensi &amp; Disiplin Positif Siswa</p>
           <p className="text-[10px] text-sky-300/70">
-            Form ini dapat diakses langsung oleh siswa tanpa login melalui pemindaian QR Code di Meja Guru Piket.
+            Form ini dapat diakses langsung oleh siswa tanpa login melalui pemindaian QR Code Pos Layanan Tim Disiplin Positif.
           </p>
         </div>
       </div>

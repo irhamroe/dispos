@@ -87,11 +87,22 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
 
   // Role detection helpers
   const isAdmin = currentUser?.role === 'Admin' || currentUser?.role === 'Administrator';
-  const isWakasek = isAdmin || currentUser?.role === 'Wakasek' || currentUser?.role === 'Wakil Kepala Sekolah' || 
+  const isWakasek = currentUser?.role === 'Wakasek' || currentUser?.role === 'Wakil Kepala Sekolah' || 
     (currentUser?.department || '').toLowerCase().includes('wakasek') || 
-    (currentUser?.department || '').toLowerCase().includes('wakil kepala');
-  const isGuru = isAdmin || isWakasek || currentUser?.role === 'Guru' || currentUser?.role === 'Wali Kelas' || 
-    currentUser?.role === 'Guru Piket' || currentUser?.role === 'Guru BK';
+    (currentUser?.department || '').toLowerCase().includes('wakil kepala') ||
+    (currentUser?.department || '').toLowerCase().includes('waka');
+  const isWaliKelas = currentUser?.role === 'Wali Kelas';
+  const isGuruMapel = currentUser?.role === 'Guru';
+  const isGuruOrWali = isGuruMapel || isWaliKelas || isWakasek;
+  const isAdminDisiplin = (isAdmin || currentUser?.role === 'Guru Piket' || currentUser?.role === 'Guru BK') && !isWakasek;
+
+  // Per-Stage Permission Checks (Pemisahan kewenangan tegas antar tahap):
+  // Tahap 1: Khusus Admin Disiplin Positif (Admin, Guru Piket, Guru BK) - Wakasek TIDAK BISA menyetujui Tahap 1
+  const canApproveStage1 = isAdminDisiplin;
+  // Tahap 2: Khusus Guru Mata Pelajaran atau Wali Kelas (Wakasek berwenang menyetujui karena pada dasarnya juga seorang Guru Mapel)
+  const canApproveStage2 = isGuruOrWali || isAdmin;
+  // Tahap 3: Khusus Wakil Kepala Sekolah (Admin Utama berhak membantu)
+  const canApproveStage3 = isWakasek || isAdmin;
 
   // Helper to determine active step for a permit (Keluar Sekolah: 3 tahap, Keluar Kelas: 2 tahap)
   const getApprovalStep = (p: StudentPermitRecord): ApprovalStep => {
@@ -123,7 +134,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
   // Modal: View & Print Single Permit
   const [viewingPermit, setViewingPermit] = useState<StudentPermitRecord | null>(null);
 
-  // Modal: Sequential Stage Approval (Tahap 1 Admin / Tahap 2 Guru Mapel / Tahap 3 Wakasek)
+  // Modal: Sequential Stage Approval (Tahap 1 Admin Disiplin / Tahap 2 Guru Mapel / Tahap 3 Wakasek)
   const [approvingStage, setApprovingStage] = useState<StageApprovalModalState | null>(null);
 
   // Modal: Reject Permit with Reason Note
@@ -189,79 +200,107 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
   const todayUniform = todayPermits.filter((p) => p.type === 'Dispensasi Seragam').length;
   const todayPending = pendingPermits.filter((p) => p.date === todayDate).length;
 
-  // Standar Single Approval (Khusus Dispensasi Seragam - Hanya Perlu Persetujuan Admin Saja)
+  // Standar Single Approval (Khusus Dispensasi Seragam - Hanya Perlu Persetujuan Admin Disiplin Positif)
   const handleApprove = (permit: StudentPermitRecord) => {
     const updated: StudentPermitRecord = {
       ...permit,
       status: 'Disetujui',
-      approvedBy: `${currentUserName} (Admin)`,
+      approvedBy: `${currentUserName} (${currentUser?.department || 'Admin Disiplin Positif'})`,
       approvedAt: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
       updatedAt: new Date().toISOString(),
     };
     onUpdatePermit(updated);
   };
 
+  // Daftar Mata Pelajaran unik di sekolah untuk opsi dropdown Jabatan / Wewenang
+  const schoolSubjects = useMemo(() => {
+    const set = new Set<string>();
+    users.forEach((u) => {
+      if (u.role === 'Guru' && u.department) {
+        const cleaned = u.department.replace(/^Guru\s+/i, '').trim();
+        if (cleaned && !cleaned.toLowerCase().includes('kepala sekolah')) {
+          set.add(cleaned);
+        }
+      }
+    });
+    const defaults = [
+      'Bahasa Indonesia',
+      'Bahasa Inggris',
+      'Matematika',
+      'Seni Budaya',
+      'PJOK',
+      'Sejarah',
+      'Sosiologi / IPS',
+      'Fisika',
+      'Kimia',
+      'Biologi',
+      'Ekonomi',
+      'Geografi',
+      'PPKn',
+      'Pendidikan Agama & Budi Pekerti',
+      'Informatika',
+      'Bimbingan Konseling (BK)',
+    ];
+    defaults.forEach((d) => set.add(d));
+    return Array.from(set);
+  }, [users]);
+
   // 3-STAGE SEQUENTIAL APPROVAL HANDLERS (Khusus Izin Keluar Sekolah)
   const handleOpenApproveStage = (permit: StudentPermitRecord, stage: 'ADMIN' | 'GURU_MAPEL' | 'WAKASEK') => {
     let defaultApprover = currentUserName;
-    let defaultRole = 'Admin Piket';
+    let defaultRole = 'Admin Disiplin Positif';
     let defaultNotes = '';
 
+    // Otomatis tentukan jabatan dari akun pengguna yang sedang login (currentUser)
+    const getUserSelfRole = () => {
+      if (!currentUser) return '';
+      if (isWakasek) {
+        return currentUser.department || 'Wakil Kepala Sekolah';
+      }
+      if (currentUser.role === 'Wali Kelas') {
+        return currentUser.assignedClass 
+          ? `Wali Kelas ${currentUser.assignedClass}` 
+          : (permit.className ? `Wali Kelas ${permit.className}` : (currentUser.department || 'Wali Kelas'));
+      }
+      if (currentUser.role === 'Guru') {
+        return currentUser.department 
+          ? `Guru ${currentUser.department}` 
+          : (permit.subject ? `Guru Mata Pelajaran ${permit.subject}` : 'Guru Mata Pelajaran');
+      }
+      if (isAdminDisiplin) {
+        return currentUser.department || 'Admin Disiplin Positif';
+      }
+      return currentUser.department || currentUser.role || '';
+    };
+
+    const selfRole = getUserSelfRole();
+
     if (stage === 'ADMIN') {
-      defaultApprover = currentUserName || 'Admin';
-      defaultRole = 'Administrator Piket';
-      defaultNotes = 'Permohonan izin keluar telah diverifikasi di meja piket.';
+      defaultApprover = currentUserName || 'Admin Disiplin Positif';
+      defaultRole = isAdminDisiplin ? (currentUser?.department || 'Admin Disiplin Positif') : 'Admin Disiplin Positif';
+      defaultNotes = 'Permohonan izin keluar telah diverifikasi oleh Tim Disiplin Positif.';
     } else if (stage === 'GURU_MAPEL') {
-      // Tahap 2: Bisa dilakukan oleh Guru Mata Pelajaran ATAU Wali Kelas
-      if (currentUser?.role === 'Wali Kelas') {
-        defaultApprover = currentUserName;
+      defaultApprover = currentUserName;
+      // Jika yang login sebagai Wakasek, kolom jabatan otomatis terisi sebagai Wakasek (misal: Wakil Kepala Sekolah Bidang Kurikulum)
+      // namun di modal form disediakan dropdown Guru Mata Pelajaran agar Wakasek bisa memilih bertindak sebagai Guru Mapel
+      if (isWakasek) {
+        defaultRole = currentUser?.department || 'Wakil Kepala Sekolah';
+      } else if (selfRole && (isGuruOrWali || isAdmin)) {
+        defaultRole = selfRole;
+      } else if (currentUser?.role === 'Wali Kelas') {
         defaultRole = `Wali Kelas ${permit.className || currentUser?.assignedClass || ''}`.trim();
+      } else {
+        defaultRole = permit.subject ? `Guru Mata Pelajaran ${permit.subject}` : 'Guru Mata Pelajaran';
+      }
+
+      if (currentUser?.role === 'Wali Kelas') {
         defaultNotes = `Permohonan izin keluar telah dikoordinasikan dan disetujui oleh Wali Kelas ${permit.className || ''}.`.trim();
       } else {
-        // Cari nama guru mapel dari daftar users jika ada
-        const foundTeacher = users.find((u) => 
-          (u.department || '').toLowerCase().includes((permit.subject || '').toLowerCase())
-        );
-        if (foundTeacher) {
-          defaultApprover = foundTeacher.name;
-        } else {
-          defaultApprover = currentUserName;
-        }
-        defaultRole = `Guru Mata Pelajaran ${permit.subject || ''}`.trim();
         defaultNotes = `Materi KBM mata pelajaran ${permit.subject || 'saat ini'} telah dikoordinasikan.`;
       }
     } else if (stage === 'WAKASEK') {
-      // Waka tidak harus Waka Kesiswaan, namun semua Waka (Kesiswaan, Kurikulum, Humas, Sarpras)
-      let defaultRole = 'Wakil Kepala Sekolah';
-      
-      const wakasekUsers = users.filter((u) => 
-        u.role === 'Wakasek' || 
-        u.role === 'Wakil Kepala Sekolah' || 
-        (u.department || '').toLowerCase().includes('wakasek') || 
-        (u.department || '').toLowerCase().includes('wakil kepala')
-      );
-
-      const isCurrentWakasek = currentUser && (
-        currentUser.role === 'Wakasek' || 
-        currentUser.role === 'Wakil Kepala Sekolah' || 
-        (currentUser.department || '').toLowerCase().includes('wakasek') || 
-        (currentUser.department || '').toLowerCase().includes('wakil kepala') ||
-        (currentUser.department || '').toLowerCase().includes('waka')
-      );
-
-      if (isCurrentWakasek) {
-        defaultApprover = currentUserName;
-        defaultRole = currentUser.department || 'Wakil Kepala Sekolah';
-      } else if (wakasekUsers.length > 0) {
-        // Prioritas Waka Kesiswaan atau Waka pertama di daftar
-        const wakaKesiswaan = wakasekUsers.find(u => (u.department || '').toLowerCase().includes('kesiswaan'));
-        const chosenWaka = wakaKesiswaan || wakasekUsers[0];
-        defaultApprover = chosenWaka.name;
-        defaultRole = chosenWaka.department || 'Wakil Kepala Sekolah';
-      } else {
-        defaultApprover = 'Anis Dyah Wahyuti, S.Pd';
-        defaultRole = 'Wakil Kepala Sekolah Bidang Kesiswaan';
-      }
+      defaultApprover = currentUserName;
+      defaultRole = isWakasek ? (currentUser?.department || 'Wakil Kepala Sekolah') : (selfRole || 'Wakil Kepala Sekolah');
       defaultNotes = 'Disetujui izin keluar sekolah dan tercatat di buku kendali.';
     }
 
@@ -289,7 +328,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
           approved: true,
           approvedBy: approverName.trim() || currentUserName,
           approvedAt: nowTime,
-          roleTitle: approverRole,
+          roleTitle: approverRole || 'Admin Disiplin Positif',
           notes: notes.trim() || undefined,
         },
         currentApprovalStep: 'GURU_MAPEL', // Maju ke Tahap 2: Guru Mapel / Wali Kelas
@@ -316,6 +355,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
       };
     } else if (stage === 'WAKASEK') {
       // Tahap 3 Selesai -> Seluruh 3 tahap lengkap, Izin Resmi Disetujui
+      const roleSuffix = approverRole ? `(${approverRole})` : '(Wakil Kepala Sekolah)';
       updated = {
         ...updated,
         wakasekApproval: {
@@ -327,7 +367,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
         },
         currentApprovalStep: 'DONE',
         status: 'Disetujui',
-        approvedBy: `${approverName.trim() || currentUserName} (Wakasek)`,
+        approvedBy: `${approverName.trim() || currentUserName} ${roleSuffix}`,
         approvedAt: nowTime,
         updatedAt: new Date().toISOString(),
       };
@@ -355,10 +395,10 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
       approvedBy: currentUserName,
       approvedAt: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
       rejectionReason: rejectionReasonInput.trim() || `Permohonan izin tidak disetujui pada ${
-        rejectingPermit.type === 'Dispensasi Seragam' ? 'Pemeriksaan Administrator' :
-        currentStep === 'ADMIN' ? 'Tahap 1 (Admin)' : 
+        rejectingPermit.type === 'Dispensasi Seragam' ? 'Pemeriksaan Admin Disiplin Positif' :
+        currentStep === 'ADMIN' ? 'Tahap 1 (Admin Disiplin Positif)' : 
         currentStep === 'GURU_MAPEL' ? 'Tahap 2 (Guru Mapel / Wali Kelas)' : 
-        currentStep === 'WAKASEK' ? 'Tahap 3 (Wakasek)' : 'Pemeriksaan Administrator'
+        currentStep === 'WAKASEK' ? 'Tahap 3 (Wakasek)' : 'Pemeriksaan Admin Disiplin Positif'
       }`,
       updatedAt: new Date().toISOString(),
     };
@@ -393,7 +433,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
       'Status Kembali / Atribut Seragam', 
       'Status Persetujuan', 
       'Tahap Persetujuan',
-      'Persetujuan Admin (Tahap 1)',
+      'Persetujuan Admin Disiplin Positif (Tahap 1)',
       'Persetujuan Guru Mapel / Wali Kelas (Tahap 2)',
       'Persetujuan Wakasek (Tahap 3)',
       'Diverifikasi Oleh',
@@ -407,7 +447,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
         ? p.status === 'Disetujui' || p.status === 'Kembali'
           ? 'Lengkap (3 Tahap Selesai)'
           : step === 'ADMIN'
-          ? 'Tahap 1/3 (Menunggu Admin)'
+          ? 'Tahap 1/3 (Menunggu Admin Disiplin Positif)'
           : step === 'GURU_MAPEL'
           ? 'Tahap 2/3 (Menunggu Guru Mapel / Wali Kelas)'
           : 'Tahap 3/3 (Menunggu Wakasek)'
@@ -415,7 +455,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
         ? p.status === 'Disetujui' || p.status === 'Kembali'
           ? 'Lengkap (2 Tahap Selesai)'
           : step === 'ADMIN'
-          ? 'Tahap 1/2 (Menunggu Admin)'
+          ? 'Tahap 1/2 (Menunggu Admin Disiplin Positif)'
           : 'Tahap 2/2 (Menunggu Guru Mapel / Wali Kelas)'
         : p.status;
 
@@ -504,10 +544,10 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
             id="btn-print-qr-standee"
             onClick={() => setIsQrStandeeOpen(true)}
             className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-black text-xs transition-all shadow-xs hover:-translate-y-0.5 active:scale-95 cursor-pointer flex items-center gap-2"
-            title="Cetak Poster / Standee QR Code untuk Meja Piket"
+            title="Cetak Poster / Standee QR Code Layanan Izin (Disiplin Positif)"
           >
             <QrCode className="w-4 h-4" />
-            <span>Cetak QR Standee Piket</span>
+            <span>Cetak QR Standee Disiplin Positif</span>
           </button>
 
           <button
@@ -535,7 +575,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                 <span className="px-2 py-0.5 rounded-full bg-white text-rose-700 text-[10px] font-black uppercase tracking-wider">
                   Pemberitahuan Persetujuan
                 </span>
-                <span className="text-xs font-bold text-amber-100">Menunggu Tindakan Guru Piket</span>
+                <span className="text-xs font-bold text-amber-100">Menunggu Tindakan Admin Disiplin Positif</span>
               </div>
               <h3 className="text-base font-black text-white mt-0.5">
                 Ada {pendingPermits.length} Siswa yang Mengajukan Permohonan Izin Baru
@@ -727,7 +767,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
               className="bg-transparent font-extrabold text-[#0F172A] focus:outline-hidden cursor-pointer w-full"
             >
               <option value="ALL">Semua Tahap</option>
-              <option value="ADMIN">Tahap 1: Menunggu Admin</option>
+              <option value="ADMIN">Tahap 1: Menunggu Admin Disiplin Positif</option>
               <option value="GURU_MAPEL">Tahap 2: Menunggu Guru Mapel / Wali Kelas</option>
               <option value="WAKASEK">Tahap 3: Menunggu Wakasek (Khusus KS)</option>
               <option value="DONE">✓ Selesai / Disetujui</option>
@@ -837,7 +877,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                       </p>
                       <p className="text-xs text-[#64748B]">
                         {mainTab === 'PENDING' 
-                          ? 'Semua permohonan siswa telah diproses oleh guru piket.' 
+                          ? 'Semua permohonan siswa telah diproses oleh Admin Disiplin Positif.' 
                           : 'Silakan ubah filter kategori, kelas, atau tanggal di atas.'}
                       </p>
                     </div>
@@ -935,7 +975,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                                   }`}>
                                     <Clock className="w-3 h-3" />
                                     <span>
-                                      {step === 'ADMIN' && 'Tahap 1/3: Menunggu Admin'}
+                                      {step === 'ADMIN' && 'Tahap 1/3: Menunggu Admin Disiplin Positif'}
                                       {step === 'GURU_MAPEL' && 'Tahap 2/3: Menunggu Guru Mapel / Wali Kelas'}
                                       {step === 'WAKASEK' && 'Tahap 3/3: Menunggu Wakasek'}
                                     </span>
@@ -950,7 +990,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                                         ? 'bg-amber-200 text-amber-900 ring-1 ring-amber-400 font-black' 
                                         : 'bg-slate-100 text-slate-400'
                                     }`}>
-                                      {p.adminApproval?.approved ? '✓ Admin' : '1. Admin'}
+                                      {p.adminApproval?.approved ? '✓ Admin Disiplin' : '1. Admin Disiplin'}
                                     </span>
                                     <span>›</span>
                                     <span className={`px-1.5 py-0.5 rounded-md flex items-center gap-0.5 ${
@@ -984,7 +1024,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                                   <span>Disetujui Penuh (3 Tahap)</span>
                                 </span>
                                 <div className="text-[10px] text-slate-500 font-medium">
-                                  Admin • Guru Mapel / Wali Kelas • Wakasek
+                                  Admin Disiplin Positif • Guru Mapel / Wali Kelas • Wakasek
                                 </div>
                               </div>
                             )}
@@ -1004,7 +1044,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                                 </span>
                                 {p.rejectedAtStep && (
                                   <div className="text-[10px] text-rose-600 font-bold">
-                                    pada {p.rejectedAtStep === 'ADMIN' ? 'Tahap 1 Admin' : p.rejectedAtStep === 'GURU_MAPEL' ? 'Tahap 2 Guru Mapel / Wali Kelas' : 'Tahap 3 Wakasek'}
+                                    pada {p.rejectedAtStep === 'ADMIN' ? 'Tahap 1 Admin Disiplin Positif' : p.rejectedAtStep === 'GURU_MAPEL' ? 'Tahap 2 Guru Mapel / Wali Kelas' : 'Tahap 3 Wakasek'}
                                   </div>
                                 )}
                               </div>
@@ -1023,7 +1063,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                                   }`}>
                                     <Clock className="w-3 h-3" />
                                     <span>
-                                      {step === 'ADMIN' ? 'Tahap 1/2: Menunggu Admin' : 'Tahap 2/2: Menunggu Guru Mapel / Wali Kelas'}
+                                      {step === 'ADMIN' ? 'Tahap 1/2: Menunggu Admin Disiplin Positif' : 'Tahap 2/2: Menunggu Guru Mapel / Wali Kelas'}
                                     </span>
                                   </span>
 
@@ -1036,7 +1076,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                                         ? 'bg-amber-200 text-amber-900 ring-1 ring-amber-400 font-black' 
                                         : 'bg-slate-100 text-slate-400'
                                     }`}>
-                                      {p.adminApproval?.approved ? '✓ Admin' : '1. Admin'}
+                                      {p.adminApproval?.approved ? '✓ Admin Disiplin' : '1. Admin Disiplin'}
                                     </span>
                                     <span>›</span>
                                     <span className={`px-1.5 py-0.5 rounded-md flex items-center gap-0.5 ${
@@ -1060,7 +1100,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                                   <span>Disetujui Penuh (2 Tahap)</span>
                                 </span>
                                 <div className="text-[10px] text-slate-500 font-medium">
-                                  Admin • Guru Mapel / Wali Kelas
+                                  Admin Disiplin Positif • Guru Mapel / Wali Kelas
                                 </div>
                               </div>
                             )}
@@ -1080,29 +1120,29 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                                 </span>
                                 {p.rejectedAtStep && (
                                   <div className="text-[10px] text-rose-600 font-bold">
-                                    pada {p.rejectedAtStep === 'ADMIN' ? 'Tahap 1 Admin' : 'Tahap 2 Guru Mapel / Wali Kelas'}
+                                    pada {p.rejectedAtStep === 'ADMIN' ? 'Tahap 1 Admin Disiplin Positif' : 'Tahap 2 Guru Mapel / Wali Kelas'}
                                   </div>
                                 )}
                               </div>
                             )}
                           </div>
                         ) : (
-                          // Dispensasi Seragam (Hanya Persetujuan Admin Saja)
+                          // Dispensasi Seragam (Hanya Persetujuan Admin Disiplin Positif Saja)
                           <div>
                             {p.status === 'Menunggu' && (
                               <div className="space-y-0.5 text-center">
                                 <span className="px-2.5 py-1 rounded-xl text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-300 inline-flex items-center gap-1 animate-pulse">
                                   <Clock className="w-3.5 h-3.5 text-amber-700" />
-                                  <span>Menunggu Admin</span>
+                                  <span>Menunggu Admin Disiplin</span>
                                 </span>
-                                <div className="text-[9px] text-slate-500 font-medium">Khusus Otorisasi Admin</div>
+                                <div className="text-[9px] text-slate-500 font-medium">Khusus Otorisasi Admin Disiplin Positif</div>
                               </div>
                             )}
                             {p.status === 'Disetujui' && (
                               <div className="space-y-0.5 text-center">
                                 <span className="px-2.5 py-1 rounded-xl text-[11px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300 inline-flex items-center gap-1">
                                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
-                                  <span>Disetujui Admin</span>
+                                  <span>Disetujui Admin Disiplin</span>
                                 </span>
                                 {p.approvedBy && (
                                   <div className="text-[10px] text-slate-500 font-medium">oleh {p.approvedBy}</div>
@@ -1119,7 +1159,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                               <div className="space-y-0.5 text-center">
                                 <span className="px-2.5 py-1 rounded-xl text-[11px] font-black bg-slate-200 text-slate-800 border border-slate-300 inline-flex items-center gap-1">
                                   <X className="w-3.5 h-3.5 text-rose-700" />
-                                  <span>Ditolak Admin</span>
+                                  <span>Ditolak Admin Disiplin</span>
                                 </span>
                               </div>
                             )}
@@ -1138,17 +1178,23 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                                 const isKeluarKelas = p.type === 'Keluar Kelas';
                                 return (
                                   <div className="flex items-center justify-center gap-1.5 flex-wrap">
-                                    {/* Tahap 1: Admin */}
+                                    {/* Tahap 1: Admin Disiplin Positif */}
                                     {step === 'ADMIN' && (
                                       <button
                                         type="button"
                                         onClick={() => handleOpenApproveStage(p, 'ADMIN')}
-                                        disabled={!canApprove && !isAdmin}
-                                        className="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black text-[11px] shadow-xs cursor-pointer active:scale-95 transition-all flex items-center gap-1 disabled:opacity-40"
-                                        title={`Tahap 1: Setujui verifikasi awal oleh Admin (${isKeluarKelas ? 'Tahap 1/2' : 'Tahap 1/3'})`}
+                                        disabled={!canApproveStage1}
+                                        className={`px-2.5 py-1.5 rounded-xl font-black text-[11px] shadow-xs transition-all flex items-center gap-1 ${
+                                          canApproveStage1
+                                            ? 'bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer active:scale-95'
+                                            : 'bg-slate-200 text-slate-400 cursor-not-allowed opacity-60'
+                                        }`}
+                                        title={canApproveStage1 
+                                          ? `Tahap 1: Setujui verifikasi awal oleh Admin Disiplin Positif (${isKeluarKelas ? 'Tahap 1/2' : 'Tahap 1/3'})` 
+                                          : 'Tahap 1 hanya dapat disetujui oleh Admin Disiplin Positif'}
                                       >
                                         <ShieldCheck className="w-3.5 h-3.5" />
-                                        <span>Setujui Tahap 1 (Admin)</span>
+                                        <span>Setujui Tahap 1 (Admin Disiplin)</span>
                                       </button>
                                     )}
 
@@ -1157,11 +1203,17 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                                       <button
                                         type="button"
                                         onClick={() => handleOpenApproveStage(p, 'GURU_MAPEL')}
-                                        disabled={!isGuru && !isAdmin}
-                                        className="px-2.5 py-1.5 bg-violet-600 hover:bg-violet-500 text-white rounded-xl font-black text-[11px] shadow-xs cursor-pointer active:scale-95 transition-all flex items-center gap-1 disabled:opacity-40"
-                                        title={isKeluarKelas 
-                                          ? `Tahap 2/2 (Final): Setujui izin keluar kelas oleh Guru Mapel ${p.subject || ''} atau Wali Kelas ${p.className || ''}`
-                                          : `Tahap 2/3: Setujui oleh Guru Mapel ${p.subject || ''} atau Wali Kelas ${p.className || ''}`}
+                                        disabled={!canApproveStage2}
+                                        className={`px-2.5 py-1.5 rounded-xl font-black text-[11px] shadow-xs transition-all flex items-center gap-1 ${
+                                          canApproveStage2
+                                            ? 'bg-violet-600 hover:bg-violet-500 text-white cursor-pointer active:scale-95'
+                                            : 'bg-slate-200 text-slate-400 cursor-not-allowed opacity-60'
+                                        }`}
+                                        title={canApproveStage2
+                                          ? (isKeluarKelas 
+                                              ? `Tahap 2/2 (Final): Setujui izin keluar kelas oleh Guru Mapel ${p.subject || ''} atau Wali Kelas ${p.className || ''}`
+                                              : `Tahap 2/3: Setujui oleh Guru Mapel ${p.subject || ''} atau Wali Kelas ${p.className || ''}`)
+                                          : 'Tahap 2 hanya dapat disetujui oleh Guru Mata Pelajaran atau Wali Kelas'}
                                       >
                                         <School className="w-3.5 h-3.5" />
                                         <span>{isKeluarKelas ? 'Setujui Tahap 2 (Guru/Wali - Final)' : 'Setujui Tahap 2 (Guru Mapel / Wali Kelas)'}</span>
@@ -1173,9 +1225,15 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                                       <button
                                         type="button"
                                         onClick={() => handleOpenApproveStage(p, 'WAKASEK')}
-                                        disabled={!isWakasek && !isAdmin}
-                                        className="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-[11px] shadow-xs cursor-pointer active:scale-95 transition-all flex items-center gap-1 disabled:opacity-40"
-                                        title="Tahap 3/3: Pengesahan final oleh Wakil Kepala Sekolah"
+                                        disabled={!canApproveStage3}
+                                        className={`px-2.5 py-1.5 rounded-xl font-black text-[11px] shadow-xs transition-all flex items-center gap-1 ${
+                                          canApproveStage3
+                                            ? 'bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer active:scale-95'
+                                            : 'bg-slate-200 text-slate-400 cursor-not-allowed opacity-60'
+                                        }`}
+                                        title={canApproveStage3
+                                          ? 'Tahap 3/3: Pengesahan final oleh Wakil Kepala Sekolah'
+                                          : 'Tahap 3 hanya dapat disahkan oleh Wakil Kepala Sekolah'}
                                       >
                                         <Award className="w-3.5 h-3.5" />
                                         <span>Setujui Tahap 3 (Wakasek)</span>
@@ -1195,24 +1253,32 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                                   </div>
                                 );
                               })() : (
-                                // Dispensasi Seragam (Hanya Perlu Persetujuan Admin Saja)
+                                // Dispensasi Seragam (Hanya Perlu Persetujuan Admin Disiplin Positif Saja)
                                 <>
                                   <button
                                     type="button"
                                     onClick={() => handleApprove(p)}
-                                    disabled={!isAdmin}
-                                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black text-xs shadow-xs cursor-pointer active:scale-95 transition-all flex items-center gap-1 disabled:opacity-40"
-                                    title={isAdmin ? "Setujui izin seragam (khusus Admin)" : "Hanya Administrator yang berwenang menyetujui izin dispensasi seragam"}
+                                    disabled={!canApproveStage1}
+                                    className={`px-3 py-1.5 rounded-xl font-black text-xs shadow-xs transition-all flex items-center gap-1 ${
+                                      canApproveStage1
+                                        ? 'bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer active:scale-95'
+                                        : 'bg-slate-200 text-slate-400 cursor-not-allowed opacity-60'
+                                    }`}
+                                    title={canApproveStage1 ? "Setujui izin seragam (khusus Admin Disiplin Positif)" : "Hanya Admin Disiplin Positif yang berwenang menyetujui dispensasi seragam"}
                                   >
                                     <Check className="w-3.5 h-3.5" />
-                                    <span>Setujui (Admin)</span>
+                                    <span>Setujui (Admin Disiplin)</span>
                                   </button>
                                   <button
                                     type="button"
                                     onClick={() => handleOpenRejectModal(p)}
-                                    disabled={!isAdmin}
-                                    className="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl font-black text-xs shadow-xs cursor-pointer active:scale-95 transition-all flex items-center gap-1 disabled:opacity-40"
-                                    title={isAdmin ? "Tolak permohonan izin" : "Hanya Administrator yang berwenang menolak izin dispensasi seragam"}
+                                    disabled={!canApproveStage1}
+                                    className={`px-3 py-1.5 rounded-xl font-black text-xs shadow-xs transition-all flex items-center gap-1 ${
+                                      canApproveStage1
+                                        ? 'bg-rose-600 hover:bg-rose-500 text-white cursor-pointer active:scale-95'
+                                        : 'bg-slate-200 text-slate-400 cursor-not-allowed opacity-60'
+                                    }`}
+                                    title={canApproveStage1 ? "Tolak permohonan izin" : "Hanya Admin Disiplin Positif yang berwenang menolak dispensasi seragam"}
                                   >
                                     <X className="w-3.5 h-3.5" />
                                     <span>Tolak</span>
@@ -1434,7 +1500,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
               {viewingPermit.type === 'Keluar Sekolah' && (
                 <div className="pt-2 border-t-2 border-slate-900 font-sans space-y-2.5">
                   <div className="text-[10px] font-black uppercase text-slate-700 tracking-wider text-center">
-                    LEMBAR PENGESAHAN 3 TAHAP (ADMIN • GURU MATA PELAJARAN • WAKASEK)
+                    LEMBAR PENGESAHAN 3 TAHAP (ADMIN DISIPLIN POSITIF • GURU MAPEL / WALI KELAS • WAKASEK)
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -1444,7 +1510,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                         ? 'bg-emerald-50/70 border-emerald-300' 
                         : 'bg-slate-50 border-slate-200'
                     }`}>
-                      <div className="text-[10px] font-black text-slate-700 uppercase">1. Admin Piket</div>
+                      <div className="text-[10px] font-black text-slate-700 uppercase">1. Admin Disiplin Positif</div>
                       <div className={`text-[10px] font-bold ${viewingPermit.adminApproval?.approved ? 'text-emerald-700' : 'text-slate-400'}`}>
                         {viewingPermit.adminApproval?.approved ? '✓ Telah Diverifikasi' : '⏳ Menunggu'}
                       </div>
@@ -1519,7 +1585,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
               {viewingPermit.type === 'Keluar Kelas' && (
                 <div className="pt-2 border-t-2 border-slate-900 font-sans space-y-2.5">
                   <div className="text-[10px] font-black uppercase text-slate-700 tracking-wider text-center">
-                    LEMBAR PENGESAHAN 2 TAHAP (ADMIN • GURU MATA PELAJARAN)
+                    LEMBAR PENGESAHAN 2 TAHAP (ADMIN DISIPLIN POSITIF • GURU MAPEL / WALI KELAS)
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -1529,7 +1595,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                         ? 'bg-emerald-50/70 border-emerald-300' 
                         : 'bg-slate-50 border-slate-200'
                     }`}>
-                      <div className="text-[10px] font-black text-slate-700 uppercase">1. Admin Piket</div>
+                      <div className="text-[10px] font-black text-slate-700 uppercase">1. Admin Disiplin Positif</div>
                       <div className={`text-[10px] font-bold ${viewingPermit.adminApproval?.approved ? 'text-emerald-700' : 'text-slate-400'}`}>
                         {viewingPermit.adminApproval?.approved ? '✓ Telah Diverifikasi' : '⏳ Menunggu'}
                       </div>
@@ -1629,12 +1695,12 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                 </div>
                 <div>
                   <h3 className="font-black text-sm text-[#0F172A]">
-                    {approvingStage.stage === 'ADMIN' && (approvingStage.permit.type === 'Keluar Kelas' ? 'Persetujuan Tahap 1/2: Admin Piket' : 'Persetujuan Tahap 1/3: Admin Piket')}
+                    {approvingStage.stage === 'ADMIN' && (approvingStage.permit.type === 'Keluar Kelas' ? 'Persetujuan Tahap 1/2: Admin Disiplin Positif' : 'Persetujuan Tahap 1/3: Admin Disiplin Positif')}
                     {approvingStage.stage === 'GURU_MAPEL' && (approvingStage.permit.type === 'Keluar Kelas' ? 'Persetujuan Tahap 2/2 (Final): Guru Mata Pelajaran / Wali Kelas' : 'Persetujuan Tahap 2/3: Guru Mata Pelajaran / Wali Kelas')}
                     {approvingStage.stage === 'WAKASEK' && 'Persetujuan Tahap 3/3: Wakil Kepala Sekolah'}
                   </h3>
                   <p className="text-[11px] text-slate-500 font-medium">
-                    {approvingStage.stage === 'ADMIN' && 'Verifikasi permohonan awal di posko meja piket'}
+                    {approvingStage.stage === 'ADMIN' && 'Verifikasi permohonan awal oleh Tim Disiplin Positif'}
                     {approvingStage.stage === 'GURU_MAPEL' && (approvingStage.permit.type === 'Keluar Kelas' ? `Persetujuan izin meninggalkan kelas oleh Guru Mapel ${approvingStage.permit.subject ? `(${approvingStage.permit.subject})` : ''} atau Wali Kelas ${approvingStage.permit.className || ''}` : `Persetujuan izin KBM oleh Guru Mapel ${approvingStage.permit.subject ? `(${approvingStage.permit.subject})` : ''} atau Wali Kelas ${approvingStage.permit.className || ''}`)}
                     {approvingStage.stage === 'WAKASEK' && 'Pengesahan izin keluar gerbang sekolah'}
                   </p>
@@ -1677,7 +1743,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                 {approvingStage.permit.adminApproval?.approved && (
                   <div className="flex items-center gap-2 text-emerald-800 font-bold text-[11px]">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>Tahap 1 Admin disetujui oleh: <b>{approvingStage.permit.adminApproval.approvedBy}</b> ({approvingStage.permit.adminApproval.approvedAt} WIB)</span>
+                    <span>Tahap 1 Admin Disiplin Positif disetujui oleh: <b>{approvingStage.permit.adminApproval.approvedBy}</b> ({approvingStage.permit.adminApproval.approvedAt} WIB)</span>
                   </div>
                 )}
                 {approvingStage.stage === 'WAKASEK' && approvingStage.permit.teacherApproval?.approved && (
@@ -1695,8 +1761,56 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                 <label className="block font-bold text-[#0F172A] mb-1">
                   Nama Penyetuju <span className="text-rose-500">*</span>
                 </label>
-                {/* Jika Guru Mapel / Wali Kelas, sediakan opsi dropdown guru dari master users */}
-                {approvingStage.stage === 'GURU_MAPEL' && users.length > 0 ? (
+                {/* Jika Admin Disiplin Positif, sediakan opsi dropdown admin / guru piket / guru BK jika ada */}
+                {approvingStage.stage === 'ADMIN' && users.length > 0 ? (
+                  <div className="space-y-1.5">
+                    <select
+                      value={users.some(u => u.name === approvingStage.approverName) ? approvingStage.approverName : '__custom__'}
+                      onChange={(e) => {
+                        if (e.target.value === '__custom__') {
+                          setApprovingStage({ ...approvingStage, approverName: '' });
+                        } else {
+                          const selectedUser = users.find(u => u.name === e.target.value);
+                          let newRole = approvingStage.approverRole;
+                          if (selectedUser?.role === 'Admin' || selectedUser?.role === 'Administrator') {
+                            newRole = selectedUser.department || 'Admin Disiplin Positif';
+                          } else if (selectedUser?.role === 'Guru Piket') {
+                            newRole = selectedUser.department || 'Guru Piket / Tim Disiplin Positif';
+                          } else if (selectedUser?.role === 'Guru BK') {
+                            newRole = selectedUser.department || 'Guru BK / Konselor Disiplin Positif';
+                          } else {
+                            newRole = selectedUser?.department || selectedUser?.role || 'Admin Disiplin Positif';
+                          }
+                          setApprovingStage({ 
+                            ...approvingStage, 
+                            approverName: e.target.value,
+                            approverRole: newRole
+                          });
+                        }
+                      }}
+                      className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-slate-200 rounded-xl font-bold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-emerald-500"
+                    >
+                      <option value={currentUserName}>{currentUserName} (Akun Aktif Saat Ini)</option>
+                      <optgroup label="Tim Disiplin Positif">
+                        {users.filter(u => u.role === 'Admin' || u.role === 'Administrator' || u.role === 'Guru Piket' || u.role === 'Guru BK').map((u) => (
+                          <option key={u.id} value={u.name}>
+                            {u.name} — {u.department || u.role}
+                          </option>
+                        ))}
+                      </optgroup>
+                      <option value="__custom__">-- Ketik Nama Petugas Secara Manual --</option>
+                    </select>
+
+                    <input
+                      type="text"
+                      required
+                      placeholder="Atau ketik nama petugas disiplin positif..."
+                      value={approvingStage.approverName}
+                      onChange={(e) => setApprovingStage({ ...approvingStage, approverName: e.target.value })}
+                      className="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-emerald-500"
+                    />
+                  </div>
+                ) : approvingStage.stage === 'GURU_MAPEL' && users.length > 0 ? (
                   <div className="space-y-1.5">
                     <select
                       value={users.some(u => u.name === approvingStage.approverName) ? approvingStage.approverName : '__custom__'}
@@ -1710,6 +1824,8 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                             newRole = `Wali Kelas ${selectedUser.assignedClass || approvingStage.permit.className || ''}`.trim();
                           } else if (selectedUser?.role === 'Guru') {
                             newRole = selectedUser.department ? `Guru ${selectedUser.department}` : `Guru Mata Pelajaran ${approvingStage.permit.subject || ''}`.trim();
+                          } else if (selectedUser?.role === 'Wakasek' || (selectedUser?.department || '').toLowerCase().includes('wakil')) {
+                            newRole = selectedUser.department || 'Wakil Kepala Sekolah';
                           }
                           setApprovingStage({ 
                             ...approvingStage, 
@@ -1721,6 +1837,15 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                       className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-slate-200 rounded-xl font-bold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-violet-500"
                     >
                       <option value={currentUserName}>{currentUserName} (Akun Aktif Saat Ini)</option>
+                      {isWakasek && (
+                        <optgroup label="Wakil Kepala Sekolah (Sebagai Guru Mata Pelajaran / Pimpinan)">
+                          {users.filter(u => u.role === 'Wakasek' || (u.department || '').toLowerCase().includes('wakasek') || (u.department || '').toLowerCase().includes('wakil kepala')).map((u) => (
+                            <option key={u.id} value={u.name}>
+                              {u.name} — {u.department || 'Wakil Kepala Sekolah'}
+                            </option>
+                          ))}
+                        </optgroup>
+                      )}
                       <optgroup label="Wali Kelas">
                         {users.filter(u => u.role === 'Wali Kelas').map((u) => (
                           <option key={u.id} value={u.name}>
@@ -1797,41 +1922,169 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center justify-between mb-1.5">
                   <label className="block font-bold text-[#0F172A]">
-                    Jabatan / Wewenang
+                    Jabatan / Wewenang <span className="text-rose-500">*</span>
                   </label>
-                  {approvingStage.stage === 'GURU_MAPEL' && (
-                    <div className="flex items-center gap-1">
+                  {/* Quick-pill buttons untuk ganti peran seketika */}
+                  <div className="flex items-center gap-1 flex-wrap justify-end">
+                    {isWakasek && (
                       <button
                         type="button"
                         onClick={() => setApprovingStage({
                           ...approvingStage,
-                          approverRole: `Guru Mata Pelajaran ${approvingStage.permit.subject || ''}`.trim()
+                          approverRole: currentUser?.department || 'Wakil Kepala Sekolah'
                         })}
-                        className="px-2 py-0.5 rounded bg-violet-100 hover:bg-violet-200 text-violet-800 text-[10px] font-bold cursor-pointer transition-colors"
+                        className={`px-2 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-colors ${
+                          approvingStage.approverRole === (currentUser?.department || 'Wakil Kepala Sekolah')
+                            ? 'bg-indigo-600 text-white'
+                            : 'bg-indigo-100 hover:bg-indigo-200 text-indigo-800'
+                        }`}
+                        title="Gunakan jabatan Wakasek akun saat ini"
                       >
-                        + Guru Mapel
+                        + {currentUser?.department ? currentUser.department.replace('Wakil Kepala Sekolah ', 'Waka ') : 'Waka'}
                       </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setApprovingStage({
+                        ...approvingStage,
+                        approverRole: `Guru Mata Pelajaran ${approvingStage.permit.subject || ''}`.trim()
+                      })}
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-colors ${
+                        approvingStage.approverRole.startsWith('Guru Mata Pelajaran') || approvingStage.approverRole.startsWith('Guru')
+                          ? 'bg-violet-600 text-white'
+                          : 'bg-violet-100 hover:bg-violet-200 text-violet-800'
+                      }`}
+                      title="Gunakan peran sebagai Guru Mata Pelajaran"
+                    >
+                      + Guru Mapel {approvingStage.permit.subject ? `(${approvingStage.permit.subject})` : ''}
+                    </button>
+                    {approvingStage.permit.className && (
                       <button
                         type="button"
                         onClick={() => setApprovingStage({
                           ...approvingStage,
                           approverRole: `Wali Kelas ${approvingStage.permit.className || ''}`.trim()
                         })}
-                        className="px-2 py-0.5 rounded bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-[10px] font-bold cursor-pointer transition-colors"
+                        className={`px-2 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-colors ${
+                          approvingStage.approverRole.startsWith('Wali Kelas')
+                            ? 'bg-emerald-600 text-white'
+                            : 'bg-emerald-100 hover:bg-emerald-200 text-emerald-800'
+                        }`}
+                        title="Gunakan peran sebagai Wali Kelas"
                       >
                         + Wali Kelas
                       </button>
-                    </div>
-                  )}
+                    )}
+                    {(isAdmin || isAdminDisiplin) && approvingStage.stage === 'ADMIN' && (
+                      <button
+                        type="button"
+                        onClick={() => setApprovingStage({
+                          ...approvingStage,
+                          approverRole: 'Admin Disiplin Positif'
+                        })}
+                        className="px-2 py-0.5 rounded bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-[10px] font-bold cursor-pointer transition-colors"
+                      >
+                        + Admin Disiplin Positif
+                      </button>
+                    )}
+                  </div>
                 </div>
-                <input
-                  type="text"
-                  value={approvingStage.approverRole}
-                  onChange={(e) => setApprovingStage({ ...approvingStage, approverRole: e.target.value })}
-                  className="w-full px-3.5 py-2 bg-[#F8FAFC] border border-slate-200 rounded-xl font-semibold text-slate-700 focus:outline-hidden text-xs"
-                />
+
+                <div className="space-y-1.5">
+                  {/* Dropdown Pilihan Jabatan / Wewenang */}
+                  <select
+                    value={
+                      [
+                        currentUser?.department,
+                        'Wakil Kepala Sekolah',
+                        'Admin Disiplin Positif',
+                        'Guru Piket / Tim Disiplin Positif',
+                        'Guru BK / Konselor Disiplin Positif',
+                        `Guru Mata Pelajaran ${approvingStage.permit.subject || ''}`.trim(),
+                        'Guru Mata Pelajaran',
+                        `Wali Kelas ${approvingStage.permit.className || ''}`.trim(),
+                        'Wali Kelas',
+                        ...schoolSubjects.map((s) => `Guru Mata Pelajaran ${s}`),
+                        ...users.filter((u) => u.role === 'Wakasek').map((u) => u.department || 'Wakil Kepala Sekolah'),
+                      ].includes(approvingStage.approverRole)
+                        ? approvingStage.approverRole
+                        : '__custom__'
+                    }
+                    onChange={(e) => {
+                      if (e.target.value === '__custom__') {
+                        // Tetap pada nilai yang sedang ada dan fokus ke input teks di bawahnya
+                      } else {
+                        setApprovingStage({
+                          ...approvingStage,
+                          approverRole: e.target.value,
+                        });
+                      }
+                    }}
+                    className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-slate-200 rounded-xl font-bold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+                  >
+                    {/* Grup 1: Jabatan Wakasek (Otomatis dari Akun Login) */}
+                    {(isWakasek || currentUser?.department?.toLowerCase().includes('wakil')) && (
+                      <optgroup label="Jabatan Wakasek (Akun Login Anda)">
+                        <option value={currentUser?.department || 'Wakil Kepala Sekolah'}>
+                          {currentUser?.department || 'Wakil Kepala Sekolah'} (Otomatis Sesuai Akun Login)
+                        </option>
+                        {users.filter((u) => u.role === 'Wakasek' && u.name !== currentUser?.name).map((u) => (
+                          <option key={u.id} value={u.department || 'Wakil Kepala Sekolah'}>
+                            {u.department || 'Wakil Kepala Sekolah'} ({u.name})
+                          </option>
+                        ))}
+                      </optgroup>
+                    )}
+
+                    {/* Grup 2: Dropdown Pilihan Guru Mata Pelajaran (Wakasek juga guru mapel) */}
+                    <optgroup label="Dropdown Pilihan: Guru Mata Pelajaran">
+                      {approvingStage.permit.subject && (
+                        <option value={`Guru Mata Pelajaran ${approvingStage.permit.subject}`}>
+                          Guru Mata Pelajaran {approvingStage.permit.subject} (Sesuai Jam Pelajaran Izin)
+                        </option>
+                      )}
+                      <option value="Guru Mata Pelajaran">Guru Mata Pelajaran (Umum)</option>
+                      {schoolSubjects.map((subj) => (
+                        <option key={subj} value={`Guru Mata Pelajaran ${subj}`}>
+                          Guru Mata Pelajaran {subj}
+                        </option>
+                      ))}
+                    </optgroup>
+
+                    {/* Grup 3: Dropdown Pilihan Wali Kelas */}
+                    <optgroup label="Dropdown Pilihan: Wali Kelas">
+                      {approvingStage.permit.className && (
+                        <option value={`Wali Kelas ${approvingStage.permit.className}`}>
+                          Wali Kelas {approvingStage.permit.className} (Sesuai Kelas Siswa)
+                        </option>
+                      )}
+                      <option value="Wali Kelas">Wali Kelas</option>
+                    </optgroup>
+
+                    {/* Grup 4: Tim Disiplin Positif */}
+                    {(approvingStage.stage === 'ADMIN' || isAdmin || isAdminDisiplin) && (
+                      <optgroup label="Tim Disiplin Positif">
+                        <option value="Admin Disiplin Positif">Admin Disiplin Positif</option>
+                        <option value="Guru Piket / Tim Disiplin Positif">Guru Piket / Tim Disiplin Positif</option>
+                        <option value="Guru BK / Konselor Disiplin Positif">Guru BK / Konselor Disiplin Positif</option>
+                      </optgroup>
+                    )}
+
+                    <option value="__custom__">-- Ketik Jabatan Secara Manual di Bawah --</option>
+                  </select>
+
+                  {/* Input Teks Jabatan (Langsung dapat diedit) */}
+                  <input
+                    type="text"
+                    required
+                    value={approvingStage.approverRole}
+                    onChange={(e) => setApprovingStage({ ...approvingStage, approverRole: e.target.value })}
+                    placeholder="Atau ketik/edit jabatan penyetuju secara manual..."
+                    className="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
               </div>
 
               <div>
@@ -1875,14 +2128,14 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
         </div>
       )}
 
-      {/* MODAL 3: CETAK STANDEE QR CODE UNTUK MEJA PIKET */}
+      {/* MODAL 3: CETAK STANDEE QR CODE UNTUK TIM DISIPLIN POSITIF */}
       {isQrStandeeOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
           <div className="bg-white rounded-[32px] p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-white space-y-5 animate-in fade-in zoom-in-95 my-8">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
                 <QrCode className="w-5 h-5 text-indigo-600" />
-                <span className="font-black text-sm text-[#0F172A]">Poster Standee QR Code Piket</span>
+                <span className="font-black text-sm text-[#0F172A]">Poster Standee QR Code Layanan Izin</span>
               </div>
               <button
                 type="button"
@@ -1923,7 +2176,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                   <li>Arahkan kamera HP / Google Lens ke QR Code</li>
                   <li>Ketuk tombol <strong className="text-indigo-700">"Buka di Browser"</strong> yang muncul</li>
                   <li>Pilih jenis izin &amp; kirim formulir tanpa login</li>
-                  <li>Tunggu persetujuan Guru Piket di meja piket</li>
+                  <li>Tunggu verifikasi Admin Disiplin Positif</li>
                 </ol>
               </div>
             </div>
