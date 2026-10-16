@@ -25,7 +25,7 @@ import {
   StudentPermitStatus,
   RoleMatrixMap
 } from './types';
-import { initialRoleMatrix, checkTabAccess } from './data/roleMatrixData';
+import { initialRoleMatrix, checkTabAccess, normalizeRole } from './data/roleMatrixData';
 import { sortClasses, sortStudents, sortWaliKelas, sortDisciplineRecords, sortViolationRules } from './utils/sortUtils';
 import { formatNameTitleCase } from './utils/formatUtils';
 import { Navbar } from './components/Navbar';
@@ -1285,12 +1285,12 @@ export default function App() {
               onSaveMatrix={handleUpdateRoleMatrix}
               onResetMatrix={handleResetRoleMatrix}
               currentRole={currentUser?.role}
-              totalUsersPerRole={{
-                'Admin': users.filter(u => u.role === 'Admin' || u.role === 'Administrator').length,
-                'Wali Kelas': users.filter(u => u.role === 'Wali Kelas').length,
-                'Guru': users.filter(u => u.role === 'Guru' || u.role === 'Guru Piket' || u.role === 'Guru BK').length,
-                'Tendik': users.filter(u => u.role === 'Tendik').length,
-              }}
+              totalUsersPerRole={
+                Object.keys(roleMatrix).reduce((acc, r) => {
+                  acc[r] = users.filter((u) => normalizeRole(u.role, roleMatrix) === r).length;
+                  return acc;
+                }, {} as Record<string, number>)
+              }
             />
           )}
         </main>

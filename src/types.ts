@@ -79,13 +79,23 @@ export interface DisciplineRecord {
   coachingEvidenceFileName?: string;
 }
 
-export type UserRole = 'Admin' | 'Wali Kelas' | 'Guru' | 'Wakasek' | 'Tendik' | 'Satpam';
+export type UserRole = 
+  | 'Admin' 
+  | 'Wali Kelas' 
+  | 'Guru' 
+  | 'Wakasek' 
+  | 'Tendik' 
+  | 'Satpam'
+  | 'Kepala Sekolah'
+  | 'Guru BK'
+  | 'Guru Piket'
+  | (string & {});
 
 export interface AdminUser {
   id: string;
   username: string;
   name: string;
-  role: UserRole | 'Administrator' | 'Guru Piket' | 'Guru BK' | 'Wakasek' | 'Wakil Kepala Sekolah' | 'Satpam' | 'Security';
+  role: UserRole;
   email?: string;
   phone?: string;
   nip?: string;
@@ -269,5 +279,5 @@ export interface RolePermissionConfig {
   updatedBy?: string;
 }
 
-export type RoleMatrixMap = Record<UserRole, RolePermissionConfig>;
+export type RoleMatrixMap = Record<string, RolePermissionConfig>;
 

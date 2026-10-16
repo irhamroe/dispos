@@ -558,19 +558,181 @@ export const initialRoleMatrix: RoleMatrixMap = {
     lastUpdated: '2026-01-01',
     updatedBy: 'Sistem Standar',
   },
+
+  'Kepala Sekolah': {
+    role: 'Kepala Sekolah',
+    label: 'Kepala Sekolah (Kepsek)',
+    description: 'Pimpinan satuan pendidikan: pengawasan eksekutif menyeluruh, statistik kehadiran, rekapitulasi pelanggaran, supervisi perizinan, dan laporan.',
+    badgeClass: 'bg-rose-100 text-rose-800 border-rose-200',
+    iconName: 'Crown',
+    isSystemRole: false,
+    allowedTabs: [
+      'dashboard',
+      'attendance',
+      'recap',
+      'rekap-surat-izin',
+      'layanan-izin-siswa',
+      'pos-keamanan',
+      'discipline',
+      'rekap-pelanggaran',
+      'tagihan-pembinaan',
+      'surat-panggilan',
+      'aturan-pelanggaran',
+      'data-siswa',
+      'data-kelas',
+      'data-walikelas',
+      'kenaikan-kelas',
+    ],
+    actionPermissions: {
+      attendance_input_all: false,
+      attendance_input_own: false,
+      attendance_export: true,
+      attendance_verify_letter: true,
+      discipline_create: false,
+      discipline_edit: false,
+      discipline_delete: false,
+      discipline_coaching: false,
+      discipline_export: true,
+      permit_approve: true,
+      permit_create_manual: false,
+      permit_delete: false,
+      parent_call_create: false,
+      parent_call_print: true,
+      rules_manage: false,
+      students_manage: false,
+      classes_manage: false,
+      walikelas_manage: false,
+      users_manage: false,
+      users_reset_password: false,
+      matrix_manage: false,
+    },
+    lastUpdated: '2026-01-01',
+    updatedBy: 'Sistem Standar',
+  },
+
+  'Guru BK': {
+    role: 'Guru BK',
+    label: 'Guru Bimbingan Konseling (BK)',
+    description: 'Layanan bimbingan konseling, penanganan disiplin positif, konseling restitusi siswa, penerbitan surat panggilan ortu, dan persetujuan izin.',
+    badgeClass: 'bg-violet-100 text-violet-800 border-violet-200',
+    iconName: 'HeartHandshake',
+    isSystemRole: false,
+    allowedTabs: [
+      'dashboard',
+      'attendance',
+      'recap',
+      'rekap-surat-izin',
+      'layanan-izin-siswa',
+      'discipline',
+      'rekap-pelanggaran',
+      'tagihan-pembinaan',
+      'surat-panggilan',
+      'aturan-pelanggaran',
+      'data-siswa',
+      'data-kelas',
+      'data-walikelas',
+    ],
+    actionPermissions: {
+      attendance_input_all: false,
+      attendance_input_own: false,
+      attendance_export: true,
+      attendance_verify_letter: true,
+      discipline_create: true,
+      discipline_edit: true,
+      discipline_delete: false,
+      discipline_coaching: true,
+      discipline_export: true,
+      permit_approve: true,
+      permit_create_manual: true,
+      permit_delete: false,
+      parent_call_create: true,
+      parent_call_print: true,
+      rules_manage: false,
+      students_manage: false,
+      classes_manage: false,
+      walikelas_manage: false,
+      users_manage: false,
+      users_reset_password: false,
+      matrix_manage: false,
+    },
+    lastUpdated: '2026-01-01',
+    updatedBy: 'Sistem Standar',
+  },
+
+  'Guru Piket': {
+    role: 'Guru Piket',
+    label: 'Guru Piket (Piket Harian)',
+    description: 'Piket harian gerbang & ketertiban sekolah, verifikasi perizinan siswa (Tahap 1), pencatatan keterlambatan pagi dan pemantauan KBM.',
+    badgeClass: 'bg-cyan-100 text-cyan-800 border-cyan-200',
+    iconName: 'Clock',
+    isSystemRole: false,
+    allowedTabs: [
+      'dashboard',
+      'attendance',
+      'recap',
+      'layanan-izin-siswa',
+      'pos-keamanan',
+      'discipline',
+      'rekap-pelanggaran',
+      'aturan-pelanggaran',
+      'data-siswa',
+      'data-kelas',
+    ],
+    actionPermissions: {
+      attendance_input_all: true,
+      attendance_input_own: false,
+      attendance_export: true,
+      attendance_verify_letter: false,
+      discipline_create: true,
+      discipline_edit: false,
+      discipline_delete: false,
+      discipline_coaching: false,
+      discipline_export: true,
+      permit_approve: true,
+      permit_create_manual: true,
+      permit_delete: false,
+      parent_call_create: false,
+      parent_call_print: false,
+      rules_manage: false,
+      students_manage: false,
+      classes_manage: false,
+      walikelas_manage: false,
+      users_manage: false,
+      users_reset_password: false,
+      matrix_manage: false,
+    },
+    lastUpdated: '2026-01-01',
+    updatedBy: 'Sistem Standar',
+  },
 };
 
 /**
- * Normalizes any role string into one of standard keys
+ * Helper to generate default action permissions map
  */
-export const normalizeRole = (rawRole?: string): UserRole => {
+export const createDefaultActionPermissions = (base: boolean = false): Record<ActionPermissionKey, boolean> => {
+  const result: Partial<Record<ActionPermissionKey, boolean>> = {};
+  ACTION_PERMISSION_DEFINITIONS.forEach((def) => {
+    result[def.key] = base;
+  });
+  return result as Record<ActionPermissionKey, boolean>;
+};
+
+/**
+ * Normalizes any role string into one of standard keys or custom role key
+ */
+export const normalizeRole = (rawRole?: string, matrix?: RoleMatrixMap): string => {
   if (!rawRole) return 'Guru';
-  if (rawRole === 'Admin' || rawRole === 'Administrator') return 'Admin';
-  if (rawRole === 'Wali Kelas') return 'Wali Kelas';
-  if (rawRole === 'Wakasek' || rawRole === 'Wakil Kepala Sekolah') return 'Wakasek';
-  if (rawRole === 'Tendik' || rawRole === 'Tata Usaha' || rawRole === 'Staf TU') return 'Tendik';
-  if (rawRole === 'Satpam' || rawRole === 'Security' || rawRole === 'Petugas Keamanan') return 'Satpam';
-  return 'Guru';
+  const r = rawRole.trim();
+  if (r === 'Admin' || r === 'Administrator') return 'Admin';
+  if (r === 'Wali Kelas') return 'Wali Kelas';
+  if (r === 'Wakasek' || r === 'Wakil Kepala Sekolah') return 'Wakasek';
+  if (r === 'Tendik' || r === 'Tata Usaha' || r === 'Staf TU') return 'Tendik';
+  if (r === 'Satpam' || r === 'Security' || r === 'Petugas Keamanan') return 'Satpam';
+  if (r === 'Kepala Sekolah' || r === 'Kepsek') return 'Kepala Sekolah';
+  if (r === 'Guru BK' || r === 'BK' || r === 'Bimbingan Konseling') return 'Guru BK';
+  if (r === 'Guru Piket' || r === 'Piket' || r === 'Piket Harian') return 'Guru Piket';
+  if (matrix && matrix[r]) return r;
+  return r;
 };
 
 /**
@@ -581,7 +743,7 @@ export const checkTabAccess = (
   tabId: string, 
   matrix: RoleMatrixMap = initialRoleMatrix
 ): boolean => {
-  const norm = normalizeRole(role);
+  const norm = normalizeRole(role, matrix);
   // Admin always has full tab access
   if (norm === 'Admin') return true;
   const config = matrix[norm];
@@ -599,7 +761,7 @@ export const checkActionPermission = (
   permissionKey: ActionPermissionKey, 
   matrix: RoleMatrixMap = initialRoleMatrix
 ): boolean => {
-  const norm = normalizeRole(role);
+  const norm = normalizeRole(role, matrix);
   if (norm === 'Admin') return true;
   const config = matrix[norm];
   if (!config || !config.actionPermissions) return false;

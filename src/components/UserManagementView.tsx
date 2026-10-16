@@ -31,6 +31,9 @@ import {
   User,
   AlertTriangle,
   Award,
+  Crown,
+  HeartHandshake,
+  Clock,
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
@@ -41,7 +44,7 @@ import { RombelClass } from '../data/initialData';
 import { sortClasses } from '../utils/sortUtils';
 import { formatNameTitleCase } from '../utils/formatUtils';
 import { RoleMatrixSettingsView } from './RoleMatrixSettingsView';
-import { checkActionPermission, initialRoleMatrix } from '../data/roleMatrixData';
+import { checkActionPermission, initialRoleMatrix, normalizeRole } from '../data/roleMatrixData';
 
 interface UserManagementViewProps {
   users: AdminUser[];
@@ -136,20 +139,18 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       case 'Administrator':
         return {
           label: 'Admin',
-          badgeClass: 'bg-sky-100 text-sky-800 border-sky-200',
+          badgeClass: 'bg-purple-100 text-purple-800 border-purple-200',
           icon: ShieldCheck,
           desc: 'Akses penuh seluruh sistem & konfigurasi',
         };
       case 'Wali Kelas':
         return {
           label: 'Wali Kelas',
-          badgeClass: 'bg-teal-100 text-teal-800 border-teal-200',
+          badgeClass: 'bg-emerald-100 text-emerald-800 border-emerald-200',
           icon: UserCheck,
           desc: 'Pengampu rombel, absensi & panggilan ortu',
         };
       case 'Guru':
-      case 'Guru Piket':
-      case 'Guru BK':
         return {
           label: 'Guru',
           badgeClass: 'bg-sky-100 text-sky-800 border-sky-200',
@@ -179,15 +180,84 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           icon: ShieldCheck,
           desc: 'Petugas keamanan pos gerbang & verifikasi izin keluar',
         };
-      default:
+      case 'Kepala Sekolah':
         return {
-          label: role,
-          badgeClass: 'bg-slate-100 text-slate-800 border-slate-200',
-          icon: User,
-          desc: 'Pengguna sistem',
+          label: 'Kepala Sekolah',
+          badgeClass: 'bg-rose-100 text-rose-800 border-rose-200',
+          icon: Crown,
+          desc: 'Pengawasan eksekutif, rekapitulasi data & laporan',
         };
+      case 'Guru BK':
+        return {
+          label: 'Guru BK',
+          badgeClass: 'bg-violet-100 text-violet-800 border-violet-200',
+          icon: HeartHandshake,
+          desc: 'Layanan konseling, disiplin & pemanggilan ortu',
+        };
+      case 'Guru Piket':
+        return {
+          label: 'Guru Piket',
+          badgeClass: 'bg-cyan-100 text-cyan-800 border-cyan-200',
+          icon: Clock,
+          desc: 'Piket gerbang harian, verifikasi izin keluar/masuk',
+        };
+      default: {
+        const cfg = roleMatrix?.[role];
+        return {
+          label: cfg?.label || role,
+          badgeClass: cfg?.badgeClass || 'bg-slate-100 text-slate-800 border-slate-200',
+          icon: cfg?.iconName === 'Crown'
+            ? Crown
+            : cfg?.iconName === 'HeartHandshake'
+            ? HeartHandshake
+            : cfg?.iconName === 'Clock'
+            ? Clock
+            : cfg?.iconName === 'UserCheck'
+            ? UserCheck
+            : cfg?.iconName === 'Award'
+            ? Award
+            : cfg?.iconName === 'Briefcase'
+            ? Briefcase
+            : User,
+          desc: cfg?.description || 'Pengguna sistem',
+        };
+      }
     }
   };
+
+  // List of all active roles from roleMatrix
+  const availableRolesList = useMemo(() => {
+    const keys = Object.keys(roleMatrix);
+    const standardOrder = [
+      'Admin',
+      'Wali Kelas',
+      'Guru',
+      'Wakasek',
+      'Tendik',
+      'Satpam',
+      'Kepala Sekolah',
+      'Guru BK',
+      'Guru Piket',
+    ];
+    const sorted = [...keys].sort((a, b) => {
+      const idxA = standardOrder.indexOf(a);
+      const idxB = standardOrder.indexOf(b);
+      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+      if (idxA !== -1) return -1;
+      if (idxB !== -1) return 1;
+      return a.localeCompare(b);
+    });
+
+    return sorted.map((r) => {
+      const meta = getRoleBadge(r);
+      return {
+        id: r as UserRole,
+        label: meta.label,
+        icon: meta.icon,
+        desc: meta.desc,
+      };
+    });
+  }, [roleMatrix]);
 
   // Count per role
   const roleCounts = useMemo(() => {
@@ -203,49 +273,36 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
     };
 
     users.forEach((u) => {
-      const r = u.role;
-      if (r === 'Admin' || r === 'Administrator') counts.admin++;
-      else if (r === 'Wali Kelas') counts.waliKelas++;
-      else if (r === 'Wakasek' || r === 'Wakil Kepala Sekolah') counts.wakasek++;
-      else if (r === 'Guru' || r === 'Guru Piket' || r === 'Guru BK') counts.guru++;
-      else if (r === 'Tendik') counts.tendik++;
-      else if (r === 'Satpam' || r === 'Security') counts.satpam++;
+      const norm = normalizeRole(u.role, roleMatrix);
+      if (norm === 'Admin') counts.admin++;
+      else if (norm === 'Wali Kelas') counts.waliKelas++;
+      else if (norm === 'Wakasek') counts.wakasek++;
+      else if (norm === 'Guru') counts.guru++;
+      else if (norm === 'Tendik') counts.tendik++;
+      else if (norm === 'Satpam') counts.satpam++;
 
       if (u.status === 'Aktif') counts.aktif++;
     });
 
     return counts;
-  }, [users]);
+  }, [users, roleMatrix]);
 
-  const roleCountsGrouped: Record<UserRole, number> = useMemo(() => {
-    return {
-      'Admin': roleCounts.admin,
-      'Wali Kelas': roleCounts.waliKelas,
-      'Guru': roleCounts.guru,
-      'Wakasek': roleCounts.wakasek,
-      'Tendik': roleCounts.tendik,
-      'Satpam': roleCounts.satpam,
-    };
-  }, [roleCounts]);
+  const roleCountsGrouped: Record<string, number> = useMemo(() => {
+    const res: Record<string, number> = {};
+    Object.keys(roleMatrix).forEach((r) => {
+      res[r] = users.filter((u) => normalizeRole(u.role, roleMatrix) === r).length;
+    });
+    return res;
+  }, [users, roleMatrix]);
 
   // Filtered users list
   const filteredUsers = useMemo(() => {
     return users.filter((u) => {
       // Role filter
       if (selectedRoleFilter !== 'ALL') {
-        if (selectedRoleFilter === 'Admin') {
-          if (u.role !== 'Admin' && u.role !== 'Administrator') return false;
-        } else if (selectedRoleFilter === 'Wali Kelas') {
-          if (u.role !== 'Wali Kelas') return false;
-        } else if (selectedRoleFilter === 'Wakasek') {
-          if (u.role !== 'Wakasek' && u.role !== 'Wakil Kepala Sekolah') return false;
-        } else if (selectedRoleFilter === 'Guru') {
-          if (u.role !== 'Guru' && u.role !== 'Guru Piket' && u.role !== 'Guru BK') return false;
-        } else if (selectedRoleFilter === 'Tendik') {
-          if (u.role !== 'Tendik') return false;
-        } else if (selectedRoleFilter === 'Satpam') {
-          if (u.role !== 'Satpam' && u.role !== 'Security') return false;
-        }
+        const normUser = normalizeRole(u.role, roleMatrix);
+        const normFilter = normalizeRole(selectedRoleFilter, roleMatrix);
+        if (normUser !== normFilter) return false;
       }
 
       // Status filter
@@ -819,12 +876,14 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                 
               >
                 <option value="ALL">Semua Role ({users.length})</option>
-                <option value="Admin">Admin ({roleCounts.admin})</option>
-                <option value="Wali Kelas">Wali Kelas ({roleCounts.waliKelas})</option>
-                <option value="Guru">Guru ({roleCounts.guru})</option>
-                <option value="Wakasek">Wakasek ({roleCounts.wakasek})</option>
-                <option value="Tendik">Tendik ({roleCounts.tendik})</option>
-                <option value="Satpam">Satpam ({roleCounts.satpam})</option>
+                {availableRolesList.map((r) => {
+                  const count = users.filter((u) => normalizeRole(u.role, roleMatrix) === r.id).length;
+                  return (
+                    <option key={r.id} value={r.id}>
+                      {r.label} ({count})
+                    </option>
+                  );
+                })}
               </select>
             </div>
 
@@ -1247,15 +1306,8 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                 <label className="font-extrabold text-[#0F172A] block text-xs" >
                   Pilih Peran Akun (Role) <span className="text-rose-500">*</span>
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
-                  {[
-                    { id: 'Admin' as UserRole, label: 'Admin', icon: ShieldCheck },
-                    { id: 'Wali Kelas' as UserRole, label: 'Wali Kelas', icon: UserCheck },
-                    { id: 'Guru' as UserRole, label: 'Guru', icon: GraduationCap },
-                    { id: 'Wakasek' as UserRole, label: 'Wakasek', icon: Award },
-                    { id: 'Tendik' as UserRole, label: 'Tendik', icon: Briefcase },
-                    { id: 'Satpam' as UserRole, label: 'Satpam', icon: ShieldCheck },
-                  ].map((r) => {
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5">
+                  {availableRolesList.map((r) => {
                     const Icon = r.icon;
                     const isSelected = newRole === r.id;
                     return (
@@ -1268,7 +1320,6 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                             ? 'bg-gradient-to-br from-[#E0F2FE] to-[#0284C7] text-white shadow-xs border-transparent font-black -translate-y-0.5'
                             : 'bg-white/80 border-white/60 text-[#0F172A] hover:bg-white shadow-sm font-bold hover:-translate-y-0.5 active:scale-95'
                         }`}
-                        
                       >
                         <Icon className={`w-5 h-5 mb-1.5 ${isSelected ? 'text-white' : 'text-[#0284C7]'}`} />
                         <span className="text-[11px] leading-tight">{r.label}</span>
@@ -1277,36 +1328,8 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                   })}
                 </div>
                 <div className="text-[11px] text-[#0F172A] bg-white/90 p-3 rounded-2xl border border-white/80 shadow-xs leading-relaxed">
-                  {newRole === 'Admin' && (
-                    <>
-                      <strong className="text-[#0284C7]">Hak Akses Admin:</strong> Kelola akun pengguna, konfigurasi profil sekolah, master data siswa &amp; kelas, katalog poin pelanggaran, serta ekspor seluruh rekapitulasi.
-                    </>
-                  )}
-                  {newRole === 'Wali Kelas' && (
-                    <>
-                      <strong className="text-teal-700">Hak Akses Wali Kelas:</strong> Pengawasan absensi rombel binaan, tindak lanjut kasus pelanggaran murid binaan, dan pembuatan surat pemanggilan orang tua siswa binaan.
-                    </>
-                  )}
-                  {newRole === 'Guru' && (
-                    <>
-                      <strong className="text-sky-700">Hak Akses Guru:</strong> Input absensi harian / tugas piket gerbang, dan pencatatan pelanggaran disiplin siswa saat jam KBM / lingkungan sekolah.
-                    </>
-                  )}
-                  {newRole === 'Wakasek' && (
-                    <>
-                      <strong className="text-indigo-700">Hak Akses Wakasek:</strong> Verifikasi tingkat lanjut surat izin keluar sekolah, koordinasi bidang kesiswaan, kurikulum, humas, dan sarana prasarana.
-                    </>
-                  )}
-                  {newRole === 'Tendik' && (
-                    <>
-                      <strong className="text-amber-700">Hak Akses Tendik:</strong> Pelayanan administrasi tata usaha, rekapitulasi izin/sakit, cetak bukti surat resmi kesiswaan, dan verifikasi arsip.
-                    </>
-                  )}
-                  {newRole === 'Satpam' && (
-                    <>
-                      <strong className="text-slate-800">Hak Akses Satpam:</strong> Pemeriksaan e-Surat izin keluar sekolah di pos gerbang, verifikasi QR code izin siswa, dan pemantauan siswa izin.
-                    </>
-                  )}
+                  <strong className="text-[#0284C7]">Hak Akses {getRoleBadge(newRole).label}:</strong>{' '}
+                  {roleMatrix[newRole]?.description || getRoleBadge(newRole).desc}
                 </div>
               </div>
 
@@ -1614,14 +1637,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                   Peran Akun (Role) <span className="text-rose-500">*</span>
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
-                  {[
-                    { id: 'Admin' as UserRole, label: 'Admin', icon: ShieldCheck },
-                    { id: 'Wali Kelas' as UserRole, label: 'Wali Kelas', icon: UserCheck },
-                    { id: 'Guru' as UserRole, label: 'Guru', icon: GraduationCap },
-                    { id: 'Wakasek' as UserRole, label: 'Wakasek', icon: Award },
-                    { id: 'Tendik' as UserRole, label: 'Tendik', icon: Briefcase },
-                    { id: 'Satpam' as UserRole, label: 'Satpam', icon: ShieldCheck },
-                  ].map((r) => {
+                  {availableRolesList.map((r) => {
                     const Icon = r.icon;
                     const isSelected = editRole === r.id;
                     return (
@@ -1634,13 +1650,16 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                             ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-xs border-transparent font-black -translate-y-0.5'
                             : 'bg-white/80 border-white/60 text-[#0F172A] hover:bg-white shadow-sm font-bold hover:-translate-y-0.5 active:scale-95'
                         }`}
-                        
                       >
                         <Icon className={`w-5 h-5 mb-1.5 ${isSelected ? 'text-white' : 'text-blue-600'}`} />
                         <span className="text-[11px] leading-tight">{r.label}</span>
                       </button>
                     );
                   })}
+                </div>
+                <div className="text-[11px] text-[#0F172A] bg-white/90 p-3 rounded-2xl border border-white/80 shadow-xs leading-relaxed mt-2.5">
+                  <strong className="text-blue-600">Hak Akses {getRoleBadge(editRole).label}:</strong>{' '}
+                  {roleMatrix[editRole]?.description || getRoleBadge(editRole).desc}
                 </div>
               </div>
 
