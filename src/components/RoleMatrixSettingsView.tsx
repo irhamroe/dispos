@@ -1026,9 +1026,6 @@ export const RoleMatrixSettingsView: React.FC<RoleMatrixSettingsViewProps> = ({
                     <Sliders className="w-4 h-4 text-emerald-600" />
                     <span>2. Hak Akses Tindakan &amp; Operasional Khusus</span>
                   </h3>
-                  <p className="text-[11px] text-[#334155] mt-0.5">
-                    Wewenang melakukan input, edit, hapus, ekspor data, persetujuan izin, dan cetak dokumen resmi.
-                  </p>
                 </div>
                 <span className="text-[11px] font-bold text-emerald-700 bg-white px-3 py-1 rounded-full border border-emerald-200">
                   {filteredActionPermissions.length} Tindakan
