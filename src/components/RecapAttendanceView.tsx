@@ -209,9 +209,6 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
             <h2 className="text-2xl sm:text-3xl font-medium text-[#0F172A] tracking-tight">
               Rekap Presensi
             </h2>
-            <p className="text-sm text-[#334155] mt-1">
-              Laporan akumulasi kehadiran siswa per rentang tanggal dan kelas
-            </p>
           </div>
 
           {/* Action & Export Buttons */}

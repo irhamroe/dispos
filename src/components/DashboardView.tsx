@@ -168,9 +168,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <Sparkles className="w-4 h-4" />
             </span>
           </div>
-          <p className="text-xs text-[#334155] mt-0.5">
-            Pantau kehadiran siswa &amp; status kedisiplinan secara real-time
-          </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
@@ -347,9 +344,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <h4 className="text-sm font-medium text-[#0369A1]">
               Verifikasi Surat Siswa (Sakit &amp; Izin)
             </h4>
-            <p className="text-xs text-[#334155] mt-0.5">
-              Total <span className="font-medium text-[#0369A1]">{sickAndPermitRecords.length} siswa</span> berstatus Izin / Sakit pada tanggal terpilih.
-            </p>
           </div>
         </div>
 
@@ -376,9 +370,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <Layers className="w-4 h-4 text-[#0284C7]" />
                 <span>Monitoring Kehadiran 36 Rombel</span>
               </h3>
-              <p className="text-xs text-[#334155] mt-0.5">
-                Pencapaian kehadiran per kelas di SMAN 1 Batu (Target disiplin: &ge; 95%)
-              </p>
             </div>
             <MdButton
               variant="tonal"
@@ -501,15 +492,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div className="space-y-4">
           {/* Siswa Alpa */}
           <div className="bg-gradient-to-br from-[#FFF1F2] via-[#FFE4E6]/50 to-white border border-[#FDA4AF]/60 p-5 rounded-[28px] shadow-sm">
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-3">
               <h4 className="text-xs font-bold uppercase tracking-wider text-[#BA1A1A] flex items-center gap-1.5">
                 <XCircle className="w-4 h-4" />
                 <span>Alpa Hari Ini ({alpaStudents.length})</span>
               </h4>
             </div>
-            <p className="text-[11px] text-[#334155] mb-3">
-              Siswa tidak hadir tanpa kabar; segera hubungi wali murid.
-            </p>
 
             {alpaStudents.length === 0 ? (
               <div className="p-3.5 rounded-xl bg-[#DCFCE7] text-[#15803D] text-xs text-center font-medium border border-[#86EFAC]/50">
@@ -534,7 +522,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
           {/* Siswa Sakit/Izin Belum Menyerahkan Surat */}
           <div className="bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7]/50 to-white border border-[#FCD34D]/60 p-5 rounded-[28px] shadow-sm">
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-3">
               <h4 className="text-xs font-bold uppercase tracking-wider text-[#E65100] flex items-center gap-1.5">
                 <FileX className="w-4 h-4" />
                 <span>Belum Ada Surat ({missingLetterStudents.length})</span>
@@ -548,9 +536,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <ArrowRight className="w-3 h-3" />
               </button>
             </div>
-            <p className="text-[11px] text-[#334155] mb-3">
-              Daftar izin / sakit yang belum mengumpulkan surat keterangan fisik.
-            </p>
 
             {missingLetterStudents.length === 0 ? (
               <div className="p-3.5 rounded-xl bg-[#DCFCE7] text-[#15803D] text-xs text-center font-medium border border-[#86EFAC]/50">

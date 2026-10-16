@@ -882,9 +882,6 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                 <h2 className="text-xl sm:text-2xl  font-black text-[#0F172A] tracking-tight">
                   Input Data Pelanggaran
                 </h2>
-                <p className="text-xs text-[#334155] font-medium mt-0.5">
-                  Pencatatan data pelanggaran tata tertib dan status pembinaan siswa {schoolProfile.name}
-                </p>
               </div>
             </div>
           </div>

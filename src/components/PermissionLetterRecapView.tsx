@@ -239,9 +239,6 @@ export const PermissionLetterRecapView: React.FC<PermissionLetterRecapViewProps>
               <h2 className="text-2xl sm:text-3xl font-black text-[#0F172A] tracking-tight" >
                 Rekap Surat Izin &amp; Sakit Siswa
               </h2>
-              <p className="text-sm text-[#334155] mt-1 font-medium">
-                Monitoring kepatuhan pengumpulan bukti fisik surat izin dan surat dokter
-              </p>
             </div>
           </div>
 

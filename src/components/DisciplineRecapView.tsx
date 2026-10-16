@@ -163,9 +163,6 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
               <h2 className="text-2xl sm:text-3xl font-black text-[#0F172A] tracking-tight" >
                 Rekap Pelanggaran & Pembinaan
               </h2>
-              <p className="text-sm text-[#334155] mt-1 font-medium">
-                Laporan rekapitulasi data pelanggaran tata tertib dan status pembinaan berdasarkan rentang tanggal
-              </p>
             </div>
           </div>
 
