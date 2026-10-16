@@ -273,13 +273,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
           : (permit.className ? `Wali Kelas ${permit.className}` : (currentUser.department || 'Wali Kelas'));
       }
       if (currentUser.role === 'Guru') {
-        if (currentUser.department) {
-          const dept = currentUser.department.trim();
-          if (dept.toLowerCase().startsWith('guru mata pelajaran')) return dept;
-          if (dept.toLowerCase().startsWith('guru')) return `Guru Mata Pelajaran ${dept.replace(/^Guru\s+/i, '')}`.trim();
-          return `Guru Mata Pelajaran ${dept}`;
-        }
-        return permit.subject ? `Guru Mata Pelajaran ${permit.subject}` : 'Guru Mata Pelajaran';
+        return 'Guru Mata Pelajaran';
       }
       if (isAdminDisiplin) {
         return currentUser.department || 'Admin Disiplin Positif';
@@ -295,22 +289,19 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
       defaultNotes = 'Permohonan izin keluar telah diverifikasi oleh Tim Disiplin Positif.';
     } else if (stage === 'GURU_MAPEL') {
       defaultApprover = currentUserName;
-      // Jika yang login sebagai Wakasek, kolom jabatan otomatis terisi sebagai Wakasek (misal: Wakil Kepala Sekolah Bidang Kurikulum)
-      // namun di modal form disediakan dropdown Guru Mata Pelajaran agar Wakasek bisa memilih bertindak sebagai Guru Mapel
       if (isWakasek) {
         defaultRole = currentUser?.department || 'Wakil Kepala Sekolah';
-      } else if (selfRole && (isGuruOrWali || isAdmin)) {
-        defaultRole = selfRole;
-      } else if (currentUser?.role === 'Wali Kelas') {
-        defaultRole = `Wali Kelas ${permit.className || currentUser?.assignedClass || ''}`.trim();
+      } else if (currentUser?.role === 'Wali Kelas' || currentUser?.assignedClass) {
+        const targetClass = currentUser?.assignedClass || permit.className;
+        defaultRole = targetClass ? `Wali Kelas ${targetClass}` : 'Wali Kelas';
       } else {
-        defaultRole = permit.subject ? `Guru Mata Pelajaran ${permit.subject}` : 'Guru Mata Pelajaran';
+        defaultRole = 'Guru Mata Pelajaran';
       }
 
-      if (currentUser?.role === 'Wali Kelas') {
-        defaultNotes = `Permohonan izin keluar telah dikoordinasikan dan disetujui oleh Wali Kelas ${permit.className || ''}.`.trim();
+      if (defaultRole.startsWith('Wali Kelas')) {
+        defaultNotes = `Permohonan izin keluar telah dikoordinasikan dan disetujui oleh ${defaultRole}.`;
       } else {
-        defaultNotes = `Materi KBM mata pelajaran ${permit.subject || 'saat ini'} telah dikoordinasikan.`;
+        defaultNotes = 'Materi KBM mata pelajaran saat ini telah dikoordinasikan.';
       }
     } else if (stage === 'WAKASEK') {
       defaultApprover = currentUserName;
@@ -536,106 +527,52 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
 
   const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=450x450&data=${encodeURIComponent(publicPortalUrl)}&margin=10&format=png&ecc=M`;
 
-  // Opsi Dropdown Jabatan / Wewenang terstruktur berdasarkan peran
-  const roleOptionGroups = useMemo(() => {
+  // Opsi Dropdown Jabatan / Wewenang ringkas & kontekstual sesuai akun yang sedang login
+  const roleOptions = useMemo(() => {
     if (!approvingStage) return [];
     const permit = approvingStage.permit;
+    const list: string[] = [];
 
-    // 1. Opsi Sebagai Wali Kelas
-    const waliKelasOptions: string[] = [];
-    if (permit.className) {
-      waliKelasOptions.push(`Wali Kelas ${permit.className}`);
-    }
-    if (currentUser?.assignedClass && currentUser.assignedClass !== permit.className) {
-      const userAssigned = `Wali Kelas ${currentUser.assignedClass}`;
-      if (!waliKelasOptions.includes(userAssigned)) {
-        waliKelasOptions.push(userAssigned);
+    // Jika yang login adalah Wali Kelas (misal: "Wali Kelas XI-5")
+    if (currentUser?.role === 'Wali Kelas' || currentUser?.assignedClass) {
+      const targetClass = currentUser?.assignedClass || permit.className;
+      if (targetClass) {
+        list.push(`Wali Kelas ${targetClass}`);
+      } else {
+        list.push('Wali Kelas');
+      }
+      list.push('Guru Mata Pelajaran');
+    } else if (isWakasek) {
+      // Jika yang login adalah Waka (Wakil Kepala Sekolah)
+      const wakaTitle = currentUser?.department || 'Wakil Kepala Sekolah';
+      list.push(wakaTitle);
+      list.push('Guru Mata Pelajaran');
+      if (permit.className) {
+        list.push(`Wali Kelas ${permit.className}`);
+      }
+    } else if (isAdminDisiplin) {
+      // Jika yang login adalah Tim Disiplin Positif (Admin, Piket, BK)
+      const disiplinTitle = currentUser?.department || 'Admin Disiplin Positif';
+      list.push(disiplinTitle);
+      if (permit.className) {
+        list.push(`Wali Kelas ${permit.className}`);
+      }
+      list.push('Guru Mata Pelajaran');
+    } else {
+      // Default untuk Guru atau peran lainnya
+      list.push('Guru Mata Pelajaran');
+      if (permit.className) {
+        list.push(`Wali Kelas ${permit.className}`);
       }
     }
-    if (!waliKelasOptions.includes('Wali Kelas')) {
-      waliKelasOptions.push('Wali Kelas');
-    }
-    if (classes && classes.length > 0) {
-      const sortedClasses = [...classes].sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
-      sortedClasses.forEach((c) => {
-        const cRole = `Wali Kelas ${c.name}`;
-        if (!waliKelasOptions.includes(cRole)) {
-          waliKelasOptions.push(cRole);
-        }
-      });
+
+    // Pastikan nilai approverRole saat ini (jika ada) ada di daftar agar selalu terpilih
+    if (approvingStage.approverRole && !list.includes(approvingStage.approverRole)) {
+      list.unshift(approvingStage.approverRole);
     }
 
-    // 2. Opsi Sebagai Guru Mata Pelajaran
-    const guruMapelOptions: string[] = [];
-    if (permit.subject) {
-      guruMapelOptions.push(`Guru Mata Pelajaran ${permit.subject}`);
-    }
-    if (currentUser?.department && !isWakasek && !isAdminDisiplin) {
-      const cleanDept = currentUser.department.replace(/^Guru\s+(Mata\s+Pelajaran\s+)?/i, '').trim();
-      if (cleanDept && !cleanDept.toLowerCase().includes('kepala sekolah')) {
-        const uRole = `Guru Mata Pelajaran ${cleanDept}`;
-        if (!guruMapelOptions.includes(uRole)) {
-          guruMapelOptions.push(uRole);
-        }
-      }
-    }
-    if (!guruMapelOptions.includes('Guru Mata Pelajaran')) {
-      guruMapelOptions.push('Guru Mata Pelajaran');
-    }
-    schoolSubjects.forEach((sub) => {
-      const subRole = `Guru Mata Pelajaran ${sub}`;
-      if (!guruMapelOptions.includes(subRole)) {
-        guruMapelOptions.push(subRole);
-      }
-    });
-
-    // 3. Opsi Sebagai Wakil Kepala Sekolah (Waka)
-    const wakaOptions: string[] = [];
-    if (currentUser?.department && (isWakasek || currentUser.department.toLowerCase().includes('waka') || currentUser.department.toLowerCase().includes('wakil kepala'))) {
-      wakaOptions.push(currentUser.department);
-    }
-    const defaultWakaList = [
-      'Wakil Kepala Sekolah',
-      'Wakil Kepala Sekolah Bidang Kurikulum',
-      'Wakil Kepala Sekolah Bidang Kesiswaan',
-      'Wakil Kepala Sekolah Bidang Hubungan Masyarakat (Humas)',
-      'Wakil Kepala Sekolah Bidang Sarana & Prasarana',
-    ];
-    defaultWakaList.forEach((w) => {
-      if (!wakaOptions.includes(w)) {
-        wakaOptions.push(w);
-      }
-    });
-
-    // 4. Opsi Sebagai Tim Disiplin / Piket / BK
-    const disiplinOptions: string[] = [];
-    if (isAdminDisiplin && currentUser?.department) {
-      disiplinOptions.push(currentUser.department);
-    }
-    const defaultDisiplinList = [
-      'Admin Disiplin Positif',
-      'Guru Piket',
-      'Guru Bimbingan Konseling (BK)',
-    ];
-    defaultDisiplinList.forEach((d) => {
-      if (!disiplinOptions.includes(d)) {
-        disiplinOptions.push(d);
-      }
-    });
-
-    return [
-      { label: 'Sebagai Wali Kelas', options: waliKelasOptions },
-      { label: 'Sebagai Guru Mata Pelajaran', options: guruMapelOptions },
-      { label: 'Sebagai Wakil Kepala Sekolah (Waka)', options: wakaOptions },
-      { label: 'Sebagai Tim Disiplin / Piket / BK', options: disiplinOptions },
-    ];
-  }, [approvingStage, currentUser, isWakasek, isAdminDisiplin, classes, schoolSubjects]);
-
-  const allRoleOptions = useMemo(() => {
-    const set = new Set<string>();
-    roleOptionGroups.forEach((g) => g.options.forEach((o) => set.add(o)));
-    return set;
-  }, [roleOptionGroups]);
+    return list;
+  }, [approvingStage, currentUser, isWakasek, isAdminDisiplin]);
 
   const handleRoleChange = (selectedValue: string) => {
     if (!approvingStage) return;
@@ -654,7 +591,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
       if (!t) return true;
       if (t === 'Permohonan izin keluar telah diverifikasi oleh Tim Disiplin Positif.') return true;
       if (t === 'Disetujui izin keluar sekolah dan tercatat di buku kendali.') return true;
-      if (t === `Materi KBM mata pelajaran ${p.subject || 'saat ini'} telah dikoordinasikan.`.trim()) return true;
+      if (t === 'Materi KBM mata pelajaran saat ini telah dikoordinasikan.') return true;
       if (t.startsWith('Permohonan izin keluar telah dikoordinasikan dan disetujui oleh Wali Kelas')) return true;
       return false;
     };
@@ -662,9 +599,10 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
     if (isStandardNote(approvingStage.notes, approvingStage.permit)) {
       const s = selectedValue.toLowerCase();
       if (s.startsWith('wali kelas')) {
-        updatedNotes = `Permohonan izin keluar telah dikoordinasikan dan disetujui oleh Wali Kelas ${approvingStage.permit.className || ''}.`.trim();
+        const targetClass = currentUser?.assignedClass || approvingStage.permit.className;
+        updatedNotes = `Permohonan izin keluar telah dikoordinasikan dan disetujui oleh Wali Kelas ${targetClass || ''}.`.trim();
       } else if (s.startsWith('guru')) {
-        updatedNotes = `Materi KBM mata pelajaran ${approvingStage.permit.subject || 'saat ini'} telah dikoordinasikan.`;
+        updatedNotes = 'Materi KBM mata pelajaran saat ini telah dikoordinasikan.';
       } else if (s.includes('wakil kepala') || s.includes('waka')) {
         updatedNotes = 'Disetujui izin keluar sekolah dan tercatat di buku kendali.';
       } else if (s.includes('admin') || s.includes('disiplin') || s.includes('piket') || s.includes('bk')) {
@@ -1973,28 +1911,12 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
                     onChange={(e) => handleRoleChange(e.target.value)}
                     className="w-full px-3.5 py-2.5 bg-[#F8FAFC] border border-slate-200 rounded-xl font-bold text-[#0F172A] focus:outline-hidden focus:ring-2 focus:ring-sky-500 cursor-pointer appearance-none pr-9 text-xs"
                   >
-                    {/* Jika approverRole awal belum ada di daftar predefined, tampilkan di atas agar selalu terpilih */}
-                    {approvingStage.approverRole && !allRoleOptions.has(approvingStage.approverRole) && !isCustomRole && (
-                      <optgroup label="⭐ Jabatan Akun Anda">
-                        <option value={approvingStage.approverRole}>
-                          {approvingStage.approverRole} (Jabatan Akun)
-                        </option>
-                      </optgroup>
-                    )}
-
-                    {roleOptionGroups.map((group) => (
-                      <optgroup key={group.label} label={group.label}>
-                        {group.options.map((opt) => (
-                          <option key={opt} value={opt}>
-                            {opt}
-                          </option>
-                        ))}
-                      </optgroup>
+                    {roleOptions.map((opt) => (
+                      <option key={opt} value={opt}>
+                        {opt}
+                      </option>
                     ))}
-
-                    <optgroup label="Kustom / Tambahan">
-                      <option value="__CUSTOM__">✏️ Lainnya (Ketik Manual)...</option>
-                    </optgroup>
+                    <option value="__CUSTOM__">✏️ Lainnya (Ketik Manual)...</option>
                   </select>
                   <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
