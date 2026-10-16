@@ -387,9 +387,6 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
                 Total {students.length} Siswa
               </span>
             </div>
-            <p className="text-sm text-[#334155] mt-1 font-medium">
-              Kelola direktori siswa kelas X-1 s/d X-12, XI-1 s/d XI-12, dan XII-1 s/d XII-12 lengkap dengan foto profil &amp; alamat domisili.
-            </p>
           </div>
         </div>
 

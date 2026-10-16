@@ -262,10 +262,6 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
               </div>
               <span>Pemeriksaan Siswa Izin Keluar Sekolah</span>
             </h1>
-
-            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-              Pantau dan periksa e-surat izin siswa yang akan melewati gerbang sekolah. Siswa hanya diizinkan keluar apabila telah disahkan melalui <strong>3 Tahap Persetujuan (Admin, Guru Mapel, dan Wakil Kepala Sekolah)</strong>.
-            </p>
           </div>
 
           {/* User Badge & Fast QR Search Input */}
@@ -317,7 +313,6 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
             <span className="text-2xl sm:text-3xl font-black text-slate-900">{stats.total}</span>
             <span className="text-xs text-slate-500 font-medium">Siswa terdata</span>
           </div>
-          <p className="text-[11px] text-slate-500 mt-1">Seluruh pengajuan izin keluar sekolah hari ini.</p>
         </div>
 
         {/* Card 2: Resmi Disetujui (BOLEH KELUAR) */}
@@ -340,7 +335,6 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
             <span className="text-2xl sm:text-3xl font-black text-emerald-700">{stats.approved}</span>
             <span className="text-xs text-emerald-800 font-bold">Lengkap 3 Tahap</span>
           </div>
-          <p className="text-[11px] text-emerald-700 mt-1">Disahkan Admin, Guru Mapel, dan Wakasek.</p>
         </div>
 
         {/* Card 3: Siswa Sudah Kembali */}
@@ -363,7 +357,6 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
             <span className="text-2xl sm:text-3xl font-black text-sky-700">{stats.returned}</span>
             <span className="text-xs text-sky-800 font-bold">Masuk Sekolah</span>
           </div>
-          <p className="text-[11px] text-sky-700 mt-1">Siswa telah kembali ke sekolah via gerbang.</p>
         </div>
 
         {/* Card 4: Dalam Proses (BELUM BOLEH KELUAR) */}
@@ -386,7 +379,6 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
             <span className="text-2xl sm:text-3xl font-black text-amber-700">{stats.pending}</span>
             <span className="text-xs text-amber-800 font-bold">Tahan / Belum Sah</span>
           </div>
-          <p className="text-[11px] text-amber-700 mt-1">Jangan izinkan keluar sampai disahkan lengkap.</p>
         </div>
 
         {/* Card 5: Ditolak */}
@@ -409,7 +401,6 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
             <span className="text-2xl sm:text-3xl font-black text-rose-700">{stats.rejected}</span>
             <span className="text-xs text-rose-800 font-bold">Dilarang Keluar</span>
           </div>
-          <p className="text-[11px] text-rose-700 mt-1">Permohonan izin tidak disetujui Admin Disiplin Positif.</p>
         </div>
       </div>
 

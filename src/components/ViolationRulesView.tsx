@@ -159,22 +159,11 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
               <h2 className="text-2xl sm:text-3xl font-medium text-[#0F172A] tracking-tight">
                 Manajemen Aturan Pelanggaran
               </h2>
-              <p className="text-sm text-[#334155] mt-1">
-                Kelola katalog tata tertib: input, edit, dan hapus jenis pelanggaran beserta bobot poin dan restitusi
-              </p>
             </div>
           </div>
 
           {canManageRules && (
             <div className="flex items-center gap-3 w-full sm:w-auto">
-              <MdButton
-                variant="outlined"
-                onClick={handleReset}
-                icon={<RotateCcw className="w-4 h-4" />}
-              >
-                <span>Reset Standar</span>
-              </MdButton>
-
               <MdButton
                 variant="filled"
                 id="add-new-rule-btn"
@@ -215,11 +204,6 @@ export const ViolationRulesView: React.FC<ViolationRulesViewProps> = ({
                   {enablePointsSystem ? 'AKTIF (Mode Poin)' : 'NONAKTIF (Fokus Restoratif)'}
                 </span>
               </div>
-              <p className="text-xs text-[#334155] mt-1">
-                {enablePointsSystem
-                  ? 'Sistem mencatat dan menampilkan angka bobot poin pelanggaran serta akumulasi poin setiap siswa.'
-                  : 'Sistem menyembunyikan perhitungan angka poin dan murni berfokus pada pendekatan Disiplin Positif Restoratif, dokumentasi foto & berkas pembinaan.'}
-              </p>
             </div>
           </div>
 
