@@ -162,9 +162,6 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
             <h2 className="text-2xl sm:text-3xl font-black text-[#0F172A] tracking-tight" >
               Data Kelas &amp; Rombongan Belajar
             </h2>
-            <p className="text-sm text-[#334155] mt-1 font-medium">
-              Daftar 36 rombel aktif SMAN 1 Batu tahun ajaran 2026/2027 beserta wali kelas dan ruang belajar.
-            </p>
           </div>
         </div>
 

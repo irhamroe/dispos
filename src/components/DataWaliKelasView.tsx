@@ -173,9 +173,6 @@ export const DataWaliKelasView: React.FC<DataWaliKelasViewProps> = ({
             <h2 className="text-2xl sm:text-3xl font-black text-[#0F172A] tracking-tight" >
               Data Wali Kelas
             </h2>
-            <p className="text-sm text-[#334155] mt-1 font-medium">
-              Direktori 36 guru wali kelas SMAN 1 Batu, kontak koordinasi presensi, dan pembinaan rombel.
-            </p>
           </div>
         </div>
 

@@ -709,10 +709,6 @@ export const PromotionAndAlumniView: React.FC<PromotionAndAlumniViewProps> = ({
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
               Kenaikan Kelas, Kelulusan &amp; Arsip Alumni
             </h1>
-            <p className="text-xs sm:text-sm text-indigo-200/80 max-w-2xl font-medium leading-relaxed">
-              Kelola alur kenaikan kelas dengan aman. Formasi siswa yang utuh maupun diacak tetap mempertahankan 
-              seluruh catatan rekam jejak pelanggaran siswa. Siswa kelas XII lulus diarsipkan minimal 3 tahun.
-            </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 shrink-0">
