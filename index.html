@@ -17,7 +17,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,400;1,500&display=swap" rel="stylesheet">
   </head>
   <body class="bg-[#F8FAFC] text-[#0F172A] antialiased selection:bg-[#E0F2FE] selection:text-[#0369A1]" style="font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;">
-    <div id="root"></div>
+    <div id="root">
+      <div style="min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #064E3B 0%, #065F46 50%, #022C22 100%); font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif; color: white; padding: 20px;">
+        <div style="width: 88px; height: 88px; border-radius: 28px; background: rgba(255, 255, 255, 0.95); padding: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 40px rgba(0,0,0,0.35); margin-bottom: 20px; border: 2px solid rgba(255,255,255,0.85);">
+          <img src="/logo.png" alt="SMAN 1 Batu" style="width: 100%; height: 100%; object-fit: contain;" />
+        </div>
+        <div style="font-size: 22px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 4px; text-align: center;">SMAN 1 Batu</div>
+        <div style="font-size: 13px; color: rgba(167, 243, 208, 0.9); margin-bottom: 24px; text-align: center; font-weight: 500;">Sistem Informasi Presensi &amp; Disiplin Siswa</div>
+        <div style="width: 34px; height: 34px; border: 3px solid rgba(255,255,255,0.2); border-top-color: #34D399; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+        <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
