@@ -11,9 +11,7 @@ import {
   Plus, 
   Eye, 
   CheckCircle2, 
-  X, 
-  DoorOpen, 
-  Building2 
+  X 
 } from 'lucide-react';
 import { Student, AdminUser, RoleMatrixMap } from '../types';
 import { RombelClass } from '../data/initialData';
@@ -49,14 +47,12 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
 
   // Form state for editing
   const [editHomeroom, setEditHomeroom] = useState('');
-  const [editRoom, setEditRoom] = useState('');
   const [editCapacity, setEditCapacity] = useState(36);
 
   // Form state for adding
   const [newName, setNewName] = useState('');
   const [newGrade, setNewGrade] = useState<'X' | 'XI' | 'XII'>('X');
   const [newHomeroom, setNewHomeroom] = useState('');
-  const [newRoom, setNewRoom] = useState('');
   const [newCapacity, setNewCapacity] = useState(36);
 
   // Count students per class
@@ -81,8 +77,7 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
       const matchGrade = selectedGrade === 'ALL' || c.grade === selectedGrade;
       const matchSearch =
         c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        c.homeroom.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (c.room && c.room.toLowerCase().includes(searchQuery.toLowerCase()));
+        c.homeroom.toLowerCase().includes(searchQuery.toLowerCase());
       return matchGrade && matchSearch;
     });
     return sortClasses(list);
@@ -95,7 +90,6 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
   const handleOpenEdit = (c: RombelClass) => {
     setEditingClass(c);
     setEditHomeroom(c.homeroom);
-    setEditRoom(c.room || '');
     setEditCapacity(c.capacity || 36);
   };
 
@@ -105,7 +99,6 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
     const updated: RombelClass = {
       ...editingClass,
       homeroom: editHomeroom.trim() || editingClass.homeroom,
-      room: editRoom.trim() || undefined,
       capacity: editCapacity,
     };
     onUpdateClass(updated);
@@ -135,14 +128,12 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
       grade: newGrade,
       number: classes.filter((c) => c.grade === newGrade).length + 1,
       homeroom: newHomeroom.trim() || 'Belum Ditentukan',
-      room: newRoom.trim() || undefined,
       capacity: newCapacity,
     };
     onAddClass(newClass);
     setIsAddModalOpen(false);
     setNewName('');
     setNewHomeroom('');
-    setNewRoom('');
   };
 
   return (
@@ -251,7 +242,7 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari rombel, wali kelas, ruang..."
+            placeholder="Cari rombel, wali kelas..."
             className="w-full pl-11 pr-4 py-3 bg-[#E2F1FD] rounded-2xl text-xs text-[#0F172A] placeholder-[#334155] shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#0284C7]/20 font-medium"
           />
         </div>
@@ -265,7 +256,7 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
               <tr className="bg-gradient-to-r from-slate-100/80 to-purple-50/50 text-[#334155] font-black text-xs uppercase tracking-wider border-b border-slate-200/60" >
                 <th className="py-4 px-4 w-12 text-center">No</th>
                 <th className="py-4 px-5 min-w-[140px]">Nama Rombel</th>
-                <th className="py-4 px-5 min-w-[220px]">Wali Kelas &amp; Ruangan</th>
+                <th className="py-4 px-5 min-w-[200px]">Wali Kelas</th>
                 <th className="py-4 px-5 text-center min-w-[150px]">Jumlah Siswa &amp; Rasio</th>
                 <th className="py-4 px-4 text-center w-24">Status</th>
                 <th className="py-4 px-4 w-36 text-center">Aksi</th>
@@ -303,14 +294,10 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
                         </div>
                       </td>
 
-                      {/* Wali Kelas & Ruang Belajar */}
+                      {/* Wali Kelas */}
                       <td className="py-4 px-5">
                         <div className="font-bold text-[#0F172A] leading-tight">
                           {c.homeroom}
-                        </div>
-                        <div className="flex items-center gap-1.5 text-xs text-[#334155] mt-0.5">
-                          <DoorOpen className="w-3.5 h-3.5 text-[#0284C7] shrink-0" />
-                          <span>{c.room || `Gedung Kelas ${c.grade}`}</span>
                         </div>
                       </td>
 
@@ -425,19 +412,6 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
 
               <div>
                 <label className="block font-black text-[#0F172A] mb-1.5" >
-                  Ruang Kelas / Gedung
-                </label>
-                <input
-                  type="text"
-                  value={editRoom}
-                  onChange={(e) => setEditRoom(e.target.value)}
-                  placeholder="Contoh: Gedung A - R.101"
-                  className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl text-[#0F172A] font-medium shadow-none focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-[#0284C7]/20"
-                />
-              </div>
-
-              <div>
-                <label className="block font-black text-[#0F172A] mb-1.5" >
                   Kapasitas Siswa
                 </label>
                 <input
@@ -532,19 +506,6 @@ export const DataKelasView: React.FC<DataKelasViewProps> = ({
                   placeholder="Nama Lengkap & Gelar Wali Kelas"
                   className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl text-[#0F172A] font-bold shadow-none focus:outline-hidden focus:bg-white"
                   required
-                />
-              </div>
-
-              <div>
-                <label className="block font-black text-[#0F172A] mb-1.5" >
-                  Ruang Kelas / Gedung
-                </label>
-                <input
-                  type="text"
-                  value={newRoom}
-                  onChange={(e) => setNewRoom(e.target.value)}
-                  placeholder="Contoh: Gedung A - R.113"
-                  className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl text-[#0F172A] font-medium shadow-none focus:outline-hidden focus:bg-white"
                 />
               </div>
 
