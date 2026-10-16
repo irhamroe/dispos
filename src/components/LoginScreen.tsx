@@ -250,6 +250,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                   <KeyRound className="w-4 h-4 text-[#0284C7]" />
                   <span>Masuk ke Akun</span>
                 </h2>
+                <p className="text-xs text-[#64748B] mt-0.5">Gunakan Username dan Password Anda</p>
               </div>
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-100" title="Sistem Aktif" />
             </div>
