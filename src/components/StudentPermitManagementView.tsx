@@ -93,8 +93,14 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
     (currentUser?.department || '').toLowerCase().includes('wakil kepala') ||
     (currentUser?.department || '').toLowerCase().includes('waka');
   const isWaliKelas = currentUser?.role === 'Wali Kelas';
+  const userWaliClass = currentUser?.assignedClass || (
+    isWaliKelas && currentUser?.department
+      ? currentUser.department.replace(/^Wali\s+Kelas\s*/i, '').trim()
+      : undefined
+  );
+  const isActualWaliKelas = Boolean(userWaliClass) || isWaliKelas;
   const isGuruMapel = currentUser?.role === 'Guru';
-  const isGuruOrWali = isGuruMapel || isWaliKelas || isWakasek;
+  const isGuruOrWali = isGuruMapel || isActualWaliKelas || isWakasek;
   const isAdminDisiplin = (isAdmin || currentUser?.role === 'Guru Piket' || currentUser?.role === 'Guru BK') && !isWakasek;
   const isSatpam = currentUser?.role === 'Satpam' || 
     currentUser?.role === 'Security' || 
@@ -267,10 +273,8 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
       if (isWakasek) {
         return currentUser.department || 'Wakil Kepala Sekolah';
       }
-      if (currentUser.role === 'Wali Kelas') {
-        return currentUser.assignedClass 
-          ? `Wali Kelas ${currentUser.assignedClass}` 
-          : (permit.className ? `Wali Kelas ${permit.className}` : (currentUser.department || 'Wali Kelas'));
+      if (isActualWaliKelas) {
+        return userWaliClass ? `Wali Kelas ${userWaliClass}` : (currentUser.department || 'Wali Kelas');
       }
       if (currentUser.role === 'Guru') {
         return 'Guru Mata Pelajaran';
@@ -291,9 +295,14 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
       defaultApprover = currentUserName;
       if (isWakasek) {
         defaultRole = currentUser?.department || 'Wakil Kepala Sekolah';
-      } else if (currentUser?.role === 'Wali Kelas' || currentUser?.assignedClass) {
-        const targetClass = currentUser?.assignedClass || permit.className;
-        defaultRole = targetClass ? `Wali Kelas ${targetClass}` : 'Wali Kelas';
+      } else if (isActualWaliKelas) {
+        // Jika user adalah wali kelas dari siswa ini, default adalah Wali Kelas [userWaliClass]
+        // Jika user adalah wali kelas kelas lain tapi mengajar siswa ini, default adalah Guru Mata Pelajaran
+        if (userWaliClass && userWaliClass === permit.className) {
+          defaultRole = `Wali Kelas ${userWaliClass}`;
+        } else {
+          defaultRole = 'Guru Mata Pelajaran';
+        }
       } else {
         defaultRole = 'Guru Mata Pelajaran';
       }
@@ -530,40 +539,36 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
   // Opsi Dropdown Jabatan / Wewenang ringkas & kontekstual sesuai akun yang sedang login
   const roleOptions = useMemo(() => {
     if (!approvingStage) return [];
-    const permit = approvingStage.permit;
     const list: string[] = [];
 
-    // Jika yang login adalah Wali Kelas (misal: "Wali Kelas XI-5")
-    if (currentUser?.role === 'Wali Kelas' || currentUser?.assignedClass) {
-      const targetClass = currentUser?.assignedClass || permit.className;
-      if (targetClass) {
-        list.push(`Wali Kelas ${targetClass}`);
+    // 1. Jika pengguna login adalah Wali Kelas, tambahkan HANYA kelas binaannya sendiri (misal: "Wali Kelas XI-5")
+    if (isActualWaliKelas) {
+      if (userWaliClass) {
+        list.push(`Wali Kelas ${userWaliClass}`);
       } else {
         list.push('Wali Kelas');
       }
-      list.push('Guru Mata Pelajaran');
-    } else if (isWakasek) {
-      // Jika yang login adalah Waka (Wakil Kepala Sekolah)
+    }
+
+    // 2. Jika pengguna login adalah Waka (Wakil Kepala Sekolah)
+    if (isWakasek) {
       const wakaTitle = currentUser?.department || 'Wakil Kepala Sekolah';
-      list.push(wakaTitle);
-      list.push('Guru Mata Pelajaran');
-      if (permit.className) {
-        list.push(`Wali Kelas ${permit.className}`);
+      if (!list.includes(wakaTitle)) {
+        list.unshift(wakaTitle); // Waka selalu posisi pertama untuk akun waka
       }
-    } else if (isAdminDisiplin) {
-      // Jika yang login adalah Tim Disiplin Positif (Admin, Piket, BK)
+    }
+
+    // 3. Jika pengguna login adalah Tim Disiplin Positif (Admin, Piket, BK)
+    if (isAdminDisiplin) {
       const disiplinTitle = currentUser?.department || 'Admin Disiplin Positif';
-      list.push(disiplinTitle);
-      if (permit.className) {
-        list.push(`Wali Kelas ${permit.className}`);
+      if (!list.includes(disiplinTitle)) {
+        list.unshift(disiplinTitle);
       }
+    }
+
+    // 4. Guru Mata Pelajaran (Semua Guru, Wali Kelas, dan Waka bisa bertindak sebagai Guru Mata Pelajaran)
+    if (!list.includes('Guru Mata Pelajaran')) {
       list.push('Guru Mata Pelajaran');
-    } else {
-      // Default untuk Guru atau peran lainnya
-      list.push('Guru Mata Pelajaran');
-      if (permit.className) {
-        list.push(`Wali Kelas ${permit.className}`);
-      }
     }
 
     // Pastikan nilai approverRole saat ini (jika ada) ada di daftar agar selalu terpilih
@@ -572,7 +577,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
     }
 
     return list;
-  }, [approvingStage, currentUser, isWakasek, isAdminDisiplin]);
+  }, [approvingStage, currentUser, isWakasek, isAdminDisiplin, isActualWaliKelas, userWaliClass]);
 
   const handleRoleChange = (selectedValue: string) => {
     if (!approvingStage) return;
@@ -599,8 +604,8 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
     if (isStandardNote(approvingStage.notes, approvingStage.permit)) {
       const s = selectedValue.toLowerCase();
       if (s.startsWith('wali kelas')) {
-        const targetClass = currentUser?.assignedClass || approvingStage.permit.className;
-        updatedNotes = `Permohonan izin keluar telah dikoordinasikan dan disetujui oleh Wali Kelas ${targetClass || ''}.`.trim();
+        const waliLabel = userWaliClass ? `Wali Kelas ${userWaliClass}` : selectedValue;
+        updatedNotes = `Permohonan izin keluar telah dikoordinasikan dan disetujui oleh ${waliLabel}.`.trim();
       } else if (s.startsWith('guru')) {
         updatedNotes = 'Materi KBM mata pelajaran saat ini telah dikoordinasikan.';
       } else if (s.includes('wakil kepala') || s.includes('waka')) {
