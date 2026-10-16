@@ -689,26 +689,12 @@ export const RoleMatrixSettingsView: React.FC<RoleMatrixSettingsViewProps> = ({
       <div className="bg-white/85 backdrop-blur-xl rounded-[32px] border border-white/60 p-6 sm:p-8 shadow-sm transition-all duration-300">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="px-3 py-1 rounded-full text-[11px] font-black bg-[#0284C7]/15 text-[#0284C7] border border-[#0284C7]/20 shadow-xs">
-                RBAC • Role-Based Access Control
-              </span>
-              <span className="text-[#334155]/40 text-xs">•</span>
-              <span className="text-[#334155] text-xs font-bold">SMAN 1 Batu</span>
-              <span className="text-[#334155]/40 text-xs">•</span>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
-                {rolesList.length} Role Terdaftar
-              </span>
-            </div>
             <h1 className="text-2xl sm:text-3xl font-black text-[#0F172A] tracking-tight flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#E0F2FE] to-[#0284C7] text-white flex items-center justify-center shadow-xs">
                 <Sliders className="w-5 h-5" />
               </div>
               <span>Pengaturan Matriks Hak Akses User</span>
             </h1>
-            <p className="text-xs sm:text-sm text-[#334155] mt-2 max-w-2xl leading-relaxed">
-              Atur hak akses operasional, wewenang tindakan, dan visibilitas menu navigasi untuk seluruh peran pengguna sekolah. Anda dapat menambah role baru, mengubah hak akses tiap peran, atau mengekspor konfigurasi.
-            </p>
           </div>
 
           {/* Action Button Controls */}
@@ -728,36 +714,6 @@ export const RoleMatrixSettingsView: React.FC<RoleMatrixSettingsViewProps> = ({
               <Plus className="w-4 h-4" />
               <span>Tambah Role Baru</span>
             </button>
-
-            <button
-              type="button"
-              onClick={() => setShowResetConfirm(true)}
-              className="inline-flex items-center gap-2 px-3.5 py-2.5 bg-white/90 hover:bg-white text-[#334155] font-extrabold text-xs rounded-2xl transition-all duration-200 cursor-pointer border border-slate-200 shadow-xs hover:-translate-y-0.5 active:scale-95"
-            >
-              <RotateCcw className="w-4 h-4 text-slate-500" />
-              <span>Reset Standar</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={handleExportJSON}
-              title="Unduh konfigurasi matriks dalam format JSON"
-              className="inline-flex items-center gap-2 px-3.5 py-2.5 bg-white/90 hover:bg-white text-[#0F172A] font-extrabold text-xs rounded-2xl transition-all duration-200 cursor-pointer border border-slate-200 shadow-xs hover:-translate-y-0.5 active:scale-95"
-            >
-              <Download className="w-4 h-4 text-[#0284C7]" />
-              <span>Ekspor JSON</span>
-            </button>
-
-            <label className="inline-flex items-center gap-2 px-3.5 py-2.5 bg-white/90 hover:bg-white text-[#0F172A] font-extrabold text-xs rounded-2xl transition-all duration-200 cursor-pointer border border-slate-200 shadow-xs hover:-translate-y-0.5 active:scale-95">
-              <Upload className="w-4 h-4 text-emerald-600" />
-              <span>Impor JSON</span>
-              <input
-                type="file"
-                accept=".json"
-                onChange={handleImportJSON}
-                className="hidden"
-              />
-            </label>
 
             <button
               type="button"
@@ -857,9 +813,6 @@ export const RoleMatrixSettingsView: React.FC<RoleMatrixSettingsViewProps> = ({
                         </span>
                       )}
                     </div>
-                    <p className="text-[10px] text-[#334155] mt-1 line-clamp-2 leading-relaxed">
-                      {meta.desc}
-                    </p>
                   </div>
                 </div>
               );
@@ -976,9 +929,6 @@ export const RoleMatrixSettingsView: React.FC<RoleMatrixSettingsViewProps> = ({
                     <LayoutDashboard className="w-4 h-4 text-[#0284C7]" />
                     <span>1. Hak Akses Visibilitas Menu Navigasi Sidebar</span>
                   </h3>
-                  <p className="text-[11px] text-[#334155] mt-0.5">
-                    Menentukan halaman/menu yang muncul pada menu sidebar kiri setiap peran pengguna.
-                  </p>
                 </div>
                 <span className="text-[11px] font-bold text-[#0284C7] bg-white px-3 py-1 rounded-full border border-sky-200">
                   {filteredNavTabs.length} Menu

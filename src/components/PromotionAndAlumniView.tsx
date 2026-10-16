@@ -818,9 +818,6 @@ export const PromotionAndAlumniView: React.FC<PromotionAndAlumniViewProps> = ({
                   <h3 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
                     <span>Tahap 1: Kelulusan Siswa Kelas XII (Pindah ke Arsip Alumni)</span>
                   </h3>
-                  <p className="text-xs text-slate-500 font-medium">
-                    Siswa kelas XII yang lulus dipindahkan ke status Alumni. Data diri, rekam jejak pelanggaran, dan presensi mereka tetap tersimpan utuh di arsip.
-                  </p>
                 </div>
               </div>
 
@@ -864,9 +861,6 @@ export const PromotionAndAlumniView: React.FC<PromotionAndAlumniViewProps> = ({
                       {gradeXIStudents.length} Siswa Tersedia
                     </span>
                   </h3>
-                  <p className="text-xs text-slate-500 font-medium">
-                    Pilih metode promosi: formasi kelas tetap sama (1-ke-1), atau formasi diacak / berpencar ke kelas XII baru.
-                  </p>
                 </div>
               </div>
 
@@ -909,11 +903,6 @@ export const PromotionAndAlumniView: React.FC<PromotionAndAlumniViewProps> = ({
                   <CheckCircle2 className="w-5 h-5 text-sky-600 shrink-0 mt-0.5" />
                   <div>
                     <h4 className="text-sm font-black text-sky-950">Mode Formasi Tetap (1-ke-1 Mapping Otomatis)</h4>
-                    <p className="text-xs text-sky-800/90 mt-0.5 leading-relaxed">
-                      Seluruh siswa di rombel XI akan langsung dipromosikan ke rombel XII yang bersesuaian 
-                      (contoh: seluruh siswa rombel <strong>XI-1 → XII-1</strong>, <strong>XI-2 → XII-2</strong>, dst).
-                      Catatan pelanggaran dan ID siswa tidak berubah sama sekali.
-                    </p>
                   </div>
                 </div>
 
@@ -1126,9 +1115,6 @@ export const PromotionAndAlumniView: React.FC<PromotionAndAlumniViewProps> = ({
                       {gradeXStudents.length} Siswa Tersedia
                     </span>
                   </h3>
-                  <p className="text-xs text-slate-500 font-medium">
-                    Siswa kelas X naik ke kelas XI dengan formasi rombel yang berpencar sesuai mata pelajaran pilihan / Kurikulum Merdeka.
-                  </p>
                 </div>
               </div>
 
@@ -1171,9 +1157,6 @@ export const PromotionAndAlumniView: React.FC<PromotionAndAlumniViewProps> = ({
                   <Shuffle className="w-5 h-5 text-purple-600 shrink-0 mt-0.5" />
                   <div>
                     <h4 className="text-sm font-black text-purple-950">Distribusi Siswa Kelas X ke Kelas XI Baru</h4>
-                    <p className="text-xs text-purple-800/90 mt-0.5 leading-relaxed">
-                      Unduh template untuk memasukkan pemetaan rombel baru (misal XI-1 s.d. XI-12), lalu unggah kembali file Excel tersebut.
-                    </p>
                   </div>
                 </div>
 
@@ -1183,9 +1166,6 @@ export const PromotionAndAlumniView: React.FC<PromotionAndAlumniViewProps> = ({
                       <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
                       <span>Metode Excel (Rekomendasi Utama)</span>
                     </span>
-                    <p className="text-[11px] text-slate-500 leading-tight">
-                      Gunakan file Excel jika daftar rombel XI sudah ditentukan oleh tim kurikulum/BK sekolah.
-                    </p>
                     <div className="flex items-center gap-2 pt-1">
                       <button
                         type="button"
@@ -1220,9 +1200,6 @@ export const PromotionAndAlumniView: React.FC<PromotionAndAlumniViewProps> = ({
                       <Sparkles className="w-4 h-4 text-purple-600" />
                       <span>Bagi Rata Otomatis</span>
                     </span>
-                    <p className="text-[11px] text-slate-500 leading-tight">
-                      Sistem akan membagi rata {gradeXStudents.length} siswa kelas X ke 12 rombel kelas XI secara acak seimbang putra/putri.
-                    </p>
                     <div className="pt-1">
                       <button
                         type="button"
@@ -1397,9 +1374,6 @@ export const PromotionAndAlumniView: React.FC<PromotionAndAlumniViewProps> = ({
                       Saat Ini: {gradeXStudents.length} Siswa
                     </span>
                   </h3>
-                  <p className="text-xs text-slate-500 font-medium">
-                    Unggah daftar siswa baru angkatan kelas X langsung melalui berkas spreadsheet Excel (.xlsx).
-                  </p>
                 </div>
               </div>
 

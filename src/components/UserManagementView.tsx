@@ -742,18 +742,6 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               </div>
               <span>Manajemen Pengguna &amp; Multi-Role</span>
             </h1>
-            <p className="text-xs sm:text-sm text-[#334155] mt-2 max-w-2xl leading-relaxed">
-              Kelola akun seluruh sivitas sekolah berdasarkan multi-role: 
-              <strong className="text-[#0F172A] font-bold"> Admin</strong>, 
-              <strong className="text-[#0F172A] font-bold"> Wali Kelas</strong>, 
-              <strong className="text-[#0F172A] font-bold"> Guru</strong>, 
-              <strong className="text-[#0F172A] font-bold"> Wakasek</strong>, 
-              <strong className="text-[#0F172A] font-bold"> Tendik</strong>, 
-              <strong className="text-[#0F172A] font-bold"> Satpam</strong>, 
-              <strong className="text-[#0F172A] font-bold"> Kepala Sekolah</strong>, 
-              <strong className="text-[#0F172A] font-bold"> Guru BK</strong>, dan 
-              <strong className="text-[#0F172A] font-bold"> Guru Piket</strong>.
-            </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -827,9 +815,6 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                       <span>{rItem.num}. {rItem.label}</span>
                       {isSelected && <span className="text-[10px] font-bold">(Aktif)</span>}
                     </div>
-                    <p className={`text-[11px] ${rItem.textCount}/80 mt-1 leading-relaxed line-clamp-2`}>
-                      {rItem.desc}
-                    </p>
                   </div>
                 </div>
               );
