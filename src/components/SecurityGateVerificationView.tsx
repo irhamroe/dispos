@@ -183,7 +183,7 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
       ...permit,
       securityChecked: !isChecked,
       securityCheckedAt: !isChecked ? nowTime : undefined,
-      securityCheckedBy: !isChecked ? (currentUserName || 'Petugas Keamanan Satpam') : undefined,
+      securityCheckedBy: !isChecked ? (currentUserName || 'Petugas Satpam') : undefined,
       updatedAt: new Date().toISOString(),
     };
 
@@ -274,7 +274,7 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
               <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Petugas Jaga:</div>
               <div className="font-extrabold text-white flex items-center gap-1.5">
                 <User className="w-3.5 h-3.5 text-sky-400" />
-                <span>{currentUserName || 'Petugas Keamanan (Satpam)'}</span>
+                <span>{currentUserName || 'Petugas Satpam'}</span>
               </div>
             </div>
 

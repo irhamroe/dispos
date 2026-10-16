@@ -524,7 +524,7 @@ export const initialRoleMatrix: RoleMatrixMap = {
 
   Satpam: {
     role: 'Satpam',
-    label: 'Petugas Keamanan (Satpam / Security)',
+    label: 'Satpam',
     description: 'Pemeriksaan e-surat siswa izin keluar sekolah dan verifikasi akses keluar gerbang sekolah.',
     badgeClass: 'bg-slate-800 text-white border-slate-700',
     iconName: 'ShieldCheck',

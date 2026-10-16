@@ -317,13 +317,13 @@ export const RoleMatrixSettingsView: React.FC<RoleMatrixSettingsViewProps> = ({
         };
       case 'Satpam':
         return {
-          label: 'Satpam / Security',
+          label: 'Satpam',
           badgeClass: 'bg-slate-800 text-white border-slate-700',
           gradient: 'from-slate-700 to-slate-900',
           textClass: 'text-slate-900',
           bgHeader: 'bg-slate-100/50',
           icon: ShieldCheck,
-          desc: 'Petugas keamanan gerbang & pemeriksaan e-surat izin keluar sekolah.',
+          desc: 'Petugas satpam gerbang & pemeriksaan e-surat izin keluar sekolah.',
         };
       case 'Kepala Sekolah':
         return {

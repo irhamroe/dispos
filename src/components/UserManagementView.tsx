@@ -178,7 +178,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           label: 'Satpam',
           badgeClass: 'bg-slate-900 text-white border-slate-700',
           icon: ShieldCheck,
-          desc: 'Petugas keamanan pos gerbang & verifikasi izin keluar',
+          desc: 'Petugas satpam pos gerbang & verifikasi izin keluar',
         };
       case 'Kepala Sekolah':
         return {

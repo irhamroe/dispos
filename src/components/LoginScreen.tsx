@@ -70,7 +70,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
         return;
       }
 
-      // Direct check for Satpam / Security (username: satpam / security, password: satpam)
+      // Direct check for Satpam (username: satpam, password: satpam)
       if ((rawInputUser === 'satpam' || rawInputUser === 'security') && (rawInputPass === 'satpam' || rawInputPass === 'security')) {
         setIsLoading(false);
         const satpamUser = users.find((u) => u.username.toLowerCase() === 'satpam' || u.role === 'Satpam');
@@ -80,10 +80,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
           onLoginSuccess({
             id: 'usr-security-satpam',
             username: 'satpam',
-            name: 'Petugas Keamanan (Satpam)',
+            name: 'Petugas Satpam',
             role: 'Satpam',
             nip: 'STP-SMAN1BATU-01',
-            department: 'Pos Keamanan Gerbang Utama',
+            department: 'Pos Satpam Gerbang Utama',
             avatar: 'SP',
             status: 'Aktif',
             password: 'satpam',
