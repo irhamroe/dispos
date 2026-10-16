@@ -544,9 +544,6 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
             </div>
             <span>Surat Izin Keluar &amp; Dispensasi Siswa</span>
           </h1>
-          <p className="text-xs sm:text-sm text-[#334155] font-medium mt-1">
-            Persetujuan &amp; monitoring permohonan izin mandiri siswa (Scan QR Code): Keluar Sekolah, Keluar Kelas, dan Dispensasi Seragam.
-          </p>
         </div>
 
         {/* Action Buttons: Standee QR & Open Public Portal */}

@@ -310,9 +310,6 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
               <h2 className="text-2xl sm:text-3xl font-black text-[#0F172A] tracking-tight" >
                 Tagihan Pembinaan & Surat Siswa
               </h2>
-              <p className="text-sm text-[#334155] mt-1 font-medium">
-                Monitoring siswa yang belum menyelesaikan sesi pembinaan atau belum mengumpulkan surat bukti pembinaan
-              </p>
             </div>
           </div>
 

@@ -394,9 +394,6 @@ Mengingat pentingnya hal tersebut, kami mengharapkan Bapak/Ibu datang tepat wakt
             </div>
             <span>Surat Panggilan Orang Tua / Wali Murid</span>
           </h1>
-          <p className="text-xs text-[#334155] font-medium mt-1">
-            Format resmi sesuai Dinas Pendidikan Provinsi Jawa Timur &amp; SMAN 1 Batu, dilengkapi rincian pelanggaran siswa.
-          </p>
         </div>
 
         {/* Quick Stats */}
