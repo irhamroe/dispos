@@ -250,7 +250,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                   <KeyRound className="w-4 h-4 text-[#0284C7]" />
                   <span>Masuk ke Akun</span>
                 </h2>
-                <p className="text-xs text-[#64748B] mt-0.5">Gunakan NIP / Username dan Password Anda</p>
               </div>
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-100" title="Sistem Aktif" />
             </div>
@@ -267,7 +266,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               <div className="space-y-1">
                 <label className="block text-xs font-bold text-[#0F172A] mb-1 ml-1 flex items-center gap-1.5">
                   <User className="w-3.5 h-3.5 text-[#0284C7]" />
-                  <span>Username / NIP</span>
+                  <span>Username</span>
                 </label>
                 <div className="relative flex items-center">
                   <input
@@ -277,7 +276,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                     autoFocus
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Masukkan username atau NIP..."
+                    placeholder="Masukkan username..."
                     className="w-full bg-[#E2F1FD] text-[#0F172A] placeholder-[#64748B] font-semibold rounded-2xl border border-white/40 px-4 py-3 text-sm transition-all duration-200 focus:outline-hidden focus:bg-white focus:ring-4 focus:ring-sky-500/20"
                   />
                 </div>
