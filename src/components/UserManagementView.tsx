@@ -225,6 +225,94 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
     }
   };
 
+  const getRoleTheme = (role: string) => {
+    switch (role) {
+      case 'Admin':
+      case 'Administrator':
+        return {
+          gradient: 'from-[#7C3AED] to-[#A855F7]',
+          cardBg: 'from-[#FAF5FF] via-[#F3E8FF]/70 to-[#DDD6FE]/40',
+          cardBorder: 'border-[#DDD6FE]/70 hover:border-[#A855F7]',
+          activeBorder: 'border-[#7C3AED] bg-gradient-to-br from-[#FAF5FF] via-[#F3E8FF] to-[#DDD6FE]',
+          textCount: 'text-[#6D28D9]',
+        };
+      case 'Wali Kelas':
+        return {
+          gradient: 'from-[#059669] to-[#10B981]',
+          cardBg: 'from-[#ECFDF5] via-[#D1FAE5]/70 to-[#A7F3D0]/40',
+          cardBorder: 'border-[#6EE7B7]/70 hover:border-[#10B981]',
+          activeBorder: 'border-[#059669] bg-gradient-to-br from-[#ECFDF5] via-[#D1FAE5] to-[#A7F3D0]',
+          textCount: 'text-[#047857]',
+        };
+      case 'Guru':
+        return {
+          gradient: 'from-[#0284C7] to-[#38BDF8]',
+          cardBg: 'from-[#F0F9FF] via-[#E0F2FE]/70 to-[#BAE6FD]/40',
+          cardBorder: 'border-[#7DD3FC]/70 hover:border-[#38BDF8]',
+          activeBorder: 'border-[#0284C7] bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE] to-[#BAE6FD]',
+          textCount: 'text-[#0369A1]',
+        };
+      case 'Wakasek':
+      case 'Wakil Kepala Sekolah':
+        return {
+          gradient: 'from-indigo-600 to-violet-600',
+          cardBg: 'from-indigo-50/70 via-indigo-100/50 to-indigo-200/40',
+          cardBorder: 'border-indigo-200/80 hover:border-indigo-400',
+          activeBorder: 'border-indigo-600 bg-gradient-to-br from-indigo-50 via-indigo-100 to-indigo-200',
+          textCount: 'text-indigo-700',
+        };
+      case 'Tendik':
+        return {
+          gradient: 'from-[#D97706] to-[#F59E0B]',
+          cardBg: 'from-[#FFFBEB] via-[#FEF3C7]/70 to-[#FDE68A]/40',
+          cardBorder: 'border-[#FCD34D]/70 hover:border-[#F59E0B]',
+          activeBorder: 'border-[#D97706] bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7] to-[#FDE68A]',
+          textCount: 'text-[#B45309]',
+        };
+      case 'Satpam':
+      case 'Security':
+        return {
+          gradient: 'from-slate-800 to-slate-900',
+          cardBg: 'from-slate-50 via-slate-100 to-slate-200/60',
+          cardBorder: 'border-slate-300 hover:border-slate-500',
+          activeBorder: 'border-slate-800 bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300',
+          textCount: 'text-slate-900',
+        };
+      case 'Kepala Sekolah':
+        return {
+          gradient: 'from-rose-600 to-pink-600',
+          cardBg: 'from-rose-50/70 via-rose-100/50 to-pink-100/40',
+          cardBorder: 'border-rose-200/80 hover:border-rose-400',
+          activeBorder: 'border-rose-600 bg-gradient-to-br from-rose-50 via-rose-100 to-rose-200',
+          textCount: 'text-rose-700',
+        };
+      case 'Guru BK':
+        return {
+          gradient: 'from-violet-600 to-purple-600',
+          cardBg: 'from-purple-50/70 via-violet-100/50 to-purple-100/40',
+          cardBorder: 'border-violet-200/80 hover:border-violet-400',
+          activeBorder: 'border-violet-600 bg-gradient-to-br from-violet-50 via-violet-100 to-violet-200',
+          textCount: 'text-violet-700',
+        };
+      case 'Guru Piket':
+        return {
+          gradient: 'from-cyan-600 to-teal-600',
+          cardBg: 'from-cyan-50/70 via-cyan-100/50 to-teal-100/40',
+          cardBorder: 'border-cyan-200/80 hover:border-cyan-400',
+          activeBorder: 'border-cyan-600 bg-gradient-to-br from-cyan-50 via-cyan-100 to-cyan-200',
+          textCount: 'text-cyan-700',
+        };
+      default:
+        return {
+          gradient: 'from-sky-600 to-indigo-600',
+          cardBg: 'from-slate-50 via-sky-50/50 to-indigo-50/40',
+          cardBorder: 'border-slate-200 hover:border-sky-400',
+          activeBorder: 'border-[#0284C7] bg-gradient-to-br from-white via-sky-50 to-[#E0F2FE]',
+          textCount: 'text-sky-800',
+        };
+    }
+  };
+
   // List of all active roles from roleMatrix
   const availableRolesList = useMemo(() => {
     const keys = Object.keys(roleMatrix);
@@ -248,13 +336,21 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       return a.localeCompare(b);
     });
 
-    return sorted.map((r) => {
+    return sorted.map((r, index) => {
       const meta = getRoleBadge(r);
+      const theme = getRoleTheme(r);
       return {
         id: r as UserRole,
         label: meta.label,
         icon: meta.icon,
         desc: meta.desc,
+        badgeClass: meta.badgeClass,
+        gradient: theme.gradient,
+        cardBg: theme.cardBg,
+        cardBorder: theme.cardBorder,
+        activeBorder: theme.activeBorder,
+        textCount: theme.textCount,
+        num: index + 1,
       };
     });
   }, [roleMatrix]);
@@ -407,14 +503,8 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
     setEditingUser(user);
     setEditUsername(user.username);
     setEditName(user.name);
-    // Normalize role
-    let normalizedRole: UserRole = 'Guru';
-    if (user.role === 'Admin' || user.role === 'Administrator') normalizedRole = 'Admin';
-    else if (user.role === 'Wali Kelas') normalizedRole = 'Wali Kelas';
-    else if (user.role === 'Wakasek' || user.role === 'Wakil Kepala Sekolah') normalizedRole = 'Wakasek';
-    else if (user.role === 'Tendik') normalizedRole = 'Tendik';
-    else if (user.role === 'Satpam' || user.role === 'Security') normalizedRole = 'Satpam';
-    else normalizedRole = 'Guru';
+    // Normalize role dynamically for all standard and custom roles
+    const normalizedRole = (normalizeRole(user.role, roleMatrix) as UserRole) || 'Guru';
     setEditRole(normalizedRole);
 
     setEditNip(user.nip || '');
@@ -463,7 +553,13 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
             ? (newDepartment.trim() || 'Wakil Kepala Sekolah')
             : newRole === 'Guru' 
               ? (newDepartment.trim() || 'Guru Mata Pelajaran') 
-              : newDepartment.trim(),
+              : newRole === 'Kepala Sekolah'
+                ? (newDepartment.trim() || 'Kepala Sekolah SMAN 1 Batu')
+                : newRole === 'Guru BK'
+                  ? (newDepartment.trim() || 'Bimbingan Konseling')
+                  : newRole === 'Guru Piket'
+                    ? (newDepartment.trim() || 'Piket & Ketertiban Gerbang')
+                    : newDepartment.trim(),
       avatar: initials || 'US',
       photoUrl: newPhotoUrl.trim() || undefined,
       status: newStatus,
@@ -649,11 +745,14 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
             <p className="text-xs sm:text-sm text-[#334155] mt-2 max-w-2xl leading-relaxed">
               Kelola akun seluruh sivitas sekolah berdasarkan multi-role: 
               <strong className="text-[#0F172A] font-bold"> Admin</strong>, 
-              <strong className="text-[#0F172A] font-bold"> Wali Kelas</strong> (36 Rombel), 
+              <strong className="text-[#0F172A] font-bold"> Wali Kelas</strong>, 
               <strong className="text-[#0F172A] font-bold"> Guru</strong>, 
               <strong className="text-[#0F172A] font-bold"> Wakasek</strong>, 
-              <strong className="text-[#0F172A] font-bold"> Tendik</strong>, dan 
-              <strong className="text-[#0F172A] font-bold"> Satpam</strong>.
+              <strong className="text-[#0F172A] font-bold"> Tendik</strong>, 
+              <strong className="text-[#0F172A] font-bold"> Satpam</strong>, 
+              <strong className="text-[#0F172A] font-bold"> Kepala Sekolah</strong>, 
+              <strong className="text-[#0F172A] font-bold"> Guru BK</strong>, dan 
+              <strong className="text-[#0F172A] font-bold"> Guru Piket</strong>.
             </p>
           </div>
 
@@ -673,7 +772,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                 resetAddForm();
                 setIsAddModalOpen(true);
               }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-br from-[#E0F2FE] to-[#0284C7] hover:from-[#9333EA] hover:to-[#6D28D9] text-white font-black text-xs rounded-2xl transition-all duration-200 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none cursor-pointer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-br from-[#E0F2FE] to-[#0284C7] hover:from-[#0369A1] hover:to-[#0284C7] text-white font-black text-xs rounded-2xl transition-all duration-200 shadow-xs hover:-translate-y-0.5 active:scale-[0.92] active:shadow-none cursor-pointer"
             >
               <UserPlus className="w-4 h-4" />
               <span>Tambah Pengguna</span>
@@ -681,165 +780,63 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           </div>
         </div>
 
-        {/* 6 Role Summary Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3.5 mt-6 pt-6 border-t border-sky-100/50">
-            {/* Card 1: Admin */}
-            <div 
-              onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Admin' ? 'ALL' : 'Admin')}
-              className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden group ${
-                selectedRoleFilter === 'Admin'
-                  ? 'bg-gradient-to-br from-[#FAF5FF] via-[#F3E8FF] to-[#DDD6FE] border-2 border-[#7C3AED] shadow-sm -translate-y-1'
-                  : 'bg-gradient-to-br from-[#FAF5FF] via-[#F3E8FF]/70 to-[#DDD6FE]/40 border border-[#DDD6FE]/70 hover:border-[#A855F7] shadow-xs hover:-translate-y-1'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#7C3AED] to-[#A855F7] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
-                  <ShieldCheck className="w-5 h-5" />
-                </div>
-                <span className="text-2xl font-black text-[#6D28D9]">{roleCounts.admin}</span>
-              </div>
-              <div className="mt-3">
-                <div className="text-xs font-black text-[#6D28D9] flex items-center gap-1.5">
-                  <span>1. Administrator</span>
-                  {selectedRoleFilter === 'Admin' && <span className="text-[10px] text-[#7C3AED] font-bold">(Aktif)</span>}
-                </div>
-                <p className="text-[11px] text-[#6D28D9]/80 mt-1 leading-relaxed">
-                  Hak penuh sistem, data master, aturan poin &amp; akun.
-                </p>
-              </div>
+        {/* Dynamic Role Summary Cards */}
+        <div className="mt-6 pt-6 border-t border-sky-100/50">
+          <div className="flex items-center justify-between mb-3.5">
+            <div className="flex items-center gap-2">
+              <span className="font-black text-xs text-[#0F172A] uppercase tracking-wider">
+                Filter Pengguna Berdasarkan Peran ({availableRolesList.length} Role)
+              </span>
+              <span className="text-[11px] text-[#334155]/60 font-semibold">• Klik kartu peran untuk menyaring daftar</span>
             </div>
+            {selectedRoleFilter !== 'ALL' && (
+              <button
+                type="button"
+                onClick={() => setSelectedRoleFilter('ALL')}
+                className="text-xs font-bold text-[#0284C7] hover:underline cursor-pointer"
+              >
+                Tampilkan Semua ({users.length})
+              </button>
+            )}
+          </div>
 
-            {/* Card 2: Wali Kelas */}
-            <div 
-              onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Wali Kelas' ? 'ALL' : 'Wali Kelas')}
-              className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden group ${
-                selectedRoleFilter === 'Wali Kelas'
-                  ? 'bg-gradient-to-br from-[#ECFDF5] via-[#D1FAE5] to-[#A7F3D0] border-2 border-[#059669] shadow-sm -translate-y-1'
-                  : 'bg-gradient-to-br from-[#ECFDF5] via-[#D1FAE5]/70 to-[#A7F3D0]/40 border border-[#6EE7B7]/70 hover:border-[#10B981] shadow-xs hover:-translate-y-1'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#059669] to-[#10B981] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
-                  <UserCheck className="w-5 h-5" />
-                </div>
-                <span className="text-2xl font-black text-[#047857]">{roleCounts.waliKelas}</span>
-              </div>
-              <div className="mt-3">
-                <div className="text-xs font-black text-[#047857] flex items-center gap-1.5">
-                  <span>2. Wali Kelas</span>
-                  {selectedRoleFilter === 'Wali Kelas' && <span className="text-[10px] text-[#059669] font-bold">(Aktif)</span>}
-                </div>
-                <p className="text-[11px] text-[#047857]/80 mt-1 leading-relaxed">
-                  Pembina rombel, presensi siswa &amp; surat panggilan ortu.
-                </p>
-              </div>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3.5">
+            {availableRolesList.map((rItem) => {
+              const RoleIcon = rItem.icon;
+              const isSelected = selectedRoleFilter === rItem.id;
+              const count = roleCountsGrouped[rItem.id] || 0;
 
-            {/* Card 3: Guru */}
-            <div 
-              onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Guru' ? 'ALL' : 'Guru')}
-              className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden group ${
-                selectedRoleFilter === 'Guru'
-                  ? 'bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE] to-[#BAE6FD] border-2 border-[#0284C7] shadow-sm -translate-y-1'
-                  : 'bg-gradient-to-br from-[#F0F9FF] via-[#E0F2FE]/70 to-[#BAE6FD]/40 border border-[#7DD3FC]/70 hover:border-[#38BDF8] shadow-xs hover:-translate-y-1'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#0284C7] to-[#38BDF8] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
-                  <GraduationCap className="w-5 h-5" />
+              return (
+                <div
+                  key={rItem.id}
+                  onClick={() => setSelectedRoleFilter(isSelected ? 'ALL' : rItem.id)}
+                  className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden group flex flex-col justify-between ${
+                    isSelected
+                      ? `${rItem.activeBorder} 2 border shadow-sm -translate-y-1`
+                      : `bg-gradient-to-br ${rItem.cardBg} border ${rItem.cardBorder} shadow-xs hover:-translate-y-1`
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className={`w-10 h-10 rounded-2xl bg-gradient-to-tr ${rItem.gradient} text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform`}>
+                      <RoleIcon className="w-5 h-5" />
+                    </div>
+                    <span className={`text-2xl font-black ${rItem.textCount}`}>{count}</span>
+                  </div>
+                  <div className="mt-3">
+                    <div className={`text-xs font-black ${rItem.textCount} flex items-center gap-1.5`}>
+                      <span>{rItem.num}. {rItem.label}</span>
+                      {isSelected && <span className="text-[10px] font-bold">(Aktif)</span>}
+                    </div>
+                    <p className={`text-[11px] ${rItem.textCount}/80 mt-1 leading-relaxed line-clamp-2`}>
+                      {rItem.desc}
+                    </p>
+                  </div>
                 </div>
-                <span className="text-2xl font-black text-[#0369A1]">{roleCounts.guru}</span>
-              </div>
-              <div className="mt-3">
-                <div className="text-xs font-black text-[#0369A1] flex items-center gap-1.5">
-                  <span>3. Guru</span>
-                  {selectedRoleFilter === 'Guru' && <span className="text-[10px] text-[#0284C7] font-bold">(Aktif)</span>}
-                </div>
-                <p className="text-[11px] text-[#0369A1]/80 mt-1 leading-relaxed">
-                  Guru Mapel, Guru Piket gerbang &amp; Guru BK disiplin.
-                </p>
-              </div>
-            </div>
-
-            {/* Card 4: Wakasek */}
-            <div 
-              onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Wakasek' ? 'ALL' : 'Wakasek')}
-              className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden group ${
-                selectedRoleFilter === 'Wakasek'
-                  ? 'bg-gradient-to-br from-indigo-50 via-indigo-100 to-indigo-200 border-2 border-indigo-600 shadow-sm -translate-y-1'
-                  : 'bg-gradient-to-br from-indigo-50/70 via-indigo-100/50 to-indigo-200/40 border border-indigo-200/80 hover:border-indigo-400 shadow-xs hover:-translate-y-1'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
-                  <Award className="w-5 h-5" />
-                </div>
-                <span className="text-2xl font-black text-indigo-700">{roleCounts.wakasek}</span>
-              </div>
-              <div className="mt-3">
-                <div className="text-xs font-black text-indigo-800 flex items-center gap-1.5">
-                  <span>4. Wakasek</span>
-                  {selectedRoleFilter === 'Wakasek' && <span className="text-[10px] text-indigo-600 font-bold">(Aktif)</span>}
-                </div>
-                <p className="text-[11px] text-indigo-700/80 mt-1 leading-relaxed">
-                  Persetujuan izin keluar sekolah tahap 3, kesiswaan &amp; kurikulum.
-                </p>
-              </div>
-            </div>
-
-            {/* Card 5: Tendik */}
-            <div 
-              onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Tendik' ? 'ALL' : 'Tendik')}
-              className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden group ${
-                selectedRoleFilter === 'Tendik'
-                  ? 'bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7] to-[#FDE68A] border-2 border-[#D97706] shadow-sm -translate-y-1'
-                  : 'bg-gradient-to-br from-[#FFFBEB] via-[#FEF3C7]/70 to-[#FDE68A]/40 border border-[#FCD34D]/70 hover:border-[#F59E0B] shadow-xs hover:-translate-y-1'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#D97706] to-[#F59E0B] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
-                  <Briefcase className="w-5 h-5" />
-                </div>
-                <span className="text-2xl font-black text-[#B45309]">{roleCounts.tendik}</span>
-              </div>
-              <div className="mt-3">
-                <div className="text-xs font-black text-[#B45309] flex items-center gap-1.5">
-                  <span>5. Tendik</span>
-                  {selectedRoleFilter === 'Tendik' && <span className="text-[10px] text-[#D97706] font-bold">(Aktif)</span>}
-                </div>
-                <p className="text-[11px] text-[#B45309]/80 mt-1 leading-relaxed">
-                  Tata Usaha, staf kesiswaan, persuratan &amp; verifikasi arsip.
-                </p>
-              </div>
-            </div>
-
-            {/* Card 6: Satpam */}
-            <div 
-              onClick={() => setSelectedRoleFilter(selectedRoleFilter === 'Satpam' ? 'ALL' : 'Satpam')}
-              className={`p-4 rounded-[24px] transition-all duration-300 cursor-pointer relative overflow-hidden group ${
-                selectedRoleFilter === 'Satpam'
-                  ? 'bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300 border-2 border-slate-800 shadow-sm -translate-y-1'
-                  : 'bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200/60 border border-slate-300 hover:border-slate-500 shadow-xs hover:-translate-y-1'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-slate-800 to-slate-900 text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
-                  <ShieldCheck className="w-5 h-5" />
-                </div>
-                <span className="text-2xl font-black text-slate-900">{roleCounts.satpam}</span>
-              </div>
-              <div className="mt-3">
-                <div className="text-xs font-black text-slate-900 flex items-center gap-1.5">
-                  <span>6. Satpam</span>
-                  {selectedRoleFilter === 'Satpam' && <span className="text-[10px] text-slate-800 font-bold">(Aktif)</span>}
-                </div>
-                <p className="text-[11px] text-slate-700/80 mt-1 leading-relaxed">
-                  Pos gerbang &amp; verifikasi e-surat izin keluar sekolah.
-                </p>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
+      </div>
 
       {/* Filters and Controls */}
       <div className="bg-white/80 backdrop-blur-xl rounded-[28px] sm:rounded-[32px] border border-white/60 p-4 sm:p-5 shadow-sm space-y-4">
@@ -1020,9 +1017,9 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
 
                       {/* 3. Role */}
                       <td className="py-4 px-4">
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/80 border border-white/80 shadow-xs">
-                          <RoleIcon className="w-3.5 h-3.5 text-[#0284C7]" />
-                          <span className="font-black text-[11px] text-[#0F172A]" >
+                        <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl border shadow-xs ${roleMeta.badgeClass}`}>
+                          <RoleIcon className="w-3.5 h-3.5" />
+                          <span className="font-black text-[11px]">
                             {roleMeta.label}
                           </span>
                         </div>
@@ -1035,7 +1032,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                       <td className="py-4 px-4">
                         {user.role === 'Wali Kelas' && user.assignedClass ? (
                           <div className="flex items-center gap-1.5">
-                            <span className="px-2.5 py-1 rounded-xl bg-teal-50 text-teal-800 font-black text-[11px] border border-teal-200 shadow-xs" >
+                            <span className="px-2.5 py-1 rounded-xl bg-emerald-50 text-emerald-800 font-black text-[11px] border border-emerald-200 shadow-xs">
                               Kelas {user.assignedClass}
                             </span>
                             <span className="text-[11px] text-[#334155]">
@@ -1043,9 +1040,34 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                             </span>
                           </div>
                         ) : user.role === 'Admin' || user.role === 'Administrator' ? (
-                          <span className="text-[#0F172A] font-bold text-[11px] flex items-center gap-1.5">
-                            <ShieldCheck className="w-4 h-4 text-[#0284C7]" />
+                          <span className="text-purple-900 font-bold text-[11px] flex items-center gap-1.5">
+                            <ShieldCheck className="w-4 h-4 text-purple-600" />
                             {user.department || 'Manajemen Penuh Sistem'}
+                          </span>
+                        ) : user.role === 'Kepala Sekolah' ? (
+                          <span className="text-rose-900 font-bold text-[11px] flex items-center gap-1.5">
+                            <Crown className="w-4 h-4 text-rose-600" />
+                            {user.department || 'Pimpinan & Kebijakan Sekolah'}
+                          </span>
+                        ) : user.role === 'Guru BK' ? (
+                          <span className="text-violet-900 font-bold text-[11px] flex items-center gap-1.5">
+                            <HeartHandshake className="w-4 h-4 text-violet-600" />
+                            {user.department || 'Bimbingan & Konseling Siswa'}
+                          </span>
+                        ) : user.role === 'Guru Piket' ? (
+                          <span className="text-cyan-900 font-bold text-[11px] flex items-center gap-1.5">
+                            <Clock className="w-4 h-4 text-cyan-600" />
+                            {user.department || 'Piket Gerbang & Ketertiban'}
+                          </span>
+                        ) : user.role === 'Satpam' || user.role === 'Security' ? (
+                          <span className="text-slate-900 font-bold text-[11px] flex items-center gap-1.5">
+                            <ShieldCheck className="w-4 h-4 text-slate-700" />
+                            {user.department || 'Pos Keamanan & Gerbang'}
+                          </span>
+                        ) : user.role === 'Wakasek' ? (
+                          <span className="text-indigo-900 font-bold text-[11px] flex items-center gap-1.5">
+                            <Award className="w-4 h-4 text-indigo-600" />
+                            {user.department || 'Wakil Kepala Sekolah'}
                           </span>
                         ) : user.department ? (
                           <span className="text-[#0F172A] font-semibold text-[11px]">
@@ -1287,7 +1309,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                   <span>Tambah Pengguna Baru</span>
                 </h3>
                 <p className="text-xs text-purple-100 mt-0.5">
-                  Tentukan peran (Admin, Wali Kelas, Guru, Wakasek, Tendik, Satpam) dan data kredensial akun.
+                  Pilih dari {availableRolesList.length} peran pengguna yang tersedia dan atur kredensial akun.
                 </p>
               </div>
               <button
@@ -1418,29 +1440,45 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
 
               {newRole !== 'Wali Kelas' && (
                 <div>
-                  <label className="font-extrabold text-[#0F172A] block mb-1.5" >
+                  <label className="font-extrabold text-[#0F172A] block mb-1.5">
                     {newRole === 'Guru'
-                      ? 'Mata Pelajaran / Tugas Piket'
+                      ? 'Mata Pelajaran / Tugas Mengajar'
                       : newRole === 'Wakasek'
                       ? 'Bidang Wakasek (Kesiswaan, Kurikulum, Humas, Sarpras)'
+                      : newRole === 'Kepala Sekolah'
+                      ? 'Jabatan Pimpinan / Lembaga'
+                      : newRole === 'Guru BK'
+                      ? 'Bidang Konseling / Penanganan Siswa'
+                      : newRole === 'Guru Piket'
+                      ? 'Jadwal & Pos Piket Gerbang'
                       : newRole === 'Tendik'
                       ? 'Unit / Sub-bagian Tenaga Kependidikan'
                       : newRole === 'Satpam'
                       ? 'Penugasan / Pos Keamanan Gerbang'
-                      : 'Jabatan / Deskripsi Penugasan Admin'}
+                      : newRole === 'Admin' || newRole === 'Administrator'
+                      ? 'Jabatan / Deskripsi Penugasan Admin'
+                      : `Bidang / Deskripsi Penugasan (${newRole})`}
                   </label>
                   <input
                     type="text"
                     placeholder={
                       newRole === 'Guru'
-                        ? 'Contoh: Guru Matematika & Piket Harian / Guru BK'
+                        ? 'Contoh: Guru Matematika / Biologi'
                         : newRole === 'Wakasek'
                         ? 'Contoh: Waka Kesiswaan / Waka Kurikulum / Waka Humas / Waka Sarpras'
+                        : newRole === 'Kepala Sekolah'
+                        ? 'Contoh: Kepala Sekolah SMAN 1 Batu'
+                        : newRole === 'Guru BK'
+                        ? 'Contoh: Guru BK Kelas X & Konseling Karir'
+                        : newRole === 'Guru Piket'
+                        ? 'Contoh: Piket Gerbang Hari Senin & Kamis'
                         : newRole === 'Tendik'
                         ? 'Contoh: Tata Usaha / Kepegawaian / Kesiswaan'
                         : newRole === 'Satpam'
                         ? 'Contoh: Pos Gerbang Utama / Satpam Outsourcing'
-                        : 'Contoh: Administrator Utama Sistem'
+                        : newRole === 'Admin' || newRole === 'Administrator'
+                        ? 'Contoh: Administrator Utama Sistem'
+                        : `Contoh: Penugasan untuk role ${newRole}`
                     }
                     value={newDepartment}
                     onChange={(e) => setNewDepartment(e.target.value)}
@@ -1730,16 +1768,24 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
 
               {editRole !== 'Wali Kelas' && (
                 <div>
-                  <label className="font-extrabold text-[#0F172A] block mb-1.5" >
+                  <label className="font-extrabold text-[#0F172A] block mb-1.5">
                     {editRole === 'Guru'
-                      ? 'Mata Pelajaran / Tugas Piket'
+                      ? 'Mata Pelajaran / Tugas Mengajar'
                       : editRole === 'Wakasek'
                       ? 'Bidang Wakasek (Kesiswaan, Kurikulum, Humas, Sarpras)'
+                      : editRole === 'Kepala Sekolah'
+                      ? 'Jabatan Pimpinan / Lembaga'
+                      : editRole === 'Guru BK'
+                      ? 'Bidang Konseling / Penanganan Siswa'
+                      : editRole === 'Guru Piket'
+                      ? 'Jadwal & Pos Piket Gerbang'
                       : editRole === 'Tendik'
                       ? 'Bidang / Unit Kerja Tendik'
                       : editRole === 'Satpam'
                       ? 'Penugasan / Pos Keamanan Gerbang'
-                      : 'Jabatan / Deskripsi Penugasan Admin'}
+                      : editRole === 'Admin' || editRole === 'Administrator'
+                      ? 'Jabatan / Deskripsi Penugasan Admin'
+                      : `Bidang / Deskripsi Penugasan (${editRole})`}
                   </label>
                   <input
                     type="text"
@@ -1747,14 +1793,22 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     onChange={(e) => setEditDepartment(e.target.value)}
                     placeholder={
                       editRole === 'Guru'
-                        ? 'Contoh: Guru Matematika & Piket Harian / Guru BK'
+                        ? 'Contoh: Guru Matematika / Biologi'
                         : editRole === 'Wakasek'
                         ? 'Contoh: Waka Kesiswaan / Waka Kurikulum / Waka Humas / Waka Sarpras'
+                        : editRole === 'Kepala Sekolah'
+                        ? 'Contoh: Kepala Sekolah SMAN 1 Batu'
+                        : editRole === 'Guru BK'
+                        ? 'Contoh: Guru BK Kelas X & Konseling Karir'
+                        : editRole === 'Guru Piket'
+                        ? 'Contoh: Piket Gerbang Hari Senin & Kamis'
                         : editRole === 'Tendik'
                         ? 'Contoh: Tata Usaha / Kepegawaian / Kesiswaan'
                         : editRole === 'Satpam'
                         ? 'Contoh: Pos Gerbang Utama / Satpam Outsourcing'
-                        : 'Contoh: Administrator Utama Sistem'
+                        : editRole === 'Admin' || editRole === 'Administrator'
+                        ? 'Contoh: Administrator Utama Sistem'
+                        : `Contoh: Penugasan untuk role ${editRole}`
                     }
                     className="w-full px-4 py-3 bg-[#E2F1FD] rounded-2xl text-xs font-semibold text-[#0F172A] placeholder-[#334155]/60 shadow-none focus:bg-white focus:outline-hidden focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
                   />
