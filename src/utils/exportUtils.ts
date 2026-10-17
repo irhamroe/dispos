@@ -150,7 +150,9 @@ export const previewOrDownloadPdf = (doc: jsPDF, filename: string) => {
  * Ekspor Rekapitulasi Presensi ke format Excel (.xls)
  * - Tanpa kop dinas resmi & tanpa blok tanda tangan
  * - Di atas tabel hanya judul & subheader periode/rombel
- * - Header tabel bertingkat dengan penanda hari libur (Sabtu/Minggu)
+ * - Jika rentang tanggal > 1 bulan (> 31 hari): hanya tampilkan rekapitulasi jumlah (H, S, I, A, D, %)
+ * - Jika rentang tanggal <= 31 hari: tampilkan rincian harian
+ * - Hari libur (Sabtu/Minggu): tanpa teks "Libur", hanya blok warna merah
  * - Warna kotak presensi sesuai status
  */
 export const exportAttendanceToExcel = (
@@ -161,13 +163,15 @@ export const exportAttendanceToExcel = (
   selectedClass: string,
   attendanceRecords?: AttendanceRecord[]
 ) => {
-  const datesList = getDatesRangeList(startDate, endDate);
+  const diffDays = getDaysDifference(startDate, endDate);
+  const isDaily = diffDays > 0 && diffDays <= 31;
+  const datesList = isDaily ? getDatesRangeList(startDate, endDate) : [];
   const numDates = datesList.length;
-  const totalCols = 5 + numDates + 5 + 1;
+  const totalCols = isDaily ? 5 + numDates + 5 + 1 : 11;
 
   // Map student attendance per date
   const recordMap = new Map<string, string>();
-  if (attendanceRecords) {
+  if (attendanceRecords && isDaily) {
     attendanceRecords.forEach((r) => {
       if (r.date >= startDate && r.date <= endDate) {
         recordMap.set(`${r.studentId}_${r.date}`, r.status);
@@ -184,6 +188,138 @@ export const exportAttendanceToExcel = (
   const avgRate = recapData.length > 0
     ? Math.round(recapData.reduce((acc, c) => acc + c.percentage, 0) / recapData.length)
     : 0;
+
+  let tableHeaderHtml = '';
+  let tableRowsHtml = '';
+  let tableFooterHtml = '';
+
+  if (isDaily) {
+    // Mode Harian (<= 31 hari)
+    tableHeaderHtml = `
+  <!-- Table Header Row 1 -->
+  <tr>
+    <th rowspan="2" class="tbl-header" style="width: 32px;">No</th>
+    <th rowspan="2" class="tbl-header" style="width: 85px;">NISN</th>
+    <th rowspan="2" class="tbl-header" style="width: 220px;">Nama Lengkap</th>
+    <th rowspan="2" class="tbl-header" style="width: 55px;">Kelas</th>
+    <th rowspan="2" class="tbl-header" style="width: 40px;">L/P</th>
+    <th colspan="${numDates}" class="tbl-header">Status Presensi</th>
+    <th colspan="5" class="tbl-header">Rekapitulasi Jumlah</th>
+    <th rowspan="2" class="tbl-header" style="width: 55px;">% Hadir</th>
+  </tr>
+
+  <!-- Table Header Row 2 -->
+  <tr>
+    ${datesList.map((d) => {
+      const dayNum = parseInt(d.split('-')[2], 10);
+      const isWeekend = isWeekendDay(d);
+      return `<th class="${isWeekend ? 'tbl-header-weekend' : 'tbl-header'}" style="width: 30px;">${dayNum}</th>`;
+    }).join('')}
+    <th class="tbl-header" style="width: 32px;">H</th>
+    <th class="tbl-header" style="width: 32px;">S</th>
+    <th class="tbl-header" style="width: 32px;">I</th>
+    <th class="tbl-header" style="width: 32px;">A</th>
+    <th class="tbl-header" style="width: 32px;">D</th>
+  </tr>`;
+
+    tableRowsHtml = recapData.map((item, idx) => {
+      const dailyCells = datesList.map((d) => {
+        const isWeekend = isWeekendDay(d);
+        const st = recordMap.get(`${item.studentId}_${d}`);
+        if (st === 'H') return `<td class="cell-h">H</td>`;
+        if (st === 'S') return `<td class="cell-s">S</td>`;
+        if (st === 'I') return `<td class="cell-i">I</td>`;
+        if (st === 'A') return `<td class="cell-a">A</td>`;
+        if (st === 'D') return `<td class="cell-d">D</td>`;
+        if (isWeekend) return `<td class="cell-weekend"></td>`;
+        return `<td>-</td>`;
+      }).join('');
+
+      return `
+    <tr>
+      <td class="text-center">${idx + 1}</td>
+      <td class="font-mono text-center" style="mso-number-format:'\\@';">${item.nisn}</td>
+      <td class="text-left">${item.name}</td>
+      <td class="text-center">${item.className}</td>
+      <td class="text-center">${item.gender}</td>
+      ${dailyCells}
+      <td class="text-center font-bold">${item.hadir}</td>
+      <td class="text-center font-bold">${item.sakit}</td>
+      <td class="text-center font-bold">${item.izin}</td>
+      <td class="text-center font-bold">${item.alpa}</td>
+      <td class="text-center font-bold">${item.dispen}</td>
+      <td class="text-center font-bold">${item.percentage}%</td>
+    </tr>`;
+    }).join('');
+
+    tableFooterHtml = `
+  <tr class="total-row">
+    <td colspan="5" class="text-center font-bold">TOTAL (${recapData.length} Siswa)</td>
+    ${datesList.map((d) => {
+      if (isWeekendDay(d)) return `<td class="cell-weekend"></td>`;
+      let countDayH = 0;
+      recapData.forEach((s) => {
+        if (recordMap.get(`${s.studentId}_${d}`) === 'H') countDayH++;
+      });
+      return `<td class="text-center font-bold">${countDayH}</td>`;
+    }).join('')}
+    <td class="text-center font-bold">${totalH}</td>
+    <td class="text-center font-bold">${totalS}</td>
+    <td class="text-center font-bold">${totalI}</td>
+    <td class="text-center font-bold">${totalA}</td>
+    <td class="text-center font-bold">${totalD}</td>
+    <td class="text-center font-bold">${avgRate}%</td>
+  </tr>`;
+  } else {
+    // Mode Rekap Jumlah Saja (> 1 bulan / > 31 hari)
+    tableHeaderHtml = `
+  <!-- Table Header Row 1 -->
+  <tr>
+    <th rowspan="2" class="tbl-header" style="width: 35px;">No</th>
+    <th rowspan="2" class="tbl-header" style="width: 95px;">NISN</th>
+    <th rowspan="2" class="tbl-header" style="width: 250px;">Nama Lengkap</th>
+    <th rowspan="2" class="tbl-header" style="width: 60px;">Kelas</th>
+    <th rowspan="2" class="tbl-header" style="width: 45px;">L/P</th>
+    <th colspan="5" class="tbl-header">Rekapitulasi Jumlah</th>
+    <th rowspan="2" class="tbl-header" style="width: 65px;">% Hadir</th>
+  </tr>
+
+  <!-- Table Header Row 2 -->
+  <tr>
+    <th class="tbl-header" style="width: 45px;">H</th>
+    <th class="tbl-header" style="width: 45px;">S</th>
+    <th class="tbl-header" style="width: 45px;">I</th>
+    <th class="tbl-header" style="width: 45px;">A</th>
+    <th class="tbl-header" style="width: 45px;">D</th>
+  </tr>`;
+
+    tableRowsHtml = recapData.map((item, idx) => `
+    <tr>
+      <td class="text-center">${idx + 1}</td>
+      <td class="font-mono text-center" style="mso-number-format:'\\@';">${item.nisn}</td>
+      <td class="text-left">${item.name}</td>
+      <td class="text-center">${item.className}</td>
+      <td class="text-center">${item.gender}</td>
+      <td class="text-center font-bold">${item.hadir}</td>
+      <td class="text-center font-bold">${item.sakit}</td>
+      <td class="text-center font-bold">${item.izin}</td>
+      <td class="text-center font-bold">${item.alpa}</td>
+      <td class="text-center font-bold">${item.dispen}</td>
+      <td class="text-center font-bold">${item.percentage}%</td>
+    </tr>
+    `).join('');
+
+    tableFooterHtml = `
+  <tr class="total-row">
+    <td colspan="5" class="text-center font-bold">TOTAL (${recapData.length} Siswa)</td>
+    <td class="text-center font-bold">${totalH}</td>
+    <td class="text-center font-bold">${totalS}</td>
+    <td class="text-center font-bold">${totalI}</td>
+    <td class="text-center font-bold">${totalA}</td>
+    <td class="text-center font-bold">${totalD}</td>
+    <td class="text-center font-bold">${avgRate}%</td>
+  </tr>`;
+  }
 
   let html = `
 <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
@@ -216,11 +352,11 @@ export const exportAttendanceToExcel = (
   .cell-i { background-color: #e0f2fe; color: #075985; font-weight: bold; }
   .cell-a { background-color: #fee2e2; color: #991b1b; font-weight: bold; }
   .cell-d { background-color: #f3e8ff; color: #6b21a8; font-weight: bold; }
-  .cell-weekend { background-color: #fee2e2; color: #ef4444; font-weight: bold; }
+  .cell-weekend { background-color: #fee2e2; }
   .total-row { background-color: #e2e8f0; font-weight: bold; color: #0f172a; }
   .text-left { text-align: left; }
   .text-center { text-align: center; }
-  .font-mono { font-family: 'Consolas', monospace; }
+  .font-mono { font-family: 'Consolas', monospace; mso-number-format: '\\@'; }
 </style>
 </head>
 <body>
@@ -232,84 +368,13 @@ export const exportAttendanceToExcel = (
   <!-- Subheader -->
   <tr>
     <td colspan="${totalCols}" class="meta-sub">
-      Periode: ${formatDateIndonesian(startDate)} s.d. ${formatDateIndonesian(endDate)} (${getDaysDifference(startDate, endDate)} Hari) | Rombel: ${selectedClass === 'ALL' ? 'Semua Kelas' : selectedClass}
+      Periode: ${formatDateIndonesian(startDate)} s.d. ${formatDateIndonesian(endDate)} (${diffDays} Hari) | Rombel: ${selectedClass === 'ALL' ? 'Semua Kelas' : selectedClass}
     </td>
   </tr>
 
-  <!-- Table Header Row 1 -->
-  <tr>
-    <th rowspan="2" class="tbl-header" style="width: 32px;">No</th>
-    <th rowspan="2" class="tbl-header" style="width: 85px;">NISN</th>
-    <th rowspan="2" class="tbl-header" style="width: 220px;">Nama Lengkap</th>
-    <th rowspan="2" class="tbl-header" style="width: 55px;">Kelas</th>
-    <th rowspan="2" class="tbl-header" style="width: 40px;">L/P</th>
-    <th colspan="${numDates}" class="tbl-header">Status Presensi</th>
-    <th colspan="5" class="tbl-header">Rekapitulasi Jumlah</th>
-    <th rowspan="2" class="tbl-header" style="width: 55px;">% Hadir</th>
-  </tr>
-
-  <!-- Table Header Row 2 -->
-  <tr>
-    ${datesList.map((d) => {
-      const dayNum = parseInt(d.split('-')[2], 10);
-      const isWeekend = isWeekendDay(d);
-      return `<th class="${isWeekend ? 'tbl-header-weekend' : 'tbl-header'}" style="width: 30px;">${dayNum}</th>`;
-    }).join('')}
-    <th class="tbl-header" style="width: 32px;">H</th>
-    <th class="tbl-header" style="width: 32px;">S</th>
-    <th class="tbl-header" style="width: 32px;">I</th>
-    <th class="tbl-header" style="width: 32px;">A</th>
-    <th class="tbl-header" style="width: 32px;">D</th>
-  </tr>
-
-  <!-- Data Rows -->
-  ${recapData.map((item, idx) => {
-    const dailyCells = datesList.map((d) => {
-      const isWeekend = isWeekendDay(d);
-      const st = recordMap.get(`${item.studentId}_${d}`);
-      if (st === 'H') return `<td class="cell-h">H</td>`;
-      if (st === 'S') return `<td class="cell-s">S</td>`;
-      if (st === 'I') return `<td class="cell-i">I</td>`;
-      if (st === 'A') return `<td class="cell-a">A</td>`;
-      if (st === 'D') return `<td class="cell-d">D</td>`;
-      if (isWeekend) return `<td class="cell-weekend">Libur</td>`;
-      return `<td>-</td>`;
-    }).join('');
-
-    return `
-    <tr>
-      <td class="text-center">${idx + 1}</td>
-      <td class="font-mono text-center">${item.nisn}</td>
-      <td class="text-left">${item.name}</td>
-      <td class="text-center">${item.className}</td>
-      <td class="text-center">${item.gender}</td>
-      ${dailyCells}
-      <td class="text-center font-bold">${item.hadir}</td>
-      <td class="text-center font-bold">${item.sakit}</td>
-      <td class="text-center font-bold">${item.izin}</td>
-      <td class="text-center font-bold">${item.alpa}</td>
-      <td class="text-center font-bold">${item.dispen}</td>
-      <td class="text-center font-bold">${item.percentage}%</td>
-    </tr>`;
-  }).join('')}
-
-  <!-- TOTAL Row -->
-  <tr class="total-row">
-    <td colspan="5" class="text-center font-bold">TOTAL (${recapData.length} Siswa)</td>
-    ${datesList.map((d) => {
-      if (isWeekendDay(d)) return `<td>-</td>`;
-      let countDayH = 0;
-      recapData.forEach((s) => {
-        if (recordMap.get(`${s.studentId}_${d}`) === 'H') countDayH++;
-      });
-      return `<td class="text-center font-bold">${countDayH}</td>`;
-    }).join('')}
-    <td class="text-center font-bold">${totalH}</td>
-    <td class="text-center font-bold">${totalS}</td>
-    <td class="text-center font-bold">${totalI}</td>
-    <td class="text-center font-bold">${totalA}</td>
-    <td class="text-center font-bold">${totalD}</td>
-    <td class="text-center font-bold">${avgRate}%</td>
+  ${tableHeaderHtml}
+  ${tableRowsHtml}
+  ${tableFooterHtml}
 </table>
 </body>
 </html>
@@ -350,16 +415,18 @@ export const exportAttendanceToPdf = (
   });
 
   const pageWidth = doc.internal.pageSize.getWidth();
-  const datesList = getDatesRangeList(startDate, endDate);
+  const diffDays = getDaysDifference(startDate, endDate);
+  const isDaily = diffDays > 0 && diffDays <= 31;
+  const datesList = isDaily ? getDatesRangeList(startDate, endDate) : [];
   const numDates = datesList.length;
 
   // Margin horizontal dinamis agar tabel selalu optimal dan penuh
-  const marginX = numDates > 25 ? 6 : numDates > 15 ? 8 : 10;
+  const marginX = isDaily ? (numDates > 25 ? 6 : numDates > 15 ? 8 : 10) : 10;
   const availableWidth = pageWidth - marginX * 2;
 
   // Map student attendance per date
   const recordMap = new Map<string, string>();
-  if (attendanceRecords) {
+  if (attendanceRecords && isDaily) {
     attendanceRecords.forEach((r) => {
       if (r.date >= startDate && r.date <= endDate) {
         recordMap.set(`${r.studentId}_${r.date}`, r.status);
@@ -373,6 +440,9 @@ export const exportAttendanceToPdf = (
   const totalI = recapData.reduce((acc, c) => acc + c.izin, 0);
   const totalA = recapData.reduce((acc, c) => acc + c.alpa, 0);
   const totalD = recapData.reduce((acc, c) => acc + c.dispen, 0);
+  const avgPercentage = recapData.length > 0
+    ? Math.round(recapData.reduce((acc, c) => acc + c.percentage, 0) / recapData.length)
+    : 0;
 
   // 1. Judul di atas tabel: "Rekapitulasi Absensi Siswa"
   doc.setFont('helvetica', 'bold');
@@ -385,10 +455,105 @@ export const exportAttendanceToPdf = (
   doc.setFontSize(8.5);
   doc.setTextColor(51, 65, 85);
   doc.text(
-    `Periode: ${formatDateIndonesian(startDate)} s.d. ${formatDateIndonesian(endDate)} (${getDaysDifference(startDate, endDate)} Hari)   |   Rombel: ${selectedClass === 'ALL' ? 'Semua Kelas' : selectedClass}`,
+    `Periode: ${formatDateIndonesian(startDate)} s.d. ${formatDateIndonesian(endDate)} (${diffDays} Hari)   |   Rombel: ${selectedClass === 'ALL' ? 'Semua Kelas' : selectedClass}`,
     marginX,
     14.5
   );
+
+  const sanitizedClassName = selectedClass === 'ALL' ? 'Semua_Kelas' : selectedClass.replace(/\s+/g, '_');
+  const filename = `Rekapitulasi_Absensi_Siswa_${sanitizedClassName}_${startDate}_sd_${endDate}.pdf`;
+
+  if (!isDaily) {
+    // Mode Rekap Jumlah Saja (> 1 bulan / > 31 hari)
+    const headConfig: any[] = [
+      [
+        { content: 'No', rowSpan: 2 },
+        { content: 'NISN', rowSpan: 2 },
+        { content: 'Nama Lengkap Siswa', rowSpan: 2 },
+        { content: 'Kelas', rowSpan: 2 },
+        { content: 'L/P', rowSpan: 2 },
+        { content: 'Rekapitulasi Jumlah Presensi', colSpan: 5 },
+        { content: '% Hadir', rowSpan: 2 },
+      ],
+      [
+        { content: 'Hadir (H)' },
+        { content: 'Sakit (S)' },
+        { content: 'Izin (I)' },
+        { content: 'Alpa (A)' },
+        { content: 'Dispen (D)' },
+      ],
+    ];
+
+    const tableRows: any[] = recapData.map((item, idx) => [
+      idx + 1,
+      item.nisn,
+      item.name,
+      item.className,
+      item.gender,
+      item.hadir,
+      item.sakit,
+      item.izin,
+      item.alpa,
+      item.dispen,
+      `${item.percentage}%`,
+    ]);
+
+    tableRows.push([
+      { content: `TOTAL (${recapData.length} Siswa)`, colSpan: 5, styles: { halign: 'center', fontStyle: 'bold' } },
+      totalH,
+      totalS,
+      totalI,
+      totalA,
+      totalD,
+      `${avgPercentage}%`,
+    ]);
+
+    autoTable(doc, {
+      startY: 17,
+      head: headConfig,
+      body: tableRows,
+      theme: 'grid',
+      styles: {
+        fontSize: 8,
+        cellPadding: 1.1,
+        lineWidth: 0.1,
+        lineColor: [203, 213, 225],
+        textColor: [30, 41, 59],
+        valign: 'middle',
+      },
+      headStyles: {
+        fillColor: [15, 118, 110], // Teal
+        textColor: [255, 255, 255],
+        fontSize: 8.5,
+        fontStyle: 'bold',
+        halign: 'center',
+        valign: 'middle',
+      },
+      columnStyles: {
+        0: { halign: 'center', cellWidth: 12 },
+        1: { halign: 'center', cellWidth: 26 },
+        2: { halign: 'left' },
+        3: { halign: 'center', cellWidth: 18 },
+        4: { halign: 'center', cellWidth: 12 },
+        5: { halign: 'center', cellWidth: 18, fontStyle: 'bold' },
+        6: { halign: 'center', cellWidth: 18, fontStyle: 'bold' },
+        7: { halign: 'center', cellWidth: 18, fontStyle: 'bold' },
+        8: { halign: 'center', cellWidth: 18, fontStyle: 'bold' },
+        9: { halign: 'center', cellWidth: 18, fontStyle: 'bold' },
+        10: { halign: 'center', cellWidth: 20, fontStyle: 'bold' },
+      },
+      didParseCell: (data) => {
+        if (data.section === 'body' && data.row.index === tableRows.length - 1) {
+          data.cell.styles.fontStyle = 'bold';
+          data.cell.styles.fillColor = [226, 232, 240];
+        }
+      },
+      margin: { top: 17, bottom: 8, left: 10, right: 10 },
+    });
+
+    previewOrDownloadPdf(doc, filename);
+    return;
+  }
 
   // 3. Header Tabel Bertingkat
   const headConfig: any[] = [
@@ -449,10 +614,6 @@ export const exportAttendanceToPdf = (
     });
     return String(countDayH);
   });
-
-  const avgPercentage = recapData.length > 0
-    ? Math.round(recapData.reduce((acc, c) => acc + c.percentage, 0) / recapData.length)
-    : 0;
 
   tableRows.push([
     { content: `TOTAL (${recapData.length} Siswa)`, colSpan: 5, styles: { halign: 'center', fontStyle: 'bold' } },
@@ -669,8 +830,6 @@ export const exportAttendanceToPdf = (
     margin: { top: 17, bottom: 5, left: marginX, right: marginX },
   });
 
-  const sanitizedClassName = selectedClass === 'ALL' ? 'Semua_Kelas' : selectedClass.replace(/\s+/g, '_');
-  const filename = `Rekapitulasi_Absensi_Siswa_${sanitizedClassName}_${startDate}_sd_${endDate}.pdf`;
   previewOrDownloadPdf(doc, filename);
 };
 

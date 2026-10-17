@@ -540,8 +540,8 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                                     </span>
                                   )}
                                 </span>
-                              ) : (
-                                <span className={`font-mono text-[11px] select-none ${isWeekend ? 'text-[#BA1A1A]/40' : 'text-[#64748B]/40'}`}>
+                              ) : isWeekend ? null : (
+                                <span className="font-mono text-[11px] select-none text-[#64748B]/40">
                                   -
                                 </span>
                               )}
