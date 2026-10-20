@@ -24,7 +24,8 @@ import {
   ExternalLink,
   Loader2,
   FolderOpen,
-  Edit3
+  Edit3,
+  AlertCircle
 } from 'lucide-react';
 import { DisciplineRecord, SchoolProfile, Student, ViolationCategory, DisciplineStatus, CoachingStatus, ViolationRule, AdminUser, RoleMatrixMap } from '../types';
 import { sampleViolationCatalog } from '../data/initialData';
@@ -99,6 +100,10 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
   const [uploadingEvidence, setUploadingEvidence] = useState(false);
   const [uploadingViolationPhoto, setUploadingViolationPhoto] = useState(false);
   const [uploadingEditViolationPhoto, setUploadingEditViolationPhoto] = useState(false);
+  const [violationPhotoUploadError, setViolationPhotoUploadError] = useState<string | null>(null);
+  const [violationPhotoDriveFolder, setViolationPhotoDriveFolder] = useState<string | null>(null);
+  const [editViolationPhotoUploadError, setEditViolationPhotoUploadError] = useState<string | null>(null);
+  const [editViolationPhotoDriveFolder, setEditViolationPhotoDriveFolder] = useState<string | null>(null);
   const [uploadingResolvePhoto, setUploadingResolvePhoto] = useState(false);
   const [uploadingResolveEvidence, setUploadingResolveEvidence] = useState(false);
   const [uploadingFollowUpDoc, setUploadingFollowUpDoc] = useState(false);
@@ -355,6 +360,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
     setCoachingEvidenceFileName('');
     setViolationPhoto(undefined);
     setViolationPhotoName('');
+    setViolationPhotoUploadError(null);
+    setViolationPhotoDriveFolder(null);
     if (violationPhotoInputRef.current) violationPhotoInputRef.current.value = '';
     setIsModalOpen(true);
   };
@@ -403,6 +410,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
     if (!file) return;
 
     setViolationPhotoName(file.name);
+    setViolationPhotoUploadError(null);
+    setViolationPhotoDriveFolder(null);
 
     // Pratinjau lokal instan
     const reader = new FileReader();
@@ -424,14 +433,20 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
         if (res.success && res.fileUrl) {
           setViolationPhoto(res.fileUrl);
           setViolationPhotoName(res.fileName || file.name);
+          setViolationPhotoDriveFolder(res.folderName || 'Google Drive');
+          setViolationPhotoUploadError(null);
         } else {
+          setViolationPhotoUploadError(res.error || 'Gagal mengunggah foto ke Google Drive (Respon script menunjukkan error).');
           console.warn('Upload foto pelanggaran ke Google Drive gagal, tersimpan lokal:', res.error);
         }
-      } catch (err) {
+      } catch (err: any) {
+        setViolationPhotoUploadError(err?.message || 'Terjadi kesalahan jaringan saat mengunggah foto ke Google Drive.');
         console.error('Error saat upload foto pelanggaran ke Google Drive:', err);
       } finally {
         setUploadingViolationPhoto(false);
       }
+    } else {
+      setViolationPhotoUploadError('Google Drive belum aktif atau URL script belum diatur. Klik "Atur Folder Drive" untuk mengaktifkannya.');
     }
   };
 
@@ -745,6 +760,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
     if (!file) return;
 
     setEditViolationPhotoName(file.name);
+    setEditViolationPhotoUploadError(null);
+    setEditViolationPhotoDriveFolder(null);
 
     const reader = new FileReader();
     reader.onload = () => {
@@ -764,12 +781,19 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
         if (res.success && res.fileUrl) {
           setEditViolationPhoto(res.fileUrl);
           setEditViolationPhotoName(res.fileName || file.name);
+          setEditViolationPhotoDriveFolder(res.folderName || 'Google Drive');
+          setEditViolationPhotoUploadError(null);
+        } else {
+          setEditViolationPhotoUploadError(res.error || 'Gagal mengunggah foto ke Google Drive.');
         }
-      } catch (err) {
+      } catch (err: any) {
+        setEditViolationPhotoUploadError(err?.message || 'Terjadi kesalahan saat upload foto.');
         console.error('Error upload foto pelanggaran edit:', err);
       } finally {
         setUploadingEditViolationPhoto(false);
       }
+    } else {
+      setEditViolationPhotoUploadError('Google Drive belum dikonfigurasi.');
     }
   };
 
@@ -1553,36 +1577,66 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                     />
                     <div className="flex-1 min-w-0">
                       <p className="font-extrabold text-[#0F172A] truncate text-xs">{violationPhotoName || 'Foto_Pelanggaran.jpg'}</p>
-                      <div className="flex items-center gap-1.5 mt-0.5">
+                      <div className="flex flex-col gap-1 mt-1">
                         {violationPhoto.includes('drive.google.com') || violationPhoto.includes('googleusercontent.com') ? (
-                          <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-bold shadow-2xs">
-                            <Cloud className="w-3 h-3 text-emerald-600" /> Tersimpan di Google Drive
-                          </span>
+                          <>
+                            <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-100/90 px-2 py-0.5 rounded-full font-bold shadow-2xs w-fit">
+                              <Cloud className="w-3 h-3 text-emerald-600" />
+                              <span>Tersimpan di Google Drive {violationPhotoDriveFolder ? `(${violationPhotoDriveFolder})` : ''}</span>
+                            </span>
+                            <a
+                              href={getGoogleDriveViewUrl(violationPhoto)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[10px] font-bold text-sky-700 hover:text-sky-900 underline flex items-center gap-1 w-fit cursor-pointer"
+                            >
+                              <ExternalLink className="w-3 h-3" />
+                              <span>Buka File di Google Drive</span>
+                            </a>
+                          </>
                         ) : (
-                          <span className="text-[10px] text-sky-700 font-bold">Foto siap dilampirkan</span>
+                          <div className="flex flex-col gap-1">
+                            <span className="text-[10px] text-amber-800 font-bold bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md w-fit">
+                              ⚠️ Foto tersimpan lokal di browser (Belum masuk Google Drive)
+                            </span>
+                            {violationPhotoUploadError && (
+                              <span className="text-[10px] text-rose-600 font-bold flex items-start gap-1 bg-rose-50 border border-rose-200 p-1.5 rounded-lg">
+                                <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0 mt-0.5" />
+                                <span>{violationPhotoUploadError}</span>
+                              </span>
+                            )}
+                          </div>
                         )}
                       </div>
                     </div>
                     <button
                       type="button"
                       onClick={() => violationPhotoInputRef.current?.click()}
-                      className="px-3 py-1.5 text-[11px] font-extrabold bg-[#E2F1FD] text-sky-700 hover:bg-sky-100 rounded-xl shadow-2xs active:scale-95 transition-all cursor-pointer"
+                      className="px-3 py-1.5 text-[11px] font-extrabold bg-[#E2F1FD] text-sky-700 hover:bg-sky-100 rounded-xl shadow-2xs active:scale-95 transition-all cursor-pointer shrink-0"
                     >
                       Ganti
                     </button>
                   </div>
                 ) : (
-                  <div
-                    onClick={() => violationPhotoInputRef.current?.click()}
-                    className="border-2 border-dashed border-sky-200 hover:border-sky-400 rounded-2xl p-4 text-center cursor-pointer bg-white/70 hover:bg-white shadow-2xs transition-all flex flex-col items-center justify-center gap-1.5 group"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-sky-50 group-hover:bg-sky-100 flex items-center justify-center transition-colors">
-                      <Camera className="w-4 h-4 text-sky-600" />
+                  <div>
+                    <div
+                      onClick={() => violationPhotoInputRef.current?.click()}
+                      className="border-2 border-dashed border-sky-200 hover:border-sky-400 rounded-2xl p-4 text-center cursor-pointer bg-white/70 hover:bg-white shadow-2xs transition-all flex flex-col items-center justify-center gap-1.5 group"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-sky-50 group-hover:bg-sky-100 flex items-center justify-center transition-colors">
+                        <Camera className="w-4 h-4 text-sky-600" />
+                      </div>
+                      <span className="font-extrabold text-[#0F172A] text-xs">Pilih atau Ambil Foto Bukti Kejadian</span>
+                      <span className="text-[10px] text-[#475569]">
+                        Opsional: boleh diisi boleh tidak • Otomatis tersimpan ke Google Drive
+                      </span>
                     </div>
-                    <span className="font-extrabold text-[#0F172A] text-xs">Pilih atau Ambil Foto Bukti Kejadian</span>
-                    <span className="text-[10px] text-[#475569]">
-                      Opsional: boleh diisi boleh tidak • Otomatis tersimpan ke Google Drive
-                    </span>
+                    {violationPhotoUploadError && (
+                      <div className="text-[10px] text-rose-600 font-bold flex items-start gap-1 bg-rose-50 border border-rose-200 p-2 rounded-xl mt-2">
+                        <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0 mt-0.5" />
+                        <span>{violationPhotoUploadError}</span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -2582,32 +2636,60 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                     />
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-slate-800 truncate text-xs">{editViolationPhotoName || 'Foto_Pelanggaran.jpg'}</p>
-                      <div className="flex items-center gap-1 mt-0.5">
+                      <div className="flex flex-col gap-0.5 mt-0.5">
                         {editViolationPhoto.includes('drive.google.com') || editViolationPhoto.includes('googleusercontent.com') ? (
-                          <span className="inline-flex items-center gap-1 text-[9px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-bold border border-emerald-200">
-                            <Cloud className="w-2.5 h-2.5 text-emerald-600" /> Google Drive
-                          </span>
+                          <>
+                            <span className="inline-flex items-center gap-1 text-[9px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-bold border border-emerald-200 w-fit">
+                              <Cloud className="w-2.5 h-2.5 text-emerald-600" /> Google Drive {editViolationPhotoDriveFolder ? `(${editViolationPhotoDriveFolder})` : ''}
+                            </span>
+                            <a
+                              href={getGoogleDriveViewUrl(editViolationPhoto)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[9px] font-bold text-sky-700 hover:underline flex items-center gap-0.5 mt-0.5"
+                            >
+                              <ExternalLink className="w-2.5 h-2.5" /> Buka di Drive
+                            </a>
+                          </>
                         ) : (
-                          <span className="text-[10px] text-slate-500">Tersimpan lokal</span>
+                          <div className="flex flex-col gap-0.5">
+                            <span className="text-[9px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-bold border border-amber-200 w-fit">
+                              ⚠️ Tersimpan lokal (Belum masuk Drive)
+                            </span>
+                            {editViolationPhotoUploadError && (
+                              <span className="text-[9px] text-rose-600 font-bold flex items-start gap-1 mt-0.5">
+                                <AlertCircle className="w-3 h-3 text-rose-500 shrink-0 mt-0.5" />
+                                <span>{editViolationPhotoUploadError}</span>
+                              </span>
+                            )}
+                          </div>
                         )}
                       </div>
                     </div>
                     <button
                       type="button"
                       onClick={() => editViolationPhotoInputRef.current?.click()}
-                      className="px-2.5 py-1 text-[11px] font-bold bg-white text-sky-700 hover:bg-sky-50 border border-sky-200 rounded-lg shadow-2xs cursor-pointer"
+                      className="px-2.5 py-1 text-[11px] font-bold bg-white text-sky-700 hover:bg-sky-50 border border-sky-200 rounded-lg shadow-2xs cursor-pointer shrink-0"
                     >
                       Ganti
                     </button>
                   </div>
                 ) : (
-                  <div
-                    onClick={() => editViolationPhotoInputRef.current?.click()}
-                    className="border-2 border-dashed border-slate-200 hover:border-sky-400 rounded-xl p-3 text-center cursor-pointer bg-slate-50 hover:bg-white transition-colors flex flex-col items-center justify-center gap-1"
-                  >
-                    <Camera className="w-4 h-4 text-sky-600" />
-                    <span className="font-bold text-slate-700 text-xs">Pilih atau Ambil Foto Bukti Pelanggaran</span>
-                    <span className="text-[10px] text-slate-400">Opsional • Tersimpan ke Google Drive</span>
+                  <div>
+                    <div
+                      onClick={() => editViolationPhotoInputRef.current?.click()}
+                      className="border-2 border-dashed border-slate-200 hover:border-sky-400 rounded-xl p-3 text-center cursor-pointer bg-slate-50 hover:bg-white transition-colors flex flex-col items-center justify-center gap-1"
+                    >
+                      <Camera className="w-4 h-4 text-sky-600" />
+                      <span className="font-bold text-slate-700 text-xs">Pilih atau Ambil Foto Bukti Pelanggaran</span>
+                      <span className="text-[10px] text-slate-400">Opsional • Tersimpan ke Google Drive</span>
+                    </div>
+                    {editViolationPhotoUploadError && (
+                      <div className="text-[9px] text-rose-600 font-bold flex items-start gap-1 bg-rose-50 border border-rose-200 p-1.5 rounded-lg mt-1.5">
+                        <AlertCircle className="w-3 h-3 text-rose-500 shrink-0 mt-0.5" />
+                        <span>{editViolationPhotoUploadError}</span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
