@@ -228,7 +228,9 @@ export const uploadFileToGoogleDrive = async (
       base64Data: base64Data,
       fileName: customFileName,
       mimeType: file.type || 'application/octet-stream',
-      folderType: folderType, // 'photo' | 'evidence' | 'student_photo' | 'violation_photo'
+      // Menggunakan 'photo' untuk violation_photo agar 100% kompatibel dengan script Google Apps Script lama tanpa perlu deploy ulang
+      folderType: folderType === 'violation_photo' ? 'photo' : folderType,
+      rawFolderType: folderType,
       violationPhotoFolderId: config.violationPhotoFolderId || '',
       photoFolderId: folderType === 'violation_photo' ? (config.violationPhotoFolderId || config.photoFolderId || '') : (config.photoFolderId || ''),
       evidenceFolderId: config.evidenceFolderId || '',
