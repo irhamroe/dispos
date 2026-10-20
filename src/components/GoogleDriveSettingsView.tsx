@@ -92,7 +92,7 @@ export const GoogleDriveSettingsView: React.FC<GoogleDriveSettingsViewProps> = (
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     saveGoogleDriveConfig(config);
-    showToast('Pengaturan Google Drive berhasil disimpan!');
+    showToast('Pengaturan Penyimpanan berhasil disimpan!');
   };
 
   const isConfigured = isGoogleDriveConfigured();
@@ -113,7 +113,7 @@ export const GoogleDriveSettingsView: React.FC<GoogleDriveSettingsViewProps> = (
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="px-3 py-1 rounded-full text-[11px] font-black bg-[#0284C7]/15 text-[#0284C7] border border-[#0284C7]/20 shadow-xs">
-                Integrasi Cloud Storage
+                Integrasi Cloud &amp; Media Storage
               </span>
               <span className="text-[#334155]/40 text-xs">•</span>
               <span className="text-[#334155] text-xs font-bold">SMAN 1 Batu</span>
@@ -122,10 +122,10 @@ export const GoogleDriveSettingsView: React.FC<GoogleDriveSettingsViewProps> = (
               <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#0284C7] to-[#0369A1] text-white flex items-center justify-center shadow-xs">
                 <Cloud className="w-5 h-5" />
               </div>
-              <span>Pengaturan Google Drive</span>
+              <span>Pengaturan Penyimpanan</span>
             </h1>
             <p className="text-xs sm:text-sm text-[#475569] font-medium mt-1.5 max-w-2xl leading-relaxed">
-              Konfigurasi penyimpanan otomatis foto profil siswa, foto bukti kejadian pelanggaran, serta berkas surat pembinaan langsung ke folder Google Drive sekolah.
+              Konfigurasi integrasi Google Drive (penyimpanan foto &amp; berkas) dan sinkronisasi database Cloud Firestore sekolah.
             </p>
           </div>
 

@@ -142,9 +142,9 @@ export const NAV_TAB_DEFINITIONS: NavTabPermissionMeta[] = [
   },
   {
     id: 'pengaturan-gdrive',
-    label: 'Pengaturan Google Drive',
+    label: 'Pengaturan Penyimpanan',
     category: 'Master Data',
-    description: 'Konfigurasi URL Google Apps Script dan Folder ID penyimpanan foto serta berkas di Google Drive',
+    description: 'Konfigurasi Google Drive dan Cloud Storage untuk penyimpanan berkas foto serta database',
     iconName: 'Cloud',
   },
 ];

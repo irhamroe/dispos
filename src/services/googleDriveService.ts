@@ -180,7 +180,7 @@ export const uploadFileToGoogleDrive = async (
       success: false,
       fileUrl: '',
       fileName: file.name,
-      error: 'Google Drive Apps Script belum dikonfigurasi. Silakan atur URL Web App di Pengaturan Google Drive.',
+      error: 'Google Drive Apps Script belum dikonfigurasi. Silakan atur URL Web App di menu Pengaturan Penyimpanan.',
     };
   }
 

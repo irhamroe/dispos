@@ -289,8 +289,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
     {
       id: 'pengaturan-gdrive' as NavTab,
-      label: 'Pengaturan Google Drive',
-      sublabel: 'Folder foto & Apps Script',
+      label: 'Pengaturan Penyimpanan',
+      sublabel: 'Google Drive & Database Cloud',
       icon: Cloud,
       iconBg: 'bg-[#0284C7] text-white',
       inactiveIconBg: 'bg-[#E0F2FE] text-[#0284C7]',
