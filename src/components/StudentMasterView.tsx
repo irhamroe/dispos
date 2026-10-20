@@ -391,6 +391,22 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
         </div>
 
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <button
+            type="button"
+            id="student-gdrive-config-btn"
+            onClick={() => setIsGoogleDriveModalOpen(true)}
+            className="w-full md:w-auto px-4 py-3 rounded-2xl bg-white hover:bg-emerald-50 text-emerald-800 border border-emerald-300 font-extrabold text-xs transition-all shadow-xs hover:-translate-y-0.5 active:scale-[0.92] flex items-center justify-center gap-2 cursor-pointer"
+            title="Atur URL Apps Script & Folder ID Google Drive"
+          >
+            <Cloud className="w-4 h-4 text-emerald-600" />
+            <span>Google Drive</span>
+            {isGoogleDriveConfigured() ? (
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Google Drive Aktif" />
+            ) : (
+              <span className="w-2 h-2 rounded-full bg-amber-400" title="Belum Dikonfigurasi" />
+            )}
+          </button>
+
           {canManageStudents ? (
             <button
               type="button"

@@ -978,8 +978,24 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
             </div>
           </div>
 
-          {/* Tombol Aksi: Catat Pelanggaran */}
+          {/* Tombol Aksi: Google Drive & Catat Pelanggaran */}
           <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
+            <button
+              type="button"
+              id="google-drive-settings-btn"
+              onClick={() => setIsGoogleDriveModalOpen(true)}
+              className="px-4 py-3 rounded-2xl bg-white hover:bg-emerald-50 text-emerald-800 border border-emerald-300 font-extrabold text-xs transition-all shadow-xs hover:-translate-y-0.5 active:scale-[0.92] flex items-center gap-2 cursor-pointer w-full sm:w-auto justify-center"
+              title="Atur URL Apps Script & Folder ID Google Drive"
+            >
+              <Cloud className="w-4 h-4 text-emerald-600" />
+              <span>Google Drive</span>
+              {isGoogleDriveConfigured() ? (
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Google Drive Aktif" />
+              ) : (
+                <span className="w-2 h-2 rounded-full bg-amber-400" title="Belum Dikonfigurasi" />
+              )}
+            </button>
+
             {canCreate ? (
               <button
                 type="button"
@@ -1487,19 +1503,30 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                       Opsional (Boleh Kosong)
                     </span>
                   </span>
-                  {violationPhoto && !uploadingViolationPhoto && (
+                  <div className="flex items-center gap-2">
                     <button
                       type="button"
-                      onClick={() => {
-                        setViolationPhoto(undefined);
-                        setViolationPhotoName('');
-                        if (violationPhotoInputRef.current) violationPhotoInputRef.current.value = '';
-                      }}
-                      className="text-[11px] font-bold text-rose-500 hover:underline cursor-pointer"
+                      onClick={() => setIsGoogleDriveModalOpen(true)}
+                      className="text-[10px] font-bold text-sky-700 hover:text-sky-900 flex items-center gap-1 cursor-pointer bg-sky-50 hover:bg-sky-100 px-2 py-0.5 rounded-lg border border-sky-200 shadow-2xs"
+                      title="Atur URL Apps Script & Folder ID Google Drive"
                     >
-                      Hapus Foto
+                      <Cloud className="w-3 h-3 text-sky-600" />
+                      <span>Atur Folder Drive</span>
                     </button>
-                  )}
+                    {violationPhoto && !uploadingViolationPhoto && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setViolationPhoto(undefined);
+                          setViolationPhotoName('');
+                          if (violationPhotoInputRef.current) violationPhotoInputRef.current.value = '';
+                        }}
+                        className="text-[11px] font-bold text-rose-500 hover:underline cursor-pointer"
+                      >
+                        Hapus Foto
+                      </button>
+                    )}
+                  </div>
                 </label>
 
                 <input
