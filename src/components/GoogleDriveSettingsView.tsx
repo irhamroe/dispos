@@ -16,7 +16,9 @@ import {
   ShieldCheck,
   FileText,
   Camera,
-  FolderCheck
+  FolderCheck,
+  Database,
+  SlidersHorizontal
 } from 'lucide-react';
 import { 
   getGoogleDriveConfig, 
@@ -28,7 +30,15 @@ import {
   GoogleDriveConfig
 } from '../services/googleDriveService';
 
-export const GoogleDriveSettingsView: React.FC = () => {
+interface GoogleDriveSettingsViewProps {
+  isFirebaseConnected?: boolean;
+  onOpenFirebaseModal?: () => void;
+}
+
+export const GoogleDriveSettingsView: React.FC<GoogleDriveSettingsViewProps> = ({
+  isFirebaseConnected = false,
+  onOpenFirebaseModal,
+}) => {
   const [config, setConfig] = useState<GoogleDriveConfig>(getGoogleDriveConfig);
   const [copied, setCopied] = useState(false);
   const [testing, setTesting] = useState(false);
@@ -165,6 +175,47 @@ export const GoogleDriveSettingsView: React.FC = () => {
 
       {activeTab === 'settings' ? (
         <form onSubmit={handleSave} className="space-y-6">
+          {/* Cloud Database (Firebase) Integration Card */}
+          {onOpenFirebaseModal && (
+            <div className="bg-white/85 backdrop-blur-xl rounded-[28px] border border-white/80 p-5 sm:p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3.5">
+                <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shadow-xs shrink-0 ${
+                  isFirebaseConnected ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
+                }`}>
+                  <Database className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-sm font-black text-[#0F172A]">Database Cloud Firestore (Firebase)</h3>
+                    {isFirebaseConnected ? (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-black bg-[#C8E6C9] text-[#1B5E20]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        Cloud Sync Aktif
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-black bg-[#FFE0B2] text-[#E65100]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                        Offline Mode
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-[#475569] font-medium mt-0.5">
+                    Sinkronisasi database data master siswa, presensi, izin siswa, dan catatan pelanggaran secara real-time.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={onOpenFirebaseModal}
+                className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-extrabold transition-all shadow-2xs flex items-center justify-center gap-2 cursor-pointer active:scale-95 shrink-0"
+              >
+                <SlidersHorizontal className="w-3.5 h-3.5" />
+                <span>Kelola Cloud Database</span>
+              </button>
+            </div>
+          )}
+
           {/* Section 1: URL Apps Script */}
           <div className="bg-white/90 backdrop-blur-xl rounded-[28px] border border-white/80 p-6 shadow-xs space-y-4">
             <div className="flex items-center justify-between">

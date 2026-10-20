@@ -294,8 +294,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: Cloud,
       iconBg: 'bg-[#0284C7] text-white',
       inactiveIconBg: 'bg-[#E0F2FE] text-[#0284C7]',
-      badge: isGoogleDriveConfigured() ? 'Aktif' : 'Konfigurasi',
-      badgeBg: isGoogleDriveConfigured() ? 'bg-[#C8E6C9] text-[#1B5E20]' : 'bg-[#FEF3C7] text-[#D97706]',
+      badge: null,
     },
   ];
 

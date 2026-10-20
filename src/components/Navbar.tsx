@@ -4,8 +4,6 @@ import {
   ShieldCheck, 
   CalendarDays,
   LogOut,
-  Cloud,
-  CloudOff,
   Bell
 } from 'lucide-react';
 import { AdminUser, SchoolProfile } from '../types';
@@ -96,32 +94,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <Bell className="w-3.5 h-3.5" />
                 <span>{totalPendingPermits} Izin Baru</span>
-              </button>
-            )}
-
-            {/* Cloud Sync Status Pill */}
-            {onOpenFirebaseModal && (
-              <button
-                type="button"
-                onClick={onOpenFirebaseModal}
-                title={isFirebaseConnected ? 'Cloud Firestore Terhubung' : 'Konfigurasi Cloud Firestore'}
-                className={`hidden md:flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer active:scale-95 ${
-                  isFirebaseConnected
-                    ? 'bg-[#C8E6C9] text-[#1B5E20] hover:bg-[#B9E0BA]'
-                    : 'bg-[#FFE0B2] text-[#E65100] hover:bg-[#FFD599]'
-                }`}
-              >
-                {isFirebaseConnected ? (
-                  <>
-                    <span className="w-2 h-2 rounded-full bg-[#1B5E20] animate-pulse" />
-                    <span>Cloud Sync Aktif</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="w-2 h-2 rounded-full bg-[#E65100]" />
-                    <span>Offline Mode</span>
-                  </>
-                )}
               </button>
             )}
 

@@ -1296,7 +1296,10 @@ export default function App() {
           )}
 
           {currentTab === 'pengaturan-gdrive' && (
-            <GoogleDriveSettingsView />
+            <GoogleDriveSettingsView
+              isFirebaseConnected={isFirebaseConnected}
+              onOpenFirebaseModal={() => setIsFirebaseModalOpen(true)}
+            />
           )}
         </main>
       </div>
