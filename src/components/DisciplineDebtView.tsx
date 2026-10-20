@@ -20,7 +20,8 @@ import {
   BellRing,
   Cloud,
   ExternalLink,
-  Loader2
+  Loader2,
+  Camera
 } from 'lucide-react';
 import { DisciplineRecord, SchoolProfile, Student, AdminUser, RoleMatrixMap } from '../types';
 import { formatDateIndonesian } from '../utils/exportUtils';
@@ -496,6 +497,19 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                       <td className="py-4 px-5">
                         <div className="font-bold text-[#0F172A]">{rec.violationName}</div>
                         <div className="text-[11px] text-[#334155] mt-0.5">Pelapor: {rec.reportedBy}</div>
+                        {rec.violationPhoto && (
+                          <div className="mt-1">
+                            <button
+                              type="button"
+                              onClick={() => setPreviewPhoto({ url: rec.violationPhoto!, title: `Foto Kejadian: ${rec.studentName} (${rec.violationName})` })}
+                              className="inline-flex items-center gap-1 text-[10px] font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 border border-sky-200 px-2 py-0.5 rounded-md transition-colors cursor-pointer"
+                              title="Lihat Foto Bukti Pelanggaran"
+                            >
+                              <Camera className="w-3 h-3 text-sky-600" />
+                              <span>Foto Kejadian</span>
+                            </button>
+                          </div>
+                        )}
                       </td>
                       <td className="py-4 px-4 text-center">
                         {isCoachingBelum ? (
@@ -609,8 +623,18 @@ export const DisciplineDebtView: React.FC<DisciplineDebtViewProps> = ({
                 <div className="text-[#334155] text-xs font-bold">
                   {resolvingRecord.className}
                 </div>
-                <div className="text-rose-700 font-bold pt-1.5 border-t border-slate-300/40 mt-1.5">
-                  Pelanggaran: {resolvingRecord.violationName} ({resolvingRecord.date})
+                <div className="text-rose-700 font-bold pt-1.5 border-t border-slate-300/40 mt-1.5 flex items-center justify-between">
+                  <span>Pelanggaran: {resolvingRecord.violationName} ({resolvingRecord.date})</span>
+                  {resolvingRecord.violationPhoto && (
+                    <button
+                      type="button"
+                      onClick={() => setPreviewPhoto({ url: resolvingRecord.violationPhoto!, title: `Foto Kejadian: ${resolvingRecord.studentName}` })}
+                      className="inline-flex items-center gap-1 text-[10px] font-bold text-sky-700 bg-white border border-sky-300 px-2 py-0.5 rounded-md hover:bg-sky-50 cursor-pointer shadow-2xs"
+                    >
+                      <Camera className="w-3 h-3 text-sky-600" />
+                      <span>Lihat Foto Kejadian</span>
+                    </button>
+                  )}
                 </div>
               </div>
 

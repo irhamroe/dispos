@@ -163,7 +163,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
             <div className="p-4 bg-emerald-50/80 border border-emerald-200 rounded-[24px] text-xs text-emerald-950 flex items-start gap-3 shadow-sm">
               <Sparkles className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
               <div className="leading-relaxed">
-                <span className="font-black text-sm block mb-0.5" >Otomatisasi 3 Folder Google Drive:</span> Berkas akan otomatis disimpan di folder terpisah untuk <strong className="font-extrabold text-emerald-900">Foto Siswa</strong>, <strong className="font-extrabold text-emerald-900">Foto Bukti Pembinaan</strong>, dan <strong className="font-extrabold text-emerald-900">Surat Bukti Pembinaan</strong>.
+                <span className="font-black text-sm block mb-0.5" >Otomatisasi 4 Folder Google Drive:</span> Berkas otomatis disimpan di folder terpisah untuk <strong className="font-extrabold text-emerald-900">Foto Siswa</strong>, <strong className="font-extrabold text-emerald-900">Foto Pelanggaran</strong>, <strong className="font-extrabold text-emerald-900">Foto Bukti Pembinaan</strong>, dan <strong className="font-extrabold text-emerald-900">Surat Bukti Pembinaan</strong>.
               </div>
             </div>
 
@@ -186,13 +186,13 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
               </p>
             </div>
 
-            {/* 3 Folders Configuration */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-1">
+            {/* 4 Folders Configuration */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
               {/* 1. Folder Foto Siswa */}
-              <div className="p-4 bg-[#F8FAFC] rounded-[24px] border border-white/80 shadow-sm space-y-2">
+              <div className="p-3.5 bg-[#F8FAFC] rounded-[22px] border border-white/80 shadow-sm space-y-2">
                 <label className="block font-black text-[#0F172A] text-xs flex items-center gap-1.5" >
                   <FolderOpen className="w-4 h-4 text-sky-600" />
-                  <span>Folder Foto Siswa</span>
+                  <span>Foto Siswa</span>
                 </label>
                 <input
                   type="text"
@@ -200,7 +200,6 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                   value={config.studentPhotoFolderName || 'Foto Siswa'}
                   onChange={(e) => setConfig({ ...config, studentPhotoFolderName: e.target.value })}
                   className="w-full px-3 py-2 bg-white border border-white/80 rounded-xl text-xs font-extrabold text-[#0F172A] shadow-xs"
-                  
                 />
                 <input
                   type="text"
@@ -209,14 +208,37 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                   onChange={(e) => setConfig({ ...config, studentPhotoFolderId: extractGoogleDriveFolderId(e.target.value) })}
                   className="w-full px-3 py-2 bg-[#E2F1FD] rounded-xl text-[11px] font-mono font-semibold text-[#0F172A] shadow-none focus:bg-white focus:outline-hidden"
                 />
-                <p className="text-[10px] text-[#334155]">ID atau URL link folder profil siswa.</p>
+                <p className="text-[10px] text-[#334155]">Folder profil siswa.</p>
               </div>
 
-              {/* 2. Folder Foto Bukti Pembinaan */}
-              <div className="p-4 bg-[#F8FAFC] rounded-[24px] border border-white/80 shadow-sm space-y-2">
+              {/* 2. Folder Foto Pelanggaran (Opsional) */}
+              <div className="p-3.5 bg-[#F8FAFC] rounded-[22px] border border-white/80 shadow-sm space-y-2">
+                <label className="block font-black text-[#0F172A] text-xs flex items-center gap-1.5" >
+                  <FolderOpen className="w-4 h-4 text-rose-600" />
+                  <span>Foto Pelanggaran</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Foto Pelanggaran"
+                  value={config.violationPhotoFolderName || 'Foto Pelanggaran'}
+                  onChange={(e) => setConfig({ ...config, violationPhotoFolderName: e.target.value })}
+                  className="w-full px-3 py-2 bg-white border border-white/80 rounded-xl text-xs font-extrabold text-[#0F172A] shadow-xs"
+                />
+                <input
+                  type="text"
+                  placeholder="ID / Link Folder"
+                  value={config.violationPhotoFolderId || ''}
+                  onChange={(e) => setConfig({ ...config, violationPhotoFolderId: extractGoogleDriveFolderId(e.target.value) })}
+                  className="w-full px-3 py-2 bg-[#E2F1FD] rounded-xl text-[11px] font-mono font-semibold text-[#0F172A] shadow-none focus:bg-white focus:outline-hidden"
+                />
+                <p className="text-[10px] text-[#334155]">Folder bukti pelanggaran.</p>
+              </div>
+
+              {/* 3. Folder Foto Bukti Pembinaan */}
+              <div className="p-3.5 bg-[#F8FAFC] rounded-[22px] border border-white/80 shadow-sm space-y-2">
                 <label className="block font-black text-[#0F172A] text-xs flex items-center gap-1.5" >
                   <FolderOpen className="w-4 h-4 text-emerald-600" />
-                  <span>Folder Foto Bukti</span>
+                  <span>Foto Bukti Pembinaan</span>
                 </label>
                 <input
                   type="text"
@@ -224,7 +246,6 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                   value={config.photoFolderName || 'Foto Bukti Pembinaan'}
                   onChange={(e) => setConfig({ ...config, photoFolderName: e.target.value })}
                   className="w-full px-3 py-2 bg-white border border-white/80 rounded-xl text-xs font-extrabold text-[#0F172A] shadow-xs"
-                  
                 />
                 <input
                   type="text"
@@ -233,14 +254,14 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                   onChange={(e) => setConfig({ ...config, photoFolderId: extractGoogleDriveFolderId(e.target.value) })}
                   className="w-full px-3 py-2 bg-[#E2F1FD] rounded-xl text-[11px] font-mono font-semibold text-[#0F172A] shadow-none focus:bg-white focus:outline-hidden"
                 />
-                <p className="text-[10px] text-[#334155]">ID atau URL link folder bukti pembinaan.</p>
+                <p className="text-[10px] text-[#334155]">Folder bukti pembinaan.</p>
               </div>
 
-              {/* 3. Folder Surat Bukti Pembinaan */}
-              <div className="p-4 bg-[#F8FAFC] rounded-[24px] border border-white/80 shadow-sm space-y-2">
+              {/* 4. Folder Surat Bukti Pembinaan */}
+              <div className="p-3.5 bg-[#F8FAFC] rounded-[22px] border border-white/80 shadow-sm space-y-2">
                 <label className="block font-black text-[#0F172A] text-xs flex items-center gap-1.5" >
                   <FolderOpen className="w-4 h-4 text-blue-600" />
-                  <span>Folder Surat Bukti</span>
+                  <span>Surat Bukti Pembinaan</span>
                 </label>
                 <input
                   type="text"
@@ -248,7 +269,6 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                   value={config.evidenceFolderName || 'Surat Bukti Pembinaan'}
                   onChange={(e) => setConfig({ ...config, evidenceFolderName: e.target.value })}
                   className="w-full px-3 py-2 bg-white border border-white/80 rounded-xl text-xs font-extrabold text-[#0F172A] shadow-xs"
-                  
                 />
                 <input
                   type="text"
@@ -257,7 +277,7 @@ export const GoogleDriveConfigModal: React.FC<GoogleDriveConfigModalProps> = ({
                   onChange={(e) => setConfig({ ...config, evidenceFolderId: extractGoogleDriveFolderId(e.target.value) })}
                   className="w-full px-3 py-2 bg-[#E2F1FD] rounded-xl text-[11px] font-mono font-semibold text-[#0F172A] shadow-none focus:bg-white focus:outline-hidden"
                 />
-                <p className="text-[10px] text-[#334155]">ID atau URL link folder surat bertandatangan.</p>
+                <p className="text-[10px] text-[#334155]">Folder surat bertandatangan.</p>
               </div>
             </div>
 

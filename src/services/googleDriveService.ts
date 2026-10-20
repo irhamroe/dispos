@@ -7,9 +7,11 @@
 
 export interface GoogleDriveConfig {
   scriptUrl: string; // URL Web App dari Google Apps Script (e.g. https://script.google.com/macros/s/.../exec)
+  violationPhotoFolderId?: string; // Optional: Folder ID khusus Foto Kejadian Pelanggaran di Google Drive
   photoFolderId?: string; // Optional: Folder ID khusus Foto Bukti Pembinaan di Google Drive
   evidenceFolderId?: string; // Optional: Folder ID khusus Surat Bukti Pembinaan di Google Drive
   studentPhotoFolderId?: string; // Optional: Folder ID khusus Foto Profil Siswa di Google Drive
+  violationPhotoFolderName?: string; // Default: 'Foto Pelanggaran'
   photoFolderName?: string; // Default: 'Foto Bukti Pembinaan'
   evidenceFolderName?: string; // Default: 'Surat Bukti Pembinaan'
   studentPhotoFolderName?: string; // Default: 'Foto Siswa'
@@ -20,9 +22,11 @@ const GDRIVE_CONFIG_STORAGE_KEY = 'app_sman1batu_gdrive_config_v1';
 
 export const DEFAULT_GDRIVE_CONFIG: GoogleDriveConfig = {
   scriptUrl: (import.meta as any).env?.VITE_GDRIVE_SCRIPT_URL || '',
+  violationPhotoFolderId: (import.meta as any).env?.VITE_GDRIVE_VIOLATION_PHOTO_FOLDER_ID || '',
   photoFolderId: (import.meta as any).env?.VITE_GDRIVE_PHOTO_FOLDER_ID || '',
   evidenceFolderId: (import.meta as any).env?.VITE_GDRIVE_DOC_FOLDER_ID || '',
   studentPhotoFolderId: (import.meta as any).env?.VITE_GDRIVE_STUDENT_PHOTO_FOLDER_ID || '',
+  violationPhotoFolderName: 'Foto Pelanggaran',
   photoFolderName: 'Foto Bukti Pembinaan',
   evidenceFolderName: 'Surat Bukti Pembinaan',
   studentPhotoFolderName: 'Foto Siswa',
@@ -66,9 +70,14 @@ export const saveGoogleDriveConfig = (config: Partial<GoogleDriveConfig>): Googl
     ...current,
     ...config,
     scriptUrl: config.scriptUrl ? config.scriptUrl.trim() : current.scriptUrl,
+    violationPhotoFolderId: config.violationPhotoFolderId !== undefined ? extractGoogleDriveFolderId(config.violationPhotoFolderId) : current.violationPhotoFolderId,
     photoFolderId: config.photoFolderId !== undefined ? extractGoogleDriveFolderId(config.photoFolderId) : current.photoFolderId,
     evidenceFolderId: config.evidenceFolderId !== undefined ? extractGoogleDriveFolderId(config.evidenceFolderId) : current.evidenceFolderId,
     studentPhotoFolderId: config.studentPhotoFolderId !== undefined ? extractGoogleDriveFolderId(config.studentPhotoFolderId) : current.studentPhotoFolderId,
+    violationPhotoFolderName: config.violationPhotoFolderName !== undefined ? config.violationPhotoFolderName.trim() : current.violationPhotoFolderName,
+    photoFolderName: config.photoFolderName !== undefined ? config.photoFolderName.trim() : current.photoFolderName,
+    evidenceFolderName: config.evidenceFolderName !== undefined ? config.evidenceFolderName.trim() : current.evidenceFolderName,
+    studentPhotoFolderName: config.studentPhotoFolderName !== undefined ? config.studentPhotoFolderName.trim() : current.studentPhotoFolderName,
   };
   try {
     localStorage.setItem(GDRIVE_CONFIG_STORAGE_KEY, JSON.stringify(updated));
@@ -155,7 +164,7 @@ export const getGoogleDriveViewUrl = (url?: string): string => {
  */
 export const uploadFileToGoogleDrive = async (
   file: File,
-  folderType: 'photo' | 'evidence' | 'student_photo',
+  folderType: 'photo' | 'evidence' | 'student_photo' | 'violation_photo',
   metadata?: {
     studentName?: string;
     className?: string;
@@ -205,6 +214,8 @@ export const uploadFileToGoogleDrive = async (
       if (folderType === 'student_photo') {
         // Format resmi: NIS_NAMA_SISWA.ext (misal: 12345_AHMAD_FAUZI.jpg)
         customFileName = `${sanitizedNis}_${sanitizedStudent}.${cleanExt}`;
+      } else if (folderType === 'violation_photo') {
+        customFileName = `Foto_Pelanggaran_${sanitizedNis}_${sanitizedStudent}_${sanitizedClass}_${timestamp}.${cleanExt}`;
       } else if (folderType === 'photo') {
         customFileName = `Foto_Pembinaan_${sanitizedNis}_${sanitizedStudent}_${sanitizedClass}_${timestamp}.${cleanExt}`;
       } else {
@@ -217,11 +228,13 @@ export const uploadFileToGoogleDrive = async (
       base64Data: base64Data,
       fileName: customFileName,
       mimeType: file.type || 'application/octet-stream',
-      folderType: folderType, // 'photo' | 'evidence' | 'student_photo'
-      photoFolderId: config.photoFolderId || '',
+      folderType: folderType, // 'photo' | 'evidence' | 'student_photo' | 'violation_photo'
+      violationPhotoFolderId: config.violationPhotoFolderId || '',
+      photoFolderId: folderType === 'violation_photo' ? (config.violationPhotoFolderId || config.photoFolderId || '') : (config.photoFolderId || ''),
       evidenceFolderId: config.evidenceFolderId || '',
       studentPhotoFolderId: config.studentPhotoFolderId || '',
-      photoFolderName: config.photoFolderName || 'Foto Bukti Pembinaan',
+      violationPhotoFolderName: config.violationPhotoFolderName || 'Foto Pelanggaran',
+      photoFolderName: folderType === 'violation_photo' ? (config.violationPhotoFolderName || 'Foto Pelanggaran') : (config.photoFolderName || 'Foto Bukti Pembinaan'),
       evidenceFolderName: config.evidenceFolderName || 'Surat Bukti Pembinaan',
       studentPhotoFolderName: config.studentPhotoFolderName || 'Foto Siswa',
       studentName: metaObj.studentName || '',
@@ -250,6 +263,7 @@ export const uploadFileToGoogleDrive = async (
       const fileUrl = result.fileUrl || (fileId ? `https://drive.google.com/file/d/${fileId}/view?usp=sharing` : '');
 
       let fallbackFolderName = 'Foto Siswa';
+      if (folderType === 'violation_photo') fallbackFolderName = config.violationPhotoFolderName || 'Foto Pelanggaran';
       if (folderType === 'photo') fallbackFolderName = config.photoFolderName || 'Foto Bukti Pembinaan';
       if (folderType === 'evidence') fallbackFolderName = config.evidenceFolderName || 'Surat Bukti Pembinaan';
       if (folderType === 'student_photo') fallbackFolderName = config.studentPhotoFolderName || 'Foto Siswa';
@@ -387,7 +401,7 @@ function doPost(e) {
     var base64Data = data.base64Data || '';
     var fileName = data.fileName || ('File_' + new Date().getTime());
     var mimeType = data.mimeType || 'application/octet-stream';
-    var folderType = data.folderType || 'photo'; // 'photo', 'evidence', atau 'student_photo'
+    var folderType = data.folderType || 'photo'; // 'photo', 'evidence', 'student_photo', atau 'violation_photo'
     
     // Potong header data URL jika ada (e.g. data:image/jpeg;base64,)
     if (base64Data.indexOf('base64,') > -1) {
@@ -397,13 +411,16 @@ function doPost(e) {
     var decoded = Utilities.base64Decode(base64Data);
     var blob = Utilities.newBlob(decoded, mimeType, fileName);
 
-    // Tentukan folder target (Folder berbeda untuk Foto Pembinaan, Surat Bukti, dan Foto Siswa)
+    // Tentukan folder target (Folder berbeda untuk Foto Pelanggaran, Foto Pembinaan, Surat Bukti, dan Foto Siswa)
     var targetFolderName = 'Foto Siswa';
     var customFolderId = data.studentPhotoFolderId;
 
     if (folderType === 'evidence') {
       targetFolderName = data.evidenceFolderName || 'Surat Bukti Pembinaan';
       customFolderId = data.evidenceFolderId;
+    } else if (folderType === 'violation_photo' || folderType === 'violation') {
+      targetFolderName = data.violationPhotoFolderName || 'Foto Pelanggaran';
+      customFolderId = data.violationPhotoFolderId || data.photoFolderId;
     } else if (folderType === 'photo') {
       targetFolderName = data.photoFolderName || 'Foto Bukti Pembinaan';
       customFolderId = data.photoFolderId;

@@ -70,6 +70,9 @@ export interface DisciplineRecord {
   status: DisciplineStatus;
   reportedBy: string;
   witnessOrStaff?: string;
+  // Foto Kejadian Pelanggaran (Opsional)
+  violationPhoto?: string; // Foto bukti kejadian pelanggaran (URL Google Drive / base64)
+  violationPhotoName?: string;
   // Pembinaan
   coachingStatus: CoachingStatus; // Status Pembinaan: sudah / belum
   coachingDate?: string; // Tanggal Pembinaan

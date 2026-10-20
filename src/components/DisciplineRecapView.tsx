@@ -427,6 +427,24 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                       <td className="py-4 px-5">
                         <div className="font-bold text-[#0F172A]">{rec.violationName}</div>
                         <div className="text-[11px] text-[#334155] mt-0.5">Pelapor: {rec.reportedBy}</div>
+                        {rec.violationPhoto && (
+                          <div className="mt-1">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setActivePreviewImage({
+                                  url: rec.violationPhoto!,
+                                  title: `Foto Kejadian: ${rec.studentName} (${rec.violationName})`,
+                                })
+                              }
+                              className="inline-flex items-center gap-1 text-[10px] font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 border border-sky-200 px-2 py-0.5 rounded-md transition-colors cursor-pointer"
+                              title="Lihat Foto Bukti Pelanggaran"
+                            >
+                              <Camera className="w-3 h-3 text-sky-600" />
+                              <span>Foto Kejadian</span>
+                            </button>
+                          </div>
+                        )}
                       </td>
                       <td className="py-4 px-4 text-center">
                         <span
@@ -591,6 +609,44 @@ export const DisciplineRecapView: React.FC<DisciplineRecapViewProps> = ({
                 <div className="font-black text-[#0F172A] text-sm mt-0.5" >{activeRecordForDetail.violationName}</div>
                 <div className="text-[#334155] mt-1 text-xs">{activeRecordForDetail.description}</div>
               </div>
+
+              {/* Foto Bukti Kejadian Pelanggaran jika ada */}
+              {activeRecordForDetail.violationPhoto && (
+                <div className="p-4 rounded-2xl bg-sky-50/80 border border-sky-200 space-y-2.5 shadow-2xs">
+                  <div className="font-black text-sky-900 flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2">
+                      <Camera className="w-4 h-4 text-sky-600" />
+                      <span>Foto Kejadian Pelanggaran</span>
+                    </div>
+                    {activeRecordForDetail.violationPhoto.includes('drive.google.com') && (
+                      <a
+                        href={getGoogleDriveViewUrl(activeRecordForDetail.violationPhoto)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[11px] text-sky-700 hover:underline flex items-center gap-1 font-bold"
+                      >
+                        <Cloud className="w-3.5 h-3.5 text-sky-600" /> Buka di Google Drive <ExternalLink className="w-3 h-3" />
+                      </a>
+                    )}
+                  </div>
+                  <img
+                    src={getGoogleDriveDirectImageUrl(activeRecordForDetail.violationPhoto)}
+                    alt="Foto Kejadian Pelanggaran"
+                    className="w-full max-h-56 object-cover rounded-xl border border-sky-200 cursor-pointer shadow-xs hover:opacity-95 transition-opacity"
+                    onClick={() =>
+                      setActivePreviewImage({
+                        url: activeRecordForDetail.violationPhoto!,
+                        title: `Foto Kejadian Pelanggaran: ${activeRecordForDetail.studentName}`,
+                      })
+                    }
+                  />
+                  {activeRecordForDetail.violationPhotoName && (
+                    <div className="text-[10px] text-slate-500 font-mono truncate">
+                      Berkas: {activeRecordForDetail.violationPhotoName}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {activeRecordForDetail.coachingStatus === 'Sudah' && (
                 <div className="p-5 rounded-2xl bg-teal-50/80 border border-teal-200 space-y-4 shadow-xs">

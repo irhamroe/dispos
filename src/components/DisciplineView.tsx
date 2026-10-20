@@ -97,6 +97,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
   // Upload loading states for Google Drive
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [uploadingEvidence, setUploadingEvidence] = useState(false);
+  const [uploadingViolationPhoto, setUploadingViolationPhoto] = useState(false);
+  const [uploadingEditViolationPhoto, setUploadingEditViolationPhoto] = useState(false);
   const [uploadingResolvePhoto, setUploadingResolvePhoto] = useState(false);
   const [uploadingResolveEvidence, setUploadingResolveEvidence] = useState(false);
   const [uploadingFollowUpDoc, setUploadingFollowUpDoc] = useState(false);
@@ -199,6 +201,11 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
   const [coachingEvidenceFile, setCoachingEvidenceFile] = useState<string | undefined>(undefined);
   const [coachingEvidenceFileName, setCoachingEvidenceFileName] = useState<string>('');
 
+  // Foto Pelanggaran (Opsional, tersimpan di Google Drive)
+  const [violationPhoto, setViolationPhoto] = useState<string | undefined>(undefined);
+  const [violationPhotoName, setViolationPhotoName] = useState<string>('');
+  const violationPhotoInputRef = useRef<HTMLInputElement>(null);
+
   // File input refs for main form
   const photoInputRef = useRef<HTMLInputElement>(null);
   const docInputRef = useRef<HTMLInputElement>(null);
@@ -228,6 +235,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
   const [editViolationName, setEditViolationName] = useState<string>('');
   const [editPoints, setEditPoints] = useState<number>(5);
   const [editCategory, setEditCategory] = useState<ViolationCategory>('Ringan');
+  const [editViolationPhoto, setEditViolationPhoto] = useState<string | undefined>(undefined);
+  const [editViolationPhotoName, setEditViolationPhotoName] = useState<string>('');
   const [editCoachingStatus, setEditCoachingStatus] = useState<CoachingStatus>('Belum');
   const [editCoachingDate, setEditCoachingDate] = useState<string>('');
   const [editCoachingPhoto, setEditCoachingPhoto] = useState<string | undefined>(undefined);
@@ -236,6 +245,7 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
   const [editCoachingEvidenceFileName, setEditCoachingEvidenceFileName] = useState<string>('');
   const [uploadingEditPhoto, setUploadingEditPhoto] = useState<boolean>(false);
   const [uploadingEditEvidence, setUploadingEditEvidence] = useState<boolean>(false);
+  const editViolationPhotoInputRef = useRef<HTMLInputElement>(null);
   const editPhotoInputRef = useRef<HTMLInputElement>(null);
   const editDocInputRef = useRef<HTMLInputElement>(null);
 
@@ -308,6 +318,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
       if (initialViolationForModal) {
         handleViolationChange(initialViolationForModal);
       }
+      setViolationPhoto(undefined);
+      setViolationPhotoName('');
       setIsModalOpen(true);
       if (onClearInitialModalData) {
         onClearInitialModalData();
@@ -341,6 +353,9 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
     setCoachingPhotoName('');
     setCoachingEvidenceFile(undefined);
     setCoachingEvidenceFileName('');
+    setViolationPhoto(undefined);
+    setViolationPhotoName('');
+    if (violationPhotoInputRef.current) violationPhotoInputRef.current.value = '';
     setIsModalOpen(true);
   };
 
@@ -378,6 +393,44 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
         console.error('Error saat upload foto ke Google Drive:', err);
       } finally {
         setUploadingPhoto(false);
+      }
+    }
+  };
+
+  // Handler upload foto bukti pelanggaran (Opsional, disimpan ke Google Drive)
+  const handleViolationPhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setViolationPhotoName(file.name);
+
+    // Pratinjau lokal instan
+    const reader = new FileReader();
+    reader.onload = () => {
+      setViolationPhoto(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+
+    // Unggah ke Google Drive (Folder Foto Pelanggaran) jika terkonfigurasi
+    if (isGoogleDriveConfigured()) {
+      setUploadingViolationPhoto(true);
+      const student = students.find((s) => s.id === selectedStudentId);
+      try {
+        const res = await uploadFileToGoogleDrive(file, 'violation_photo', {
+          studentName: student?.name,
+          className: student?.className || selectedClass,
+          violationName: violationName,
+        });
+        if (res.success && res.fileUrl) {
+          setViolationPhoto(res.fileUrl);
+          setViolationPhotoName(res.fileName || file.name);
+        } else {
+          console.warn('Upload foto pelanggaran ke Google Drive gagal, tersimpan lokal:', res.error);
+        }
+      } catch (err) {
+        console.error('Error saat upload foto pelanggaran ke Google Drive:', err);
+      } finally {
+        setUploadingViolationPhoto(false);
       }
     }
   };
@@ -609,6 +662,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
     setEditViolationName(rec.violationName);
     setEditPoints(rec.points);
     setEditCategory(rec.category);
+    setEditViolationPhoto(rec.violationPhoto);
+    setEditViolationPhotoName(rec.violationPhotoName || '');
     setEditCoachingStatus(rec.coachingStatus || 'Belum');
     setEditCoachingDate(rec.coachingDate || rec.date || new Date().toISOString().slice(0, 10));
     setEditCoachingPhoto(rec.coachingPhoto);
@@ -685,6 +740,39 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
     }
   };
 
+  const handleEditViolationPhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setEditViolationPhotoName(file.name);
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setEditViolationPhoto(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+
+    if (isGoogleDriveConfigured()) {
+      setUploadingEditViolationPhoto(true);
+      const student = students.find((s) => s.id === editStudentId);
+      try {
+        const res = await uploadFileToGoogleDrive(file, 'violation_photo', {
+          studentName: student?.name || editingRecord?.studentName,
+          className: student?.className || editClass,
+          violationName: editViolationName,
+        });
+        if (res.success && res.fileUrl) {
+          setEditViolationPhoto(res.fileUrl);
+          setEditViolationPhotoName(res.fileName || file.name);
+        }
+      } catch (err) {
+        console.error('Error upload foto pelanggaran edit:', err);
+      } finally {
+        setUploadingEditViolationPhoto(false);
+      }
+    }
+  };
+
   const handleEditDocumentUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -757,6 +845,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
       category: editCategory,
       violationName: editViolationName.trim(),
       points: editPoints,
+      violationPhoto: editViolationPhoto || undefined,
+      violationPhotoName: editViolationPhoto ? (editViolationPhotoName || 'Foto_Pelanggaran.jpg') : undefined,
       status,
       positiveIntervention,
       coachingStatus: editCoachingStatus,
@@ -804,6 +894,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
       category: autoCategory,
       violationName: violationName.trim(),
       points: autoPoints, // stored automatically without being displayed in form
+      violationPhoto: violationPhoto || undefined,
+      violationPhotoName: violationPhoto ? (violationPhotoName || 'Foto_Pelanggaran.jpg') : undefined,
       description: `Pencatatan pelanggaran ${violationName} pada tanggal ${formatDateIndonesian(incidentDate)}`,
       positiveIntervention: coachingStatus === 'Sudah' 
         ? (hasLetter 
@@ -1064,6 +1156,19 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                         <div className="text-[10px] text-slate-400 mt-0.5">
                           Pelapor: <span className="text-slate-600 font-medium">{rec.reportedBy}</span>
                         </div>
+                        {rec.violationPhoto && (
+                          <div className="mt-1">
+                            <button
+                              type="button"
+                              onClick={() => setActivePreviewImage({ url: rec.violationPhoto!, title: `Foto Kejadian: ${rec.studentName} (${rec.violationName})` })}
+                              className="inline-flex items-center gap-1 text-[10px] font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 border border-sky-200 px-2 py-0.5 rounded-md transition-colors cursor-pointer"
+                              title="Klik untuk melihat foto bukti kejadian pelanggaran"
+                            >
+                              <Camera className="w-3 h-3 text-sky-600" />
+                              <span>Foto Kejadian</span>
+                            </button>
+                          </div>
+                        )}
                       </td>
                       <td className="py-3.5 px-3 text-center">
                         {!isSudah ? (
@@ -1372,6 +1477,89 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                 </select>
               </div>
 
+              {/* Foto Bukti Pelanggaran (Opsional - Boleh diisi boleh tidak, tersimpan ke Google Drive) */}
+              <div>
+                <label className="block font-extrabold text-[#0F172A] mb-1.5 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <Camera className="w-4 h-4 text-sky-600" />
+                    <span>Foto Kejadian Pelanggaran</span>
+                    <span className="text-slate-600 font-bold text-[10px] bg-sky-100/80 px-2 py-0.5 rounded-full border border-sky-200">
+                      Opsional (Boleh Kosong)
+                    </span>
+                  </span>
+                  {violationPhoto && !uploadingViolationPhoto && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setViolationPhoto(undefined);
+                        setViolationPhotoName('');
+                        if (violationPhotoInputRef.current) violationPhotoInputRef.current.value = '';
+                      }}
+                      className="text-[11px] font-bold text-rose-500 hover:underline cursor-pointer"
+                    >
+                      Hapus Foto
+                    </button>
+                  )}
+                </label>
+
+                <input
+                  type="file"
+                  ref={violationPhotoInputRef}
+                  id="input-foto-pelanggaran"
+                  accept="image/*"
+                  onChange={handleViolationPhotoUpload}
+                  className="hidden"
+                />
+
+                {uploadingViolationPhoto ? (
+                  <div className="p-4 bg-sky-50/80 border border-sky-300 rounded-2xl flex items-center justify-center gap-2.5 text-sky-800 text-xs font-semibold shadow-xs">
+                    <Loader2 className="w-4 h-4 animate-spin text-sky-600" />
+                    <span>Sedang mengunggah foto kejadian ke Google Drive...</span>
+                  </div>
+                ) : violationPhoto ? (
+                  <div className="flex items-center gap-3 p-3 bg-white rounded-2xl shadow-xs border border-white">
+                    <img
+                      src={getGoogleDriveDirectImageUrl(violationPhoto)}
+                      alt="Foto Pelanggaran"
+                      className="w-14 h-14 object-cover rounded-xl shadow-2xs border border-slate-100 cursor-pointer hover:opacity-90 transition-opacity"
+                      onClick={() => setActivePreviewImage({ url: violationPhoto, title: 'Pratinjau Foto Kejadian Pelanggaran' })}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-extrabold text-[#0F172A] truncate text-xs">{violationPhotoName || 'Foto_Pelanggaran.jpg'}</p>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        {violationPhoto.includes('drive.google.com') || violationPhoto.includes('googleusercontent.com') ? (
+                          <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-bold shadow-2xs">
+                            <Cloud className="w-3 h-3 text-emerald-600" /> Tersimpan di Google Drive
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-sky-700 font-bold">Foto siap dilampirkan</span>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => violationPhotoInputRef.current?.click()}
+                      className="px-3 py-1.5 text-[11px] font-extrabold bg-[#E2F1FD] text-sky-700 hover:bg-sky-100 rounded-xl shadow-2xs active:scale-95 transition-all cursor-pointer"
+                    >
+                      Ganti
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    onClick={() => violationPhotoInputRef.current?.click()}
+                    className="border-2 border-dashed border-sky-200 hover:border-sky-400 rounded-2xl p-4 text-center cursor-pointer bg-white/70 hover:bg-white shadow-2xs transition-all flex flex-col items-center justify-center gap-1.5 group"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-sky-50 group-hover:bg-sky-100 flex items-center justify-center transition-colors">
+                      <Camera className="w-4 h-4 text-sky-600" />
+                    </div>
+                    <span className="font-extrabold text-[#0F172A] text-xs">Pilih atau Ambil Foto Bukti Kejadian</span>
+                    <span className="text-[10px] text-[#475569]">
+                      Opsional: boleh diisi boleh tidak • Otomatis tersimpan ke Google Drive
+                    </span>
+                  </div>
+                )}
+              </div>
+
               {/* 5. Status Pembinaan (sudah/belum) */}
               <div className="pt-1">
                 <label className="block  font-extrabold text-[#0F172A] mb-1.5">
@@ -1678,6 +1866,39 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                 <div className="font-bold text-slate-900 text-sm mt-0.5">{activeRecordForDetail.violationName}</div>
                 <div className="text-slate-500 mt-1">{activeRecordForDetail.description}</div>
               </div>
+
+              {/* Foto Bukti Pelanggaran jika ada */}
+              {activeRecordForDetail.violationPhoto && (
+                <div className="p-4 rounded-xl bg-sky-50/80 border border-sky-200 space-y-2">
+                  <div className="font-bold text-sky-900 flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <Camera className="w-4 h-4 text-sky-600" />
+                      <span>Foto Kejadian Pelanggaran</span>
+                    </div>
+                    {activeRecordForDetail.violationPhoto.includes('drive.google.com') && (
+                      <a
+                        href={getGoogleDriveViewUrl(activeRecordForDetail.violationPhoto)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[10px] text-sky-700 hover:underline flex items-center gap-1 font-bold"
+                      >
+                        <Cloud className="w-3 h-3 text-sky-600" /> Buka di Google Drive <ExternalLink className="w-3 h-3" />
+                      </a>
+                    )}
+                  </div>
+                  <img
+                    src={getGoogleDriveDirectImageUrl(activeRecordForDetail.violationPhoto)}
+                    alt="Foto Kejadian Pelanggaran"
+                    className="w-full max-h-56 object-cover rounded-xl border border-sky-200 cursor-pointer shadow-xs hover:opacity-95 transition-opacity"
+                    onClick={() => setActivePreviewImage({ url: activeRecordForDetail.violationPhoto!, title: `Foto Kejadian Pelanggaran: ${activeRecordForDetail.studentName}` })}
+                  />
+                  {activeRecordForDetail.violationPhotoName && (
+                    <div className="text-[10px] text-slate-500 font-mono truncate">
+                      Berkas: {activeRecordForDetail.violationPhotoName}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {activeRecordForDetail.coachingStatus === 'Sudah' && (
                 <div className="p-4 rounded-xl bg-emerald-50/80 border border-emerald-200 space-y-2">
@@ -2284,6 +2505,84 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                     Pelanggaran tata tertib lainnya
                   </option>
                 </select>
+              </div>
+
+              {/* Foto Bukti Pelanggaran di Edit Modal (Opsional) */}
+              <div>
+                <label className="block font-bold text-slate-700 mb-1 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <Camera className="w-3.5 h-3.5 text-sky-600" />
+                    <span>Foto Kejadian Pelanggaran</span>
+                    <span className="text-slate-500 font-medium text-[10px] bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">
+                      Opsional
+                    </span>
+                  </span>
+                  {editViolationPhoto && !uploadingEditViolationPhoto && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditViolationPhoto(undefined);
+                        setEditViolationPhotoName('');
+                        if (editViolationPhotoInputRef.current) editViolationPhotoInputRef.current.value = '';
+                      }}
+                      className="text-[10px] text-rose-600 hover:underline cursor-pointer"
+                    >
+                      Hapus Foto
+                    </button>
+                  )}
+                </label>
+
+                <input
+                  type="file"
+                  ref={editViolationPhotoInputRef}
+                  accept="image/*"
+                  onChange={handleEditViolationPhotoUpload}
+                  className="hidden"
+                />
+
+                {uploadingEditViolationPhoto ? (
+                  <div className="p-3 bg-sky-50 border border-sky-300 rounded-xl flex items-center justify-center gap-2 text-sky-800 text-xs font-semibold">
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-sky-600" />
+                    <span>Sedang mengunggah foto ke Google Drive...</span>
+                  </div>
+                ) : editViolationPhoto ? (
+                  <div className="flex items-center gap-3 p-2.5 bg-slate-50 rounded-xl border border-slate-200">
+                    <img
+                      src={getGoogleDriveDirectImageUrl(editViolationPhoto)}
+                      alt="Foto Pelanggaran"
+                      className="w-12 h-12 object-cover rounded-lg border border-slate-200 cursor-pointer hover:opacity-90"
+                      onClick={() => setActivePreviewImage({ url: editViolationPhoto, title: 'Pratinjau Foto Kejadian Pelanggaran' })}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-slate-800 truncate text-xs">{editViolationPhotoName || 'Foto_Pelanggaran.jpg'}</p>
+                      <div className="flex items-center gap-1 mt-0.5">
+                        {editViolationPhoto.includes('drive.google.com') || editViolationPhoto.includes('googleusercontent.com') ? (
+                          <span className="inline-flex items-center gap-1 text-[9px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-bold border border-emerald-200">
+                            <Cloud className="w-2.5 h-2.5 text-emerald-600" /> Google Drive
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-slate-500">Tersimpan lokal</span>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => editViolationPhotoInputRef.current?.click()}
+                      className="px-2.5 py-1 text-[11px] font-bold bg-white text-sky-700 hover:bg-sky-50 border border-sky-200 rounded-lg shadow-2xs cursor-pointer"
+                    >
+                      Ganti
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    onClick={() => editViolationPhotoInputRef.current?.click()}
+                    className="border-2 border-dashed border-slate-200 hover:border-sky-400 rounded-xl p-3 text-center cursor-pointer bg-slate-50 hover:bg-white transition-colors flex flex-col items-center justify-center gap-1"
+                  >
+                    <Camera className="w-4 h-4 text-sky-600" />
+                    <span className="font-bold text-slate-700 text-xs">Pilih atau Ambil Foto Bukti Pelanggaran</span>
+                    <span className="text-[10px] text-slate-400">Opsional • Tersimpan ke Google Drive</span>
+                  </div>
+                )}
               </div>
 
               {/* 6. Status Pembinaan (Sudah / Belum) */}
