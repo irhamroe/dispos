@@ -49,6 +49,7 @@ import { DataWaliKelasView } from './components/DataWaliKelasView';
 import { PromotionAndAlumniView } from './components/PromotionAndAlumniView';
 import { UserManagementView } from './components/UserManagementView';
 import { RoleMatrixSettingsView } from './components/RoleMatrixSettingsView';
+import { GoogleDriveSettingsView } from './components/GoogleDriveSettingsView';
 import { FirebaseConfigModal } from './components/FirebaseConfigModal';
 import { UserProfileModal } from './components/UserProfileModal';
 import { isFirebaseConfigured } from './services/firebase';
@@ -1292,6 +1293,10 @@ export default function App() {
                 }, {} as Record<string, number>)
               }
             />
+          )}
+
+          {currentTab === 'pengaturan-gdrive' && (
+            <GoogleDriveSettingsView />
           )}
         </main>
       </div>

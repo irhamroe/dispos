@@ -140,6 +140,13 @@ export const NAV_TAB_DEFINITIONS: NavTabPermissionMeta[] = [
     description: 'Pengaturan matriks hak akses dan wewenang fitur sesuai peran pengguna (RBAC)',
     iconName: 'ShieldCheck',
   },
+  {
+    id: 'pengaturan-gdrive',
+    label: 'Pengaturan Google Drive',
+    category: 'Master Data',
+    description: 'Konfigurasi URL Google Apps Script dan Folder ID penyimpanan foto serta berkas di Google Drive',
+    iconName: 'Cloud',
+  },
 ];
 
 export const ACTION_PERMISSION_DEFINITIONS: ActionPermissionMeta[] = [
@@ -309,6 +316,7 @@ export const initialRoleMatrix: RoleMatrixMap = {
       'kenaikan-kelas',
       'manajemen-user',
       'matriks-role',
+      'pengaturan-gdrive',
     ],
     actionPermissions: {
       attendance_input_all: true,

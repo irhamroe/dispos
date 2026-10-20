@@ -19,6 +19,7 @@ import {
   ShieldCheck, 
   DoorOpen,
   GraduationCap,
+  Cloud,
   X 
 } from 'lucide-react';
 
@@ -40,10 +41,12 @@ export type NavTab =
   | 'data-walikelas'
   | 'kenaikan-kelas'
   | 'manajemen-user'
-  | 'matriks-role';
+  | 'matriks-role'
+  | 'pengaturan-gdrive';
 
 import { RoleMatrixMap } from '../types';
 import { checkTabAccess, initialRoleMatrix } from '../data/roleMatrixData';
+import { isGoogleDriveConfigured } from '../services/googleDriveService';
 
 interface SidebarProps {
   currentTab: NavTab;
@@ -85,6 +88,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     currentTab === 'kenaikan-kelas' ||
     currentTab === 'manajemen-user' ||
     currentTab === 'matriks-role' ||
+    currentTab === 'pengaturan-gdrive' ||
     currentTab === 'students';
 
   const isRecapTab = currentTab === 'recap' || currentTab === 'rekap-surat-izin';
@@ -282,6 +286,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
       inactiveIconBg: 'bg-[#E0F2FE] text-[#0284C7]',
       badge: 'RBAC',
       badgeBg: 'bg-[#E0F2FE] text-[#0369A1]',
+    },
+    {
+      id: 'pengaturan-gdrive' as NavTab,
+      label: 'Pengaturan Google Drive',
+      sublabel: 'Folder foto & Apps Script',
+      icon: Cloud,
+      iconBg: 'bg-[#0284C7] text-white',
+      inactiveIconBg: 'bg-[#E0F2FE] text-[#0284C7]',
+      badge: isGoogleDriveConfigured() ? 'Aktif' : 'Konfigurasi',
+      badgeBg: isGoogleDriveConfigured() ? 'bg-[#C8E6C9] text-[#1B5E20]' : 'bg-[#FEF3C7] text-[#D97706]',
     },
   ];
 

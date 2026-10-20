@@ -39,7 +39,6 @@ import {
   getGoogleDriveViewUrl,
   getGoogleDriveConfig
 } from '../services/googleDriveService';
-import { GoogleDriveConfigModal } from './GoogleDriveConfigModal';
 
 interface DisciplineViewProps {
   students: Student[];
@@ -90,10 +89,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
   const [filterCoachingStatus, setFilterCoachingStatus] = useState<string>('ALL');
   const [exportNotice, setExportNotice] = useState<string | null>(null);
 
-  // Modal State for Catat Pelanggaran & Google Drive
+  // Modal State for Catat Pelanggaran
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isGoogleDriveModalOpen, setIsGoogleDriveModalOpen] = useState(false);
-  const [gdriveConfigVersion, setGdriveConfigVersion] = useState(0);
 
   // Upload loading states for Google Drive
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
@@ -1002,24 +999,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
             </div>
           </div>
 
-          {/* Tombol Aksi: Google Drive & Catat Pelanggaran */}
+          {/* Tombol Aksi: Catat Pelanggaran */}
           <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
-            <button
-              type="button"
-              id="google-drive-settings-btn"
-              onClick={() => setIsGoogleDriveModalOpen(true)}
-              className="px-4 py-3 rounded-2xl bg-white hover:bg-emerald-50 text-emerald-800 border border-emerald-300 font-extrabold text-xs transition-all shadow-xs hover:-translate-y-0.5 active:scale-[0.92] flex items-center gap-2 cursor-pointer w-full sm:w-auto justify-center"
-              title="Atur URL Apps Script & Folder ID Google Drive"
-            >
-              <Cloud className="w-4 h-4 text-emerald-600" />
-              <span>Google Drive</span>
-              {isGoogleDriveConfigured() ? (
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Google Drive Aktif" />
-              ) : (
-                <span className="w-2 h-2 rounded-full bg-amber-400" title="Belum Dikonfigurasi" />
-              )}
-            </button>
-
             {canCreate ? (
               <button
                 type="button"
@@ -1527,30 +1508,19 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                       Opsional (Boleh Kosong)
                     </span>
                   </span>
-                  <div className="flex items-center gap-2">
+                  {violationPhoto && !uploadingViolationPhoto && (
                     <button
                       type="button"
-                      onClick={() => setIsGoogleDriveModalOpen(true)}
-                      className="text-[10px] font-bold text-sky-700 hover:text-sky-900 flex items-center gap-1 cursor-pointer bg-sky-50 hover:bg-sky-100 px-2 py-0.5 rounded-lg border border-sky-200 shadow-2xs"
-                      title="Atur URL Apps Script & Folder ID Google Drive"
+                      onClick={() => {
+                        setViolationPhoto(undefined);
+                        setViolationPhotoName('');
+                        if (violationPhotoInputRef.current) violationPhotoInputRef.current.value = '';
+                      }}
+                      className="text-[11px] font-bold text-rose-500 hover:underline cursor-pointer"
                     >
-                      <Cloud className="w-3 h-3 text-sky-600" />
-                      <span>Atur Folder Drive</span>
+                      Hapus Foto
                     </button>
-                    {violationPhoto && !uploadingViolationPhoto && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setViolationPhoto(undefined);
-                          setViolationPhotoName('');
-                          if (violationPhotoInputRef.current) violationPhotoInputRef.current.value = '';
-                        }}
-                        className="text-[11px] font-bold text-rose-500 hover:underline cursor-pointer"
-                      >
-                        Hapus Foto
-                      </button>
-                    )}
-                  </div>
+                  )}
                 </label>
 
                 <input
@@ -1577,37 +1547,6 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                     />
                     <div className="flex-1 min-w-0">
                       <p className="font-extrabold text-[#0F172A] truncate text-xs">{violationPhotoName || 'Foto_Pelanggaran.jpg'}</p>
-                      <div className="flex flex-col gap-1 mt-1">
-                        {violationPhoto.includes('drive.google.com') || violationPhoto.includes('googleusercontent.com') ? (
-                          <>
-                            <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-100/90 px-2 py-0.5 rounded-full font-bold shadow-2xs w-fit">
-                              <Cloud className="w-3 h-3 text-emerald-600" />
-                              <span>Tersimpan di Google Drive {violationPhotoDriveFolder ? `(${violationPhotoDriveFolder})` : ''}</span>
-                            </span>
-                            <a
-                              href={getGoogleDriveViewUrl(violationPhoto)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-[10px] font-bold text-sky-700 hover:text-sky-900 underline flex items-center gap-1 w-fit cursor-pointer"
-                            >
-                              <ExternalLink className="w-3 h-3" />
-                              <span>Buka File di Google Drive</span>
-                            </a>
-                          </>
-                        ) : (
-                          <div className="flex flex-col gap-1">
-                            <span className="text-[10px] text-amber-800 font-bold bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md w-fit">
-                              ⚠️ Foto tersimpan lokal di browser (Belum masuk Google Drive)
-                            </span>
-                            {violationPhotoUploadError && (
-                              <span className="text-[10px] text-rose-600 font-bold flex items-start gap-1 bg-rose-50 border border-rose-200 p-1.5 rounded-lg">
-                                <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0 mt-0.5" />
-                                <span>{violationPhotoUploadError}</span>
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </div>
                     </div>
                     <button
                       type="button"
@@ -2636,35 +2575,6 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
                     />
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-slate-800 truncate text-xs">{editViolationPhotoName || 'Foto_Pelanggaran.jpg'}</p>
-                      <div className="flex flex-col gap-0.5 mt-0.5">
-                        {editViolationPhoto.includes('drive.google.com') || editViolationPhoto.includes('googleusercontent.com') ? (
-                          <>
-                            <span className="inline-flex items-center gap-1 text-[9px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-bold border border-emerald-200 w-fit">
-                              <Cloud className="w-2.5 h-2.5 text-emerald-600" /> Google Drive {editViolationPhotoDriveFolder ? `(${editViolationPhotoDriveFolder})` : ''}
-                            </span>
-                            <a
-                              href={getGoogleDriveViewUrl(editViolationPhoto)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-[9px] font-bold text-sky-700 hover:underline flex items-center gap-0.5 mt-0.5"
-                            >
-                              <ExternalLink className="w-2.5 h-2.5" /> Buka di Drive
-                            </a>
-                          </>
-                        ) : (
-                          <div className="flex flex-col gap-0.5">
-                            <span className="text-[9px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-bold border border-amber-200 w-fit">
-                              ⚠️ Tersimpan lokal (Belum masuk Drive)
-                            </span>
-                            {editViolationPhotoUploadError && (
-                              <span className="text-[9px] text-rose-600 font-bold flex items-start gap-1 mt-0.5">
-                                <AlertCircle className="w-3 h-3 text-rose-500 shrink-0 mt-0.5" />
-                                <span>{editViolationPhotoUploadError}</span>
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </div>
                     </div>
                     <button
                       type="button"
@@ -2970,17 +2880,6 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
           </div>
         </div>
       )}
-
-      {/* Modal Pengaturan Google Drive */}
-      <GoogleDriveConfigModal
-        isOpen={isGoogleDriveModalOpen}
-        onClose={() => setIsGoogleDriveModalOpen(false)}
-        onSaved={() => {
-          setGdriveConfigVersion((v) => v + 1);
-          setExportNotice('Konfigurasi Google Drive berhasil disimpan!');
-          setTimeout(() => setExportNotice(null), 3500);
-        }}
-      />
     </div>
   );
 };
