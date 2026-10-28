@@ -170,11 +170,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {/* Date Picker */}
-          <div className="flex items-center gap-2 bg-[#E2F1FD] rounded-full px-4 py-2 text-xs text-[#0F172A]">
-            <Calendar className="w-4 h-4 text-[#0284C7] shrink-0" />
-            <span className="text-[#334155]">Tanggal:</span>
+          <div className="flex items-center gap-2 bg-[#E2F1FD] rounded-full px-3.5 sm:px-4 py-1.5 sm:py-2 text-xs text-[#0F172A] w-full sm:w-auto justify-between sm:justify-start">
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-[#0284C7] shrink-0" />
+              <span className="text-[#334155]">Tanggal:</span>
+            </div>
             <input
               id="dash-date-picker"
               type="date"
@@ -184,41 +186,43 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             />
           </div>
 
-          {/* Grade filter */}
-          <div className="flex items-center gap-1.5 bg-[#E2F1FD] rounded-full px-4 py-2 text-xs text-[#0F172A]">
-            <span className="text-[#334155]">Jenjang:</span>
-            <select
-              id="dash-grade-filter"
-              value={selectedGradeFilter}
-              onChange={(e) => {
-                setSelectedGradeFilter(e.target.value as any);
-                setSelectedClassFilter('ALL');
-              }}
-              className="bg-transparent font-medium text-[#0F172A] focus:outline-hidden cursor-pointer"
-            >
-              <option value="ALL">Semua Jenjang</option>
-              <option value="X">Kelas X (12 Rombel)</option>
-              <option value="XI">Kelas XI (12 Rombel)</option>
-              <option value="XII">Kelas XII (12 Rombel)</option>
-            </select>
-          </div>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            {/* Grade filter */}
+            <div className="flex-1 sm:flex-none flex items-center gap-1.5 bg-[#E2F1FD] rounded-full px-3 sm:px-4 py-1.5 sm:py-2 text-xs text-[#0F172A]">
+              <span className="text-[#334155]">Jenjang:</span>
+              <select
+                id="dash-grade-filter"
+                value={selectedGradeFilter}
+                onChange={(e) => {
+                  setSelectedGradeFilter(e.target.value as any);
+                  setSelectedClassFilter('ALL');
+                }}
+                className="bg-transparent font-medium text-[#0F172A] focus:outline-hidden cursor-pointer w-full"
+              >
+                <option value="ALL">Semua Jenjang</option>
+                <option value="X">Kelas X</option>
+                <option value="XI">Kelas XI</option>
+                <option value="XII">Kelas XII</option>
+              </select>
+            </div>
 
-          {/* Rombel Class filter */}
-          <div className="flex items-center gap-1.5 bg-[#E2F1FD] rounded-full px-4 py-2 text-xs text-[#0F172A]">
-            <Filter className="w-4 h-4 text-[#0284C7] shrink-0" />
-            <select
-              id="dash-class-filter"
-              value={selectedClassFilter}
-              onChange={(e) => setSelectedClassFilter(e.target.value)}
-              className="bg-transparent font-medium text-[#0F172A] focus:outline-hidden cursor-pointer"
-            >
-              <option value="ALL">Semua Rombel ({totalFiltered} Siswa)</option>
-              {availableClasses.map((c) => (
-                <option key={c.id} value={c.name}>
-                  Rombel {c.name}
-                </option>
-              ))}
-            </select>
+            {/* Rombel Class filter */}
+            <div className="flex-1 sm:flex-none flex items-center gap-1.5 bg-[#E2F1FD] rounded-full px-3 sm:px-4 py-1.5 sm:py-2 text-xs text-[#0F172A]">
+              <Filter className="w-4 h-4 text-[#0284C7] shrink-0" />
+              <select
+                id="dash-class-filter"
+                value={selectedClassFilter}
+                onChange={(e) => setSelectedClassFilter(e.target.value)}
+                className="bg-transparent font-medium text-[#0F172A] focus:outline-hidden cursor-pointer w-full"
+              >
+                <option value="ALL">Semua Rombel</option>
+                {availableClasses.map((c) => (
+                  <option key={c.id} value={c.name}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
       </MdCard>

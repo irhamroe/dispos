@@ -331,23 +331,38 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div
           id="mobile-sidebar-backdrop"
           onClick={onCloseMobile}
-          className="fixed inset-0 z-40 bg-[#0F172A]/40 backdrop-blur-xs lg:hidden transition-opacity"
+          className="fixed inset-0 z-50 bg-[#0F172A]/50 backdrop-blur-xs lg:hidden transition-opacity duration-300"
         />
       )}
 
-      {/* Sidebar container with Material You */}
+      {/* Sidebar container with Material You (Full Drawer on Mobile, Floating Sidebar on Desktop) */}
       <aside
         id="app-sidebar"
-        className={`fixed top-20 bottom-4 left-3 z-40 w-72 bg-[#F0F9FF]/95 backdrop-blur-md rounded-[32px] shadow-sm border border-[#E0F2FE] flex flex-col justify-between transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] lg:translate-x-0 print:hidden ${
-          isOpenMobile ? 'translate-x-0 top-3 bottom-3 left-3 shadow-lg' : '-translate-x-[110%]'
+        className={`fixed z-50 bg-[#F0F9FF]/95 backdrop-blur-md flex flex-col justify-between transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] print:hidden
+          /* Mobile styles: docked drawer from left */
+          top-0 bottom-0 left-0 w-[86vw] max-w-[320px] rounded-r-[32px] rounded-l-none shadow-2xl border-r border-[#E0F2FE] pb-safe pt-safe
+          /* Desktop styles: floating rounded container */
+          lg:top-20 lg:bottom-4 lg:left-3 lg:w-72 lg:rounded-[32px] lg:shadow-sm lg:border lg:z-40 lg:pb-0 lg:pt-0 lg:translate-x-0 ${
+          isOpenMobile ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        {/* Mobile Close Button Header */}
-        <div className="lg:hidden flex items-center justify-between px-5 pt-4 pb-2 border-b border-[#E0F2FE]">
-          <span className="font-medium text-sm text-[#0F172A]">Navigasi Menu</span>
+        {/* Mobile Header with App Branding & Close Button */}
+        <div className="lg:hidden flex items-center justify-between px-5 pt-4 pb-3 border-b border-[#E0F2FE] bg-white/60">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-white shadow-xs p-1.5 flex items-center justify-center border border-[#E0F2FE]">
+              <img src="/logo.png" alt="SMAN 1 Batu" className="w-full h-full object-contain" />
+            </div>
+            <div>
+              <h3 className="font-bold text-sm text-[#0F172A] leading-tight">SMAN 1 Batu</h3>
+              <p className="text-[11px] text-[#0284C7] font-medium flex items-center gap-1">
+                <span>{userRole || 'Pengguna'}</span>
+              </p>
+            </div>
+          </div>
           <button
             onClick={onCloseMobile}
-            className="p-1.5 rounded-full bg-[#E0F2FE] text-[#0369A1] active:scale-95 transition-all"
+            className="p-2 rounded-full bg-[#E0F2FE] text-[#0369A1] hover:bg-[#DFD3F3] active:scale-95 transition-all cursor-pointer"
+            aria-label="Tutup navigasi"
           >
             <X className="w-4 h-4" />
           </button>
@@ -682,7 +697,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Sidebar Footer */}
-        <div className="p-3.5 border-t border-[#E0F2FE] bg-[#E0F2FE]/30 rounded-b-[32px]">
+        <div className="p-3.5 border-t border-[#E0F2FE] bg-[#E0F2FE]/30 rounded-br-[32px] lg:rounded-b-[32px]">
           <div className="flex items-start space-x-2.5 text-xs text-[#334155]">
             <Sparkles className="w-4 h-4 text-[#0284C7] shrink-0 mt-0.5" />
             <div>

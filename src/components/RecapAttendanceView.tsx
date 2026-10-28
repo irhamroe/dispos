@@ -234,10 +234,12 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
         </div>
 
         {/* Date Range Selection */}
-        <div className="pt-4 border-t border-[#E0F2FE] flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-2 bg-[#E2F1FD] rounded-full px-4 py-2 text-xs text-[#0F172A]">
-            <Calendar className="w-4 h-4 text-[#0284C7] shrink-0" />
-            <span className="text-[#334155]">Tanggal Awal:</span>
+        <div className="pt-4 border-t border-[#E0F2FE] flex flex-wrap items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 bg-[#E2F1FD] rounded-full px-3.5 sm:px-4 py-1.5 sm:py-2 text-xs text-[#0F172A] w-full sm:w-auto justify-between sm:justify-start">
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-[#0284C7] shrink-0" />
+              <span className="text-[#334155]">Tanggal Awal:</span>
+            </div>
             <input
               id="recap-start-date"
               type="date"
@@ -250,9 +252,11 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
             />
           </div>
 
-          <div className="flex items-center gap-2 bg-[#E2F1FD] rounded-full px-4 py-2 text-xs text-[#0F172A]">
-            <Calendar className="w-4 h-4 text-[#0284C7] shrink-0" />
-            <span className="text-[#334155]">Tanggal Akhir:</span>
+          <div className="flex items-center gap-2 bg-[#E2F1FD] rounded-full px-3.5 sm:px-4 py-1.5 sm:py-2 text-xs text-[#0F172A] w-full sm:w-auto justify-between sm:justify-start">
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-[#0284C7] shrink-0" />
+              <span className="text-[#334155]">Tanggal Akhir:</span>
+            </div>
             <input
               id="recap-end-date"
               type="date"
@@ -267,10 +271,10 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
         </div>
 
         {/* Grade and Class Filtering Controls */}
-        <div className="pt-4 border-t border-[#E0F2FE] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+        <div className="pt-4 border-t border-[#E0F2FE] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 sm:gap-4">
           {/* Grade filter tabs */}
-          <div className="flex items-center gap-1.5 p-1 bg-[#E2F1FD] rounded-full text-xs">
-            <span className="text-[#334155] px-2 text-[11px]">Jenjang:</span>
+          <div className="flex items-center gap-1.5 p-1 bg-[#E2F1FD] rounded-full text-xs overflow-x-auto no-scrollbar max-w-full">
+            <span className="text-[#334155] px-2 text-[11px] shrink-0">Jenjang:</span>
             {(['X', 'XI', 'XII', 'ALL'] as const).map((gr) => (
               <button
                 key={gr}
@@ -285,7 +289,7 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
                     setSelectedClass('ALL');
                   }
                 }}
-                className={`px-3.5 py-1.5 rounded-full transition-all cursor-pointer active:scale-95 ${
+                className={`px-3.5 py-1.5 rounded-full transition-all cursor-pointer active:scale-95 shrink-0 whitespace-nowrap ${
                   selectedGrade === gr
                     ? 'bg-[#0284C7] text-white font-medium shadow-xs'
                     : 'text-[#334155] hover:bg-[#0284C7]/10'
@@ -297,7 +301,7 @@ export const RecapAttendanceView: React.FC<RecapAttendanceViewProps> = ({
           </div>
 
           {/* Class dropdown */}
-          <div className="flex items-center gap-2 bg-[#E2F1FD] rounded-full px-4 py-2 text-xs text-[#0F172A]">
+          <div className="flex items-center gap-2 bg-[#E2F1FD] rounded-full px-4 py-2 text-xs text-[#0F172A] w-full md:w-auto justify-between md:justify-start">
             <Layers className="w-4 h-4 text-[#0284C7] shrink-0" />
             <span className="text-[#334155]">Pilih Kelas:</span>
             <select

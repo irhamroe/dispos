@@ -138,7 +138,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#064E3B] via-[#065F46] to-[#022C22] flex flex-col justify-center py-10 sm:px-6 lg:px-8 relative overflow-hidden font-roboto text-white selection:bg-emerald-500 selection:text-white">
+    <div className="min-h-screen bg-gradient-to-br from-[#064E3B] via-[#065F46] to-[#022C22] flex flex-col justify-center py-6 sm:py-10 px-3 sm:px-6 lg:px-8 relative overflow-hidden font-roboto text-white selection:bg-emerald-500 selection:text-white">
       {/* Decorative Ambient Background Glows */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden -z-10" aria-hidden="true">
         <div className="absolute -top-[15%] -left-[10%] w-[70vh] h-[70vh] rounded-full bg-emerald-500/25 blur-3xl animate-md-drift-1" />
@@ -217,10 +217,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
         </div>
       </div>
 
-      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4">
+      <div className="w-full max-w-md mx-auto relative z-10 px-2 sm:px-4">
         {/* School Logo & Header */}
         <div className="flex flex-col items-center text-center">
-          <div className="w-24 h-24 rounded-[30px] bg-white/95 p-3.5 flex items-center justify-center shadow-2xl mb-4 border-2 border-white/80 ring-4 ring-emerald-400/30">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-[26px] sm:rounded-[30px] bg-white/95 p-3 sm:p-3.5 flex items-center justify-center shadow-2xl mb-3 sm:mb-4 border-2 border-white/80 ring-4 ring-emerald-400/30">
             <img 
               src="/logo.png" 
               alt={schoolProfile.name} 
@@ -228,12 +228,12 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
             />
           </div>
 
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-500/20 backdrop-blur-md border border-emerald-400/30 text-emerald-200 text-xs font-bold mb-2 shadow-xs">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-emerald-500/20 backdrop-blur-md border border-emerald-400/30 text-emerald-200 text-[11px] sm:text-xs font-bold mb-2 shadow-xs">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-300" />
             <span>Portal Autentikasi Tenaga Pendidik</span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight drop-shadow-xs">
+          <h1 className="text-xl sm:text-3xl font-black text-white tracking-tight drop-shadow-xs">
             {schoolProfile.name}
           </h1>
           <p className="mt-1 text-xs sm:text-sm text-emerald-100/90 font-medium">
@@ -242,8 +242,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
         </div>
 
         {/* Material You Login Card */}
-        <div className="mt-6">
-          <div className="bg-white/95 backdrop-blur-2xl rounded-[32px] p-7 sm:p-8 space-y-5 border border-white/60 shadow-2xl text-[#0F172A]">
+        <div className="mt-4 sm:mt-6">
+          <div className="bg-white/95 backdrop-blur-2xl rounded-[28px] sm:rounded-[32px] p-5 sm:p-8 space-y-4 sm:space-y-5 border border-white/60 shadow-2xl text-[#0F172A]">
             <div className="flex items-center justify-between pb-3 border-b border-emerald-100">
               <div>
                 <h2 className="text-base font-black text-[#0F172A] flex items-center gap-2">

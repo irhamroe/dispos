@@ -1,6 +1,6 @@
 import { Student } from '../types';
 
-export const realStudentsData: Student[] = [
+export const realStudentsData: Student[] = ([
   {
     "id": "s-c-x-1-1",
     "nisn": "0107558631",
@@ -12741,4 +12741,4 @@ export const realStudentsData: Student[] = [
     "gender": "P",
     "status": "Aktif"
   }
-];
+]) as any;

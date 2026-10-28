@@ -295,7 +295,7 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
       </div>
 
       {/* 5 Summary Counters */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-2.5 sm:gap-3.5">
         {/* Card 1: Total Pengajuan Hari Ini */}
         <div 
           onClick={() => setStatusFilter('ALL')}
@@ -384,7 +384,7 @@ export const SecurityGateVerificationView: React.FC<SecurityGateVerificationView
         {/* Card 5: Ditolak */}
         <div 
           onClick={() => setStatusFilter('Ditolak')}
-          className={`p-4 sm:p-5 rounded-[26px] bg-gradient-to-br from-rose-50 via-white to-red-50 border transition-all cursor-pointer shadow-xs hover:shadow-md ${
+          className={`col-span-2 lg:col-span-1 p-4 sm:p-5 rounded-[26px] bg-gradient-to-br from-rose-50 via-white to-red-50 border transition-all cursor-pointer shadow-xs hover:shadow-md ${
             statusFilter === 'Ditolak' ? 'border-rose-500 ring-2 ring-rose-200' : 'border-rose-200 hover:border-rose-400'
           }`}
         >

@@ -30,6 +30,7 @@ import { sortClasses, sortStudents, sortWaliKelas, sortDisciplineRecords, sortVi
 import { formatNameTitleCase } from './utils/formatUtils';
 import { Navbar } from './components/Navbar';
 import { Sidebar, NavTab } from './components/Sidebar';
+import { MobileBottomNav } from './components/MobileBottomNav';
 import { LoginScreen } from './components/LoginScreen';
 import { DashboardView } from './components/DashboardView';
 import { DailyAttendanceView } from './components/DailyAttendanceView';
@@ -709,6 +710,8 @@ export default function App() {
           };
           return next;
         }
+        const matchedClass = classes.find((c) => c.name === formatted.assignedClass);
+        const grade = (matchedClass?.grade || 'X') as 'X' | 'XI' | 'XII';
         return [
           ...prev,
           {
@@ -718,6 +721,9 @@ export default function App() {
             phone: formatted.phone || '-',
             email: formatted.email || `${formatted.username}@sman1batu.sch.id`,
             className: formatted.assignedClass || '',
+            classId: matchedClass?.id || `c-${formatted.assignedClass}`,
+            grade,
+            status: 'GTT' as const,
           },
         ];
       });
@@ -1047,7 +1053,7 @@ export default function App() {
         />
 
         {/* Main Content Area */}
-        <main className="flex-1 lg:pl-80 pt-5 pb-10 px-4 sm:px-6 lg:px-8 max-w-7xl w-full mx-auto print:p-0 print:m-0 print:max-w-none print:w-full print:block">
+        <main className="flex-1 lg:pl-80 pt-3 sm:pt-5 pb-24 sm:pb-28 lg:pb-10 px-3 sm:px-6 lg:px-8 max-w-7xl w-full mx-auto print:p-0 print:m-0 print:max-w-none print:w-full print:block">
           {currentTab === 'dashboard' && (
             <DashboardView
               students={students}
@@ -1303,6 +1309,16 @@ export default function App() {
           )}
         </main>
       </div>
+
+      {/* Mobile Bottom Navigation Bar (Docked at bottom of screen on phones/tablets) */}
+      <MobileBottomNav
+        currentTab={currentTab}
+        onSelectTab={handleSelectTab}
+        onOpenMenu={() => setIsMobileMenuOpen(true)}
+        totalPendingPermits={totalPendingPermits}
+        userRole={currentUser?.role}
+        roleMatrix={roleMatrix}
+      />
 
       {/* Firebase Cloud Firestore Modal */}
       <FirebaseConfigModal

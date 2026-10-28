@@ -1128,8 +1128,8 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
           </div>
         </div>
 
-        {/* Data Table */}
-        <div className="overflow-x-auto">
+        {/* Desktop Data Table */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-[#E2F1FD]/70 text-[#0F172A]  font-black text-[11px] uppercase tracking-wider border-b border-sky-100">
@@ -1333,6 +1333,173 @@ export const DisciplineView: React.FC<DisciplineViewProps> = ({
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Discipline Cards View (Optimized for Smartphone) */}
+        <div className="block md:hidden p-3 space-y-3 bg-[#F8FAFC]">
+          {filteredRecords.length === 0 ? (
+            <div className="py-12 text-center text-slate-400">
+              <ShieldAlert className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+              <p className="font-bold text-sm text-slate-700">Tidak ada catatan pelanggaran</p>
+              <p className="text-xs text-slate-500 mt-0.5">Sesuai pencarian atau filter yang dipilih</p>
+            </div>
+          ) : (
+            filteredRecords.map((rec, idx) => {
+              const isSudah = rec.coachingStatus === 'Sudah';
+              const hasLetter = Boolean(rec.coachingEvidenceFile || rec.coachingEvidenceFileName);
+
+              return (
+                <div
+                  key={rec.id}
+                  className="bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-xs space-y-3 transition-all"
+                >
+                  {/* Top: Incident Date & Student Name + Class Badge */}
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
+                        <span>#{idx + 1}</span>
+                        <span>•</span>
+                        <span>{formatDateIndonesian(rec.date)}</span>
+                      </div>
+                      <h4 className="font-black text-sm text-slate-900 mt-0.5 leading-tight">
+                        {rec.studentName}
+                      </h4>
+                    </div>
+
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-black bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                      {rec.className}
+                    </span>
+                  </div>
+
+                  {/* Violation Name & Details */}
+                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 space-y-1.5 text-xs">
+                    <div className="font-bold text-slate-800 leading-snug">
+                      {rec.violationName}
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] text-slate-500 flex-wrap gap-1">
+                      <span>Pelapor: <strong className="text-slate-700">{rec.reportedBy}</strong></span>
+                      {rec.violationPhoto && (
+                        <button
+                          type="button"
+                          onClick={() => setActivePreviewImage({ url: rec.violationPhoto!, title: `Foto Kejadian: ${rec.studentName} (${rec.violationName})` })}
+                          className="inline-flex items-center gap-1 text-[10px] font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 border border-sky-200 px-2 py-0.5 rounded-md cursor-pointer"
+                        >
+                          <Camera className="w-3 h-3 text-sky-600" />
+                          <span>Foto Bukti</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Status Pembinaan Badge & Photos */}
+                  <div className="flex items-center justify-between gap-2 flex-wrap pt-1 border-t border-slate-100 text-xs">
+                    <div>
+                      {!isSudah ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                          <Clock className="w-3.5 h-3.5 text-rose-500" />
+                          <span>Belum Dibina</span>
+                        </span>
+                      ) : !hasLetter ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                          <Paperclip className="w-3.5 h-3.5 text-amber-600" />
+                          <span>Menunggu Surat</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>Selesai Dibina</span>
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Coaching Photos / Evidence Links */}
+                    <div className="flex items-center gap-1.5">
+                      {rec.coachingPhoto && (
+                        <button
+                          type="button"
+                          onClick={() => setActivePreviewImage({ url: rec.coachingPhoto!, title: `Foto Pembinaan: ${rec.studentName}` })}
+                          className="p-1.5 rounded-lg bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200"
+                          title="Lihat Foto Pembinaan"
+                        >
+                          <Camera className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                      {rec.coachingEvidenceFile && (
+                        <button
+                          type="button"
+                          onClick={() => window.open(rec.coachingEvidenceFile, '_blank')}
+                          className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200"
+                          title="Lihat Berkas Surat"
+                        >
+                          <Paperclip className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Action Buttons on Mobile */}
+                  <div className="flex items-center justify-end gap-1.5 pt-2 border-t border-slate-100">
+                    {canCoach && !isSudah && (
+                      <button
+                        type="button"
+                        onClick={() => handleClickTandaiSudah(rec)}
+                        className="px-3 py-1.5 rounded-xl text-xs font-black bg-rose-600 hover:bg-rose-700 text-white flex items-center gap-1.5 active:scale-95 transition-all shadow-xs cursor-pointer"
+                      >
+                        <Upload className="w-3.5 h-3.5" />
+                        <span>Tandai: Sudah</span>
+                      </button>
+                    )}
+
+                    {canCoach && isSudah && !hasLetter && (
+                      <button
+                        type="button"
+                        onClick={() => handleOpenFollowUpModal(rec)}
+                        className="px-3 py-1.5 rounded-xl text-xs font-black bg-amber-600 hover:bg-amber-700 text-white flex items-center gap-1.5 active:scale-95 transition-all shadow-xs cursor-pointer"
+                      >
+                        <Paperclip className="w-3.5 h-3.5" />
+                        <span>Unggah Surat</span>
+                      </button>
+                    )}
+
+                    {canEdit && (
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEditModal(rec)}
+                        className="p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 active:scale-95 transition-all cursor-pointer"
+                        title="Edit Catatan"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={() => setActiveRecordForDetail(rec)}
+                      className="p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 active:scale-95 transition-all cursor-pointer"
+                      title="Lihat Detail"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                    </button>
+
+                    {canDelete && onDeleteRecord && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (confirm(`Hapus catatan pelanggaran siswa ${rec.studentName}?`)) {
+                            onDeleteRecord(rec.id);
+                          }
+                        }}
+                        className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 active:scale-95 transition-all cursor-pointer"
+                        title="Hapus"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
 

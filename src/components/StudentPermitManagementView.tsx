@@ -757,13 +757,13 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
       {/* MAIN NAVIGATION TABS (Pending vs Approved Recap vs Rejected vs All) */}
       <div className="rounded-[32px] bg-white/90 p-4 sm:p-5 backdrop-blur-xl shadow-sm border border-white/60 space-y-4">
         <div className="flex items-center justify-between flex-wrap gap-3 border-b border-slate-200/80 pb-3.5">
-          <div className="flex items-center gap-2 p-1.5 bg-[#E2F1FD] rounded-2xl text-xs font-black flex-wrap">
+          <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 bg-[#E2F1FD] rounded-2xl text-xs font-black overflow-x-auto no-scrollbar max-w-full">
             {/* Tab 1: Menunggu Persetujuan */}
             <button
               type="button"
               id="tab-pending-permits"
               onClick={() => setMainTab('PENDING')}
-              className={`px-4 py-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
+              className={`px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-2 shrink-0 whitespace-nowrap ${
                 mainTab === 'PENDING'
                   ? 'bg-rose-600 text-white shadow-xs -translate-y-0.5'
                   : 'text-[#334155] hover:text-[#0F172A]'
@@ -785,14 +785,14 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
               type="button"
               id="tab-approved-recap"
               onClick={() => setMainTab('APPROVED_RECAP')}
-              className={`px-4 py-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
+              className={`px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-2 shrink-0 whitespace-nowrap ${
                 mainTab === 'APPROVED_RECAP'
                   ? 'bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-xs -translate-y-0.5'
                   : 'text-[#334155] hover:text-[#0F172A]'
               }`}
             >
               <CheckCircle2 className="w-4 h-4" />
-              <span>Buku Rekap Izin Resmi (Disetujui)</span>
+              <span>Buku Rekap Izin Resmi</span>
               <span className={`px-2 py-0.5 text-[10px] font-black rounded-full ${
                 mainTab === 'APPROVED_RECAP' ? 'bg-white text-emerald-800' : 'bg-emerald-100 text-emerald-800'
               }`}>
@@ -805,7 +805,7 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
               type="button"
               id="tab-rejected-permits"
               onClick={() => setMainTab('REJECTED')}
-              className={`px-4 py-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
+              className={`px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-2 shrink-0 whitespace-nowrap ${
                 mainTab === 'REJECTED'
                   ? 'bg-slate-800 text-white shadow-xs -translate-y-0.5'
                   : 'text-[#334155] hover:text-[#0F172A]'
@@ -820,14 +820,14 @@ export const StudentPermitManagementView: React.FC<StudentPermitManagementViewPr
               type="button"
               id="tab-all-permits"
               onClick={() => setMainTab('ALL_HISTORY')}
-              className={`px-4 py-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
+              className={`px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-2 shrink-0 whitespace-nowrap ${
                 mainTab === 'ALL_HISTORY'
                   ? 'bg-sky-600 text-white shadow-xs -translate-y-0.5'
                   : 'text-[#334155] hover:text-[#0F172A]'
               }`}
             >
               <Layers className="w-4 h-4" />
-              <span>Semua Riwayat ({permits.length})</span>
+              <span>Semua ({permits.length})</span>
             </button>
           </div>
 

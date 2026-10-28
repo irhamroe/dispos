@@ -252,7 +252,7 @@ export const PublicStudentPermitView: React.FC<PublicStudentPermitViewProps> = (
   }, [permits, checkStudentId, checkClass]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B2545] via-[#134074] to-[#0A192F] py-8 px-4 sm:px-6 lg:px-8 relative font-roboto text-slate-900 selection:bg-sky-500 selection:text-white print:p-0 print:m-0 print:bg-white print:min-h-0">
+    <div className="min-h-screen bg-gradient-to-br from-[#0B2545] via-[#134074] to-[#0A192F] py-4 sm:py-8 px-3 sm:px-6 lg:px-8 relative font-roboto text-slate-900 selection:bg-sky-500 selection:text-white print:p-0 print:m-0 print:bg-white print:min-h-0">
       {/* Print-specific style: Isolasi HANYA printable-student-permit yang tercetak / simpan PDF */}
       <style>{`
         @media print {

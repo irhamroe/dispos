@@ -464,7 +464,8 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
           </span>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Desktop Student List Table */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-[#E2F1FD]/80 text-[11px] font-medium uppercase tracking-wider text-[#334155] border-b border-[#E0F2FE]">
@@ -653,6 +654,193 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
           </table>
         </div>
 
+        {/* Mobile Student Cards View (Optimized for Smartphone) */}
+        <div className="block md:hidden p-3 space-y-3 bg-[#F8FAFC]">
+          {filteredStudents.length === 0 ? (
+            <div className="py-12 text-center text-[#64748B]">
+              <p className="font-semibold text-sm">Tidak ada siswa ditemukan</p>
+              <p className="text-xs text-[#94A3B8] mt-1">Coba periksa kata kunci pencarian Anda</p>
+            </div>
+          ) : (
+            filteredStudents.map((student, idx) => {
+              const draft = draftRecords[student.id] || { status: 'H', notes: '' };
+              const isSickOrPermit = draft.status === 'S' || draft.status === 'I';
+
+              const statusColor = 
+                draft.status === 'H'
+                  ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                  : draft.status === 'S'
+                  ? 'bg-amber-50 border-amber-200 text-amber-800'
+                  : draft.status === 'I'
+                  ? 'bg-sky-50 border-sky-200 text-sky-800'
+                  : draft.status === 'A'
+                  ? 'bg-rose-50 border-rose-200 text-rose-800'
+                  : 'bg-indigo-50 border-indigo-200 text-indigo-800';
+
+              const statusLabel = 
+                draft.status === 'H'
+                  ? 'Hadir'
+                  : draft.status === 'S'
+                  ? 'Sakit'
+                  : draft.status === 'I'
+                  ? 'Izin'
+                  : draft.status === 'A'
+                  ? 'Alpa'
+                  : 'Dispensasi';
+
+              return (
+                <div
+                  key={student.id}
+                  className="bg-white rounded-2xl p-3.5 border border-[#E0F2FE] shadow-xs space-y-2.5 transition-all"
+                >
+                  {/* Top: Student Number, Name, Gender, NISN & Current Status Badge */}
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-start gap-2.5 min-w-0">
+                      <span className="w-6 h-6 rounded-full bg-[#E2F1FD] text-[#0284C7] font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                        {idx + 1}
+                      </span>
+                      <div className="min-w-0">
+                        <h4 className="font-bold text-sm text-[#0F172A] leading-tight truncate">
+                          {student.name}
+                        </h4>
+                        <div className="flex items-center gap-1.5 mt-0.5 text-[11px] text-[#64748B]">
+                          <span className="font-mono text-[10px] text-[#475569]">{student.nisn}</span>
+                          <span>•</span>
+                          <span
+                            className={`px-1.5 py-0.2 rounded text-[10px] font-bold ${
+                              student.gender === 'L' ? 'bg-[#E1F5FE] text-[#0277BD]' : 'bg-[#FCE4EC] text-[#C2185B]'
+                            }`}
+                          >
+                            {student.gender === 'L' ? 'Laki-laki' : 'Perempuan'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-black border uppercase tracking-wider shrink-0 ${statusColor}`}>
+                      {statusLabel}
+                    </span>
+                  </div>
+
+                  {/* Segmented Touch Buttons for H, S, I, A, D (Tactile Mobile Button Group) */}
+                  <div className="grid grid-cols-5 gap-1.5 p-1 bg-[#F1F5F9] rounded-2xl">
+                    {/* H */}
+                    <button
+                      type="button"
+                      id={`m-btn-H-${student.id}`}
+                      onClick={() => handleStatusChange(student.id, 'H')}
+                      className={`py-2 rounded-xl font-black text-xs transition-all active:scale-95 cursor-pointer flex flex-col items-center justify-center ${
+                        draft.status === 'H'
+                          ? 'bg-[#16A34A] text-white shadow-xs scale-102 ring-2 ring-emerald-300'
+                          : 'text-[#475569] hover:bg-white/80'
+                      }`}
+                    >
+                      <span>H</span>
+                      <span className="text-[9px] font-semibold opacity-90">Hadir</span>
+                    </button>
+
+                    {/* S */}
+                    <button
+                      type="button"
+                      id={`m-btn-S-${student.id}`}
+                      onClick={() => handleStatusChange(student.id, 'S')}
+                      className={`py-2 rounded-xl font-black text-xs transition-all active:scale-95 cursor-pointer flex flex-col items-center justify-center ${
+                        draft.status === 'S'
+                          ? 'bg-[#EA580C] text-white shadow-xs scale-102 ring-2 ring-amber-300'
+                          : 'text-[#475569] hover:bg-white/80'
+                      }`}
+                    >
+                      <span>S</span>
+                      <span className="text-[9px] font-semibold opacity-90">Sakit</span>
+                    </button>
+
+                    {/* I */}
+                    <button
+                      type="button"
+                      id={`m-btn-I-${student.id}`}
+                      onClick={() => handleStatusChange(student.id, 'I')}
+                      className={`py-2 rounded-xl font-black text-xs transition-all active:scale-95 cursor-pointer flex flex-col items-center justify-center ${
+                        draft.status === 'I'
+                          ? 'bg-[#0284C7] text-white shadow-xs scale-102 ring-2 ring-sky-300'
+                          : 'text-[#475569] hover:bg-white/80'
+                      }`}
+                    >
+                      <span>I</span>
+                      <span className="text-[9px] font-semibold opacity-90">Izin</span>
+                    </button>
+
+                    {/* A */}
+                    <button
+                      type="button"
+                      id={`m-btn-A-${student.id}`}
+                      onClick={() => handleStatusChange(student.id, 'A')}
+                      className={`py-2 rounded-xl font-black text-xs transition-all active:scale-95 cursor-pointer flex flex-col items-center justify-center ${
+                        draft.status === 'A'
+                          ? 'bg-[#DC2626] text-white shadow-xs scale-102 ring-2 ring-rose-300'
+                          : 'text-[#475569] hover:bg-white/80'
+                      }`}
+                    >
+                      <span>A</span>
+                      <span className="text-[9px] font-semibold opacity-90">Alpa</span>
+                    </button>
+
+                    {/* D */}
+                    <button
+                      type="button"
+                      id={`m-btn-D-${student.id}`}
+                      onClick={() => handleStatusChange(student.id, 'D')}
+                      className={`py-2 rounded-xl font-black text-xs transition-all active:scale-95 cursor-pointer flex flex-col items-center justify-center ${
+                        draft.status === 'D'
+                          ? 'bg-[#4F46E5] text-white shadow-xs scale-102 ring-2 ring-indigo-300'
+                          : 'text-[#475569] hover:bg-white/80'
+                      }`}
+                    >
+                      <span>D</span>
+                      <span className="text-[9px] font-semibold opacity-90">Dispen</span>
+                    </button>
+                  </div>
+
+                  {/* Letter Toggle Card for Sakit (S) / Izin (I) */}
+                  {isSickOrPermit && (
+                    <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+                      <span className="text-xs font-semibold text-[#475569]">Surat Keterangan:</span>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          id={`m-letter-yes-${student.id}`}
+                          onClick={() => handleLetterToggle(student.id, 'Sudah Ada Surat')}
+                          className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1 transition-all active:scale-95 cursor-pointer ${
+                            draft.hasLetter === 'Sudah Ada Surat'
+                              ? 'bg-emerald-600 text-white shadow-xs'
+                              : 'bg-slate-100 text-slate-600 hover:bg-emerald-50'
+                          }`}
+                        >
+                          <FileCheck className="w-3.5 h-3.5" />
+                          <span>Ada Surat</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          id={`m-letter-no-${student.id}`}
+                          onClick={() => handleLetterToggle(student.id, 'Belum Ada Surat')}
+                          className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1 transition-all active:scale-95 cursor-pointer ${
+                            draft.hasLetter === 'Belum Ada Surat'
+                              ? 'bg-rose-600 text-white shadow-xs'
+                              : 'bg-slate-100 text-slate-600 hover:bg-rose-50'
+                          }`}
+                        >
+                          <FileX className="w-3.5 h-3.5" />
+                          <span>Belum Ada</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
+
         {/* Bottom Save Bar */}
         <div className="p-5 bg-[#E2F1FD]/60 border-t border-[#E0F2FE] flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-xs text-[#334155]">
@@ -677,6 +865,33 @@ export const DailyAttendanceView: React.FC<DailyAttendanceViewProps> = ({
             )}
           </MdButton>
         </div>
+      </div>
+
+      {/* Mobile Sticky Quick Save Action Bar (Floats above mobile bottom nav) */}
+      <div className="fixed bottom-[60px] left-3 right-3 z-30 lg:hidden shadow-[0_10px_30px_rgba(2,132,199,0.18)] rounded-2xl bg-white/95 backdrop-blur-xl border border-[#E0F2FE] p-2.5 flex items-center justify-between gap-2 animate-in slide-in-from-bottom-2">
+        <div className="flex items-center gap-1.5 text-[11px] font-bold overflow-x-auto no-scrollbar shrink min-w-0">
+          <span className="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-800 text-[10px] shrink-0">H: {draftCounts.h}</span>
+          <span className="px-2 py-0.5 rounded-lg bg-amber-100 text-amber-800 text-[10px] shrink-0">S: {draftCounts.s}</span>
+          <span className="px-2 py-0.5 rounded-lg bg-sky-100 text-sky-800 text-[10px] shrink-0">I: {draftCounts.i}</span>
+          <span className="px-2 py-0.5 rounded-lg bg-rose-100 text-rose-800 text-[10px] shrink-0">A: {draftCounts.a}</span>
+          <span className="px-2 py-0.5 rounded-lg bg-indigo-100 text-indigo-800 text-[10px] shrink-0">D: {draftCounts.d}</span>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={!canEditCurrentClass}
+          className={`px-3.5 py-2 rounded-xl text-xs font-black shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all shrink-0 ${
+            !canEditCurrentClass 
+              ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
+              : isUpdateMode
+              ? 'bg-amber-600 text-white hover:bg-amber-700'
+              : 'bg-[#0284C7] text-white hover:bg-[#0369A1]'
+          }`}
+        >
+          {isUpdateMode ? <RefreshCw className="w-3.5 h-3.5" /> : <Save className="w-3.5 h-3.5" />}
+          <span>{isUpdateMode ? 'Update' : 'Simpan'}</span>
+        </button>
       </div>
     </div>
   );

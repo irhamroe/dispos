@@ -289,7 +289,7 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
     setEditParentPhone(student.parentPhone || '');
     setEditAddress(student.address || '');
     setEditPhotoUrl(student.photoUrl || '');
-    setEditStatus(student.status);
+    setEditStatus(student.status === 'Nonaktif' ? 'Nonaktif' : 'Aktif');
     setEditPhotoInputMode('upload');
   };
 
@@ -586,8 +586,8 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
           </div>
         </div>
 
-        {/* Student Table with Photo and Address Columns */}
-        <div className="overflow-x-auto">
+        {/* Desktop Student Table */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gradient-to-r from-slate-100/80 to-purple-50/50 border-b border-slate-200 text-xs font-black uppercase tracking-wider text-[#334155]" >
@@ -770,6 +770,163 @@ export const StudentMasterView: React.FC<StudentMasterViewProps> = ({
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Student Cards View (Optimized for Smartphone) */}
+        <div className="block md:hidden p-3 space-y-3 bg-[#F8FAFC]">
+          {paginatedStudents.length === 0 ? (
+            <div className="py-12 text-center text-[#64748B]">
+              <div className="w-14 h-14 rounded-full bg-[#E2F1FD] text-[#0284C7] flex items-center justify-center mx-auto mb-2 shadow-xs">
+                <AlertCircle className="w-7 h-7" />
+              </div>
+              <p className="font-bold text-sm text-[#0F172A]">Tidak ditemukan data siswa</p>
+              <p className="text-xs text-[#64748B] mt-0.5">Coba sesuaikan filter kelas atau pencarian Anda</p>
+            </div>
+          ) : (
+            paginatedStudents.map((s, idx) => {
+              const globalIdx = (currentPage - 1) * pageSize + idx + 1;
+              const canEditThis = canEditStudent(s);
+
+              return (
+                <div
+                  key={s.id}
+                  className="bg-white rounded-2xl p-3.5 border border-[#E0F2FE] shadow-xs space-y-3 transition-all"
+                >
+                  {/* Top: Avatar, Name, NISN, Gender, and Class Badge */}
+                  <div className="flex items-start justify-between gap-2.5">
+                    <div className="flex items-start gap-2.5 min-w-0">
+                      {/* Avatar */}
+                      <div className="shrink-0 mt-0.5">
+                        {s.photoUrl ? (
+                          <button
+                            type="button"
+                            onClick={() => setZoomedPhoto({ url: s.photoUrl!, name: s.name })}
+                            className="relative group cursor-pointer block"
+                          >
+                            <img
+                              src={getGoogleDriveDirectImageUrl(s.photoUrl)}
+                              alt={s.name}
+                              className="w-10 h-10 rounded-xl object-cover border border-[#E0F2FE] shadow-xs"
+                              onError={(e) => {
+                                const target = e.currentTarget;
+                                if (s.photoUrl && target.src !== s.photoUrl) {
+                                  target.src = s.photoUrl;
+                                }
+                              }}
+                            />
+                          </button>
+                        ) : (
+                          <div
+                            className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs shadow-xs ${
+                              s.gender === 'L' ? 'bg-sky-100 text-sky-800' : 'bg-pink-100 text-pink-800'
+                            }`}
+                          >
+                            {s.name.slice(0, 2).toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Name & Identity */}
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] font-bold text-slate-400">#{globalIdx}</span>
+                          <h4 className="font-black text-sm text-[#0F172A] leading-tight truncate">
+                            {s.name}
+                          </h4>
+                        </div>
+                        <div className="flex items-center gap-1.5 mt-0.5 text-xs text-[#64748B]">
+                          <span className="font-mono text-[11px] text-[#334155]">{s.nisn}</span>
+                          <span>•</span>
+                          <span
+                            className={`px-1.5 py-0.2 rounded font-bold text-[10px] ${
+                              s.gender === 'L' ? 'bg-sky-100 text-sky-800' : 'bg-pink-100 text-pink-800'
+                            }`}
+                          >
+                            {s.gender === 'L' ? 'L' : 'P'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-black bg-sky-50 text-[#0284C7] border border-sky-200 shrink-0">
+                      {s.className}
+                    </span>
+                  </div>
+
+                  {/* Contact / Address Quick Details */}
+                  {(s.phone || s.parentPhone || s.address) && (
+                    <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 space-y-1.5 text-xs">
+                      {(s.phone || s.parentPhone) && (
+                        <div className="flex items-center gap-3 text-[11px] flex-wrap">
+                          {s.phone && (
+                            <a
+                              href={`tel:${s.phone}`}
+                              className="flex items-center gap-1 text-emerald-700 font-bold hover:underline"
+                            >
+                              <Phone className="w-3 h-3 text-emerald-600" />
+                              <span>{s.phone}</span>
+                            </a>
+                          )}
+                          {s.parentPhone && (
+                            <div className="flex items-center gap-1 text-[#475569]">
+                              <span className="text-[10px] font-semibold text-slate-400">Ortu:</span>
+                              <span className="font-mono">{s.parentPhone}</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      {s.address && (
+                        <div className="flex items-start gap-1 text-[11px] text-[#475569] leading-tight">
+                          <MapPin className="w-3 h-3 text-[#0284C7] shrink-0 mt-0.5" />
+                          <span className="line-clamp-1">{s.address}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Actions Bar */}
+                  <div className="flex items-center justify-between pt-1 border-t border-slate-100">
+                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      {s.status}
+                    </span>
+
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => setViewingStudent(s)}
+                        className="px-2.5 py-1.5 rounded-lg bg-sky-50 hover:bg-sky-100 text-[#0284C7] font-bold text-xs flex items-center gap-1 transition-all active:scale-95 cursor-pointer"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Detail</span>
+                      </button>
+
+                      {canEditThis && (
+                        <button
+                          type="button"
+                          onClick={() => handleOpenEdit(s)}
+                          className="px-2.5 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-xs flex items-center gap-1 transition-all active:scale-95 cursor-pointer"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                          <span>Edit</span>
+                        </button>
+                      )}
+
+                      {canManageStudents && onDeleteStudent && (
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteStudent(s)}
+                          className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 transition-all active:scale-95 cursor-pointer"
+                          title="Hapus"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
 
         {/* Pagination Controls */}

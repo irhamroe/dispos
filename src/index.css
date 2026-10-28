@@ -18,12 +18,31 @@
     --md-outline: #64748B;
     --md-outline-variant: #CBD5E1;
     --md-ease: cubic-bezier(0.2, 0, 0, 1);
+    
+    /* Mobile Safe Area Insets */
+    --sat: env(safe-area-inset-top, 0px);
+    --sab: env(safe-area-inset-bottom, 0px);
+    --sal: env(safe-area-inset-left, 0px);
+    --sar: env(safe-area-inset-right, 0px);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
 
   body {
     background-color: var(--md-surface);
     color: var(--md-on-surface);
     font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow-x: hidden;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overscroll-behavior-y: contain;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -127,4 +146,37 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #0284C7;
+}
+
+/* ==========================================================================
+   MOBILE APP UTILITIES & SAFE AREAS
+   ========================================================================== */
+
+.pb-safe {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.5rem);
+}
+
+.pt-safe {
+  padding-top: calc(env(safe-area-inset-top, 0px) + 0.5rem);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Touch-optimized button and tap targets */
+@media (max-width: 768px) {
+  button, a, input, select, textarea {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Mobile smooth scrolling */
+  .touch-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
 }
